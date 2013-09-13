@@ -1,0 +1,76 @@
+Preparation
+-----------
+
+1. Ensure that all binaries are built by building the solution in release mode.
+
+2. Run the Install Servers.bat file.
+   - Ensure that there are no errors.
+
+Shell Context Menu Extensions
+-----------------------------
+
+3. Open the 'TestData\ContextMenus' folder.
+
+4. Right click on TextFile1.txt
+   4a: 'Count Lines' should be shown.
+   4b: 'Count Lines' should have an icon showing some horizontal lines, this icon should not have a white background.
+
+5. Left click on the 'Count Lines' command.
+   5a: A message box should be shown with the text 'TextFile1.txt - 3 lines'.
+
+6. Right click on the 'NotATextFile.txx' file.
+   6a: There should NOT be a 'Count Lines' menu option.
+
+7. Select 'TextFile1.txt' and 'TextFile2.txt'. Right click.
+   7a: There should be a 'Count Lines' menu option.
+
+8. Click on the 'Count Lines' menu option.
+   8a: The text 'TextFile2.txt - 3 lines' and 'TextFile1.txt - 3 lines' should be shown on separate lines.
+
+9. Select 'Textfile1.txt', 'TextFile2.txt' and 'NotATextFile.txx'. Right click on these files.
+   9a: There should NOT be a 'Count Lines' menu option.
+
+10. Right click on the 'ReadOnlyTextFile.txt' file.
+   10a: There should be a menu option named 'Advanced'.
+   10b: 'Advanced' should contain an item named 'Read Only' which is checked.
+   10c: 'Advanced' should contain an item named 'Touch' which is disabled and greyed out.
+
+11. Right click on the 'TextFile1.txt' file.
+   11a: There should be a menu option named 'Advanced'.
+   11b: 'Advanced' should contain an item named 'Read Only' which is unchecked.
+   11c: 'Advanced' should contain an item named 'Touch' which is enabled.
+
+Shell Property Sheet Extensions
+-------------------------------
+
+10. Open the 'TestData\PropertySheets' folder.
+
+11. Right click on 'TextFile.txt'. Choose 'Properties'.
+    11a: After the 'General' tab there should be a 'File Times' tab.
+    11b: The File Times should be correct.
+    11c: The background of the tab should match the Windows styling (see the other tabs for a reference).
+
+12. Close the property sheet.
+
+13. Select both 'TextFile.txt' and 'OtherTextFile.txt'.
+
+14. Right click on the selected files. Choose 'Proeprties'.
+    14a: There should be NO 'File Times' tab.
+
+Icon Overlay Extensions
+-----------------------
+
+15. Open the 'TestData\IconOverlays' folder.
+
+16. Verify the overlay.
+    16a: The 'ReadWriteFile.txt' file should NOT have an overlay.
+    16b: The 'ReadOnlyFile.txt' file should have an overlay.
+
+17. Verify the aspect ratio.
+    17a: When changing the size of explorer icons, the overlay should maintain a consistent aspect ratio.
+
+Clean-up
+--------
+
+Run the 'Uninstall Servers.bat' file.
+There should be no errors.
