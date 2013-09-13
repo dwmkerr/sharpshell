@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B5D5F670-BFBA-4D09-91C6-74BB12B7EDD4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpShell</RootNamespace>
+    <AssemblyName>SharpShell</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SharpShell.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Attributes\AssociationType.cs" />
+    <Compile Include="Attributes\COMServerAssociationAttribute.cs" />
+    <Compile Include="Attributes\CustomUnregisterFunctionAttribute.cs" />
+    <Compile Include="Attributes\CustomRegisterFunctionAttribute.cs" />
+    <Compile Include="Attributes\DisplayNameAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Attributes\HandlerSubkeyAttribute.cs" />
+    <Compile Include="Attributes\ServerTypeAttribute.cs" />
+    <Compile Include="Attributes\SpecialClassKeyAttribute.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\GuidExtensions.cs" />
+    <Compile Include="Extensions\IDataObjectExtensions.cs" />
+    <Compile Include="Helpers\ComStream.cs" />
+    <Compile Include="Helpers\Win32Helper.cs" />
+    <Compile Include="InitializeWithStreamServer.cs" />
+    <Compile Include="Interop\BITMAPV5HEADER.cs" />
+    <Compile Include="Interop\COLORREF.cs" />
+    <Compile Include="Interop\FILE_ATTRIBUTE.cs" />
+    <Compile Include="Interop\FontCharSet.cs" />
+    <Compile Include="Interop\FontClipPrecision.cs" />
+    <Compile Include="Interop\FontPitchAndFamily.cs" />
+    <Compile Include="Interop\FontPrecision.cs" />
+    <Compile Include="Interop\FontQuality.cs" />
+    <Compile Include="Interop\FontWeight.cs" />
+    <Compile Include="Interop\IContextMenu2.cs" />
+    <Compile Include="Interop\IContextMenu3.cs" />
+    <Compile Include="Interop\IDropTarget.cs" />
+    <Compile Include="Interop\IObjectWithSite.cs" />
+    <Compile Include="Interop\IOleWindow.cs" />
+    <Compile Include="Interop\IPreviewHandler.cs" />
+    <Compile Include="Interop\IPreviewHandlerFrame.cs" />
+    <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
+    <Compile Include="Interop\IShellIconOverlayIdentifier.cs" />
+    <Compile Include="Interop\ISIOI.cs" />
+    <Compile Include="Interop\IThumbnailProvider.cs" />
+    <Compile Include="Interop\LOGFONT.cs" />
+    <Compile Include="Interop\MSG.cs" />
+    <Compile Include="Interop\NMHDR.cs" />
+    <Compile Include="Interop\PREVIEWHANDLERFRAMEINFO.cs" />
+    <Compile Include="Interop\PSH.cs" />
+    <Compile Include="Interop\PSN.cs" />
+    <Compile Include="Interop\PSP.cs" />
+    <Compile Include="Interop\RECT.cs" />
+    <Compile Include="Interop\SEE.cs" />
+    <Compile Include="Interop\SFGAO.cs" />
+    <Compile Include="Interop\SHELLEXECUTEINFO.cs" />
+    <Compile Include="Interop\WTS_ALPHATYPE.cs" />
+    <Compile Include="ServerRegistration\ClassRegistration.cs" />
+    <Compile Include="ServerRegistration\ShellExtensionType.cs" />
+    <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
+    <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
+    <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
+    <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
+    <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
+    <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SharpPreviewHandler\PreviewHandlerHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SharpPreviewHandler\SharpPreviewHandler.cs" />
+    <Compile Include="SharpPropertySheet\SharpPropertyPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Helpers\BitmapHelper.cs" />
+    <Compile Include="Interop\DIB.cs" />
+    <Compile Include="SharpThumbnailHandler\SharpThumbnailHandler.cs" />
+    <Compile Include="ShellExtInitServer.cs" />
+    <Compile Include="SharpDropHandler\SharpDropHandler.cs" />
+    <Compile Include="Interop\IInitializeWithFile.cs" />
+    <Compile Include="Interop\IInitializeWithStream.cs" />
+    <Compile Include="Interop\QITIPF.cs" />
+    <Compile Include="PersistFileServer.cs" />
+    <Compile Include="SharpInfoTipHandler\SharpInfoTipHandler.cs" />
+    <Compile Include="Diagnostics\ExplorerManager.cs" />
+    <Compile Include="Diagnostics\Logging.cs" />
+    <Compile Include="Diagnostics\ExplorerConfigurationManager.cs" />
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Interop\CLSCTX.cs" />
+    <Compile Include="Interop\CMF.cs" />
+    <Compile Include="Interop\CMIC.cs" />
+    <Compile Include="Interop\CMINVOKECOMMANDINFO.cs" />
+    <Compile Include="Interop\CMINVOKECOMMANDINFOEX.cs" />
+    <Compile Include="Interop\Comctl32.cs" />
+    <Compile Include="Interop\DLGTEMPLATE.cs" />
+    <Compile Include="Interop\GCS.cs" />
+    <Compile Include="Interop\IContextMenu.cs" />
+    <Compile Include="Interop\IExtractIcon.cs" />
+    <Compile Include="Interop\IQueryInfo.cs" />
+    <Compile Include="Interop\IShellExtInit.cs" />
+    <Compile Include="Interop\IShellPropSheetExt.cs" />
+    <Compile Include="Interop\Kernel32.cs" />
+    <Compile Include="Interop\MENUITEMINFO.cs" />
+    <Compile Include="Interop\MFS.cs" />
+    <Compile Include="Interop\MFT.cs" />
+    <Compile Include="Interop\MIIM.cs" />
+    <Compile Include="Interop\Ole32.cs" />
+    <Compile Include="Interop\POINT.cs" />
+    <Compile Include="Interop\PROPSHEETHEADER.cs" />
+    <Compile Include="Interop\PROPSHEETPAGE.cs" />
+    <Compile Include="Interop\PSPCB.cs" />
+    <Compile Include="Interop\Shell32.cs" />
+    <Compile Include="Interop\STGM.cs" />
+    <Compile Include="Interop\User32.cs" />
+    <Compile Include="Interop\WindowsMessages.cs" />
+    <Compile Include="Interop\WindowStyles.cs" />
+    <Compile Include="Interop\WinError.cs" />
+    <Compile Include="ISharpShellServer.cs" />
+    <Compile Include="NativeBridge\NativeBridge.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Interop\CLIPFORMAT.cs" />
+    <Compile Include="ServerRegistration\RegistrationType.cs" />
+    <Compile Include="ServerRegistration\ServerRegistationType.cs" />
+    <Compile Include="ServerRegistration\ShellExtensionRegistrationInfo.cs" />
+    <Compile Include="ServerRegistration\ServerRegistrationManager.cs" />
+    <Compile Include="ServerType.cs" />
+    <Compile Include="SharpContextMenu\SharpContextMenu.cs" />
+    <Compile Include="SharpContextMenu\NativeContextMenuWrapper.cs" />
+    <Compile Include="SharpPropertySheet\PropertyPageProxy.cs" />
+    <Compile Include="SharpPropertySheet\SharpPropertySheet.cs" />
+    <Compile Include="SharpShellServer.cs" />
+    <Compile Include="ShellStream.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge32.dll" />
+    <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge64.dll" />
+    <EmbeddedResource Include="SharpPreviewHandler\PreviewHandlerHost.resx">
+      <DependentUpon>PreviewHandlerHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SharpPropertySheet\SharpPropertyPage.resx">
+      <DependentUpon>SharpPropertyPage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)SharpShell.*" "$(SolutionDir)..\Build\Core"
+copy "$(TargetPath)" "$(SolutionDir)..\Build\Samples"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

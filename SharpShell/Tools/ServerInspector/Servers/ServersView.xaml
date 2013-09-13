@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="ServerInspector.Servers.ServersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ServerInspector.Servers"
+             xmlns:apexMVVM="clr-namespace:Apex.MVVM;assembly=Apex"
+             xmlns:apexCommands="clr-namespace:Apex.Commands;assembly=Apex"
+             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
+             xmlns:apexConverters="clr-namespace:Apex.Converters;assembly=Apex"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.DataContext>
+        <local:ServersViewModel x:Name="viewModel" />
+    </UserControl.DataContext>
+            
+    <Grid>
+        <DockPanel>
+            
+            <ToolBarPanel DockPanel.Dock="Top">
+                <ToolBar>
+                    <Label Content="Search" />
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" />
+                    <Label Content="Show:" />
+                    <CheckBox Content="Native" IsChecked="{Binding ShowNativeInProc32, Mode=TwoWay}" />
+                    <CheckBox Content="Managed" IsChecked="{Binding ShowManagedInProc32, Mode=TwoWay}" />
+                    <CheckBox Content="Partially Registered" IsChecked="{Binding ShowPartiallyRegistered, Mode=TwoWay}" />
+                </ToolBar> 
+            </ToolBarPanel>
+            
+        <ListView ItemsSource="{Binding Servers}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Model.ServerRegistationType}" />
+                    <GridViewColumn Header="CLSID" DisplayMemberBinding="{Binding Model.ServerCLSID}" />
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Model.ServerPath}" />
+                    <GridViewColumn Header="Threading Model" DisplayMemberBinding="{Binding Model.ThreadingModel}" />
+                    <GridViewColumn Header="AssemblyVersion" DisplayMemberBinding="{Binding Model.AssemblyVersion}" />
+                    <GridViewColumn Header="Assembly" DisplayMemberBinding="{Binding Model.Assembly}" />
+                    <GridViewColumn Header="Class" DisplayMemberBinding="{Binding Model.Class}" />
+                    <GridViewColumn Header="RuntimeVersion" DisplayMemberBinding="{Binding Model.RuntimeVersion}" />
+                </GridView>
+            </ListView.View>
+            </ListView>
+
+        </DockPanel>
+    </Grid>
+</UserControl>

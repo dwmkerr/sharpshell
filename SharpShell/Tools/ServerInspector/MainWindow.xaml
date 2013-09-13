@@ -1,0 +1,8 @@
+﻿<Window x:Class="ServerInspector.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Servers="clr-namespace:ServerInspector.Servers"
+        Title="Server Inspector" Height="480" Width="640">
+    <Grid>
+        <Servers:ServersView />
+    </Grid>
+</Window>

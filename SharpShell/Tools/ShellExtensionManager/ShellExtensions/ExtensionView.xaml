@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="ShellExtensionManager.ShellExtensions.ExtensionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:apexControls="clr-namespace:Apex.Controls;assembly=Apex"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <apexControls:PaddedGrid Rows="Auto,Auto,Auto,Auto" Columns="Auto,*" Padding="4">
+            
+            <Label Grid.Row="0" Grid.Column="0">Display Name</Label>
+            <TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" Text="{Binding DisplayName}" />
+
+            <Label Grid.Row="1" Grid.Column="0">Extension Type</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True" Text="{Binding ShellExtensionType}" />
+            
+            <Label Grid.Row="2" Grid.Column="0">Registered Classes</Label>
+            <ItemsControl Grid.Row="2" Grid.Column="1" ItemsSource="{Binding ClassRegistrations}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding ClassName}" />    
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+
+        </apexControls:PaddedGrid>
+    </Grid>
+</UserControl>
