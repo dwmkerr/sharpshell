@@ -21,3 +21,5 @@ obj/
 _ReSharper*/
 SharpShell/.nuget
 SharpShell/ipch/
+*.sdf
+*.opensdf
