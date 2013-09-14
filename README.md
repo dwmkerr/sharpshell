@@ -20,7 +20,10 @@ You can use SharpShell to build any of the extensions below:
 Projects that use SharpShell
 ----------------------------
 
-Send me a message to add a project to this list!
+Send me a message to add a project to this list:
+
+ - [Trello Context Menu](https://github.com/GeorgeHahn/TrelloContextMenu)
+ - [REAL Shuffle Player 2.0](http://hig.bplaced.net/en/)
 
 Shell Context Menus
 -------------------
