@@ -39,7 +39,7 @@ namespace SharpShell.SharpContextMenu
         /// <returns>An HRESULT indicating success.</returns>
         int IContextMenu.QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log(string.Format("Query Context Menu for items {0}", string.Join(", ", SelectedItemPaths)));
             
             //  If we've got the defaultonly flag, we're done.
@@ -74,7 +74,7 @@ namespace SharpShell.SharpContextMenu
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured building the context menu.", exception);
 
                 //  Return the failure.
@@ -119,7 +119,7 @@ namespace SharpShell.SharpContextMenu
                 //  Get the verb.
                 var verb = Marshal.PtrToStringAnsi(ici.verb);
 
-                //  Log this key event.
+                //  DebugLog this key event.
                 Log(string.Format("Invoke ANSI verb {0}", verb));
                 
                 //  Try and invoke the command. If we don't invoke it, throw
@@ -134,7 +134,7 @@ namespace SharpShell.SharpContextMenu
                 //  Get the verb.
                 var verb = Marshal.PtrToStringAnsi(ici.verb);
 
-                //  Log this key event.
+                //  DebugLog this key event.
                 Log(string.Format("Invoke Unicode verb {0}", verb));
                 
                 //  Try and invoke the command. If we don't invoke it, throw
@@ -150,7 +150,7 @@ namespace SharpShell.SharpContextMenu
                 //  documentation rigourously.
                 var index = User32.LowWord(ici.verb.ToInt32());
                 
-                //  Log this key event.
+                //  DebugLog this key event.
                 Log(string.Format("Invoke command index {0}", index));
                 
                 //  Try and invoke the command. If we don't invoke it, throw

@@ -73,7 +73,7 @@ namespace SharpShell.SharpPropertySheet
                     }
                     catch (Exception exception)
                     {
-                        Logging.Error("Failed to set the parent to the host.", exception);
+                        Logging.DebugError("Failed to set the parent to the host.", exception);
                     }
 
                     break;
@@ -179,7 +179,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         public void CreatePropertyPageHandle(NativeBridge.NativeBridge nativeBridge)
         {
-            Logging.Log("Creating property page handle via bridge.");
+            Logging.DebugLog("Creating property page handle via bridge.");
 
             //  Create a prop sheet page structure.
             var psp = new PROPSHEETPAGE();

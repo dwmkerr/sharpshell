@@ -39,7 +39,7 @@ namespace SharpShell.SharpIconOverlayHandler
                 //  Can we show the overla?
                 var canShowOverly = CanShowOverlay(pwszPath, dwAttrib);
 
-                //  Log this key event.
+                //  DebugLog this key event.
                 Log(string.Format("IsMemberOf for {0} - returning {1}", pwszPath, canShowOverly));
 
                 //  Return OK if we should show the overlay, otherwise false.
@@ -47,7 +47,7 @@ namespace SharpShell.SharpIconOverlayHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("IsMemberOf: An exception occured when determining whether to show the overlay for '" + pwszPath + "'.", exception);
 
                 //  Return false so we don't try and get the icon for a server that is erroring.
@@ -117,7 +117,7 @@ namespace SharpShell.SharpIconOverlayHandler
         /// </returns>
         int IShellIconOverlayIdentifier.GetPriority(out int pPriority)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log("GetPriority called to get icon overlay priority.");
 
             //  By default, we'll set the lowest priority.
@@ -140,7 +140,7 @@ namespace SharpShell.SharpIconOverlayHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured when trying to get the priority.", exception);
             }
 
@@ -177,7 +177,7 @@ namespace SharpShell.SharpIconOverlayHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured when trying to get the overlay icon.", exception);
 
                 return null;
@@ -201,7 +201,7 @@ namespace SharpShell.SharpIconOverlayHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured when trying to create the overlay icon.", exception);
 
                 return null;
@@ -233,7 +233,7 @@ namespace SharpShell.SharpIconOverlayHandler
                     //  How many shell icon overlay identifiers do we have?
                     var overlayHandlersCount = overlayIdentifiers.GetSubKeyNames().Count();
                     if(overlayHandlersCount >= MaximumOverlayIdentifiers)
-                        Diagnostics.Logging.Error("There are already the maximum number of overlay " +
+                        Diagnostics.Logging.DebugError("There are already the maximum number of overlay " +
                             "handlers registered for the system. Although " + serverType.Name + " is " +
                                                   "being registered, it will not be used by Windows Explorer.");
 

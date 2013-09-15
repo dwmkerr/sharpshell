@@ -93,7 +93,7 @@ namespace XsdDropHandler
         private const int ImageList_Index_Warning = 1;
 
         /// <summary>
-        /// Error image index.
+        /// DebugError image index.
         /// </summary>
         private const int ImageList_Index_Error = 2;
 

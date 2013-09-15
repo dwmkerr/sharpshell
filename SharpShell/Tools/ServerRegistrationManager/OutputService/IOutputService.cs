@@ -10,12 +10,22 @@
         /// Writes a message.
         /// </summary>
         /// <param name="message">The message.</param>
-        void WriteMessage(string message);
+        /// <param name="log">if set to <c>true</c> the message is also logged.</param>
+        void WriteMessage(string message, bool log = false);
+
+        /// <summary>
+        /// Writes the a success message. Implementations may show a tick or the 
+        /// message in green etc.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="log">if set to <c>true</c> [log].</param>
+        void WriteSuccess(string message, bool log = false);
 
         /// <summary>
         /// Writes an error.
         /// </summary>
         /// <param name="error">The error.</param>
-        void WriteError(string error);
+        /// <param name="log">if set to <c>true</c> the message is also logged.</param>
+        void WriteError(string error, bool log = false);
     }
 }

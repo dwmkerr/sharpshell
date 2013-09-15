@@ -16,7 +16,7 @@ namespace SharpShell.SharpDataHandler
 
         int IDataObject.DAdvise(ref System.Runtime.InteropServices.ComTypes.FORMATETC pFormatetc, System.Runtime.InteropServices.ComTypes.ADVF advf, System.Runtime.InteropServices.ComTypes.IAdviseSink adviseSink, out int connection)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.DAdvise called.");
 
             //  Not needed for Shell Data Handlers.
@@ -25,7 +25,7 @@ namespace SharpShell.SharpDataHandler
 
         void IDataObject.DUnadvise(int connection)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.DUnadvise called.");
 
             //  Not needed for Shell Data Handlers.
@@ -34,7 +34,7 @@ namespace SharpShell.SharpDataHandler
 
         int IDataObject.EnumDAdvise(out System.Runtime.InteropServices.ComTypes.IEnumSTATDATA enumAdvise)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.EnumDAdvise called.");
 
             //  Not needed for Shell Data Handlers.
@@ -43,7 +43,7 @@ namespace SharpShell.SharpDataHandler
 
         System.Runtime.InteropServices.ComTypes.IEnumFORMATETC IDataObject.EnumFormatEtc(System.Runtime.InteropServices.ComTypes.DATADIR direction)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.EnumFormatEtc called.");
 
             //  Not needed for Shell Data Handlers.
@@ -52,7 +52,7 @@ namespace SharpShell.SharpDataHandler
 
         int IDataObject.GetCanonicalFormatEtc(ref System.Runtime.InteropServices.ComTypes.FORMATETC formatIn, out System.Runtime.InteropServices.ComTypes.FORMATETC formatOut)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.GetCanonicalFormatEtc called.");
 
             //  Not needed for Shell Data Handlers.
@@ -61,7 +61,7 @@ namespace SharpShell.SharpDataHandler
 
         void IDataObject.GetData(ref System.Runtime.InteropServices.ComTypes.FORMATETC format, out System.Runtime.InteropServices.ComTypes.STGMEDIUM medium)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.GetData called.");
 
             //  Not needed for Shell Data Handlers.
@@ -70,7 +70,7 @@ namespace SharpShell.SharpDataHandler
 
         void IDataObject.GetDataHere(ref System.Runtime.InteropServices.ComTypes.FORMATETC format, ref System.Runtime.InteropServices.ComTypes.STGMEDIUM medium)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.GetDataHere called.");
 
             //  Not needed for Shell Data Handlers.
@@ -79,7 +79,7 @@ namespace SharpShell.SharpDataHandler
 
         int IDataObject.QueryGetData(ref System.Runtime.InteropServices.ComTypes.FORMATETC format)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.QueryGetData called.");
 
             //  Not needed for Shell Data Handlers.
@@ -88,7 +88,7 @@ namespace SharpShell.SharpDataHandler
 
         void IDataObject.SetData(ref System.Runtime.InteropServices.ComTypes.FORMATETC formatIn, ref System.Runtime.InteropServices.ComTypes.STGMEDIUM medium, bool release)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IDataObject.SetData called.");
 
             try

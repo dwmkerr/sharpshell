@@ -23,3 +23,4 @@ SharpShell/.nuget
 SharpShell/ipch/
 *.sdf
 *.opensdf
+Build/Tools/ServerManager.vshost.exe.manifest

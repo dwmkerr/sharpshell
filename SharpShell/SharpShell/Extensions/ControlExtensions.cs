@@ -30,7 +30,7 @@ namespace SharpShell.Extensions
             }
             catch (Exception exception)
             {
-                Logging.Error("Failed to pass to wnproc", exception);
+                Logging.DebugError("Failed to pass to wnproc", exception);
                 return false;
             }
         }

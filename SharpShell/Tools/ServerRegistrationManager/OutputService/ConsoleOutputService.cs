@@ -16,7 +16,8 @@ namespace ServerRegistrationManager.OutputService
         /// Writes a message.
         /// </summary>
         /// <param name="message">The message.</param>
-        public void WriteMessage(string message)
+        /// <param name="log">if set to <c>true</c> the message is also logged.</param>
+        public void WriteMessage(string message, bool log = false)
         {
             //  Set the colour.
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -26,16 +27,33 @@ namespace ServerRegistrationManager.OutputService
         }
 
         /// <summary>
+        /// Writes the success.
+        /// </summary>
+        /// <param name="error">The error.</param>
+        /// <param name="log">if set to <c>true</c> [log].</param>
+        public void WriteSuccess(string error, bool log = false)
+        {
+            //  Set the colour.
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            //  Write the message.
+            Console.WriteLine(error);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        /// <summary>
         /// Writes an error.
         /// </summary>
         /// <param name="error">The error.</param>
-        public void WriteError(string error)
+        /// <param name="log">if set to <c>true</c> the message is also logged.</param>
+        public void WriteError(string error, bool log = false)
         {
             //  Set the colour.
             Console.ForegroundColor = ConsoleColor.Red;
 
             //  Write the message.
             Console.WriteLine(error);
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }

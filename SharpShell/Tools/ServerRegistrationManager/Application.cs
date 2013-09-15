@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ServerRegistrationManager.OutputService;
 using SharpShell;
+using SharpShell.Diagnostics;
 using SharpShell.ServerRegistration;
 
 namespace ServerRegistrationManager
@@ -36,6 +37,8 @@ namespace ServerRegistrationManager
         /// <param name="args">The arguments.</param>
         public void Run(string[] args)
         {
+            Logging.Log("Started the Server Registration Manager.");
+
             //  Show the welcome.
             ShowWelcome();
 
@@ -74,7 +77,7 @@ namespace ServerRegistrationManager
             //  Validate the path.
             if (File.Exists(path) == false)
             {
-                outputService.WriteError("File '" + path + "' does not exist.");
+                outputService.WriteError("File '" + path + "' does not exist.", true);
                 return;
             }
             
@@ -90,19 +93,29 @@ namespace ServerRegistrationManager
                 outputService.WriteError("Server Types from the specified assembly. Is it a SharpShell");
                 outputService.WriteError("Server Assembly?");
                 System.Diagnostics.Trace.Write(e);
+                Logging.Error("An unhandled exception occured when loading a SharpShell server.", e);
             }
 
             //  Install each server type.
             foreach (var serverType in serverTypes)
             {
                 //  Inform the user we're going to install the server.
-                outputService.WriteMessage("Preparing to install (" + registrationType + "): " + serverType.DisplayName);
+                outputService.WriteMessage("Preparing to install (" + registrationType + "): " + serverType.DisplayName, true);
 
                 //  Install the server.
-                SharpShell.ServerRegistration.ServerRegistrationManager.InstallServer(serverType, registrationType, codeBase);
-                outputService.WriteMessage("Installed OK... Preparing to register...");
-                SharpShell.ServerRegistration.ServerRegistrationManager.RegisterServer(serverType, registrationType);
-                outputService.WriteMessage("Registered OK.");
+                try
+                {
+                    SharpShell.ServerRegistration.ServerRegistrationManager.InstallServer(serverType, registrationType, codeBase);
+                    SharpShell.ServerRegistration.ServerRegistrationManager.RegisterServer(serverType, registrationType);
+                }
+                catch (Exception e)
+                {
+                    outputService.WriteError("Failed to install and register the server.");
+                    Logging.Error("An unhandled exception occured installing and registering the server " + serverType.DisplayName, e);
+                    continue;
+                }
+
+                outputService.WriteSuccess("    " + serverType.DisplayName + " installed and registered.", true);
             }
         }
 
@@ -125,19 +138,30 @@ namespace ServerRegistrationManager
                 outputService.WriteError("Server Types from the specified assembly. Is it a SharpShell");
                 outputService.WriteError("Server Assembly?");
                 System.Diagnostics.Trace.Write(e);
+                Logging.Error("An unhandled exception occured when loading a SharpShell server.", e);
             }
 
             //  Install each server type.
             foreach (var serverType in serverTypes)
             {
                 //  Inform the user we're going to install the server.
-                Console.WriteLine("Preparing to uninstall (" + registrationType + "): " + serverType.DisplayName);
+                Console.WriteLine("Preparing to uninstall (" + registrationType + "): " + serverType.DisplayName, true);
 
                 //  Install the server.
-                SharpShell.ServerRegistration.ServerRegistrationManager.UnregisterServer(serverType, registrationType);
-                outputService.WriteMessage("Unregisterd OK... Preparing to uninstall...");
-                SharpShell.ServerRegistration.ServerRegistrationManager.UninstallServer(serverType, registrationType);
-                outputService.WriteMessage("Uninstalled OK.");
+                try
+                {
+
+                    SharpShell.ServerRegistration.ServerRegistrationManager.UnregisterServer(serverType, registrationType);
+                    SharpShell.ServerRegistration.ServerRegistrationManager.UninstallServer(serverType, registrationType);
+                }
+                catch (Exception e)
+                {
+                    outputService.WriteError("Failed to unregister and uninstall the server.");
+                    Logging.Error("An unhandled exception occured un registering and uninstalling the server " + serverType.DisplayName, e);
+                    continue;
+                }
+
+                outputService.WriteSuccess("    " + serverType.DisplayName + " unregistered and uninstalled.", true);
             }
         }
 

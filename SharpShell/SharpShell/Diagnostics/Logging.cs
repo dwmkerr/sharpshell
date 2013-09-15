@@ -13,7 +13,7 @@ namespace SharpShell.Diagnostics
         /// </summary>
         static Logging()
         {
-            Log(string.Format("SharpShell Diagnostics Initialised. Process {0}.", Process.GetCurrentProcess().ProcessName));
+            DebugLog(string.Format("SharpShell Diagnostics Initialised. Process {0}.", Process.GetCurrentProcess().ProcessName));
 
 #if DEBUG
             //  If we're in debug mode, we can also register a handler for unhandled exceptions in the domain.
@@ -28,34 +28,59 @@ namespace SharpShell.Diagnostics
         /// <param name="e">The <see cref="System.UnhandledExceptionEventArgs"/> instance containing the event data.</param>
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            //  Log the unhandled exception.
-            Error("SharpShell - Unhandled Exception in the AppDomain", e.ExceptionObject as Exception);
+            //  DebugLog the unhandled exception.
+            DebugError("SharpShell - Unhandled Exception in the AppDomain", e.ExceptionObject as Exception);
         }
 
         /// <summary>
-        /// Logs the specified message.
+        /// Logs the specified message to the Event Log. This message is only logged in Debug mode.
         /// </summary>
         /// <param name="message">The message.</param>
         [Conditional("DEBUG")]
+        public static void DebugLog(string message)
+        {
+            //  DebugLog to the event log.
+            EventLog.WriteEntry(EventLog_Source, message);
+        }
+
+        /// <summary>
+        /// Logs the specified message to the Event Log.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public static void Log(string message)
         {
-            //  Log to the event log.
             EventLog.WriteEntry(EventLog_Source, message);
         }
 
         /// <summary>
         /// Logs the specified message as an error.
+        /// This message is only logged in Debug Mode.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="exception">The exception.</param>
         [Conditional("DEBUG")]
-        public static void Error(string message, Exception exception = null)
+        public static void DebugError(string message, Exception exception = null)
         {
             //  Write the message.
             EventLog.WriteEntry(EventLog_Source, message, EventLogEntryType.Error);
             
             //  Write the exception, if it exists.
             if(exception != null)
+                EventLog.WriteEntry(EventLog_Source, exception.ToString(), EventLogEntryType.Error);
+        }
+
+        /// <summary>
+        /// Errors the specified message as an error to the Event Log.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="exception">The exception.</param>
+        public static void Error(string message, Exception exception = null)
+        {
+            //  Write the message.
+            EventLog.WriteEntry(EventLog_Source, message, EventLogEntryType.Error);
+
+            //  Write the exception, if it exists.
+            if (exception != null)
                 EventLog.WriteEntry(EventLog_Source, exception.ToString(), EventLogEntryType.Error);
         }
 

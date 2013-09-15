@@ -28,7 +28,7 @@ namespace SharpShell.SharpThumbnailHandler
         /// <exception cref="System.NotImplementedException"></exception>
         int IThumbnailProvider.GetThumbnail(uint cx, out IntPtr phbmp, out WTS_ALPHATYPE pdwAlpha)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log(string.Format("GetThumbnail for item stream, width {0}.", cx));
 
             //  Set the out variables to default values.
@@ -43,7 +43,7 @@ namespace SharpShell.SharpThumbnailHandler
             }
             catch(Exception exception)
             {
-                //  Log the exception and return failure.
+                //  DebugLog the exception and return failure.
                 LogError("An exception occured when getting the thumbnail image.", exception);
                 return WinError.E_FAIL;
             }
@@ -51,7 +51,7 @@ namespace SharpShell.SharpThumbnailHandler
             //  If we couldn't get an image, return failure.
             if(thumbnailImage == null)
             {
-                //  Log a warning return failure.
+                //  DebugLog a warning return failure.
                 Log("The internal GetThumbnail function failed to return a valid thumbnail.");
                 return WinError.E_FAIL;
             }

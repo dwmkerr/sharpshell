@@ -93,7 +93,7 @@ namespace SharpShell.SharpPreviewHandler
         /// <param name="grfMode">One of the following STGM values that indicates the access mode for pszFilePath. STGM_READ or STGM_READWRITE.</param>
         int IInitializeWithFile.Initialize(string pszFilePath, STGM grfMode)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IObjectWithSite.GetSite called.");
 
             //  Store the file path.
@@ -118,8 +118,8 @@ namespace SharpShell.SharpPreviewHandler
         /// <param name="grfMode">One of the following STGM values that indicates the access mode for pstream. STGM_READ or STGM_READWRITE.</param>
         void IInitializeWithStream.Initialize(IStream pstream, uint grfMode)
         {
-            //  Log key events.
-            Log("IObjectWithSite.GetSite called.");
+            //  DebugLog key events.
+            DebugLog("IObjectWithSite.GetSite called.");
 
             fileStream = new ShellStream(pstream);
         }
@@ -138,7 +138,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IObjectWithSite.GetSite(ref Guid riid, out object ppvSite)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IObjectWithSite.GetSite called.");
 
             //  Return the site.
@@ -157,7 +157,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IObjectWithSite.SetSite(object pUnkSite)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IObjectWithSite.SetSite called.");
 
             //  Store the site. If it's a frame, store that too.
@@ -181,7 +181,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IOleWindow.GetWindow(out IntPtr phwnd)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IOleWindow.GetWindow called.");
 
             //  Set the host window handle.
@@ -200,7 +200,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IOleWindow.ContextSensitiveHelp called.");
 
             //  As defined by MSDN, we must return E_NOTIMPL for this function.
@@ -221,7 +221,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandler.SetWindow(IntPtr hwnd, ref RECT prc)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandler.SetWindow called.");
 
             //  Set the preview host and preview rect.
@@ -241,7 +241,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandler.SetRect(RECT prc)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandler.SetRect called.");
 
             //  Set the preview area.
@@ -262,7 +262,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandler.DoPreview()
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandler.DoPreview called.");
 
             //  Call the main function to create the preview handler.
@@ -276,7 +276,7 @@ namespace SharpShell.SharpPreviewHandler
             }
             catch (Exception exception)
             {
-                //  Log the error and return failure.
+                //  DebugLog the error and return failure.
                 LogError("An exception occured when trying to create the preview handler.", exception);
                 return WinError.E_FAIL;
             }
@@ -293,7 +293,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandler.Unload()
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandler.DoPreview called.");
 
             //  If our preview handler already exists, dispose of it.
@@ -310,7 +310,7 @@ namespace SharpShell.SharpPreviewHandler
                 }
                 catch (Exception exception)
                 {
-                    //  Log the error.
+                    //  DebugLog the error.
                     LogError("An exception occured when trying to dispose of an existing preview handler.", exception);
                 }
             }
@@ -329,7 +329,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandler.SetFocus()
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandler.SetFocus called.");
 
             //  TODO: according to MSDN we should set the focus to the last
@@ -353,7 +353,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandler.QueryFocus(out IntPtr phwnd)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandler.QueryFocus called.");
 
             //  Default focus will be nothing.
@@ -407,7 +407,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandlerVisuals.SetBackgroundColor(COLORREF color)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandlerVisuals.SetBackgroundColor called.");
 
             //  Call the virtual function.
@@ -426,7 +426,7 @@ namespace SharpShell.SharpPreviewHandler
             }
             catch (Exception exception)
             {
-                //  Log the error.
+                //  DebugLog the error.
                 LogError("An exception occured when setting the background color.", exception);
                 throw;
             }
@@ -444,7 +444,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandlerVisuals.SetFont(ref LOGFONT plf)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandlerVisuals.SetFont called.");
 
             //  Call the virtual function.
@@ -461,7 +461,7 @@ namespace SharpShell.SharpPreviewHandler
             }
             catch (Exception exception)
             {
-                //  Log the error.
+                //  DebugLog the error.
                 LogError("An exception occured when setting the font.", exception);
                 throw;
             }
@@ -479,7 +479,7 @@ namespace SharpShell.SharpPreviewHandler
         /// </returns>
         int IPreviewHandlerVisuals.SetTextColor(COLORREF color)
         {
-            //  Log key events.
+            //  DebugLog key events.
             Log("IPreviewHandlerVisuals.SetTextColor called.");
 
             //  Call the virtual function.
@@ -495,7 +495,7 @@ namespace SharpShell.SharpPreviewHandler
             }
             catch (Exception exception)
             {
-                //  Log the error.
+                //  DebugLog the error.
                 LogError("An exception occured when setting the text color.", exception);
                 throw;
             }

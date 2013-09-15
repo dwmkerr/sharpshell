@@ -377,14 +377,14 @@ namespace ServerManager
             // 
             this.enableSharpShellLogToolStripMenuItem.Name = "enableSharpShellLogToolStripMenuItem";
             this.enableSharpShellLogToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.enableSharpShellLogToolStripMenuItem.Text = "&Enable SharpShell Log";
+            this.enableSharpShellLogToolStripMenuItem.Text = "&Enable SharpShell DebugLog";
             this.enableSharpShellLogToolStripMenuItem.Click += new System.EventHandler(this.enableSharpShellLogToolStripMenuItem_Click);
             // 
             // showLogToolStripMenuItem
             // 
             this.showLogToolStripMenuItem.Name = "showLogToolStripMenuItem";
             this.showLogToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.showLogToolStripMenuItem.Text = "&Show Log";
+            this.showLogToolStripMenuItem.Text = "&Show DebugLog";
             this.showLogToolStripMenuItem.Click += new System.EventHandler(this.showLogToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem

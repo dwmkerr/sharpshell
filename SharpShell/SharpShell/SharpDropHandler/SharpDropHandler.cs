@@ -31,7 +31,7 @@ namespace SharpShell.SharpDropHandler
         /// </returns>
         int IDropTarget.DragEnter(IDataObject pDataObj, uint grfKeyState, POINT pt, ref uint pdwEffect)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log(string.Format("Drag Enter for item {0}", SelectedItemPath));
 
             //  Get the drag items.
@@ -41,7 +41,7 @@ namespace SharpShell.SharpDropHandler
             }
             catch (Exception exception)
             {
-                //  Log the error.
+                //  DebugLog the error.
                 LogError("An exception occured when getting the file list from the data object.", exception);
                 return WinError.E_UNEXPECTED;
             }
@@ -56,7 +56,7 @@ namespace SharpShell.SharpDropHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured during a drag enter event.", exception);
 
                 //  Don't allow any drag effect.
@@ -109,7 +109,7 @@ namespace SharpShell.SharpDropHandler
         /// </returns>
         int IDropTarget.Drop(IDataObject pDataObj, uint grfKeyState, POINT pt, ref uint pdwEffect)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log(string.Format("Drop for item {0}", SelectedItemPath));
 
             //  Create drag event args, which store the provided parameters.
@@ -122,7 +122,7 @@ namespace SharpShell.SharpDropHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured during the drop event.", exception);
             }
 

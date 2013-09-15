@@ -59,7 +59,7 @@ namespace TxtThumbnailHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception and return null for failure.
+                //  DebugLog the exception and return null for failure.
                 LogError("An exception occured opening the text file.", exception);
                 return null;
             }

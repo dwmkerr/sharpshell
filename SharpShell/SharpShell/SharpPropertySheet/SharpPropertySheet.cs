@@ -19,7 +19,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected SharpPropertySheet()
         {
-            //  Log the event.
+            //  DebugLog the event.
             Log("Constructing property sheet.");
 
             //  The lazy property sheet pages will be created by the abstract 
@@ -37,7 +37,7 @@ namespace SharpShell.SharpPropertySheet
         /// <returns></returns>
         int IShellPropSheetExt.AddPages(IntPtr pfnAddPage, IntPtr lParam)
         {
-            //  Log the event.
+            //  DebugLog the event.
             Log("Adding Pages...");
 
             //  Create the bridge.
@@ -46,7 +46,7 @@ namespace SharpShell.SharpPropertySheet
             //  Initialise it.
             if(bridge.Initialise() == false)
             {
-                Logging.Error("Failed to initialise the NativeBridge.", null);
+                Logging.DebugError("Failed to initialise the NativeBridge.", null);
                 return 0;
             }
 
@@ -63,7 +63,7 @@ namespace SharpShell.SharpPropertySheet
                 //  Name the page, to aid with debugging.
                 User32.SetWindowText(propertyPageHandle, "SharpShell Host for " + page.GetType().Name);
                 
-                //  Log the event.
+                //  DebugLog the event.
                 Log("Created Page Proxy, handle is " + propertyPageHandle.ToString("x8"));
 
                 //  Now that we have the page handle, add the page via the callback.
@@ -73,7 +73,7 @@ namespace SharpShell.SharpPropertySheet
             //  Release the bridge.
             //bridge.Deinitialise();
 
-            //  Log the event.
+            //  DebugLog the event.
             Log("Adding Pages (Done)");
 
             //  We've succeeded.

@@ -31,7 +31,7 @@ namespace SharpShell
         [ComRegisterFunction]
         internal static void Register(Type type)
         {
-            Diagnostics.Logging.Log("Registering server for type " + type.Name);
+            Diagnostics.Logging.DebugLog("Registering server for type " + type.Name);
 
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
@@ -47,7 +47,7 @@ namespace SharpShell
         [ComUnregisterFunction]
         internal static void Unregister(Type type)
         {
-            Diagnostics.Logging.Log("Unregistering server for type " + type.Name);
+            Diagnostics.Logging.DebugLog("Unregistering server for type " + type.Name);
 
             //  Unregister the type, use the operating system architecture to determine
             //  what registration type to unregister.
@@ -114,8 +114,8 @@ namespace SharpShell
         /// <param name="message">The message.</param>
         protected virtual void Log(string message)
         {
-            //  Log the message, but put our type name first.
-            Logging.Log(DisplayName + ": " + message);
+            //  DebugLog the message, but put our type name first.
+            Logging.DebugLog(DisplayName + ": " + message);
         }
 
         /// <summary>
@@ -125,8 +125,8 @@ namespace SharpShell
         /// <param name="exception">The exception.</param>
         protected virtual void LogError(string message, Exception exception = null)
         {
-            //  Log the error, but put our type name first.
-            Logging.Error(DisplayName + ": " + message, exception);
+            //  DebugLog the error, but put our type name first.
+            Logging.DebugError(DisplayName + ": " + message, exception);
         }
 
         /// <summary>

@@ -37,7 +37,7 @@ namespace SharpShell.SharpIconHandler
         /// <returns></returns>
         int IExtractIcon.GetIconLocation(GILInFlags uFlags, StringBuilder szIconFile, int cchMax, out int piIndex, out GILOutFlags pwFlags)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log(string.Format("Getting icon location icon for {0}", SelectedItemPath));
 
             //  We're always going to return by handle.
@@ -66,7 +66,7 @@ namespace SharpShell.SharpIconHandler
         /// </returns>
         int IExtractIcon.Extract(string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
         {
-            //  Log this key event.
+            //  DebugLog this key event.
             Log(string.Format("Extracting icon for {0}", SelectedItemPath));
 
             //  Get the small and large icon sizes.
@@ -85,7 +85,7 @@ namespace SharpShell.SharpIconHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured extracting icons.", exception);
             }
             

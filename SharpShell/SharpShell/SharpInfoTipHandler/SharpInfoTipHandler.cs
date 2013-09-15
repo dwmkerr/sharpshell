@@ -46,7 +46,7 @@ namespace SharpShell.SharpInfoTipHandler
             }
             catch (Exception exception)
             {
-                //  Log the exception.
+                //  DebugLog the exception.
                 LogError("An exception occured getting the info tip.", exception);
 
                 //  If an exception is thrown, we cannot return any info.

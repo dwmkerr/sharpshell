@@ -136,6 +136,12 @@ namespace SharpShell.ServerRegistration
             SharpShellServer.DoUnregister(server.GetType(), registrationType);
         }
 
+        /// <summary>
+        /// Enumerates Shell extensions.
+        /// </summary>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="shellExtensionTypes">The shell extension types.</param>
+        /// <returns></returns>
         public static IEnumerable<ShellExtensionRegistrationInfo> EnumerateExtensions(RegistrationType registrationType, ShellExtensionType shellExtensionTypes)
         {
             var shellExtensionsGuidMap = new Dictionary<Guid, ShellExtensionRegistrationInfo>();

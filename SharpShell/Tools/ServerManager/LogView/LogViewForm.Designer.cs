@@ -83,7 +83,7 @@
             this.Controls.Add(this.listViewEvents);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "LogViewForm";
-            this.Text = "Log View";
+            this.Text = "DebugLog View";
             this.Load += new System.EventHandler(this.LogViewForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

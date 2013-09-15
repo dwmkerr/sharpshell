@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SharpShellInstallerSample", "SharpShellInstallerSample\SharpShellInstallerSample.vdproj", "{AA8DFD1F-59D7-4BB1-92A4-3BE100FBB783}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA8DFD1F-59D7-4BB1-92A4-3BE100FBB783}.Debug|Default.ActiveCfg = Debug
+		{AA8DFD1F-59D7-4BB1-92A4-3BE100FBB783}.Debug|Default.Build.0 = Debug
+		{AA8DFD1F-59D7-4BB1-92A4-3BE100FBB783}.Release|Default.ActiveCfg = Release
+		{AA8DFD1F-59D7-4BB1-92A4-3BE100FBB783}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
