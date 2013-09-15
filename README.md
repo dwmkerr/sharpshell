@@ -20,7 +20,10 @@ You can use SharpShell to build any of the extensions below:
 Projects that use SharpShell
 ----------------------------
 
-Send me a message to add a project to this list!
+Send me a message to add a project to this list:
+
+ - [Trello Context Menu](https://github.com/GeorgeHahn/TrelloContextMenu)
+ - [REAL Shuffle Player 2.0](http://hig.bplaced.net/en/)
 
 Shell Context Menus
 -------------------
@@ -90,6 +93,6 @@ Property Sheet Extensions
 
  These are extensions that add extra pages to the property sheets shown for shell items such as files, network shares, folders and so on.
  
-![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/thumbnailhandler.jpg)
+![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/propertysheetextensions.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
