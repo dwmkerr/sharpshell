@@ -25,6 +25,14 @@ Send me a message to add a project to this list:
  - [Trello Context Menu](https://github.com/GeorgeHahn/TrelloContextMenu)
  - [REAL Shuffle Player 2.0](http://hig.bplaced.net/en/)
 
+Deploying SharpShell Servers
+----------------------------
+
+There is an article on the CodeProject that describes in detail how you can use the Server Registration Manager tool 
+to deploy SharpShell servers:
+
+[Deploying SharpShell Servers](http://www.codeproject.com/Articles/653780/NET-Shell-Extensions-Deploying-SharpShell-Servers)
+
 Shell Context Menus
 -------------------
 
