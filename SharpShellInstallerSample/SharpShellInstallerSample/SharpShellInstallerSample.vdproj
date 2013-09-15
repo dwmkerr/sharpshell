@@ -181,7 +181,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpShell, Version=1.9.0.0, Culture=neutral, PublicKeyToken=f14dc899472fe6fb, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpShell, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f14dc899472fe6fb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_E98D795C40DBE38CF284AA7FEC079F5E"
@@ -215,11 +215,6 @@
             "AssemblyAsmDisplayName" = "8:ServerRegistrationManager, Version=1.9.0.0, Culture=neutral, PublicKeyToken=68bd4561cc3495fc, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_ED0589DA909544CF823E029ADDB999B4"
-                    {
-                    "Name" = "8:srm.exe"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\..\\Build\\Tools\\srm.exe"
             "TargetName" = "8:"
@@ -274,7 +269,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SharpShellInstallerSample"
         "ProductCode" = "8:{08CB1BE4-FB46-4A95-8DB1-446262B45A96}"
-        "PackageCode" = "8:{5D728DDD-2609-4650-BCFD-B8C46BB263B2}"
+        "PackageCode" = "8:{CD4DB774-5F74-4EF3-AD82-82F97E35AF6E}"
         "UpgradeCode" = "8:{1789A224-99A8-4239-93B8-5DF108226DA8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
