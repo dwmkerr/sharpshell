@@ -50,7 +50,7 @@ namespace LockedFileIconOverlayHandler
 #if DEBUG
             var result = TestIfFileIsLocked(path);
             var name = Path.GetFileName(path);
-            DebugLog(name + " is " + (result ? "locked" : "not locked"));
+            Log(name + " is " + (result ? "locked" : "not locked"));
             return result;
 #else
             return TestIfFileIsLocked(path);

@@ -114,8 +114,8 @@ namespace SharpShell
         /// <param name="message">The message.</param>
         protected virtual void Log(string message)
         {
-            //  DebugLog the message, but put our type name first.
-            Logging.DebugLog(DisplayName + ": " + message);
+            //  Log the message, but put our type name first.
+            Logging.Log(DisplayName + ": " + message);
         }
 
         /// <summary>
@@ -125,8 +125,8 @@ namespace SharpShell
         /// <param name="exception">The exception.</param>
         protected virtual void LogError(string message, Exception exception = null)
         {
-            //  DebugLog the error, but put our type name first.
-            Logging.DebugError(DisplayName + ": " + message, exception);
+            //  Log the error, but put our type name first.
+            Logging.Error(DisplayName + ": " + message, exception);
         }
 
         /// <summary>
