@@ -91,9 +91,12 @@
     <Compile Include="Interop\FontWeight.cs" />
     <Compile Include="Interop\IContextMenu2.cs" />
     <Compile Include="Interop\IContextMenu3.cs" />
+    <Compile Include="Interop\IDockingWindow.cs" />
     <Compile Include="Interop\IDropTarget.cs" />
     <Compile Include="Interop\IObjectWithSite.cs" />
     <Compile Include="Interop\IOleWindow.cs" />
+    <Compile Include="Interop\IPersist.cs" />
+    <Compile Include="Interop\IPersistStream.cs" />
     <Compile Include="Interop\IPreviewHandler.cs" />
     <Compile Include="Interop\IPreviewHandlerFrame.cs" />
     <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
@@ -116,6 +119,7 @@
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
+    <Compile Include="SharpDeskBand\SharpDeskBand.cs" />
     <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
