@@ -94,7 +94,7 @@ namespace SharpShell.SharpPreviewHandler
         int IInitializeWithFile.Initialize(string pszFilePath, STGM grfMode)
         {
             //  DebugLog key events.
-            Log("IObjectWithSite.GetSite called.");
+            Log("IInitializeWithFile.Initialize called.");
 
             //  Store the file path.
             SelectedFilePath = pszFilePath;
