@@ -10,6 +10,9 @@ namespace SharpShell.SharpDeskBand
     [ServerType(ServerType.ShellDeskBand)]
     public class SharpDeskBand : SharpShellServer, IDeskBand, IPersistStream, IObjectWithSite
     {
+        //  TODO: Implement IContextMenu
+        //  TODO: Implement IInputObject
+
         /// <summary>
         /// The COM site (see IObjectWithSite implementation).
         /// </summary>
@@ -145,10 +148,54 @@ namespace SharpShell.SharpDeskBand
             explorerBandId = dwBandID;
 
             //  Depending on what we've been asked for, we'll return various band properties.
+
+            //  Return the min size if needed.
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_MINSIZE))
+            {
+                //  TODO: provide minsize.
+                pdbi.ptMinSize.X = 200;
+                pdbi.ptMinSize.Y = 30;
+            }
+
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_MAXSIZE))
+            {
+                //  TODO: check documentation for this.
+                pdbi.ptMaxSize.Y = -1;
+            }
+
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_INTEGRAL))
+            {
+                //  TODO: check documentation for this.
+                pdbi.ptIntegral.Y = 1;
+            }
+
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_ACTUAL))
+            {
+                //  TODO: Return actual size.
+                pdbi.ptActual.X = 200;
+                pdbi.ptActual.Y = 30;
+            }
+
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_TITLE))
+            {
+                //  TODO: Handle titles.
+                // Don't show title by removing this flag.
+                pdbi.dwMask &= ~DBIM.DBIM_TITLE;
+            }
+
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_MODEFLAGS))
+            {
+                //  TODO: Handle flags.
+                pdbi.dwModeFlags = DBIMF.DBIMF_NORMAL | DBIMF.DBIMF_VARIABLEHEIGHT;
+            }
             
-            //  TODO: Desk bands: Check the flags and set the struct accordingly.
-            //  TODO: Desk bands: Allow implementers to specify the flags in the best way.
-            
+            if (pdbi.dwMask.HasFlag(DBIM.DBIM_BKCOLOR))
+            {
+                //  TODO: Handle background colour.
+                // Use the default background color by removing this flag.
+                pdbi.dwMask &= ~DBIM.DBIM_BKCOLOR;
+            }
+                        
             //  Return success.
             return WinError.S_OK;
         }
