@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using SharpShell.Attributes;
 using SharpShell.Interop;
+using System.Windows.Forms;
 
 namespace SharpShell.SharpDeskBand
 {
     [ServerType(ServerType.ShellDeskBand)]
-    public class SharpDeskBand : SharpShellServer, IDeskBand, IPersistStream, IObjectWithSite
+    public abstract class SharpDeskBand : SharpShellServer, IDeskBand, IPersistStream, IObjectWithSite
     {
         //  TODO: Implement IContextMenu
         //  TODO: Implement IInputObject
@@ -23,7 +24,10 @@ namespace SharpShell.SharpDeskBand
         /// </summary>
         private IntPtr parentWindowHandle;
 
-        private IntPtr todoContentHandle;
+        /// <summary>
+        /// The actual deskband user control.
+        /// </summary>
+        private UserControl deskBand;
 
         /// <summary>
         /// The band ID provided by explorer to identify the band.
@@ -67,8 +71,11 @@ namespace SharpShell.SharpDeskBand
                     return WinError.E_FAIL;
                 }
 
-                //  Create the desk band.
-                CreateDeskBand();
+                //  Create the desk band user interface.
+                deskBand = CreateDeskBand();
+
+                //  Set the parent.
+                User32.SetParent(deskBand.Handle, parentWindowHandle);
                 
                 //  Free the OLE window, we're done with it.
                 oleWindow = null;
@@ -85,15 +92,12 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_OK;
         }
 
-        protected void CreateDeskBand()
-        {
-            //  TODO create the desk band with the appropriate parent window.
-        }
-
         /// <summary>
         /// Called when the band is being removed from explorer.
         /// </summary>
-        protected virtual void OnBandRemoved();
+        protected virtual void OnBandRemoved()
+        { 
+        }
 
         #endregion
 
@@ -203,7 +207,7 @@ namespace SharpShell.SharpDeskBand
         int IDockingWindow.ShowDW(bool bShow)
         {
             //  If we've got a content window, show it or hide it.
-            if (todoContentHandle != null)
+            if (deskBand != null)
             {
                 //  TODO: Desk Bands: Toggle the visibility of the content.
             }
@@ -217,7 +221,7 @@ namespace SharpShell.SharpDeskBand
         int IDockingWindow.CloseDW(uint dwReserved)
         {
             //  If we've got a content window, hide it and then destroy it.
-            if (todoContentHandle != null)
+            if (deskBand != null)
             {
                 //  TODO: Desk Bands: Destroy the content.
             }
@@ -238,7 +242,7 @@ namespace SharpShell.SharpDeskBand
         int IOleWindow.GetWindow(out IntPtr phwnd)
         {
             //   Easy enough, just return the handle of the deskband content.
-            phwnd = todoContentHandle;
+            phwnd = deskBand != null ? deskBand.Handle : IntPtr.Zero;
 
             //  Return success.
             return WinError.S_OK;
@@ -251,5 +255,12 @@ namespace SharpShell.SharpDeskBand
         }
 
         #endregion
+
+        /// <summary>
+        /// This function should return a new instance of the desk band's user interface,
+        /// which will simply be a usercontrol.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract UserControl CreateDeskBand();
     }
 }
