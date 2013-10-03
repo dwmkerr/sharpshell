@@ -38,6 +38,9 @@ namespace SharpShell.SharpDeskBand
 
         int IObjectWithSite.GetSite(ref Guid riid, out object ppvSite)
         {
+            //  Log key events.
+            Log("IObjectWithSite.GetSite called.");
+
             //  Provide the site.
             ppvSite = inputObjectSite;
 
@@ -47,6 +50,9 @@ namespace SharpShell.SharpDeskBand
 
         int IObjectWithSite.SetSite(object pUnkSite)
         {
+            //  Log key events.
+            Log("IObjectWithSite.SetSite called.");
+
             //  If we have a site, free it. This won't actually release the COM
             //  interface until garbage collection happens.
             inputObjectSite = null;
@@ -105,6 +111,9 @@ namespace SharpShell.SharpDeskBand
 
         int IPersistStream.IsDirty()
         {
+            //  Log key events.
+            Log("IPersistStream.IsDirty called.");
+
             //  TODO: return S_OK to indicate the object has changed
             //  since the last time is was saved to a stream.
 
@@ -114,18 +123,27 @@ namespace SharpShell.SharpDeskBand
 
         int IPersistStream.Load(System.Runtime.InteropServices.ComTypes.IStream pStm)
         {
+            //  Log key events.
+            Log("IPersistStream.Load called.");
+
             //  Not implemented: Explorer provided Persistence.
             return WinError.S_OK;
         }
 
         int IPersistStream.Save(System.Runtime.InteropServices.ComTypes.IStream pStm, bool fClearDirty)
         {
+            //  Log key events.
+            Log("IPersistStream.Save called.");
+
             //  Not implemented: Explorer provided Persistence.
             return WinError.S_OK;
         }
 
         int IPersistStream.GetSizeMax(out ulong pcbSize)
         {
+            //  Log key events.
+            Log("IPersistStream.GetSizeMax called.");
+
             //  Not implemented: Explorer provided Persistence.
             pcbSize = 0;
             return WinError.S_OK;
@@ -133,6 +151,9 @@ namespace SharpShell.SharpDeskBand
         
         int IPersist.GetClassID(out Guid pClassID)
         {
+            //  Log key events.
+            Log("IPersistStream.GetClassID called.");
+
             //  The class ID is just a unique identifier for the class, meaning
             //  that we can use the class GUID as it will be provided for
             //  all SharpShell servers.
@@ -148,6 +169,9 @@ namespace SharpShell.SharpDeskBand
 
         int IDeskBand.GetBandInfo(uint dwBandID, DBIF dwViewMode, ref DESKBANDINFO pdbi)
         {
+            //  Log key events.
+            Log("IDeskBand.GetBandInfo called.");
+
             //  Store the band id.
             explorerBandId = dwBandID;
 
@@ -206,6 +230,9 @@ namespace SharpShell.SharpDeskBand
 
         int IDockingWindow.ShowDW(bool bShow)
         {
+            //  Log key events.
+            Log("IDockingWindow.GetBandInfo called.");
+
             //  If we've got a content window, show it or hide it.
             if (deskBand != null)
             {
@@ -220,6 +247,9 @@ namespace SharpShell.SharpDeskBand
 
         int IDockingWindow.CloseDW(uint dwReserved)
         {
+            //  Log key events.
+            Log("IDockingWindow.Close called.");
+
             //  If we've got a content window, hide it and then destroy it.
             if (deskBand != null)
             {
@@ -234,6 +264,9 @@ namespace SharpShell.SharpDeskBand
 
         int IDockingWindow.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved)
         {
+            //  Log key events.
+            Log("IDockingWindow.ResizeBorderDW called.");
+
             //  This function is not used for Window's Desk Bands and in an IDeskBand implementation
             //  should always return E_NOTIMPL.
             return WinError.E_NOTIMPL;
@@ -241,6 +274,9 @@ namespace SharpShell.SharpDeskBand
 
         int IOleWindow.GetWindow(out IntPtr phwnd)
         {
+            //  Log key events.
+            Log("IOleWindow.GetWindow called.");
+
             //   Easy enough, just return the handle of the deskband content.
             phwnd = deskBand != null ? deskBand.Handle : IntPtr.Zero;
 
@@ -250,6 +286,9 @@ namespace SharpShell.SharpDeskBand
 
         int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
         {
+            //  Log key events.
+            Log("IOleWindow.ContextSensitiveHelp called.");
+
             //  TODO: Context sensitive help currently is not supported.
             return WinError.E_NOTIMPL;
         }
