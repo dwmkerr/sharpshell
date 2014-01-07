@@ -94,9 +94,12 @@
     <Compile Include="Interop\IDropTarget.cs" />
     <Compile Include="Interop\IObjectWithSite.cs" />
     <Compile Include="Interop\IOleWindow.cs" />
+    <Compile Include="Interop\IPersist.cs" />
+    <Compile Include="Interop\IPersistFolder.cs" />
     <Compile Include="Interop\IPreviewHandler.cs" />
     <Compile Include="Interop\IPreviewHandlerFrame.cs" />
     <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
+    <Compile Include="Interop\IShellFolder.cs" />
     <Compile Include="Interop\IShellIconOverlayIdentifier.cs" />
     <Compile Include="Interop\ISIOI.cs" />
     <Compile Include="Interop\IThumbnailProvider.cs" />
@@ -110,7 +113,10 @@
     <Compile Include="Interop\RECT.cs" />
     <Compile Include="Interop\SEE.cs" />
     <Compile Include="Interop\SFGAO.cs" />
+    <Compile Include="Interop\SHCONTF.cs" />
     <Compile Include="Interop\SHELLEXECUTEINFO.cs" />
+    <Compile Include="Interop\SHGDNF.cs" />
+    <Compile Include="Interop\STRRET.cs" />
     <Compile Include="Interop\WTS_ALPHATYPE.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />

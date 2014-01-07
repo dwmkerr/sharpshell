@@ -7,7 +7,7 @@ using SharpShell.Attributes;
 namespace SharpShell.SharpNamespaceExtension
 {
     [ServerType(ServerType.ShellNamespaceExtension)]
-    public class SharpNamespaceExtension : SharpShellServer
+    public class SharpNamespaceExtension : SharpShellServer 
     {
 
     }
