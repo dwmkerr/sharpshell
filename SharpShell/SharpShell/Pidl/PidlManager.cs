@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace SharpShell.Pidl
@@ -15,5 +17,28 @@ namespace SharpShell.Pidl
     /// </remarks>
     public static class PidlManager
     {
+        public static List<byte[]> Decode(IntPtr pidl)
+        {
+            //  Pidl is a pointer to an idlist, an idlist is a set of shitemid
+            //  structures that have length indicator of two bytes, then the id data.
+            //  The whole thing ends with two null bytes.
+
+            //  Storage for the decoded pidl.
+            var idList = new List<byte[]>();
+
+            //  Start reading memory, shitemid at at time.
+            int bytesRead = 0;
+            ushort idLength = 0;
+            while((idLength = (ushort)Marshal.ReadInt16(pidl, bytesRead)) != 0)
+            {
+                //  Read the data.
+                var id = new byte[idLength - 2];
+                Marshal.Copy(pidl + bytesRead, id, 0, idLength - 2);
+                idList.Add(id);
+                bytesRead += idLength;
+            }
+
+            return idList;
+        }
     }
 }
