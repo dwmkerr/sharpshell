@@ -103,6 +103,8 @@
     <Compile Include="Interop\IShellIconOverlayIdentifier.cs" />
     <Compile Include="Interop\ISIOI.cs" />
     <Compile Include="Interop\IThumbnailProvider.cs" />
+    <Compile Include="Interop\KnownFolders.cs" />
+    <Compile Include="Interop\KNOWN_FOLDER_FLAG.cs" />
     <Compile Include="Interop\LOGFONT.cs" />
     <Compile Include="Interop\MSG.cs" />
     <Compile Include="Interop\NMHDR.cs" />
@@ -118,6 +120,7 @@
     <Compile Include="Interop\SHGDNF.cs" />
     <Compile Include="Interop\STRRET.cs" />
     <Compile Include="Interop\WTS_ALPHATYPE.cs" />
+    <Compile Include="Pidl\PidlManager.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
