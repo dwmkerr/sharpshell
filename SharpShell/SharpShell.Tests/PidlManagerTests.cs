@@ -17,5 +17,17 @@ namespace SharpShell.Tests
 
             //  TODO: need to validate the pidl, a bounce would do it.
         }
+
+        [Test]
+        public void CanIdentifyAbsolutePidl()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void CanIdenitfyRelativePidl()
+        {
+            Assert.Fail();
+        }
     }
 }

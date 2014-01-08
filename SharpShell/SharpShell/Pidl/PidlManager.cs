@@ -41,4 +41,29 @@ namespace SharpShell.Pidl
             return idList;
         }
     }
+
+    public sealed class IdList
+    {
+        private IdList(IdListType type, List<byte[]> ids)
+        {
+            this.type = type;
+            this.ids = ids;
+        }
+
+        internal static IdList Create(IdListType type, List<byte[]> ids)
+        {
+            return new IdList(type, ids);
+        }
+
+        private readonly List<byte[]> ids;
+        private readonly IdListType type;
+
+        public IdListType Type { get { return type; } }
+    }
+
+    public enum IdListType
+    {
+        Absolute,
+        Relative
+    }
 }
