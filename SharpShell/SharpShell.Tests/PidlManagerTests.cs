@@ -21,6 +21,12 @@ namespace SharpShell.Tests
         [Test]
         public void CanIdentifyAbsolutePidl()
         {
+            var dt = PidlManager.GetDesktop();
+            IntPtr pidl;
+            Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Cookies, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero, out pidl);
+            var idList = PidlManager.Decode(pidl);
+            Shell32.ILFree(pidl);
+
             Assert.Fail();
         }
 

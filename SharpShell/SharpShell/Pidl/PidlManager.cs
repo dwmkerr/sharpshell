@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Text;
+using SharpShell.Interop;
 
 namespace SharpShell.Pidl
 {
@@ -39,6 +40,16 @@ namespace SharpShell.Pidl
             }
 
             return idList;
+        }
+
+        public static IdList GetDesktop()
+        {
+            IntPtr pidl;
+            Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Desktop, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero,
+                out pidl);
+            var idlist = IdList.Create(IdListType.Absolute, Decode(pidl));
+            Shell32.ILFree(pidl);
+            return idlist;
         }
     }
 
