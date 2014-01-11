@@ -19,6 +19,7 @@ namespace SharpShell.Interop
         /// <param name="pchEaten">A pointer to a ULONG value that receives the number of characters of the display name that was parsed. If your application does not need this information, set pchEaten to NULL, and no value will be returned.</param>
         /// <param name="ppidl">When this method returns, contains a pointer to the PIDL for the object.</param>
         /// <param name="pdwAttributes">The value used to query for file attributes. If not used, it should be set to NULL.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int ParseDisplayName(IntPtr hwnd, IntPtr pbc, String pszDisplayName, UInt32 pchEaten, out IntPtr ppidl,
                              UInt32 pdwAttributes);
@@ -31,8 +32,9 @@ namespace SharpShell.Interop
         /// <param name="hwnd">If user input is required to perform the enumeration, this window handle should be used by the enumeration object as the parent window to take user input.</param>
         /// <param name="grfFlags">Flags indicating which items to include in the  enumeration. For a list of possible values, see the SHCONTF enum. </param>
         /// <param name="ppenumIDList">Address that receives a pointer to the IEnumIDList interface of the enumeration object created by this method. </param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        int EnumObjects(IntPtr hwnd, SHGDNF grfFlags, out IntPtr ppenumIDList);
+        int EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList);
 
         /// <summary>
         ///Retrieves an IShellFolder object for a subfolder.
@@ -42,6 +44,7 @@ namespace SharpShell.Interop
         /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be used during this operation.</param>
         /// <param name="riid">Identifier of the interface to return. </param>
         /// <param name="ppv">Address that receives the interface pointer.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int BindToObject(IntPtr pidl, IntPtr pbc, [In] ref Guid riid, out IntPtr ppv);
 
@@ -53,6 +56,7 @@ namespace SharpShell.Interop
         /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be  used during this operation.</param>
         /// <param name="riid">Interface identifier (IID) of the requested storage interface.</param>
         /// <param name="ppv"> Address that receives the interface pointer specified by riid.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int BindToStorage(IntPtr pidl, IntPtr pbc, [In] ref Guid riid, out IntPtr ppv);
 
@@ -72,6 +76,7 @@ namespace SharpShell.Interop
         /// <param name="pidl1">Pointer to the first item's ITEMIDLIST structure.</param>
         /// <param name="pidl2"> Pointer to the second item's ITEMIDLIST structure.</param>
         /// <returns></returns>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int CompareIDs(Int32 lParam, IntPtr pidl1, IntPtr pidl2);
 
@@ -83,6 +88,7 @@ namespace SharpShell.Interop
         /// <param name="hwndOwner">Handle to the owner window.</param>
         /// <param name="riid">Identifier of the requested interface.</param>
         /// <param name="ppv">Address of a pointer to the requested interface. </param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int CreateViewObject(IntPtr hwndOwner, [In] ref Guid riid, out IntPtr ppv);
 
@@ -95,6 +101,7 @@ namespace SharpShell.Interop
         /// <param name="rgfInOut">Address of a single ULONG value that, on entry contains the attributes that the caller is 
         /// requesting. On exit, this value contains the requested attributes that are common to all of the specified objects. this value can be from the SFGAO enum
         /// </param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int GetAttributesOf(UInt32 cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] apidl,
                             ref SFGAO rgfInOut);
@@ -109,6 +116,7 @@ namespace SharpShell.Interop
         /// <param name="riid">Identifier of the COM interface object to return.</param>
         /// <param name="rgfReserved"> Reserved. </param>
         /// <param name="ppv">Pointer to the requested interface.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int GetUIObjectOf(IntPtr hwndOwner, UInt32 cidl,
                           [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] IntPtr[] apidl, [In] ref Guid riid,
@@ -121,6 +129,7 @@ namespace SharpShell.Interop
         /// <param name="pidl">Address of an ITEMIDLIST structure (PIDL)  that uniquely identifies the file  object or subfolder relative to the parent  folder. </param>
         /// <param name="uFlags">Flags used to request the type of display name to return. For a list of possible values. </param>
         /// <param name="pName"> Address of a STRRET structure in which to return the display name.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName);
 
@@ -134,6 +143,7 @@ namespace SharpShell.Interop
         /// <param name="pszName"> Pointer to a null-terminated string that specifies the new display name.</param>
         /// <param name="uFlags">Flags indicating the type of name specified by  the lpszName parameter. For a list of possible values, see the description of the SHGNO enum.</param>
         /// <param name="ppidlOut"></param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int SetNameOf(IntPtr hwnd, IntPtr pidl, String pszName, SHCONTF uFlags, out IntPtr ppidlOut);
     }

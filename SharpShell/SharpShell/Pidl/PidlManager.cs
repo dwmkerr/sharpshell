@@ -6,6 +6,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using SharpShell.Interop;
 
+// Notes:
+//  http://msdn.microsoft.com/en-us/library/windows/desktop/cc144093.aspx
+
 namespace SharpShell.Pidl
 {
     /// <summary>
@@ -51,6 +54,57 @@ namespace SharpShell.Pidl
             Shell32.ILFree(pidl);
             return idlist;
         }
+
+        /// <summary>
+        /// Converts a Win32 PIDL to a <see cref="PidlManager"/> <see cref="IdList"/>.
+        /// The PIDL is not freed by the PIDL manager, if it has been allocated by the
+        /// shell it is the caller's responsibility to manage it.
+        /// </summary>
+        /// <param name="pidl">The pidl.</param>
+        /// <returns>An <see cref="IdList"/> that corresponds to the PIDL.</returns>
+        public static IdList PidlToIdlist(IntPtr pidl)
+        {
+            //  Create the raw ID list.
+            var ids = Decode(pidl);
+
+            //  Determine whether it's relative or absolute.
+            var type = IdListType.Absolute; // todo
+
+            //  Return a new idlist from the pidl.
+            return IdList.Create(type, ids);
+        }
+
+        public static IntPtr IdListToPidl(IdList idList)
+        {
+            //  Turn the ID list into a set of raw bytes.
+            var rawBytes = new List<byte>();
+
+            //  Each item starts with it's length, then the data. The length includes
+            //  two bytes, as it counts the length as a short.
+            foreach (var id in idList.Ids)
+            {
+                //  Add the size and data.
+                short length = (short)(id.Length + 2);
+                rawBytes.AddRange(BitConverter.GetBytes(length));
+                rawBytes.AddRange(id);
+            }
+
+            //  Write the null termination.
+            rawBytes.Add(0);
+            rawBytes.Add(0);
+
+            //  Allocate COM memory for the pidl.
+            var ptr = Marshal.AllocCoTaskMem(rawBytes.Count);
+
+            //  Copy the raw bytes.
+            for (var i = 0; i < rawBytes.Count; i++)
+            {
+                Marshal.WriteByte(ptr, i, rawBytes[i]);
+            }
+
+            //  We've allocated the pidl, copied it and are ready to rock.
+            return ptr;
+        }
     }
 
     public sealed class IdList
@@ -70,6 +124,8 @@ namespace SharpShell.Pidl
         private readonly IdListType type;
 
         public IdListType Type { get { return type; } }
+
+        internal List<byte[]> Ids { get { return ids; }} 
     }
 
     public enum IdListType

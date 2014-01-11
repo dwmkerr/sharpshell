@@ -1,14 +1,160 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SharpShell.Attributes;
+using SharpShell.Interop;
+using SharpShell.Pidl;
 
 namespace SharpShell.SharpNamespaceExtension
 {
     [ServerType(ServerType.ShellNamespaceExtension)]
-    public class SharpNamespaceExtension : SharpShellServer 
+    public abstract class SharpNamespaceExtension : SharpShellServer, IPersistFolder, IShellFolder
     {
+        #region Implementation of IPersistFolder.
 
+        /// <summary>
+        /// Retrieves the class identifier (CLSID) of the object.
+        /// </summary>
+        /// <param name="pClassID">A pointer to the location that receives the CLSID on return.
+        /// The CLSID is a globally unique identifier (GUID) that uniquely represents an object 
+        /// class that defines the code that can manipulate the object's data.</param>
+        /// <returns>
+        /// If the method succeeds, the return value is S_OK. Otherwise, it is E_FAIL.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IPersist.GetClassID(out Guid pClassID)
+        {
+            //  In our case, we can provide our SharpShell server class ID.
+            pClassID = ServerClsid;
+
+            //  We're done.
+            return WinError.S_OK;
+        }
+
+        /// <summary>
+        /// Instructs a Shell folder object to initialize itself based on the information passed.
+        /// </summary>
+        /// <param name="pidl">The address of the ITEMIDLIST (item identifier list) structure 
+        /// that specifies the absolute location of the folder.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        int IPersistFolder.Initialize(IntPtr pidl)
+        {
+            //  The shell has initialised the extension and provided an absolute PIDL
+            //  from the root (desktop) to the extension folder. We can store this
+            //  pidl in our own format.
+            extensionAbsolutePidl = PidlManager.PidlToIdlist(pidl);
+
+            //  We're good, we've got the ID list.
+            return WinError.S_OK;
+        }
+
+        #endregion
+
+        #region Implmentation of IShellFolder
+
+        int IShellFolder.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, uint pchEaten, out IntPtr ppidl, uint pdwAttributes)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Allows a client to determine the contents of a folder by creating an item identifier enumeration object and returning its IEnumIDList interface.
+        /// Return value: error code, if any
+        /// </summary>
+        /// <param name="hwnd">If user input is required to perform the enumeration, this window handle should be used by the enumeration object as the parent window to take user input.</param>
+        /// <param name="grfFlags">Flags indicating which items to include in the  enumeration. For a list of possible values, see the SHCONTF enum.</param>
+        /// <param name="ppenumIDList">Address that receives a pointer to the IEnumIDList interface of the enumeration object created by this method.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IShellFolder.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
+        {
+            //  Create an object that will enumerate the contents of this shell folder (that implements
+            //  IEnumIdList). This can be returned to the shell.
+            ppenumIDList = new SharpNamespaceExtensionIdListEnumerator(this, grfFlags, 0);
+
+            //  TODO we should also store the window handle for user interaction.
+
+            //  We're done.
+            return WinError.S_OK;
+        }
+
+        int IShellFolder.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IShellFolder.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IShellFolder.CompareIDs(int lParam, IntPtr pidl1, IntPtr pidl2)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Requests an object that can be used to obtain information from or interact
+        /// with a folder object.
+        /// Return value: error code, if any
+        /// </summary>
+        /// <param name="hwndOwner">Handle to the owner window.</param>
+        /// <param name="riid">Identifier of the requested interface.</param>
+        /// <param name="ppv">Address of a pointer to the requested interface.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IShellFolder.CreateViewObject(IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
+        {
+            //  Before the contents of the folder are displayed, the shell asks for an IShellView.
+            //  This function is also called to get other shell interfaces for interacting with the
+            //  folder itself.
+
+            //  TODO this is the next function to work with.
+
+            throw new NotImplementedException();
+        }
+
+        int IShellFolder.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IShellFolder.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHCONTF uFlags, out IntPtr ppidlOut)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// This function is called by SharpShell to get the children of a Shell Folder. For performance reasons,
+        /// children will often be loaded in batches, so they must be returned as a list.
+        /// </summary>
+        /// <param name="index">The index of the first item in the set to load.</param>
+        /// <param name="count">The number of items to load.</param>
+        /// <param name="flags">The enumeration flags.</param>
+        /// <returns>A set of child items that corresponds to the requested range.</returns>
+        public abstract IEnumerable<IShellNamespaceIdentifiable> EnumerateChildren(uint index, uint count,
+            EnumerateChildrenFlags flags);
+    }
+
+    public enum EnumerateChildrenFlags
+    {
     }
 }

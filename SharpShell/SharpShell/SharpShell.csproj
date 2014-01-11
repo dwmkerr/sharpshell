@@ -127,6 +127,7 @@
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
     <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
+    <Compile Include="SharpNamespaceExtension\NamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>
