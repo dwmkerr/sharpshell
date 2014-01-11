@@ -36,7 +36,7 @@ namespace SharpShell.SharpNamespaceExtension
         {
             //  Request the children from the extension. As this is an abstract call, we always 
             //  use an exception handler.
-            var items = new List<IShellNamespaceIdentifiable>();
+            var items = new List<IShellNamespaceItem>();
             try
             {
                 //  Enumerate the children, adding them to the items collection and moving the index forwards

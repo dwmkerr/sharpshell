@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using SharpShell.Attributes;
@@ -83,9 +84,32 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
+        /// <summary>
+        /// Retrieves an IShellFolder object for a subfolder.
+        //  Return value: error code, if any
+        /// </summary>
+        /// <param name="pidl">Address of an ITEMIDLIST structure (PIDL) that identifies the subfolder.</param>
+        /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be used during this operation.</param>
+        /// <param name="riid">Identifier of the interface to return. </param>
+        /// <param name="ppv">Address that receives the interface pointer.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         int IShellFolder.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
-            throw new NotImplementedException();
+            //  We can only return IShellFolder interfaces.
+            if (riid != typeof (IShellFolder).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
+
+            //  We've been asked for a shell folder, so we must get the shell folder for the given
+            //  pidl which is relative to the root of the extension but can be nested.
+            var folderIdlist = PidlManager.PidlToIdlist(pidl);
+
+            //  We have a folder ID list, this means we can ask the extension to get a folder.
+            //  TODO: we must now create an IShellFolder for that specific folder.
+            ppv = IntPtr.Zero;
+            return WinError.S_OK;
         }
 
         int IShellFolder.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
@@ -188,7 +212,47 @@ IQueryInfo	The cidl parameter can only be one.
 
         int IShellFolder.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
-            throw new NotImplementedException();
+            //  Create an idlist from the pidl.
+            var idlist = PidlManager.PidlToIdlist(pidl);
+
+            //  Get the shell item.
+            //  TODO; handle errors
+            var shellItem = GetChildItem(idlist);
+
+            //  If the flags are normal only, we're asking for the display name only.
+            if (uFlags == SHGDNF.SHGDN_NORMAL)
+            {
+                //  We only need the display name.
+                pName = STRRET.CreateUnicode(shellItem.GetDisplayName(DisplayNameContext.OutOfFolder));
+                return WinError.S_OK;
+            }
+
+            //  If the flags are in folder, we're asking for the standard display name.
+            if (uFlags == SHGDNF.SHGDN_INFOLDER || uFlags == SHGDNF.SHGDN_FORADDRESSBAR)
+            {
+                pName = STRRET.CreateUnicode(shellItem.GetDisplayName(DisplayNameContext.Normal));
+                return WinError.S_OK;
+            }
+
+            //  If the flags indicate parsing mode, we need to construct a name
+            //  that'll let us bounce from PIDL <-> name. We do this, rather than
+            //  the implementor.
+            if (uFlags.HasFlag(SHGDNF.SHGDN_FORPARSING))
+            {
+                //  It's either relative (INFOLDER) or fully qualified.
+                var str = uFlags.HasFlag(SHGDNF.SHGDN_INFOLDER)
+                    ? idlist.ToParsingString()
+                    : /* TODO start with my id list */ idlist.ToParsingString();
+                pName = STRRET.CreateUnicode(str);
+                return WinError.S_OK;
+            }
+
+            //  If we have in folder and for editing, we're asking for the editing name.
+            if (uFlags == (SHGDNF.SHGDN_INFOLDER & SHGDNF.SHGDN_FOREDITING))
+            {
+                pName = STRRET.CreateUnicode(shellItem.GetDisplayName(DisplayNameContext.Editing));
+                return WinError.S_OK;
+            }
         }
 
         int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHCONTF uFlags, out IntPtr ppidlOut)
@@ -206,11 +270,18 @@ IQueryInfo	The cidl parameter can only be one.
         /// <param name="count">The number of items to load.</param>
         /// <param name="flags">The enumeration flags.</param>
         /// <returns>A set of child items that corresponds to the requested range.</returns>
-        public abstract IEnumerable<IShellNamespaceIdentifiable> EnumerateChildren(uint index, uint count,
+        public abstract IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count,
             EnumerateChildrenFlags flags);
+
+        public abstract IShellNamespaceItem GetChildItem(IdList idList);
     }
 
     public enum EnumerateChildrenFlags
     {
+    }
+
+    public class GitHubExtension
+    {
+        
     }
 }

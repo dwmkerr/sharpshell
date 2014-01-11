@@ -1,3 +1,5 @@
+using System;
+
 namespace SharpShell.Interop
 {
     // ReSharper disable InconsistentNaming
@@ -5,6 +7,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// Defines the values used with the IShellFolder::GetDisplayNameOf and IShellFolder::SetNameOf methods to specify the type of file or folder names used by those methods.
     /// </summary>
+    [Flags]
     public enum SHGDNF
     {
         /// <summary>

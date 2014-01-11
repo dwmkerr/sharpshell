@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 
 namespace SharpShell.Interop
@@ -11,6 +12,24 @@ namespace SharpShell.Interop
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct STRRET
     {
+        /// <summary>
+        /// Creates a unicode <see cref="STRRET"/> from a string.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <returns>A unicode <see cref="STRRET"/> allocated on the shell allocator.</returns>
+        public static STRRET CreateUnicode(string str)
+        {
+            //  Return a unicode string.
+            return new STRRET
+            {
+                uType = STRRETTYPE.STRRET_WSTR,
+                data = new STRRETUNION
+                {
+                    pOleStr = Marshal.StringToCoTaskMemUni(str);
+                }
+            };
+        }
+
         /// <summary>
         /// Struct used internally to fake a C union.
         /// </summary>

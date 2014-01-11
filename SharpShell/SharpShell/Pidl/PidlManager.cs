@@ -68,7 +68,7 @@ namespace SharpShell.Pidl
             var ids = Decode(pidl);
 
             //  Determine whether it's relative or absolute.
-            var type = IdListType.Absolute; // todo
+            var type = IdListType.Absolute; // todo we might be able to simple always specify it in the arugments.-
 
             //  Return a new idlist from the pidl.
             return IdList.Create(type, ids);
@@ -125,7 +125,21 @@ namespace SharpShell.Pidl
 
         public IdListType Type { get { return type; } }
 
-        internal List<byte[]> Ids { get { return ids; }} 
+        internal List<byte[]> Ids { get { return ids; }}
+
+        public string ToParsingString()
+        {
+            //  TODO document and validate.
+            var sb = new StringBuilder(ids.Sum(id => id.Length*2 + 4));
+            foreach (var id in ids)
+            {
+                sb.AppendFormat("{0:x4}", (short)id.Length);
+                foreach(var idi in id)
+                    sb.AppendFormat("{0:x2}", idi);
+            }
+
+            return sb.ToString();
+        }
     }
 
     public enum IdListType
