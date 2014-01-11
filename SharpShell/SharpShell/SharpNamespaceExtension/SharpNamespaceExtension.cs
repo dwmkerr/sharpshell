@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using SharpShell.Attributes;
 using SharpShell.Interop;
@@ -115,9 +116,39 @@ namespace SharpShell.SharpNamespaceExtension
             //  This function is also called to get other shell interfaces for interacting with the
             //  folder itself.
 
-            //  TODO this is the next function to work with.
+            if (riid == typeof (IShellView).GUID)
+            {
 
-            throw new NotImplementedException();
+                //  TODO: Currently we are only support the default shell view. By allowing 
+                //  clients to implement IShellView via a SharpShell wrapper we can take this further.
+
+                //  Create a default folder view.
+                SFV_CREATE createInfo = new SFV_CREATE
+                {
+                    cbSize = (uint) Marshal.SizeOf(typeof (SFV_CREATE)),
+                    pshf = this, //  We are the IShellFolder.
+                    psvOuter = null, //  We have no outer view.
+                    psfvcb = null //  No callback provided.
+                };
+                IShellView view;
+                if (Shell32.SHCreateShellFolderView(createInfo, out view) != WinError.S_OK)
+                {
+                    LogError("An error occured creating the default folder view for this shell folder.");
+                    ppv = IntPtr.Zero;
+                    return WinError.E_FAIL;
+                }
+
+                //  We've created the view, return it.
+                ppv = Marshal.GetComInterfaceForObject(view, typeof (IShellView));
+                return WinError.S_OK;
+            }
+            //  TODO: we have to deal with others later.
+            else
+            {
+                //  We've been asked for a com inteface we cannot handle.
+                ppv = IntPtr.Zero;
+                return WinError.E_NOTIMPL;
+            }
         }
 
         int IShellFolder.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
@@ -125,9 +156,34 @@ namespace SharpShell.SharpNamespaceExtension
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Retrieves an OLE interface that can be used to carry out actions on the
+        /// specified file objects or folders. Return value: error code, if any
+        /// </summary>
+        /// <param name="hwndOwner">Handle to the owner window that the client should specify if it displays a dialog box or message box.</param>
+        /// <param name="cidl">Number of file objects or subfolders specified in the apidl parameter.</param>
+        /// <param name="apidl">Address of an array of pointers to ITEMIDLIST  structures, each of which  uniquely identifies a file object or subfolder relative to the parent folder.</param>
+        /// <param name="riid">Identifier of the COM interface object to return.</param>
+        /// <param name="rgfReserved">Reserved.</param>
+        /// <param name="ppv">Pointer to the requested interface.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
         int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
-            throw new NotImplementedException();
+            //  We have a set of child pidls (i.e. length one). We can now offer interfaces such as:
+            /*
+             * IContextMenu	The cidl parameter can be greater than or equal to one.
+IContextMenu2	The cidl parameter can be greater than or equal to one.
+IDataObject	The cidl parameter can be greater than or equal to one.
+IDropTarget	The cidl parameter can only be one.
+IExtractIcon	The cidl parameter can only be one.
+IQueryInfo	The cidl parameter can only be one.
+             * */
+
+            //  Currently, we don't offer any extra child item UI objects.
+            ppv = IntPtr.Zero;
+            return WinError.E_NOTIMPL;
         }
 
         int IShellFolder.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)

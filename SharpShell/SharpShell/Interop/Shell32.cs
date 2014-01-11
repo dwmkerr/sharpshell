@@ -56,5 +56,14 @@ namespace SharpShell.Interop
         /// <param name="pidl">A pointer to the ITEMIDLIST structure to be freed. This parameter can be NULL.</param>
         [DllImport("shell32.dll")]
         public static extern void ILFree(IntPtr pidl);
+
+        /// <summary>
+        /// Creates a new instance of the default Shell folder view object (DefView).
+        /// </summary>
+        /// <param name="pcsfv">Pointer to a SFV_CREATE structure that describes the particulars used in creating this instance of the Shell folder view object.</param>
+        /// <param name="ppsv">When this function returns successfully, contains an interface pointer to the new IShellView object. On failure, this value is NULL.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHCreateShellFolderView(SFV_CREATE pcsfv, out IShellView ppsv);
     }
 }
