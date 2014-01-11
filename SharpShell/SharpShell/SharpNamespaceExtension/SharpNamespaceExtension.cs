@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -175,9 +176,67 @@ namespace SharpShell.SharpNamespaceExtension
             }
         }
 
+        /// <summary>
+        /// Retrieves the attributes of one or more file objects or subfolders.
+        /// Return value: error code, if any
+        /// </summary>
+        /// <param name="cidl">Number of file objects from which to retrieve attributes.</param>
+        /// <param name="apidl">Address of an array of pointers to ITEMIDLIST structures, each of which  uniquely identifies a file object relative to the parent folder.</param>
+        /// <param name="rgfInOut">Address of a single ULONG value that, on entry contains the attributes that the caller is
+        /// requesting. On exit, this value contains the requested attributes that are common to all of the specified objects. this value can be from the SFGAO enum</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         int IShellFolder.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
         {
-            throw new NotImplementedException();
+            //  Get each pidl as an idlist.
+            var idlists = (cidl > 0 && apidl != null)
+                ? from pidl in apidl select PidlManager.PidlToIdlist(pidl)
+                : new List<IdList>();
+
+            //  Now we can ask for the attributes of each item. We only ask for attributes that
+            //  are set in the flags - clearing them if they don't apply to every item.
+            var allItems = idlists.Select(GetChildItem);
+            var allAttributes = allItems.Select(sni => sni.GetAttributes()).ToList();
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_BROWSABLE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsBrowsable)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANCOPY, allAttributes.All(a => a.HasFlag(AttributeFlags.CanByCopied)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANDELETE, allAttributes.All(a => a.HasFlag(AttributeFlags.CanBeDeleted)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANLINK, allAttributes.All(a => a.HasFlag(AttributeFlags.CanBeLinked)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANMOVE, allAttributes.All(a => a.HasFlag(AttributeFlags.CanBeMoved)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANRENAME, allAttributes.All(a => a.HasFlag(AttributeFlags.CanBeRenamed)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_COMPRESSED, allAttributes.All(a => a.HasFlag(AttributeFlags.IsCompressed)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_DROPTARGET, allAttributes.All(a => a.HasFlag(AttributeFlags.IsDropTarget)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_ENCRYPTED, allAttributes.All(a => a.HasFlag(AttributeFlags.IsEncrypted)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FILESYSANCESTOR, allAttributes.All(a => a.HasFlag(AttributeFlags.IsFileSystemAncestor)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FILESYSTEM, allAttributes.All(a => a.HasFlag(AttributeFlags.IsFileSystem)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FOLDER, allAttributes.All(a => a.HasFlag(AttributeFlags.IsShellFolder)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_GHOSTED, allAttributes.All(a => a.HasFlag(AttributeFlags.IsBrowsable)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_HASPROPSHEET, allAttributes.All(a => a.HasFlag(AttributeFlags.HasPropertySheets)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_HASSUBFOLDER, allAttributes.All(a => a.HasFlag(AttributeFlags.MayContainSubFolders)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_HIDDEN, allAttributes.All(a => a.HasFlag(AttributeFlags.IsHidden)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_ISSLOW, allAttributes.All(a => a.HasFlag(AttributeFlags.IsSlow)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_LINK, allAttributes.All(a => a.HasFlag(AttributeFlags.IsLink)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_NEWCONTENT, allAttributes.All(a => a.HasFlag(AttributeFlags.HasOrIsNewContent)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_READONLY, allAttributes.All(a => a.HasFlag(AttributeFlags.IsReadOnly)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_REMOVABLE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsRemovableMedia)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_SHARE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsShared)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_STORAGE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsStorage)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_STORAGEANCESTOR, allAttributes.All(a => a.HasFlag(AttributeFlags.IsStorageAncestor)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_STREAM, allAttributes.All(a => a.HasFlag(AttributeFlags.IsStream)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_VALIDATE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsVolatile)));
+
+            //  And we're done.
+            return WinError.S_OK;
+        }
+
+        private static void UpdateFlagIfSet(ref SFGAO sfgao, SFGAO flag, bool set)
+        {
+            if (sfgao.HasFlag(flag))
+            {
+                if (set == false)
+                    sfgao ^= flag;
+            }
         }
 
         /// <summary>
@@ -210,6 +269,17 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.E_NOTIMPL;
         }
 
+
+        /// <summary>
+        /// Retrieves the display name for the specified file object or subfolder.
+        /// Return value: error code, if any
+        /// </summary>
+        /// <param name="pidl">Address of an ITEMIDLIST structure (PIDL)  that uniquely identifies the file  object or subfolder relative to the parent  folder.</param>
+        /// <param name="uFlags">Flags used to request the type of display name to return. For a list of possible values.</param>
+        /// <param name="pName">Address of a STRRET structure in which to return the display name.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
         int IShellFolder.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
             //  Create an idlist from the pidl.
@@ -253,6 +323,11 @@ IQueryInfo	The cidl parameter can only be one.
                 pName = STRRET.CreateUnicode(shellItem.GetDisplayName(DisplayNameContext.Editing));
                 return WinError.S_OK;
             }
+
+            //  If we have not worked out what the caller needs, warn about this in the log.
+            LogError("An unexpected set of flags were passed to IShellFolder.GetDisplayNameOf (" + uFlags + ").");
+            pName = new STRRET {uType = STRRET.STRRETTYPE.STRRET_WSTR};
+            return WinError.E_NOTIMPL;
         }
 
         int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHCONTF uFlags, out IntPtr ppidlOut)

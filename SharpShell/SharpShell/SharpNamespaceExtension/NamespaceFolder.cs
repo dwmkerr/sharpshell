@@ -19,6 +19,12 @@ namespace SharpShell.SharpNamespaceExtension
         /// </summary>
         /// <returns>The namespace item's display name.</returns>
         string GetDisplayName(DisplayNameContext displayNameContext);
+
+        /// <summary>
+        /// Gets the attributes for the shell item.
+        /// </summary>
+        /// <returns>The attributes for the shell item</returns>
+        AttributeFlags GetAttributes();
     }
 
     interface INamespaceFolder<INamespaceIdentifiable>

@@ -83,6 +83,9 @@
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
     <Compile Include="Interop\FILE_ATTRIBUTE.cs" />
+    <Compile Include="Interop\FOLDERFLAGS.cs" />
+    <Compile Include="Interop\FOLDERSETTINGS.cs" />
+    <Compile Include="Interop\FOLDERVIEWMODE.cs" />
     <Compile Include="Interop\FontCharSet.cs" />
     <Compile Include="Interop\FontClipPrecision.cs" />
     <Compile Include="Interop\FontPitchAndFamily.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="Interop\IContextMenu2.cs" />
     <Compile Include="Interop\IContextMenu3.cs" />
     <Compile Include="Interop\IDropTarget.cs" />
+    <Compile Include="Interop\IEnumIDList.cs" />
     <Compile Include="Interop\IObjectWithSite.cs" />
     <Compile Include="Interop\IOleWindow.cs" />
     <Compile Include="Interop\IPersist.cs" />
@@ -99,8 +103,11 @@
     <Compile Include="Interop\IPreviewHandler.cs" />
     <Compile Include="Interop\IPreviewHandlerFrame.cs" />
     <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
+    <Compile Include="Interop\IShellBrowser.cs" />
     <Compile Include="Interop\IShellFolder.cs" />
+    <Compile Include="Interop\IShellFolderViewCB.cs" />
     <Compile Include="Interop\IShellIconOverlayIdentifier.cs" />
+    <Compile Include="Interop\IShellView.cs" />
     <Compile Include="Interop\ISIOI.cs" />
     <Compile Include="Interop\IThumbnailProvider.cs" />
     <Compile Include="Interop\KnownFolders.cs" />
@@ -115,11 +122,15 @@
     <Compile Include="Interop\RECT.cs" />
     <Compile Include="Interop\SEE.cs" />
     <Compile Include="Interop\SFGAO.cs" />
+    <Compile Include="Interop\SFV_CREATE.cs" />
     <Compile Include="Interop\SHCONTF.cs" />
     <Compile Include="Interop\SHELLEXECUTEINFO.cs" />
     <Compile Include="Interop\SHGDNF.cs" />
     <Compile Include="Interop\STRRET.cs" />
+    <Compile Include="Interop\SVUIA_STATUS.cs" />
     <Compile Include="Interop\WTS_ALPHATYPE.cs" />
+    <Compile Include="Interop\_SVGIO.cs" />
+    <Compile Include="Interop\_SVSIF.cs" />
     <Compile Include="Pidl\PidlManager.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
@@ -127,8 +138,11 @@
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
     <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
+    <Compile Include="SharpNamespaceExtension\AttributeFlags.cs" />
+    <Compile Include="SharpNamespaceExtension\DisplayNameContext.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
+    <Compile Include="SharpNamespaceExtension\SharpNamespaceExtensionIdListEnumerator.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
