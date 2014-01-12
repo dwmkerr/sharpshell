@@ -1,6 +1,6 @@
 namespace SharpShell.Interop
 {
-    internal static class WinError
+    public static class WinError
     {
         public const int S_OK = 0x0000;
         public const int S_FALSE = 0x0001;

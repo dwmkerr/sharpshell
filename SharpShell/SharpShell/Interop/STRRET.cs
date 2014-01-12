@@ -25,7 +25,7 @@ namespace SharpShell.Interop
                 uType = STRRETTYPE.STRRET_WSTR,
                 data = new STRRETUNION
                 {
-                    pOleStr = Marshal.StringToCoTaskMemUni(str);
+                    pOleStr = Marshal.StringToCoTaskMemUni(str)
                 }
             };
         }

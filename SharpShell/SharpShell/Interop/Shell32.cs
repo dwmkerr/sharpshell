@@ -65,5 +65,44 @@ namespace SharpShell.Interop
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("shell32.dll")]
         public static extern int SHCreateShellFolderView(SFV_CREATE pcsfv, out IShellView ppsv);
+        
+        /// <summary>
+        /// Retrieves the IShellFolder interface for the desktop folder, which is the root of the Shell's namespace.
+        /// </summary>
+        /// <param name="ppshf">When this method returns, receives an IShellFolder interface pointer for the desktop folder. The calling application is responsible for eventually freeing the interface by calling its IUnknown::Release method.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHGetDesktopFolder(out IShellFolder ppshf);
+
+        /// <summary>
+        /// Shes the get folder location.
+        /// </summary>
+        /// <param name="hwndOwner">Reserved.</param>
+        /// <param name="nFolder">A CSIDL value that identifies the folder to be located. The folders associated with the CSIDLs might not exist on a particular system.</param>
+        /// <param name="hToken">An access token that can be used to represent a particular user.</param>
+        /// <param name="dwReserved">Reserved.</param>
+        /// <param name="ppidl">The address of a pointer to an item identifier list structure that specifies the folder's location relative to the root of the namespace (the desktop). The ppidl parameter is set to NULL on failure. The calling application is responsible for freeing this resource by calling ILFree.</param>
+        /// <returns>Returns S_OK if successful, or an error value otherwise.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHGetFolderLocation(IntPtr hwndOwner, CSIDL nFolder, IntPtr hToken, uint dwReserved, out IntPtr ppidl);
+        
+        /// <summary>
+        /// TODO: document this.
+        /// </summary>
+        /// <param name="pidl1"></param>
+        /// <param name="pidl2"></param>
+        /// <returns></returns>
+        [DllImport("shell32.dll")]
+        public static extern bool ILIsEqual(IntPtr pidl1, IntPtr pidl2);
+        /// <summary>
+        /// TODO: document this.
+        /// </summary>
+        [DllImport("shell32.dll")]
+        public static extern IntPtr ILCombine(IntPtr pidl1, IntPtr pidl2);
+        /// <summary>
+        /// TODO: document this.
+        /// </summary>
+        [DllImport("shell32.dll")]
+        public static extern IntPtr ILClone(IntPtr pidl);
     }
 }

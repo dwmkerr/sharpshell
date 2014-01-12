@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Apex.WinForms.Interop;
 using Apex.WinForms.Shell;
+using ServerManager.ShellDebugger;
 using ServerManager.TestShell;
 using SharpShell;
 using SharpShell.Attributes;
@@ -430,6 +431,13 @@ namespace ServerManager
             //  Show a shell dialog.
             var openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog(this);
+        }
+
+        private void toolStripButtonShellDebugger_Click(object sender, EventArgs e)
+        {
+            //  Create and show a new shell debugger.
+            var debugger = new ShellDebuggerForm();
+            debugger.ShowDialog(this);
         }
     }
 }

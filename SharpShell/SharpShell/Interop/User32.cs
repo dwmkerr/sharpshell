@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SharpShell.Interop
 {
-    internal static class User32
+    public static class User32
     {
         [DllImport("user32.dll")]
         internal static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition,
@@ -16,7 +16,7 @@ namespace SharpShell.Interop
         internal static extern IntPtr CreatePopupMenu();
 
         [DllImport("user32.dll", SetLastError = true)] // SETLAST by us
-        internal static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern bool SetWindowText(IntPtr hwnd, String lpString);

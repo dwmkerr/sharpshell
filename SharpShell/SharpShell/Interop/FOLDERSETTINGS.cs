@@ -11,11 +11,11 @@ namespace SharpShell.Interop
         /// <summary>
         /// Folder view mode. One of the FOLDERVIEWMODE values.
         /// </summary>
-        private FOLDERVIEWMODE ViewMode;
+        public FOLDERVIEWMODE ViewMode;
 
         /// <summary>
         /// A set of flags that indicate the options for the folder. This can be zero or a combination of the FOLDERFLAGS values.
         /// </summary>
-        private FOLDERFLAGS fFlags;
+        public FOLDERFLAGS fFlags;
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="InitializeWithStreamServer.cs" />
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
+    <Compile Include="Interop\CSIDL.cs" />
     <Compile Include="Interop\FILE_ATTRIBUTE.cs" />
     <Compile Include="Interop\FOLDERFLAGS.cs" />
     <Compile Include="Interop\FOLDERSETTINGS.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Interop\IPreviewHandler.cs" />
     <Compile Include="Interop\IPreviewHandlerFrame.cs" />
     <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
+    <Compile Include="Interop\IServiceProvider.cs" />
     <Compile Include="Interop\IShellBrowser.cs" />
     <Compile Include="Interop\IShellFolder.cs" />
     <Compile Include="Interop\IShellFolderViewCB.cs" />
@@ -115,11 +117,13 @@
     <Compile Include="Interop\LOGFONT.cs" />
     <Compile Include="Interop\MSG.cs" />
     <Compile Include="Interop\NMHDR.cs" />
+    <Compile Include="Interop\OLEMENUGROUPWIDTHS.cs" />
     <Compile Include="Interop\PREVIEWHANDLERFRAMEINFO.cs" />
     <Compile Include="Interop\PSH.cs" />
     <Compile Include="Interop\PSN.cs" />
     <Compile Include="Interop\PSP.cs" />
     <Compile Include="Interop\RECT.cs" />
+    <Compile Include="Interop\SBSP.cs" />
     <Compile Include="Interop\SCHIDS.cs" />
     <Compile Include="Interop\SEE.cs" />
     <Compile Include="Interop\SFGAO.cs" />
@@ -129,6 +133,7 @@
     <Compile Include="Interop\SHGDNF.cs" />
     <Compile Include="Interop\STRRET.cs" />
     <Compile Include="Interop\SVUIA_STATUS.cs" />
+    <Compile Include="Interop\TBBUTTON.cs" />
     <Compile Include="Interop\WTS_ALPHATYPE.cs" />
     <Compile Include="Interop\_SVGIO.cs" />
     <Compile Include="Interop\_SVSIF.cs" />
@@ -141,9 +146,10 @@
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
     <Compile Include="SharpNamespaceExtension\AttributeFlags.cs" />
     <Compile Include="SharpNamespaceExtension\DisplayNameContext.cs" />
+    <Compile Include="SharpNamespaceExtension\IShellNamespaceItem.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
-    <Compile Include="SharpNamespaceExtension\NamespaceFolder.cs" />
+    <Compile Include="SharpNamespaceExtension\ShellNamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtensionIdListEnumerator.cs" />

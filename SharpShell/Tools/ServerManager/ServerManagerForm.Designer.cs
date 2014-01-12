@@ -77,8 +77,9 @@ namespace ServerManager
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonOpenTestShell = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonTestServer = new System.Windows.Forms.ToolStripButton();
-            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
             this.toolStripButtonOpenShellDialog = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonShellDebugger = new System.Windows.Forms.ToolStripButton();
+            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -376,14 +377,14 @@ namespace ServerManager
             // enableSharpShellLogToolStripMenuItem
             // 
             this.enableSharpShellLogToolStripMenuItem.Name = "enableSharpShellLogToolStripMenuItem";
-            this.enableSharpShellLogToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.enableSharpShellLogToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.enableSharpShellLogToolStripMenuItem.Text = "&Enable SharpShell DebugLog";
             this.enableSharpShellLogToolStripMenuItem.Click += new System.EventHandler(this.enableSharpShellLogToolStripMenuItem_Click);
             // 
             // showLogToolStripMenuItem
             // 
             this.showLogToolStripMenuItem.Name = "showLogToolStripMenuItem";
-            this.showLogToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.showLogToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.showLogToolStripMenuItem.Text = "&Show DebugLog";
             this.showLogToolStripMenuItem.Click += new System.EventHandler(this.showLogToolStripMenuItem_Click);
             // 
@@ -459,10 +460,11 @@ namespace ServerManager
             this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonOpenTestShell,
             this.toolStripButtonTestServer,
-            this.toolStripButtonOpenShellDialog});
+            this.toolStripButtonOpenShellDialog,
+            this.toolStripButtonShellDebugger});
             this.toolStripMain.Location = new System.Drawing.Point(3, 24);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(375, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(482, 25);
             this.toolStripMain.TabIndex = 3;
             // 
             // toolStripButtonOpenTestShell
@@ -481,14 +483,6 @@ namespace ServerManager
             this.toolStripButtonTestServer.Text = "Test Server in Test Shell";
             this.toolStripButtonTestServer.Click += new System.EventHandler(this.toolStripButtonTestServer_Click);
             // 
-            // serverDetailsView1
-            // 
-            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
-            this.serverDetailsView1.Name = "serverDetailsView1";
-            this.serverDetailsView1.Size = new System.Drawing.Size(376, 439);
-            this.serverDetailsView1.TabIndex = 1;
-            // 
             // toolStripButtonOpenShellDialog
             // 
             this.toolStripButtonOpenShellDialog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -498,6 +492,23 @@ namespace ServerManager
             this.toolStripButtonOpenShellDialog.Size = new System.Drawing.Size(105, 22);
             this.toolStripButtonOpenShellDialog.Text = "Open Shell Dialog";
             this.toolStripButtonOpenShellDialog.Click += new System.EventHandler(this.toolStripButtonOpenShellDialog_Click);
+            // 
+            // toolStripButtonShellDebugger
+            // 
+            this.toolStripButtonShellDebugger.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonShellDebugger.Image")));
+            this.toolStripButtonShellDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonShellDebugger.Name = "toolStripButtonShellDebugger";
+            this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(107, 22);
+            this.toolStripButtonShellDebugger.Text = "Shell Debugger";
+            this.toolStripButtonShellDebugger.Click += new System.EventHandler(this.toolStripButtonShellDebugger_Click);
+            // 
+            // serverDetailsView1
+            // 
+            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
+            this.serverDetailsView1.Name = "serverDetailsView1";
+            this.serverDetailsView1.Size = new System.Drawing.Size(376, 439);
+            this.serverDetailsView1.TabIndex = 1;
             // 
             // ServerManagerForm
             // 
@@ -580,6 +591,7 @@ namespace ServerManager
         private System.Windows.Forms.ToolStripMenuItem showLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenTestShell;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenShellDialog;
+        private System.Windows.Forms.ToolStripButton toolStripButtonShellDebugger;
     }
 }
 

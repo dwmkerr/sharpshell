@@ -1,9 +1,12 @@
+using System;
+
 namespace SharpShell.Interop
 {
     /// <summary>
     /// todo document and tidy up
     /// </summary>
-    enum FOLDERFLAGS:uint
+    [Flags]
+    public enum FOLDERFLAGS:uint
     {
         FWF_NONE = 0x00000000,
         FWF_AUTOARRANGE = 0x00000001,

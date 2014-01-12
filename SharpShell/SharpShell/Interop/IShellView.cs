@@ -32,7 +32,7 @@ namespace SharpShell.Interop
         /// <param name="uState">Flag specifying the activation state of the window.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int UIActivate(SVUIA_STATUS uState);
+        int UIActivate([MarshalAs(UnmanagedType.U4)] SVUIA_STATUS uState);
 
         /// <summary>
         /// Refreshes the view's contents in response to user input.
@@ -51,7 +51,8 @@ namespace SharpShell.Interop
         /// <param name="phWnd">The address of the window handle being created.</param>
         /// <returns>Returns a success code if successful, or a COM error code otherwise.</returns>
         [PreserveSig]
-        int CreateViewWindow(IShellView psvPrevious, FOLDERSETTINGS pfs, IShellBrowser psb, RECT prcView, out IntPtr phWnd);
+        int CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious, 
+            FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, RECT prcView, out IntPtr phWnd);
 
         /// <summary>
         /// Destroys the view window.

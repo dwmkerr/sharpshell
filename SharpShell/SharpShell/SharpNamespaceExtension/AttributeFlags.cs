@@ -92,7 +92,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// Indicates that this item is a shell folder, i.e. it can contain 
         /// other shell items.
         /// </summary>
-        IsShellFolder = 0x20000000,
+        IsFolder = 0x20000000,
 
         /// <summary>
         /// Indicates that the object is part of the Windows file system.

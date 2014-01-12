@@ -184,7 +184,7 @@ namespace SharpShell.SharpNamespaceExtension
         {
             //  Get the low short from the lParam, this is the sorting option.
             short sortingRule = (short)(lParam.ToInt64() & 0x000000FF);
-            SHCIDS modifiers = (SHCIDS) ((lParam.ToInt64() >> 16) & 0x000000FF);
+            SCHIDS modifiers = (SCHIDS) ((lParam.ToInt64() >> 16) & 0x000000FF);
 
             //  TODO: build an HRESULT with a CODE that contains a negative/positive/zero indicator.
 
@@ -278,7 +278,7 @@ namespace SharpShell.SharpNamespaceExtension
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_ENCRYPTED, allAttributes.All(a => a.HasFlag(AttributeFlags.IsEncrypted)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FILESYSANCESTOR, allAttributes.All(a => a.HasFlag(AttributeFlags.IsFileSystemAncestor)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FILESYSTEM, allAttributes.All(a => a.HasFlag(AttributeFlags.IsFileSystem)));
-            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FOLDER, allAttributes.All(a => a.HasFlag(AttributeFlags.IsShellFolder)));
+            UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_FOLDER, allAttributes.All(a => a.HasFlag(AttributeFlags.IsFolder)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_GHOSTED, allAttributes.All(a => a.HasFlag(AttributeFlags.IsBrowsable)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_HASPROPSHEET, allAttributes.All(a => a.HasFlag(AttributeFlags.HasPropertySheets)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_HASSUBFOLDER, allAttributes.All(a => a.HasFlag(AttributeFlags.MayContainSubFolders)));
@@ -574,6 +574,14 @@ IQueryInfo	The cidl parameter can only be one.
         }
 
         /// <summary>
+        /// Gets the attributes for the namespace extension. These attributes can be used
+        /// to identify that a shell extension is a folder, contains folders, is part of the
+        /// file system and so on and so on.
+        /// </summary>
+        /// <returns>The attributes for the shell item</returns>
+        public abstract AttributeFlags GetAttributes();
+
+        /// <summary>
         /// This function is called by SharpShell to get the children of a Shell Folder. For performance reasons,
         /// children will often be loaded in batches, so they must be returned as a list.
         /// </summary>
@@ -585,9 +593,12 @@ IQueryInfo	The cidl parameter can only be one.
             EnumerateChildrenFlags flags);
 
         public abstract IShellNamespaceItem GetChildItem(IdList idList);
+
+    private IdList extensionAbsolutePidl;
     }
 
     public enum EnumerateChildrenFlags
     {
     }
+
 }

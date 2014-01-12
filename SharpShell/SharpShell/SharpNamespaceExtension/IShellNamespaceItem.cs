@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
-namespace SharpShell.SharpNamespaceExtension
+﻿namespace SharpShell.SharpNamespaceExtension
 {
+    /// <summary>
+    /// The <see cref="IShellNamespaceItem"/> interface must be implemented
+    /// on all types that are shell namespace types, i.e. entities that are folders
+    /// in explorer or items within them.
+    /// </summary>
     public interface IShellNamespaceItem
     {
         /// <summary>
@@ -23,11 +22,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// <summary>
         /// Gets the attributes for the shell item.
         /// </summary>
-        /// <returns>The attributes for the shell item</returns>
+        /// <returns>The attributes for the shell item.</returns>
         AttributeFlags GetAttributes();
-    }
-
-    interface INamespaceFolder<INamespaceIdentifiable>
-    {
     }
 }
