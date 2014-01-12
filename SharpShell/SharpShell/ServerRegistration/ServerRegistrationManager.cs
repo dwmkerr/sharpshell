@@ -660,6 +660,11 @@ namespace SharpShell.ServerRegistration
                     //  Create the key name for a thumbnail handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
                     return string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
+
+                case ServerType.ShellNamespaceExtension:
+
+                    //  TODO: follow the code path through for this.
+                    return null;
                     
                 default:
                     throw new ArgumentOutOfRangeException("serverType");

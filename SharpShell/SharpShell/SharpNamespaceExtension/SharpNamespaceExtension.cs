@@ -3,14 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using SharpShell.Attributes;
+using SharpShell.Extensions;
 using SharpShell.Interop;
 using SharpShell.Pidl;
+using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpNamespaceExtension
 {
+    //  More info:
+    //      Virtual Junction Points: http://msdn.microsoft.com/en-us/library/windows/desktop/cc144096(v=vs.85).aspx
+
+    /// <summary>
+    /// A <see cref="SharpNamespaceExtension"/> is a SharpShell implemented Shell Namespace Extension.
+    /// This is the base class for all Shell Namespace Extensions.
+    /// </summary>
     [ServerType(ServerType.ShellNamespaceExtension)]
     public abstract class SharpNamespaceExtension : SharpShellServer, IPersistFolder, IShellFolder
     {
@@ -410,6 +421,158 @@ IQueryInfo	The cidl parameter can only be one.
 
         #endregion
 
+
+        /// <summary>
+        /// The custom registration function.
+        /// </summary>
+        /// <param name="serverType">Type of the server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        [CustomRegisterFunction]
+        internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
+        {
+            //  TODO: currently, we will only support virtual junction points.
+
+            //  Get the junction point.
+            var junctionPoint = NamespaceExtensionJunctionPointAttribute.GetJunctionPoint(serverType);
+
+            //  If the junction point is not defined, we must fail.
+            if (junctionPoint == null)
+                throw new InvalidOperationException("Unable to register a SharpNamespaceExtension as it is missing it's junction point definition.");
+
+            //  Now we have the junction point, we can build the key as below:
+            /* HKEY_LOCAL_MACHINE or HKEY_CURRENT_USER
+                   Software
+                      Microsoft
+                         Windows
+                            CurrentVersion
+                               Explorer
+                                  Virtual Folder Name
+                                     NameSpace
+                                        {Extension CLSID}
+                                           (Default) = Junction Point Name
+            */
+
+            //  Work out the hive and view to use, based on the junction point availability
+            //  and the registration mode.
+            var hive = junctionPoint.Availablity == NamespaceExtensionAvailability.CurrentUser
+                ? RegistryHive.CurrentUser
+                : RegistryHive.LocalMachine;
+            var view = registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32;
+
+            //  Now open the base key.
+            using (var baseKey = RegistryKey.OpenBaseKey(hive, view))
+            {
+                //  Create the path to the virtual folder namespace key.
+                var virtualFolderNamespacePath =
+                    string.Format(@"Software\Microsoft\Windows\CurrentVersion\Explorer\{0}\NameSpace",
+                        RegistryKeyAttribute.GetRegistryKey(junctionPoint.Location));
+
+                //  Open the virtual folder namespace key,
+                using (var namespaceKey = baseKey.OpenSubKey(virtualFolderNamespacePath,
+                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
+                {
+                    //  If we don't have the key, we've got a problem.
+                    if (namespaceKey == null)
+                        throw new InvalidOperationException("Cannot open the Virtual Folder NameSpace key.");
+
+                    //  Write the server guid as a key, then the Junction Point Name as it's default value.
+                    var serverKey = namespaceKey.CreateSubKey(serverType.GUID.ToRegistryString());
+                    if(serverKey == null)
+                        throw new InvalidOperationException("Failed to create the Virtual Folder NameSpace extension.");
+                    serverKey.SetValue(null, junctionPoint.Name, RegistryValueKind.String);
+                }
+            }
+
+            //  We can now customise the class registration as needed.
+            //  The class is already registered by the Installation of the server, we're only
+            //  adapting it here.
+
+            //  Open the classes root.
+            using (var classesBaseKey = registrationType == RegistrationType.OS64Bit
+                ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
+                  RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32))
+            {
+                //  Our server guid.
+                var serverGuid = serverType.GUID.ToRegistryString();
+
+                //  Open the Class Key.
+                using (var classKey = classesBaseKey
+                    .OpenSubKey(string.Format(@"CLSID\{0}", serverGuid),
+                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
+                {
+                    //  If we don't have the key, we've got a problem.
+                    if (classKey == null)
+                        throw new InvalidOperationException("Cannot open the class key.");
+
+                    //  TODO: at some stage, we may handle WantsFORPARSING
+                    //  TODO: at some stage, we must handle HideFolderVerbs
+                    //  TODO: at some stage, we must handle HideAsDelete
+                    //  TODO: at some stage, we must handle HideAsDeletePerUser
+                    //  TODO: at some stage, we must handle QueryForOverlay
+
+                    //  The default value is the junction point name.
+                    classKey.SetValue(null, junctionPoint.Name, RegistryValueKind.String);
+
+                    //  Set the infotip. TODO
+                    // classKey.SetValue(@"InfoTip", infoTip, RegistryValueKind.String);
+
+                    //  Set the default icon. TODO key not attribute
+                    //  classKey.SetValue(@"DefaultIcon", "File.dll,index", RegistryValueKind.String);
+                    
+                    //  TODO support custom verbs with a 'Shell' subkey.
+                    //  TODO support custom shortcut menu handler with ShellEx.
+                    //  TODO tie in support for a property sheet handler.
+                    //  TODO specify the attributes with a DWORD of SFGAO values named 'ShellFolder/Attributes'.
+                    //  TODO Critical, as we don't set SGFAO_FOLDER in the above currently, we can't display child items.
+                    //  See documentation at: http://msdn.microsoft.com/en-us/library/windows/desktop/cc144093.aspx#ishellfolder
+                }
+            }
+        }
+
+        /// <summary>
+        /// Customs the unregister function.
+        /// </summary>
+        /// <param name="serverType">Type of the server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        [CustomUnregisterFunction]
+        internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
+        {
+            //  Get the junction point.
+            var junctionPoint = NamespaceExtensionJunctionPointAttribute.GetJunctionPoint(serverType);
+
+            //  If the junction point is not defined, we must fail.
+            if (junctionPoint == null)
+                throw new InvalidOperationException("Unable to register a SharpNamespaceExtension as it is missing it's junction point definition.");
+            
+            //  Work out the hive and view to use, based on the junction point availability
+            //  and the registration mode.
+            var hive = junctionPoint.Availablity == NamespaceExtensionAvailability.CurrentUser
+                ? RegistryHive.CurrentUser
+                : RegistryHive.LocalMachine;
+            var view = registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32;
+
+            //  Now open the base key.
+            using (var baseKey = RegistryKey.OpenBaseKey(hive, view))
+            {
+                //  Create the path to the virtual folder namespace key.
+                var virtualFolderNamespacePath =
+                    string.Format(@"Software\Microsoft\Windows\CurrentVersion\Explorer\{0}\NameSpace",
+                        RegistryKeyAttribute.GetRegistryKey(junctionPoint.Location));
+                
+                //  Open the virtual folder namespace key,
+                using (var namespaceKey = baseKey.OpenSubKey(virtualFolderNamespacePath,
+                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
+                {
+                    //  If we don't have the key, we've got a problem.
+                    if (namespaceKey == null)
+                        throw new InvalidOperationException("Cannot open the Virtual Folder NameSpace key.");
+
+                    //  Delete the shell extension key, which is just it's CLSID.
+                    namespaceKey.DeleteSubKeyTree(serverType.GUID.ToRegistryString());
+                }
+            }
+        }
+
         /// <summary>
         /// This function is called by SharpShell to get the children of a Shell Folder. For performance reasons,
         /// children will often be loaded in batches, so they must be returned as a list.
@@ -426,10 +589,5 @@ IQueryInfo	The cidl parameter can only be one.
 
     public enum EnumerateChildrenFlags
     {
-    }
-
-    public class GitHubExtension
-    {
-        
     }
 }

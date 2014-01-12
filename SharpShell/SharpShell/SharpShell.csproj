@@ -141,9 +141,13 @@
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
     <Compile Include="SharpNamespaceExtension\AttributeFlags.cs" />
     <Compile Include="SharpNamespaceExtension\DisplayNameContext.cs" />
+    <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
+    <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceFolder.cs" />
+    <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtensionIdListEnumerator.cs" />
+    <Compile Include="SharpNamespaceExtension\VirtualFolder.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
