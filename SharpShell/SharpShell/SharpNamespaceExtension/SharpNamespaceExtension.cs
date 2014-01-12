@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using SharpShell.Attributes;
 using SharpShell.Interop;
 using SharpShell.Pidl;
@@ -57,9 +58,30 @@ namespace SharpShell.SharpNamespaceExtension
 
         #region Implmentation of IShellFolder
 
-        int IShellFolder.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, uint pchEaten, out IntPtr ppidl, uint pdwAttributes)
+        /// <summary>
+        /// Translates the display name of a file object or a folder into an item identifier list.
+        /// </summary>
+        /// <param name="hwnd">A window handle. The client should provide a window handle if it displays a dialog or message box. Otherwise set hwnd to NULL.</param>
+        /// <param name="pbc">Optional. A pointer to a bind context used to pass parameters as inputs and outputs to the parsing function.</param>
+        /// <param name="pszDisplayName">A null-terminated Unicode string with the display name.</param>
+        /// <param name="pchEaten">A pointer to a ULONG value that receives the number of characters of the display name that was parsed. If your application does not need this information, set pchEaten to NULL, and no value will be returned.</param>
+        /// <param name="ppidl">When this method returns, contains a pointer to the PIDL for the object.</param>
+        /// <param name="pdwAttributes">The value used to query for file attributes. If not used, it should be set to NULL.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IShellFolder.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl, ref SFGAO pdwAttributes)
         {
-            throw new NotImplementedException();
+            //  There's not much to this due to the way we handle PIDLs - we can use the pidl manager to 
+            //  decode out pidl.
+            ppidl = PidlManager.IdListToPidl(IdList.FromParsingString(pszDisplayName));
+            pchEaten = (uint)pszDisplayName.Length;
+
+            //  Get the attributes while we're here.
+            //  TODO: get the attributes.
+
+            return WinError.S_OK;
         }
 
         /// <summary>
@@ -113,14 +135,49 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
+        /// <summary>
+        /// Requests a pointer to an object's storage interface.
+        /// Return value: error code, if any
+        /// </summary>
+        /// <param name="pidl">Address of an ITEMIDLIST structure that identifies the subfolder relative to its parent folder.</param>
+        /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be  used during this operation.</param>
+        /// <param name="riid">Interface identifier (IID) of the requested storage interface.</param>
+        /// <param name="ppv">Address that receives the interface pointer specified by riid.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
         int IShellFolder.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
-            throw new NotImplementedException();
+            //  TODO: this will need to be implemented at some stage.
+            ppv = IntPtr.Zero;
+            return WinError.E_NOTIMPL;
         }
 
-        int IShellFolder.CompareIDs(int lParam, IntPtr pidl1, IntPtr pidl2)
+        /// <summary>
+        /// Determines the relative order of two file objects or folders, given
+        /// their item identifier lists. Return value: If this method is
+        /// successful, the CODE field of the HRESULT contains one of the
+        /// following values (the code can be retrived using the helper function
+        /// GetHResultCode): Negative A negative return value indicates that the first item should precede the second (pidl1 &lt; pidl2).
+        /// Positive A positive return value indicates that the first item should
+        /// follow the second (pidl1 &gt; pidl2).  Zero A return value of zero
+        /// indicates that the two items are the same (pidl1 = pidl2).
+        /// </summary>
+        /// <param name="lParam">Value that specifies how the comparison  should be performed. The lower Sixteen bits of lParam define the sorting  rule.
+        /// The upper sixteen bits of lParam are used for flags that modify the sorting rule. values can be from  the SHCIDS enum</param>
+        /// <param name="pidl1">Pointer to the first item's ITEMIDLIST structure.</param>
+        /// <param name="pidl2">Pointer to the second item's ITEMIDLIST structure.</param>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IShellFolder.CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
         {
-            throw new NotImplementedException();
+            //  Get the low short from the lParam, this is the sorting option.
+            short sortingRule = (short)(lParam.ToInt64() & 0x000000FF);
+            SHCIDS modifiers = (SHCIDS) ((lParam.ToInt64() >> 16) & 0x000000FF);
+
+            //  TODO: build an HRESULT with a CODE that contains a negative/positive/zero indicator.
+
+            return WinError.S_OK;
         }
 
         /// <summary>
@@ -330,9 +387,25 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.E_NOTIMPL;
         }
 
-        int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHCONTF uFlags, out IntPtr ppidlOut)
+        /// <summary>
+        /// Sets the display name of a file object or subfolder, changing the item
+        /// identifier in the process.
+        /// Return value: error code, if any
+        /// </summary>
+        /// <param name="hwnd">Handle to the owner window of any dialog or message boxes that the client displays.</param>
+        /// <param name="pidl">Pointer to an ITEMIDLIST structure that uniquely identifies the file object or subfolder relative to the parent folder.</param>
+        /// <param name="pszName">Pointer to a null-terminated string that specifies the new display name.</param>
+        /// <param name="uFlags">Flags indicating the type of name specified by  the lpszName parameter. For a list of possible values, see the description of the SHGNO enum.</param>
+        /// <param name="ppidlOut"></param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
         {
-            throw new NotImplementedException();
+            //  TODO this needs to be implemented.
+            ppidlOut = IntPtr.Zero;
+            return WinError.E_NOTIMPL;
         }
 
         #endregion

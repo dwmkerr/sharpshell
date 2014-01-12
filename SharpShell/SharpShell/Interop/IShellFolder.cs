@@ -21,8 +21,10 @@ namespace SharpShell.Interop
         /// <param name="pdwAttributes">The value used to query for file attributes. If not used, it should be set to NULL.</param>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        int ParseDisplayName(IntPtr hwnd, IntPtr pbc, String pszDisplayName, UInt32 pchEaten, out IntPtr ppidl,
-                             UInt32 pdwAttributes);
+        //  TODO: We should map the IBindCtx interface for the second parameter, although it's not trivial
+        //  it should be there for completeness.
+        int ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl,
+                             ref SFGAO pdwAttributes);
 
 
         /// <summary>
@@ -78,7 +80,7 @@ namespace SharpShell.Interop
         /// <returns></returns>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        int CompareIDs(Int32 lParam, IntPtr pidl1, IntPtr pidl2);
+        int CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2);
 
         /// <summary>
         /// Requests an object that can be used to obtain information from or interact
@@ -145,6 +147,6 @@ namespace SharpShell.Interop
         /// <param name="ppidlOut"></param>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        int SetNameOf(IntPtr hwnd, IntPtr pidl, String pszName, SHCONTF uFlags, out IntPtr ppidlOut);
+        int SetNameOf(IntPtr hwnd, IntPtr pidl, String pszName, SHGDNF uFlags, out IntPtr ppidlOut);
     }
 }

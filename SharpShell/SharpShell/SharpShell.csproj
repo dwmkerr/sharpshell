@@ -120,6 +120,7 @@
     <Compile Include="Interop\PSN.cs" />
     <Compile Include="Interop\PSP.cs" />
     <Compile Include="Interop\RECT.cs" />
+    <Compile Include="Interop\SCHIDS.cs" />
     <Compile Include="Interop\SEE.cs" />
     <Compile Include="Interop\SFGAO.cs" />
     <Compile Include="Interop\SFV_CREATE.cs" />

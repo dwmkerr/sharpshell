@@ -140,6 +140,27 @@ namespace SharpShell.Pidl
 
             return sb.ToString();
         }
+
+        public static IdList FromParsingString(string str)
+        {
+            //  Create the id storage.
+            var ids = new List<byte[]>();
+
+            //  Repeatedly read a short length then the data.
+            int index = 0;
+            while (index < str.Length)
+            {
+                var length = Convert.ToInt16(str.Substring(index, 4), 16);
+                var id = new byte[length];
+                index += 4;
+                for (var i = 0; i < length; i++, index += 2)
+                    id[i] = Convert.ToByte(str.Substring(index, 2), 16);
+                ids.Add(id);
+            }
+
+            //  Return the list.
+            return new IdList(IdListType.Relative, ids);
+        }
     }
 
     public enum IdListType
