@@ -131,6 +131,7 @@
     <Compile Include="Interop\SHCONTF.cs" />
     <Compile Include="Interop\SHELLEXECUTEINFO.cs" />
     <Compile Include="Interop\SHGDNF.cs" />
+    <Compile Include="Interop\Shlwapi.cs" />
     <Compile Include="Interop\STRRET.cs" />
     <Compile Include="Interop\SVUIA_STATUS.cs" />
     <Compile Include="Interop\TBBUTTON.cs" />

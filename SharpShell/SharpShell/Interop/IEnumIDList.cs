@@ -27,7 +27,7 @@ namespace SharpShell.Interop
         /// specified in the celt parameter. This parameter can be NULL only if celt is one.
         /// </param>
         [PreserveSig]
-        int Next(uint celt, out IntPtr[] rgelt, out uint pceltFetched);
+        int Next(uint celt, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] rgelt, out uint pceltFetched);
 
         /// <summary>
         /// Skips over the specified number of elements in the enumeration sequence. 

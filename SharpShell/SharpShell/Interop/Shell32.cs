@@ -85,7 +85,16 @@ namespace SharpShell.Interop
         /// <returns>Returns S_OK if successful, or an error value otherwise.</returns>
         [DllImport("shell32.dll")]
         public static extern int SHGetFolderLocation(IntPtr hwndOwner, CSIDL nFolder, IntPtr hToken, uint dwReserved, out IntPtr ppidl);
-        
+
+        /// <summary>
+        /// Converts an item identifier list to a file system path.
+        /// </summary>
+        /// <param name="pidl">The address of an item identifier list that specifies a file or directory location relative to the root of the namespace (the desktop).</param>
+        /// <param name="pszPath">The address of a buffer to receive the file system path. This buffer must be at least MAX_PATH characters in size.</param>
+        /// <returns>Returns TRUE if successful; otherwise, FALSE.</returns>
+        [DllImport("shell32.dll", EntryPoint = "SHGetPathFromIDListW")]
+        public static extern bool SHGetPathFromIDList(IntPtr pidl, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder pszPath);
+
         /// <summary>
         /// TODO: document this.
         /// </summary>

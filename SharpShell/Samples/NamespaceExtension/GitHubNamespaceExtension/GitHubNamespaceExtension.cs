@@ -42,7 +42,10 @@ namespace GitHubNamespaceExtension
 
         public override IShellNamespaceItem GetChildItem(IdList idList)
         {
-            throw new NotImplementedException();
+            /*foreach(var item in sampleRepos)
+                if (item.GetUniqueId() == idList)
+                    return item; */
+            return null;
         }
 
         private readonly GitHubRepo[] sampleRepos = new GitHubRepo[]

@@ -9,7 +9,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// Contains strings returned from the IShellFolder interface methods.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct STRRET
     {
         /// <summary>
@@ -31,6 +31,29 @@ namespace SharpShell.Interop
         }
 
         /// <summary>
+        /// Gets the actual string value of a STRRET.
+        /// </summary>
+        /// <returns>The string represented by the STRRET.</returns>
+        /// <exception cref="System.NotImplementedException">
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+        public string GetStringValue()
+        {
+            //  TODO: one day support all string types.
+            switch (uType)
+            {
+                case STRRETTYPE.STRRET_WSTR:
+                    return Marshal.PtrToStringUni(data.pOleStr);
+                case STRRETTYPE.STRRET_OFFSET:
+                    throw new NotImplementedException();
+                case STRRETTYPE.STRRET_CSTR:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        /// <summary>
         /// Struct used internally to fake a C union.
         /// </summary>
         [StructLayout(LayoutKind.Explicit, Size = 520)]
@@ -46,8 +69,7 @@ namespace SharpShell.Interop
             /// The buffer to receive the display name.
             /// </summary>
             [FieldOffset(0)]
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
-            public string cStr;
+            public IntPtr pStr;
 
             /// <summary>
             /// The offset into the item identifier list.

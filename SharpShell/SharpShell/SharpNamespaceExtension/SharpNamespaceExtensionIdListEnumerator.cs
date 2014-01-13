@@ -32,7 +32,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// <param name="pceltFetched">Address of a value that receives a count of the item identifiers actually returned in rgelt. The count can be smaller than the value
         /// specified in the celt parameter. This parameter can be NULL only if celt is one.</param>
         /// <returns></returns>
-        public int Next(uint celt, out IntPtr[] rgelt, out uint pceltFetched)
+        public int Next(uint celt, IntPtr[] rgelt, out uint pceltFetched)
         {
             //  Request the children from the extension. As this is an abstract call, we always 
             //  use an exception handler.
@@ -54,7 +54,6 @@ namespace SharpShell.SharpNamespaceExtension
             //  If we've not enumerated anything, we can return now.
             if (items.Any() == false)
             {
-                rgelt = null;
                 pceltFetched = 0;
                 return WinError.S_OK;
             }
@@ -66,7 +65,8 @@ namespace SharpShell.SharpNamespaceExtension
                 iid => PidlManager.IdListToPidl(IdList.Create(IdListType.Relative, new List<byte[]> { iid.GetUniqueId()} ))).ToArray();
 
             //  We can now return the pidl array.
-            rgelt = pidlArray;
+            for (int i = 0; i < pidlArray.Length; i++)
+                rgelt[i] = pidlArray[i];    //  todo wrap in exception handler due to risk of access violation.
             pceltFetched = (uint)items.Count;
 
             //  We're done.

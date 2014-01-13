@@ -13,6 +13,8 @@ using IServiceProvider = SharpShell.Interop.IServiceProvider;
 
 namespace ServerManager.ShellDebugger
 {
+    [ComVisible(true)]
+    [ClassInterface(ClassInterfaceType.None)]
     public partial class ShellDebuggerForm : Form, IShellBrowser, IServiceProvider
     {
         public ShellDebuggerForm()
@@ -181,8 +183,9 @@ namespace ServerManager.ShellDebugger
                     // Create the actual list view
                     //  TODO: currently fails to create a window handle, no error code either,
                     //  something's wrong.
+
                     res = shellView.CreateViewWindow(lastIShellView, fs,
-                          this, rc, out hWndListView);
+                          null, rc, out hWndListView);
                 }
                 catch (COMException)
                 {
