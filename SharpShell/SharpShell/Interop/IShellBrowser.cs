@@ -13,6 +13,22 @@ namespace SharpShell.Interop
     public interface IShellBrowser : IOleWindow
     {
         /// <summary>
+        /// Retrieves a handle to one of the windows participating in in-place activation (frame, document, parent, or in-place object window).
+        /// </summary>
+        /// <param name="phwnd">A pointer to a variable that receives the window handle.</param>
+        /// <returns>This method returns S_OK on success. </returns>
+        [PreserveSig]
+        new int GetWindow(out IntPtr phwnd);
+
+        /// <summary>
+        /// Determines whether context-sensitive help mode should be entered during an in-place activation session.
+        /// </summary>
+        /// <param name="fEnterMode">TRUE if help mode should be entered; FALSE if it should be exited.</param>
+        /// <returns>This method returns S_OK if the help mode was entered or exited successfully, depending on the value passed in fEnterMode.</returns>
+        [PreserveSig]
+        new int ContextSensitiveHelp(bool fEnterMode);
+
+        /// <summary>
         /// Allows the container to insert its menu groups into the composite menu that is displayed when an extended namespace is being viewed or used.
         /// </summary>
         /// <param name="hmenuShared">A handle to an empty menu.</param>

@@ -41,7 +41,7 @@ namespace ServerManager.ShellDebugger
             // Release the IShellView
             if (shellView != null)
             {
-                shellView.UIActivate(SVUIA_STATUS.SVUIA_DEACTIVATE);
+                shellView.UIActivate((uint)SVUIA_STATUS.SVUIA_DEACTIVATE);
                 shellView.DestroyViewWindow();
                 Marshal.ReleaseComObject(shellView);
                 shellView = null;
@@ -50,15 +50,29 @@ namespace ServerManager.ShellDebugger
             base.OnHandleDestroyed(e);
         }
 
-        #region IShellBrowser implementation
+        #region IOleBrowser implementation
 
         int IOleWindow.GetWindow(out IntPtr phwnd)
+        {
+            return ((IShellBrowser)this).GetWindow(out phwnd);
+        }
+
+        int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
+        {
+            return ((IShellBrowser)this).ContextSensitiveHelp(fEnterMode);
+        }
+
+        #endregion
+
+        #region IShellBrowser implementation
+
+        int IShellBrowser.GetWindow(out IntPtr phwnd)
         {
             phwnd = Handle;
             return WinError.S_OK;
         }
 
-        int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
+        int IShellBrowser.ContextSensitiveHelp(bool fEnterMode)
         {
             return WinError.E_NOTIMPL;
         }
@@ -108,7 +122,7 @@ namespace ServerManager.ShellDebugger
             if (Shell32.ILIsEqual(pidl, desktopFolderPidl))
             {
                 //  The provided PIDL is the desktop folder.
-                pidlTmp = desktopFolderPidl;
+                pidlTmp = Shell32.ILClone(desktopFolderPidl);
                 folderTmp = desktopFolder;
             }
             else if ((wFlags & SBSP.SBSP_RELATIVE) != 0)
@@ -184,8 +198,8 @@ namespace ServerManager.ShellDebugger
                     //  TODO: currently fails to create a window handle, no error code either,
                     //  something's wrong.
 
-                    res = shellView.CreateViewWindow(lastIShellView, fs,
-                          null, rc, out hWndListView);
+                    res = shellView.CreateViewWindow(lastIShellView, ref fs,
+                          this, ref rc, out hWndListView);
                 }
                 catch (COMException)
                 {

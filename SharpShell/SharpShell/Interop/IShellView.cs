@@ -9,15 +9,31 @@ namespace SharpShell.Interop
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("000214E3-0000-0000-C000-000000000046")]
-    public interface IShellView : IOleWindow
+    public interface IShellView  : IOleWindow
     {
+        /// <summary>
+        /// Retrieves a handle to one of the windows participating in in-place activation (frame, document, parent, or in-place object window).
+        /// </summary>
+        /// <param name="phwnd">A pointer to a variable that receives the window handle.</param>
+        /// <returns>This method returns S_OK on success. </returns>
+        [PreserveSig]
+        new int GetWindow(out IntPtr phwnd);
+
+        /// <summary>
+        /// Determines whether context-sensitive help mode should be entered during an in-place activation session.
+        /// </summary>
+        /// <param name="fEnterMode">TRUE if help mode should be entered; FALSE if it should be exited.</param>
+        /// <returns>This method returns S_OK if the help mode was entered or exited successfully, depending on the value passed in fEnterMode.</returns>
+        [PreserveSig]
+        new int ContextSensitiveHelp(bool fEnterMode);
+
         /// <summary>
         /// Translates keyboard shortcut (accelerator) key strokes when a namespace extension's view has the focus.
         /// </summary>
         /// <param name="lpmsg">The address of the message to be translated.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise. If the view returns S_OK, it indicates that the message was translated and should not be translated or dispatched by Windows Explorer. </returns>
         [PreserveSig]
-        int TranslateAccelerator(MSG lpmsg);
+        int TranslateAccelerator(ref MSG lpmsg);
 
         /// <summary>
         /// Enables or disables modeless dialog boxes. This method is not currently implemented.
@@ -52,7 +68,7 @@ namespace SharpShell.Interop
         /// <returns>Returns a success code if successful, or a COM error code otherwise.</returns>
         [PreserveSig]
         int CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious, 
-            FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, RECT prcView, out IntPtr phWnd);
+            [In] ref FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, [In] ref RECT prcView, [Out] out IntPtr phWnd);
 
         /// <summary>
         /// Destroys the view window.
