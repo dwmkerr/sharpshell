@@ -25,6 +25,6 @@ namespace SharpShell.Interop
         /// <param name="fEnterMode">TRUE if help mode should be entered; FALSE if it should be exited.</param>
         /// <returns>This method returns S_OK if the help mode was entered or exited successfully, depending on the value passed in fEnterMode.</returns>
         [PreserveSig]
-        int ContextSensitiveHelp(bool fEnterMode);  
+        int ContextSensitiveHelp(bool fEnterMode);
     };
 }
