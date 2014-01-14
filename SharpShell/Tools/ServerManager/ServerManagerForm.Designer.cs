@@ -41,6 +41,7 @@ namespace ServerManager
             this.columnHeaderServerType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,7 +80,6 @@ namespace ServerManager
             this.toolStripButtonTestServer = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonOpenShellDialog = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonShellDebugger = new System.Windows.Forms.ToolStripButton();
-            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -195,6 +195,14 @@ namespace ServerManager
             this.imageList1.Images.SetKeyName(2, "PropertySheet.png");
             this.imageList1.Images.SetKeyName(3, "InfoTip.png");
             this.imageList1.Images.SetKeyName(4, "IconOverlayHandler.png");
+            // 
+            // serverDetailsView1
+            // 
+            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
+            this.serverDetailsView1.Name = "serverDetailsView1";
+            this.serverDetailsView1.Size = new System.Drawing.Size(376, 439);
+            this.serverDetailsView1.TabIndex = 1;
             // 
             // menuStrip1
             // 
@@ -464,7 +472,7 @@ namespace ServerManager
             this.toolStripButtonShellDebugger});
             this.toolStripMain.Location = new System.Drawing.Point(3, 24);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(482, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(561, 25);
             this.toolStripMain.TabIndex = 3;
             // 
             // toolStripButtonOpenTestShell
@@ -498,17 +506,9 @@ namespace ServerManager
             this.toolStripButtonShellDebugger.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonShellDebugger.Image")));
             this.toolStripButtonShellDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonShellDebugger.Name = "toolStripButtonShellDebugger";
-            this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(107, 22);
-            this.toolStripButtonShellDebugger.Text = "Shell Debugger";
+            this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(186, 22);
+            this.toolStripButtonShellDebugger.Text = "Shell Debugger (Experimental)";
             this.toolStripButtonShellDebugger.Click += new System.EventHandler(this.toolStripButtonShellDebugger_Click);
-            // 
-            // serverDetailsView1
-            // 
-            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
-            this.serverDetailsView1.Name = "serverDetailsView1";
-            this.serverDetailsView1.Size = new System.Drawing.Size(376, 439);
-            this.serverDetailsView1.TabIndex = 1;
             // 
             // ServerManagerForm
             // 

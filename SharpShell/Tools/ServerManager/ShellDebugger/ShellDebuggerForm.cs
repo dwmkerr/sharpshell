@@ -194,10 +194,7 @@ namespace ServerManager.ShellDebugger
 
                 try
                 {
-                    // Create the actual list view
-                    //  TODO: currently fails to create a window handle, no error code either,
-                    //  something's wrong.
-
+                    // Create the actual list view.
                     res = shellView.CreateViewWindow(lastIShellView, ref fs,
                           this, ref rc, out hWndListView);
                 }
