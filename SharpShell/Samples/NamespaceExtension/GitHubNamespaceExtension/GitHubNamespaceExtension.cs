@@ -12,7 +12,7 @@ namespace GitHubNamespaceExtension
     /// 
     /// </summary>
     [ComVisible(true)]
-    [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.CurrentUser, VirtualFolder.MyComputer, "GitHub")]
+    [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.Everyone, VirtualFolder.Desktop, "GitHub")]
     public class GitHubNamespaceExtension : SharpNamespaceExtension
     {
         /// <summary>
@@ -27,7 +27,7 @@ namespace GitHubNamespaceExtension
         public override AttributeFlags GetAttributes()
         {
             //  The GitHub namespace extension is a folder, contains folders and is faked as part of the file system.
-            return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders | AttributeFlags.IsStorage;
+            return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
         }
 
         public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, EnumerateChildrenFlags flags)

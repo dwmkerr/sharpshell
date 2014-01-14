@@ -284,9 +284,9 @@ namespace ServerManager.ShellDebugger
         private readonly IShellFolder desktopFolder;
         private readonly IntPtr desktopFolderPidl;
 
-        private readonly FOLDERVIEWMODE folderViewMode = FOLDERVIEWMODE.FVM_LIST;
+        private readonly FOLDERVIEWMODE folderViewMode = FOLDERVIEWMODE.FVM_AUTO;
 
-        private readonly FOLDERFLAGS folderFlags = new FOLDERFLAGS();/* FOLDERFLAGS.FWF_SHOWSELALWAYS |
-                                                   FOLDERFLAGS.FWF_SINGLESEL | FOLDERFLAGS.FWF_NOWEBVIEW;*/
+        private readonly FOLDERFLAGS folderFlags =  FOLDERFLAGS.FWF_SHOWSELALWAYS |
+                                                   FOLDERFLAGS.FWF_SINGLESEL | FOLDERFLAGS.FWF_NOWEBVIEW;
     }
 }
