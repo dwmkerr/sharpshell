@@ -25,6 +25,11 @@ namespace SharpShell.SharpNamespaceExtension
     [ServerType(ServerType.ShellNamespaceExtension)]
     public abstract class SharpNamespaceExtension : SharpShellServer, IPersistFolder, IShellFolder
     {
+        protected SharpNamespaceExtension()
+        {
+            Log("Instatiated Namespace Extension");
+        }
+
         #region Implementation of IPersistFolder.
 
         /// <summary>

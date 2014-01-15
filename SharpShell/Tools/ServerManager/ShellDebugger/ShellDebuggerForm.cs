@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using SharpShell.Interop;
 using IServiceProvider = SharpShell.Interop.IServiceProvider;
@@ -109,6 +110,19 @@ namespace ServerManager.ShellDebugger
 
         int IShellBrowser.BrowseObject(IntPtr pidl, SBSP wFlags)
         {
+            if (this.InvokeRequired)
+            {
+                AutoResetEvent theEvent = new AutoResetEvent(false);
+                int result = WinError.E_FAIL;
+                this.Invoke((Action)(() =>
+                {
+                    result = ((IShellBrowser)this).BrowseObject(pidl, wFlags);
+                    theEvent.Set();
+                }));
+                theEvent.WaitOne();
+                return result;
+            }
+
             int hr;
             IntPtr folderTmpPtr;
             IShellFolder folderTmp;
@@ -284,7 +298,7 @@ namespace ServerManager.ShellDebugger
         private readonly IShellFolder desktopFolder;
         private readonly IntPtr desktopFolderPidl;
 
-        private readonly FOLDERVIEWMODE folderViewMode = FOLDERVIEWMODE.FVM_AUTO;
+        private readonly FOLDERVIEWMODE folderViewMode = FOLDERVIEWMODE.FVM_DETAILS;
 
         private readonly FOLDERFLAGS folderFlags =  FOLDERFLAGS.FWF_SHOWSELALWAYS |
                                                    FOLDERFLAGS.FWF_SINGLESEL | FOLDERFLAGS.FWF_NOWEBVIEW;
