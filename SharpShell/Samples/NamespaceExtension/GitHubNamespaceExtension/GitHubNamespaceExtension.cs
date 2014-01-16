@@ -54,5 +54,20 @@ namespace GitHubNamespaceExtension
             new GitHubRepo("SharpGL"),
             new GitHubRepo("Space Invaders")
         };
+
+        /// <summary>
+        /// Gets the registration settings. This function is called only during the initial
+        /// registration of a shell namespace extension to provide core configuration.
+        /// </summary>
+        /// <returns>
+        /// Registration settings for the server.
+        /// </returns>
+        public override NamespaceExtensionRegistrationSettings GetRegistrationSettings()
+        {
+            return new NamespaceExtensionRegistrationSettings
+            {
+                ExtensionAttributes = AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders
+            };
+        }
     }
 }

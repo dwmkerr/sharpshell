@@ -509,8 +509,14 @@ IQueryInfo	The cidl parameter can only be one.
                     if (classKey == null)
                         throw new InvalidOperationException("Cannot open the class key.");
 
+                    //  Create an instance of the server to get it's registration settings.
+                    var serverInstance = (SharpNamespaceExtension)Activator.CreateInstance(serverType);
+                    var registrationSettings = serverInstance.GetRegistrationSettings();
+
+                    //  Apply basic settings.
+                    if(registrationSettings.HideFolderVerbs) classKey.SetValue("HideFolderVerbs", 1, RegistryValueKind.DWord);
+
                     //  TODO: at some stage, we may handle WantsFORPARSING
-                    //  TODO: at some stage, we must handle HideFolderVerbs
                     //  TODO: at some stage, we must handle HideAsDelete
                     //  TODO: at some stage, we must handle HideAsDeletePerUser
                     //  TODO: at some stage, we must handle QueryForOverlay
@@ -527,7 +533,14 @@ IQueryInfo	The cidl parameter can only be one.
                     //  TODO support custom verbs with a 'Shell' subkey.
                     //  TODO support custom shortcut menu handler with ShellEx.
                     //  TODO tie in support for a property sheet handler.
-                    //  TODO specify the attributes with a DWORD of SFGAO values named 'ShellFolder/Attributes'.
+                    
+                    //  Set the attributes.
+                    using (var shellFolderKey = classKey.CreateSubKey("ShellFolder"))
+                    {
+                        if(shellFolderKey == null)
+                            throw new InvalidOperationException("An exception occured creating the ShellFolder key.");
+                        shellFolderKey.SetValue("Attributes", (int)registrationSettings.ExtensionAttributes, RegistryValueKind.DWord);
+                    }
                     //  TODO Critical, as we don't set SGFAO_FOLDER in the above currently, we can't display child items.
                     //  See documentation at: http://msdn.microsoft.com/en-us/library/windows/desktop/cc144093.aspx#ishellfolder
                 }
@@ -599,11 +612,17 @@ IQueryInfo	The cidl parameter can only be one.
 
         public abstract IShellNamespaceItem GetChildItem(IdList idList);
 
+        /// <summary>
+        /// Gets the registration settings. This function is called only during the initial
+        /// registration of a shell namespace extension to provide core configuration.
+        /// </summary>
+        /// <returns>Registration settings for the server.</returns>
+        public abstract NamespaceExtensionRegistrationSettings GetRegistrationSettings();
+
     private IdList extensionAbsolutePidl;
     }
 
     public enum EnumerateChildrenFlags
     {
     }
-
 }

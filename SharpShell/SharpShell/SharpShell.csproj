@@ -150,6 +150,7 @@
     <Compile Include="SharpNamespaceExtension\IShellNamespaceItem.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
+    <Compile Include="SharpNamespaceExtension\NamespaceExtensionRegistrationSettings.cs" />
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
