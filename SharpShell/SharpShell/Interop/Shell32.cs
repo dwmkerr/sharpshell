@@ -65,7 +65,16 @@ namespace SharpShell.Interop
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("shell32.dll")]
         public static extern int SHCreateShellFolderView(SFV_CREATE pcsfv, out IShellView ppsv);
-        
+
+        /// <summary>
+        /// Creates a new instance of the default Shell folder view object. It is recommended that you use SHCreateShellFolderView rather than this function.
+        /// </summary>
+        /// <param name="pcsfv">Pointer to a structure that describes the details used in creating this instance of the Shell folder view object.</param>
+        /// <param name="ppsv">The address of an IShellView interface pointer that, when this function returns successfully, points to the new view object. On failure, this value is NULL.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHCreateShellFolderViewEx(CSFV pcsfv, out IShellView ppsv);
+
         /// <summary>
         /// Retrieves the IShellFolder interface for the desktop folder, which is the root of the Shell's namespace.
         /// </summary>

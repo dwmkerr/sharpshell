@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using SharpShell.Pidl;
 using SharpShell.SharpNamespaceExtension;
 
@@ -68,6 +69,11 @@ namespace GitHubNamespaceExtension
             {
                 ExtensionAttributes = AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders
             };
+        }
+
+        public override Control CreateView()
+        {
+            throw new NotImplementedException();
         }
     }
 }

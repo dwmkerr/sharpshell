@@ -82,7 +82,9 @@
     <Compile Include="InitializeWithStreamServer.cs" />
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
+    <Compile Include="Interop\CSFV.cs" />
     <Compile Include="Interop\CSIDL.cs" />
+    <Compile Include="Interop\EXTRASEARCH.cs" />
     <Compile Include="Interop\FILE_ATTRIBUTE.cs" />
     <Compile Include="Interop\FOLDERFLAGS.cs" />
     <Compile Include="Interop\FOLDERSETTINGS.cs" />
@@ -96,17 +98,20 @@
     <Compile Include="Interop\IContextMenu2.cs" />
     <Compile Include="Interop\IContextMenu3.cs" />
     <Compile Include="Interop\IDropTarget.cs" />
+    <Compile Include="Interop\IEnumExtraSearch.cs" />
     <Compile Include="Interop\IEnumIDList.cs" />
     <Compile Include="Interop\IObjectWithSite.cs" />
     <Compile Include="Interop\IOleWindow.cs" />
     <Compile Include="Interop\IPersist.cs" />
     <Compile Include="Interop\IPersistFolder.cs" />
+    <Compile Include="Interop\IPersistFolder2.cs" />
     <Compile Include="Interop\IPreviewHandler.cs" />
     <Compile Include="Interop\IPreviewHandlerFrame.cs" />
     <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
     <Compile Include="Interop\IServiceProvider.cs" />
     <Compile Include="Interop\IShellBrowser.cs" />
     <Compile Include="Interop\IShellFolder.cs" />
+    <Compile Include="Interop\IShellFolder2.cs" />
     <Compile Include="Interop\IShellFolderViewCB.cs" />
     <Compile Include="Interop\IShellIconOverlayIdentifier.cs" />
     <Compile Include="Interop\IShellView.cs" />
@@ -128,7 +133,10 @@
     <Compile Include="Interop\SEE.cs" />
     <Compile Include="Interop\SFGAO.cs" />
     <Compile Include="Interop\SFV_CREATE.cs" />
+    <Compile Include="Interop\SHCOLSTATE.cs" />
+    <Compile Include="Interop\SHCOLUMNID.cs" />
     <Compile Include="Interop\SHCONTF.cs" />
+    <Compile Include="Interop\SHELLDETAILS.cs" />
     <Compile Include="Interop\SHELLEXECUTEINFO.cs" />
     <Compile Include="Interop\SHGDNF.cs" />
     <Compile Include="Interop\Shlwapi.cs" />
@@ -151,6 +159,9 @@
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionRegistrationSettings.cs" />
+    <Compile Include="SharpNamespaceExtension\ShellViewHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
@@ -231,6 +242,9 @@
   <ItemGroup>
     <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge32.dll" />
     <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge64.dll" />
+    <EmbeddedResource Include="SharpNamespaceExtension\ShellViewHost.resx">
+      <DependentUpon>ShellViewHost.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SharpPreviewHandler\PreviewHandlerHost.resx">
       <DependentUpon>PreviewHandlerHost.cs</DependentUpon>
     </EmbeddedResource>

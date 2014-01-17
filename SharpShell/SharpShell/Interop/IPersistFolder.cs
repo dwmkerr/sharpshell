@@ -10,6 +10,12 @@ namespace SharpShell.Interop
     [Guid("000214EA-0000-0000-C000-000000000046")]
     public interface IPersistFolder : IPersist
     {
+        #region Overrides for C#/COM compatibility.
+
+        new int GetClassID(out Guid pClassID);
+
+        #endregion
+
         /// <summary>
         /// Instructs a Shell folder object to initialize itself based on the information passed.
         /// </summary>

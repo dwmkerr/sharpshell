@@ -209,7 +209,7 @@ namespace ServerManager.ShellDebugger
                 try
                 {
                     // Create the actual list view.
-                    res = shellView.CreateViewWindow(lastIShellView, ref fs,
+                    res = shellView.CreateViewWindow(/*todo lastIShellView*/null, ref fs,
                           this, ref rc, out hWndListView);
                 }
                 catch (COMException)

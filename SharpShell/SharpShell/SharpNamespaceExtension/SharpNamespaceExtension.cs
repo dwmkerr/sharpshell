@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using SharpShell.Attributes;
@@ -23,14 +26,18 @@ namespace SharpShell.SharpNamespaceExtension
     /// This is the base class for all Shell Namespace Extensions.
     /// </summary>
     [ServerType(ServerType.ShellNamespaceExtension)]
-    public abstract class SharpNamespaceExtension : SharpShellServer, IPersistFolder, IShellFolder
+    public abstract class SharpNamespaceExtension : 
+        SharpShellServer, 
+        IPersistFolder2,
+        IShellFolder2
+
     {
         protected SharpNamespaceExtension()
         {
             Log("Instatiated Namespace Extension");
         }
 
-        #region Implementation of IPersistFolder.
+        #region Implementation of IPersistFolder2.
 
         /// <summary>
         /// Retrieves the class identifier (CLSID) of the object.
@@ -50,6 +57,8 @@ namespace SharpShell.SharpNamespaceExtension
             //  We're done.
             return WinError.S_OK;
         }
+        int IPersistFolder.GetClassID(out Guid pClassId) {return ((IPersist)this).GetClassID(out pClassId); }
+        int IPersistFolder2.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
 
         /// <summary>
         /// Instructs a Shell folder object to initialize itself based on the information passed.
@@ -69,8 +78,34 @@ namespace SharpShell.SharpNamespaceExtension
             //  We're good, we've got the ID list.
             return WinError.S_OK;
         }
+        int IPersistFolder2.Initialize(IntPtr pidl) { return ((IPersistFolder)this).Initialize(pidl); }
+
+        /// <summary>
+        /// Gets the ITEMIDLIST for the folder object.
+        /// </summary>
+        /// <param name="ppidl">The address of an ITEMIDLIST pointer. This PIDL represents the absolute location of the folder and must be relative to the desktop. This is typically a copy of the PIDL passed to Initialize.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// If the folder object has not been initialized, this method returns S_FALSE and ppidl is set to NULL.
+        /// </remarks>
+        int IPersistFolder2.GetCurFolder(out IntPtr ppidl)
+        {
+            //  If we haven't been initialised set a null pidl and return false.
+            if (this.extensionAbsolutePidl == null)
+            {
+                ppidl = IntPtr.Zero;
+                return WinError.S_FALSE;
+            }
+
+            //  Otherwise, set the pidl and return.
+            ppidl = PidlManager.IdListToPidl(extensionAbsolutePidl);
+            return WinError.S_OK;
+        }
 
         #endregion
+
 
         #region Implmentation of IShellFolder
 
@@ -99,7 +134,7 @@ namespace SharpShell.SharpNamespaceExtension
 
             return WinError.S_OK;
         }
-
+        
         /// <summary>
         /// Allows a client to determine the contents of a folder by creating an item identifier enumeration object and returning its IEnumIDList interface.
         /// Return value: error code, if any
@@ -216,6 +251,15 @@ namespace SharpShell.SharpNamespaceExtension
 
             if (riid == typeof (IShellView).GUID)
             {
+                //  If we can create a view object, we'll use that.
+                var customView = CreateView();
+                if (customView != null)
+                {
+                    //  TODO: we need to split the classes - one custom view folder, one def view folder.
+                    var host = new ShellViewHost(customView);
+                    ppv = Marshal.GetComInterfaceForObject(host, typeof(IShellView));
+                    return WinError.S_OK;
+                }
 
                 //  TODO: Currently we are only support the default shell view. By allowing 
                 //  clients to implement IShellView via a SharpShell wrapper we can take this further.
@@ -234,7 +278,7 @@ namespace SharpShell.SharpNamespaceExtension
                     LogError("An error occured creating the default folder view for this shell folder.");
                     ppv = IntPtr.Zero;
                     return WinError.E_FAIL;
-                }
+                } 
 
                 //  We've created the view, return it.
                 ppv = Marshal.GetComInterfaceForObject(view, typeof (IShellView));
@@ -342,7 +386,6 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.E_NOTIMPL;
         }
 
-
         /// <summary>
         /// Retrieves the display name for the specified file object or subfolder.
         /// Return value: error code, if any
@@ -403,6 +446,7 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.E_NOTIMPL;
         }
 
+
         /// <summary>
         /// Sets the display name of a file object or subfolder, changing the item
         /// identifier in the process.
@@ -423,9 +467,138 @@ IQueryInfo	The cidl parameter can only be one.
             ppidlOut = IntPtr.Zero;
             return WinError.E_NOTIMPL;
         }
+        
+        #endregion
+
+        #region IShellFolder2 Implementation
+
+        int IShellFolder2.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten,
+            out IntPtr ppidl, ref SFGAO pdwAttributes)
+        {
+            return ((IShellFolder)this).ParseDisplayName(hwnd, pbc, pszDisplayName, pchEaten, out ppidl,
+                ref pdwAttributes);
+        }
+
+        int IShellFolder2.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
+        {
+            return ((IShellFolder)this).EnumObjects(hwnd, grfFlags, out ppenumIDList);
+
+        }
+
+        int IShellFolder2.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
+        {
+            return ((IShellFolder)this).BindToObject(pidl, pbc, ref riid, out ppv);
+        }
+
+        int IShellFolder2.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
+        {
+            return ((IShellFolder)this).BindToStorage(pidl, pbc, ref riid, out ppv);
+        }
+
+        int IShellFolder2.CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
+        {
+            return ((IShellFolder)this).CompareIDs(lParam, pidl1, pidl2);
+        }
+
+        int IShellFolder2.CreateViewObject(IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
+        {
+            return ((IShellFolder)this).CreateViewObject(hwndOwner, ref riid, out ppv);
+        }
+
+        int IShellFolder2.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
+        {
+            return ((IShellFolder)this).GetAttributesOf(cidl, apidl, ref rgfInOut);
+        }
+
+        int IShellFolder2.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved,
+            out IntPtr ppv)
+        {
+            return ((IShellFolder)this).GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
+        }
+
+        int IShellFolder2.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
+        {
+            return ((IShellFolder)this).GetDisplayNameOf(pidl, uFlags, out pName);
+        }
+
+        int IShellFolder2.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
+        {
+            return ((IShellFolder)this).SetNameOf(hwnd, pidl, pszName, uFlags, out ppidlOut);
+        }
+        
+        int IShellFolder2.GetDefaultSearchGUID(out Guid pguid)
+        {
+            pguid = Guid.Empty;
+            return WinError.E_NOTIMPL;
+        }
+
+        int IShellFolder2.EnumSearches(out IEnumExtraSearch ppenum)
+        {
+            ppenum = null;
+            return WinError.E_NOTIMPL;
+        }
+
+        int IShellFolder2.GetDefaultColumn(uint dwRes, out uint pSort, out uint pDisplay)
+        {
+            pSort = 0;
+            pDisplay = 0;
+            return WinError.E_NOTIMPL;
+        }
+
+        int IShellFolder2.GetDefaultColumnState(uint iColumn, out SHCOLSTATEF pcsFlags)
+        {
+            pcsFlags = 0;
+            return WinError.E_NOTIMPL;
+        }
+
+        int IShellFolder2.GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out IntPtr pv)
+        {
+            pv = IntPtr.Zero;
+            return WinError.E_NOTIMPL;
+        }
+
+        int IShellFolder2.GetDetailsOf(IntPtr pidl, uint iColumn, out IntPtr psd)
+        {
+            if (iColumn == 0)
+            {
+
+
+                var sd =  new SHELLDETAILS
+                {
+                    fmt = 0,
+                    cxChar = 5,
+                    str = STRRET.CreateUnicode("Name")
+                };
+                IntPtr buf = Marshal.AllocHGlobal(
+    	            Marshal.SizeOf(sd));
+                Marshal.StructureToPtr(sd,
+    	            buf, false);
+                psd = buf;
+                return WinError.S_OK;
+            }
+            else
+            {
+                psd = IntPtr.Zero;
+                return WinError.E_FAIL;
+            }
+        }
+
+        int IShellFolder2.MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid)
+        {
+            //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb759748(v=vs.85).aspx
+
+            pscid = new SHCOLUMNID
+            {
+                fmtid = new Guid("{28636AA6-953D-11D2-B5D6-00C04FD918D0}"),
+                pid = 10 // displayname.
+            };
+
+            return WinError.S_OK;
+        }
 
         #endregion
 
+        #region Custom Registration and Unregistration
 
         /// <summary>
         /// The custom registration function.
@@ -591,6 +764,8 @@ IQueryInfo	The cidl parameter can only be one.
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Gets the attributes for the namespace extension. These attributes can be used
         /// to identify that a shell extension is a folder, contains folders, is part of the
@@ -619,7 +794,10 @@ IQueryInfo	The cidl parameter can only be one.
         /// <returns>Registration settings for the server.</returns>
         public abstract NamespaceExtensionRegistrationSettings GetRegistrationSettings();
 
-    private IdList extensionAbsolutePidl;
+        public abstract Control CreateView();
+
+        private IdList extensionAbsolutePidl;
+
     }
 
     public enum EnumerateChildrenFlags
