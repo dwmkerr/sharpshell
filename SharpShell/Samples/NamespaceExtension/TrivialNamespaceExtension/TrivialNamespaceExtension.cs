@@ -36,7 +36,7 @@ namespace TrivialNamespaceExtension
         {
             return new NamespaceExtensionRegistrationSettings
             {
-                ExtensionAttributes = AttributeFlags.IsFolder
+                ExtensionAttributes = AttributeFlags.IsFolder |AttributeFlags.MayContainSubFolders
             };
         }
 
