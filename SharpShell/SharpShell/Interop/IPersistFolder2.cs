@@ -12,7 +12,9 @@ namespace SharpShell.Interop
     {
         #region Overrides for C#/COM compatibility.
 
+        [PreserveSig]
         new int GetClassID(out Guid pClassID);
+        [PreserveSig]
         new int Initialize(IntPtr pidl);
 
         #endregion

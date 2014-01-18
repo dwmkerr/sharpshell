@@ -28,13 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.shellTreeView1 = new ServerManager.ShellDebugger.ShellTreeView();
             this.SuspendLayout();
+            // 
+            // shellTreeView1
+            // 
+            this.shellTreeView1.Location = new System.Drawing.Point(12, 12);
+            this.shellTreeView1.Name = "shellTreeView1";
+            this.shellTreeView1.ShowFiles = false;
+            this.shellTreeView1.ShowHiddenFilesAndFolders = false;
+            this.shellTreeView1.Size = new System.Drawing.Size(121, 97);
+            this.shellTreeView1.TabIndex = 0;
             // 
             // ShellDebuggerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 441);
+            this.Controls.Add(this.shellTreeView1);
             this.Name = "ShellDebuggerForm";
             this.Text = "ShellDebuggerForm";
             this.ResumeLayout(false);
@@ -42,6 +53,8 @@
         }
 
         #endregion
+
+        private ShellTreeView shellTreeView1;
 
     }
 }

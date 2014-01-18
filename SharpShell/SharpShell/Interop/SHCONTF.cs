@@ -1,3 +1,5 @@
+using System;
+
 namespace SharpShell.Interop
 {
     // ReSharper disable InconsistentNaming
@@ -5,6 +7,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// Determines the types of items included in an enumeration. These values are used with the IShellFolder::EnumObjects method.
     /// </summary>
+    [Flags]
     public enum SHCONTF
     {
         /// <summary>

@@ -16,8 +16,16 @@ namespace SharpShell.SharpNamespaceExtension
             //  todo: The flags should be a type in the sharpshell domain, not the shell.
             //  Store the extension for the folder we're enuerating.
             this.namespaceExtension = sharpNamespaceExtension;
-            this.flags = grfFlags;
+
             this.currentIndex = index;
+            this.flags = grfFlags;
+            //  Map the flags.
+            //  TODO: more to be done here.
+            targets = 0;
+            if (grfFlags.HasFlag(SHCONTF.SHCONTF_FOLDERS))
+                targets |= Targets.Folders;
+            if (grfFlags.HasFlag(SHCONTF.SHCONTF_NONFOLDERS))
+                targets |= Targets.Items;
         }
 
         /// <summary>
@@ -34,6 +42,8 @@ namespace SharpShell.SharpNamespaceExtension
         /// <returns></returns>
         public int Next(uint celt, IntPtr[] rgelt, out uint pceltFetched)
         {
+            
+
             //  Request the children from the extension. As this is an abstract call, we always 
             //  use an exception handler.
             var items = new List<IShellNamespaceItem>();
@@ -41,7 +51,7 @@ namespace SharpShell.SharpNamespaceExtension
             {
                 //  Enumerate the children, adding them to the items collection and moving the index forwards
                 //  by the number of items we've enumerated.
-                items.AddRange(namespaceExtension.EnumerateChildren(currentIndex, celt, new EnumerateChildrenFlags()));
+                items.AddRange(namespaceExtension.EnumerateChildren(currentIndex, celt, targets));
                 currentIndex += (uint)items.Count;
             }
             catch (Exception exception)
@@ -121,11 +131,13 @@ namespace SharpShell.SharpNamespaceExtension
         /// <summary>
         /// The enumeration flags.
         /// </summary>
-        private readonly SHCONTF flags;
+        private readonly Targets targets;
 
         /// <summary>
         /// The current index of the enumerator.
         /// </summary>
         private uint currentIndex;
+
+        private readonly SHCONTF flags;
     }
 }

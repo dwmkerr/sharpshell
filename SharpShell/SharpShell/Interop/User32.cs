@@ -28,7 +28,7 @@ namespace SharpShell.Interop
         internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         
         [DllImport("user32.dll")]
-        internal static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, IntPtr lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
         internal static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);

@@ -100,6 +100,7 @@
     <Compile Include="Interop\IDropTarget.cs" />
     <Compile Include="Interop\IEnumExtraSearch.cs" />
     <Compile Include="Interop\IEnumIDList.cs" />
+    <Compile Include="Interop\IImageList.cs" />
     <Compile Include="Interop\IObjectWithSite.cs" />
     <Compile Include="Interop\IOleWindow.cs" />
     <Compile Include="Interop\IPersist.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Interop\IPreviewHandlerVisuals.cs" />
     <Compile Include="Interop\IServiceProvider.cs" />
     <Compile Include="Interop\IShellBrowser.cs" />
+    <Compile Include="Interop\IShellDetails.cs" />
     <Compile Include="Interop\IShellFolder.cs" />
     <Compile Include="Interop\IShellFolder2.cs" />
     <Compile Include="Interop\IShellFolderViewCB.cs" />
@@ -138,7 +140,9 @@
     <Compile Include="Interop\SHCONTF.cs" />
     <Compile Include="Interop\SHELLDETAILS.cs" />
     <Compile Include="Interop\SHELLEXECUTEINFO.cs" />
+    <Compile Include="Interop\SHFILEINFO.cs" />
     <Compile Include="Interop\SHGDNF.cs" />
+    <Compile Include="Interop\SHGFI.cs" />
     <Compile Include="Interop\Shlwapi.cs" />
     <Compile Include="Interop\STRRET.cs" />
     <Compile Include="Interop\SVUIA_STATUS.cs" />

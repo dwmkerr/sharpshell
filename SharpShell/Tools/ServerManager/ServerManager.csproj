@@ -170,6 +170,9 @@
     <Compile Include="ShellDebugger\ShellDebuggerForm.Designer.cs">
       <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ShellDebugger\ShellTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TestShell\ShellThumbnailHost.cs">
       <SubType>UserControl</SubType>
     </Compile>

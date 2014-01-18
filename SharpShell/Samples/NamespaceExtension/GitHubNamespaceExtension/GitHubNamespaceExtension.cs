@@ -31,22 +31,18 @@ namespace GitHubNamespaceExtension
             return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
         }
 
-        public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, EnumerateChildrenFlags flags)
+        public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, Targets flags)
         {
+            //  If we've asked for folders, don't return items.
+            if (flags.HasFlag(Targets.Folders))
+                return new List<IShellNamespaceItem>();
+
             //  Return the children we've been asked for.
             if (index + count <= sampleRepos.Length)
                 return sampleRepos.Skip((int) index).Take((int) count).ToList();
 
             //  We've got no items to return.
             return new List<IShellNamespaceItem>();
-        }
-
-        public override IShellNamespaceItem GetChildItem(IdList idList)
-        {
-            /*foreach(var item in sampleRepos)
-                if (item.GetUniqueId() == idList)
-                    return item; */
-            return null;
         }
 
         private readonly GitHubRepo[] sampleRepos = new GitHubRepo[]
@@ -73,7 +69,7 @@ namespace GitHubNamespaceExtension
 
         public override Control CreateView()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

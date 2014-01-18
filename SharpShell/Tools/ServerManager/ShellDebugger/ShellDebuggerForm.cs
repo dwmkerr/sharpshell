@@ -44,7 +44,12 @@ namespace ServerManager.ShellDebugger
             {
                 shellView.UIActivate((uint)SVUIA_STATUS.SVUIA_DEACTIVATE);
                 shellView.DestroyViewWindow();
-                Marshal.ReleaseComObject(shellView);
+
+                //  The shell view may have come from COM but may be a SharpShell view, so check if it's COM
+                //  before we release it.
+                if(Marshal.IsComObject(shellView))
+                    Marshal.ReleaseComObject(shellView);
+                
                 shellView = null;
             }
 
@@ -209,7 +214,7 @@ namespace ServerManager.ShellDebugger
                 try
                 {
                     // Create the actual list view.
-                    res = shellView.CreateViewWindow(/*todo lastIShellView*/null, ref fs,
+                    res = shellView.CreateViewWindow(lastIShellView, ref fs,
                           this, ref rc, out hWndListView);
                 }
                 catch (COMException)

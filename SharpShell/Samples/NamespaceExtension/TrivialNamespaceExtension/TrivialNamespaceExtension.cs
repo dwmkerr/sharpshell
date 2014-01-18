@@ -22,14 +22,9 @@ namespace TrivialNamespaceExtension
             return 0;
         }
 
-        public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, EnumerateChildrenFlags flags)
+        public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, Targets flags)
         {
             yield break;
-        }
-
-        public override IShellNamespaceItem GetChildItem(IdList idList)
-        {
-            return null;
         }
 
         public override NamespaceExtensionRegistrationSettings GetRegistrationSettings()

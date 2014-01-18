@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.EnterpriseServices;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -284,12 +286,39 @@ namespace SharpShell.SharpNamespaceExtension
                 ppv = Marshal.GetComInterfaceForObject(view, typeof (IShellView));
                 return WinError.S_OK;
             }
+            else if (riid == typeof (Interop.IDropTarget).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
+            else if (riid == typeof (IContextMenu).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
+            else if (riid == typeof(IExtractIcon).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
+            else if (riid == typeof(IQueryInfo).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
+            else if (riid == typeof(IShellDetails).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
             //  TODO: we have to deal with others later.
             else
             {
                 //  We've been asked for a com inteface we cannot handle.
                 ppv = IntPtr.Zero;
-                return WinError.E_NOTIMPL;
+
+                //  Importantly in this case, we MUST return E_NOINTERFACE.
+                return WinError.E_NOINTERFACE;
             }
         }
 
@@ -586,12 +615,21 @@ IQueryInfo	The cidl parameter can only be one.
         int IShellFolder2.MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid)
         {
             //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb759748(v=vs.85).aspx
+            //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb773381(v=vs.85).aspx
 
+            //  Unique PROPERTYID value.
             pscid = new SHCOLUMNID
             {
-                fmtid = new Guid("{28636AA6-953D-11D2-B5D6-00C04FD918D0}"),
-                pid = 10 // displayname.
+                fmtid = Guid.NewGuid(),
+                pid = 2
             };
+
+            /*
+            pscid = new SHCOLUMNID
+            {
+                fmtid = new Guid("{B725F130-47EF-101A-A5F1-02608C9EEBAC}"),
+                pid = 10 // displayname.
+            }; */
 
             return WinError.S_OK;
         }
@@ -766,6 +804,23 @@ IQueryInfo	The cidl parameter can only be one.
 
         #endregion
 
+        private IShellNamespaceItem GetChildItem(IdList idList)
+        {
+            //  todo optimise this heavily to allow the folder to find it's own child.
+            var childItems = new List<IShellNamespaceItem>();
+            uint index = 0, count = 10;
+            while (true)
+            {
+                var taken = EnumerateChildren(index, count, new Targets()).ToList();
+                childItems.AddRange(taken);
+                if (taken.Count < count)
+                    break;
+                index += (uint)taken.Count;
+            }
+            return childItems.SingleOrDefault(ci => idList.Matches(ci.GetUniqueId()));
+        }
+
+
         /// <summary>
         /// Gets the attributes for the namespace extension. These attributes can be used
         /// to identify that a shell extension is a folder, contains folders, is part of the
@@ -783,9 +838,8 @@ IQueryInfo	The cidl parameter can only be one.
         /// <param name="flags">The enumeration flags.</param>
         /// <returns>A set of child items that corresponds to the requested range.</returns>
         public abstract IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count,
-            EnumerateChildrenFlags flags);
+            Targets flags);
 
-        public abstract IShellNamespaceItem GetChildItem(IdList idList);
 
         /// <summary>
         /// Gets the registration settings. This function is called only during the initial
@@ -800,7 +854,25 @@ IQueryInfo	The cidl parameter can only be one.
 
     }
 
-    public enum EnumerateChildrenFlags
+    /// <summary>
+    /// Targets for an enumeration of shell items.
+    /// </summary>
+    [Flags]
+    public enum Targets
     {
+        /// <summary>
+        /// The enumeration must include folders.
+        /// </summary>
+        Folders = 1,
+
+        /// <summary>
+        /// The enumeration must include items.
+        /// </summary>
+        Items = 2
+    }
+
+    public class DetailsViewColumn
+    {
+        public string Name { get; private set; }
     }
 }

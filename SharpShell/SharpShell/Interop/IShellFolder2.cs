@@ -12,20 +12,29 @@ namespace SharpShell.Interop
     {
         #region IShellFolder overrides for COM/C# compatibility.
         
+        [PreserveSig]
         new int ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl,
                              ref SFGAO pdwAttributes);
+        [PreserveSig]
         new int EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList);
+        [PreserveSig]
         new int BindToObject(IntPtr pidl, IntPtr pbc, [In] ref Guid riid, out IntPtr ppv);
+        [PreserveSig]
         new int BindToStorage(IntPtr pidl, IntPtr pbc, [In] ref Guid riid, out IntPtr ppv);
+        [PreserveSig]
         new int CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2);
+        [PreserveSig]
         new int CreateViewObject(IntPtr hwndOwner, [In] ref Guid riid, out IntPtr ppv);
-
+        [PreserveSig]
         new int GetAttributesOf(UInt32 cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] apidl,
                             ref SFGAO rgfInOut);
+        [PreserveSig]
         new int GetUIObjectOf(IntPtr hwndOwner, UInt32 cidl,
                           [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] IntPtr[] apidl, [In] ref Guid riid,
                           UInt32 rgfReserved, out IntPtr ppv);
+        [PreserveSig]
         new int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName);
+        [PreserveSig]
         new int SetNameOf(IntPtr hwnd, IntPtr pidl, String pszName, SHGDNF uFlags, out IntPtr ppidlOut);
 
         #endregion

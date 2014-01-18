@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Configuration;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using SharpShell.Interop;
 
@@ -160,6 +161,17 @@ namespace SharpShell.Pidl
 
             //  Return the list.
             return new IdList(IdListType.Relative, ids);
+        }
+
+        public bool Matches(byte[] id)
+        {
+            if(Ids == null || Ids.Count != 1 || id == null || Ids[0].Length != id.Length)
+                return false;
+            for(var i=0;i<id.Length; i++)
+                if(Ids[0][i] != id[i])
+                    return false;
+            return true;
+        
         }
     }
 

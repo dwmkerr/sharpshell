@@ -122,5 +122,31 @@ namespace SharpShell.Interop
         /// </summary>
         [DllImport("shell32.dll")]
         public static extern IntPtr ILClone(IntPtr pidl);
+
+
+        /// <summary>
+        /// TODO: document this.
+        /// </summary>
+        [DllImport("shell32.dll")]
+        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttribs, out SHFILEINFO psfi, uint cbFileInfo, SHGFI uFlags);
+
+        /// <summary>
+        /// TODO: document this.
+        /// </summary>
+        [DllImport("shell32.dll")]
+        public static extern IntPtr SHGetFileInfo(IntPtr pIDL, uint dwFileAttributes, out SHFILEINFO psfi, uint cbFileInfo, SHGFI uFlags);
+        
+        /// <summary>
+        /// todo: document
+        /// </summary>
+        [DllImport("shell32.dll", EntryPoint = "#727")]
+        public extern static int SHGetImageList(int iImageList, ref Guid riid, ref IImageList ppv);
+
+        [DllImport("shell32.dll")]
+        public static extern Int32 SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, ref IntPtr ppidl);
+
+        public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
+
+        public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
     }
 }
