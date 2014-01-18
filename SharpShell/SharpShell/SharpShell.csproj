@@ -159,9 +159,7 @@
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionRegistrationSettings.cs" />
-    <Compile Include="SharpNamespaceExtension\ShellViewHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="SharpNamespaceExtension\ShellViewHost.cs" />
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
@@ -242,9 +240,6 @@
   <ItemGroup>
     <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge32.dll" />
     <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge64.dll" />
-    <EmbeddedResource Include="SharpNamespaceExtension\ShellViewHost.resx">
-      <DependentUpon>ShellViewHost.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SharpPreviewHandler\PreviewHandlerHost.resx">
       <DependentUpon>PreviewHandlerHost.cs</DependentUpon>
     </EmbeddedResource>

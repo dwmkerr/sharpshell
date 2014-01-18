@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace TrivialNamespaceExtension
 {
-    public partial class UserControl1 : UserControl
+    public partial class ExtensionViewControl : UserControl
     {
-        public UserControl1()
+        public ExtensionViewControl()
         {
             InitializeComponent();
         }

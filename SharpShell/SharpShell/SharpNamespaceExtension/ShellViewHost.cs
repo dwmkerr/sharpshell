@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using SharpShell.Interop;
 
@@ -9,43 +10,9 @@ namespace SharpShell.SharpNamespaceExtension
     /// <summary>
     /// The ShellViewHost is the window created in the to host custom shell views.
     /// </summary>
-    internal class ShellViewHost : UserControl, IShellView
+    internal class ShellViewHost : IShellView
     {
-        private Control customView  ;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ShellViewHost"/> class.
-        /// </summary>
-        public ShellViewHost()
-        {
-            //  Initialize the component.
-            InitializeComponent();
-
-            //  Invisible by default.
-            Visible = false;
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // ShellViewHost
-            // 
-            this.Name = "ShellViewHost";
-            this.ResumeLayout(false);
-
-            BackColor = Color.White;
-        }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000;  // Turn on WS_EX_COMPOSITED
-                return cp;
-            }
-        }
+        private Control customView;
 
         public ShellViewHost(Control customView)
         {
@@ -92,14 +59,41 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellView.CreateViewWindow(IShellView psvPrevious, ref FOLDERSETTINGS pfs, IShellBrowser psb, ref RECT prcView,
             out IntPtr phWnd)
         {
+            //  Store the shell browser.
+            shellBrowser = psb;
+
+            //  Resize the custom view.
+            customView.Bounds = new Rectangle(prcView.left, prcView.top, prcView.Width(), prcView.Height());
+            customView.Visible = true;
+            
+            //  Set the handle to the handle of the custom view.
             phWnd = customView.Handle;
-            //  TODO
+
+            //  Set the custom view to be a child of the shell browser.
+            IntPtr parentWindowHandle;
+            psb.GetWindow(out parentWindowHandle);
+            User32.SetParent(phWnd, parentWindowHandle);
+
+            //  TODO: finish this function off.
             return WinError.S_OK;
         }
 
+        /// <summary>
+        /// Destroys the view window.
+        /// </summary>
+        /// <returns>
+        /// Returns a success code if successful, or a COM error code otherwise.
+        /// </returns>
         int IShellView.DestroyViewWindow()
         {
-            //  TODO
+            //  Hide the view window, remove it from the parent.
+            customView.Visible = false;
+            User32.SetParent(customView.Handle, IntPtr.Zero);
+
+            //  Dispose of the view window.
+            customView.Dispose();
+
+            //  And we're done.
             return WinError.S_OK;
         }
 
@@ -145,5 +139,7 @@ namespace SharpShell.SharpNamespaceExtension
             //  TODO
             return WinError.S_OK;
         }
+
+        private IShellBrowser shellBrowser;
     }
 }

@@ -36,13 +36,13 @@ namespace TrivialNamespaceExtension
         {
             return new NamespaceExtensionRegistrationSettings
             {
-                ExtensionAttributes = AttributeFlags.IsFolder |AttributeFlags.MayContainSubFolders
+                ExtensionAttributes = AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders
             };
         }
 
         public override Control CreateView()
         {
-            return new UserControl1();
+            return new ExtensionViewControl();
         }
     }
 }
