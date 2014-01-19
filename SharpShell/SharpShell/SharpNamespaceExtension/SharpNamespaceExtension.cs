@@ -608,9 +608,25 @@ namespace SharpShell.SharpNamespaceExtension
         /// <returns>Registration settings for the server.</returns>
         public abstract NamespaceExtensionRegistrationSettings GetRegistrationSettings();
 
+        /// <summary>
+        /// Gets the children of the extension.
+        /// </summary>
+        /// <param name="flags">The flags. Only return children that match the flags.</param>
+        /// <returns>The children of the extension.</returns>
         protected abstract IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags);
+
+        /// <summary>
+        /// Gets the folder view for the extension.
+        /// This can be a <see cref="DefaultNamespaceFolderView" /> which uses the standard user
+        /// interface with customised columns, or a <see cref="CustomNamespaceFolderView"/> which presents
+        /// a fully customised user inteface.
+        /// </summary>
+        /// <returns>The folder view for the extension.</returns>
         protected abstract ShellNamespaceFolderView GetView();
 
+        /// <summary>
+        /// The extension absolute pidl.
+        /// </summary>
         private IdList extensionAbsolutePidl;
     }
 
@@ -629,10 +645,5 @@ namespace SharpShell.SharpNamespaceExtension
         /// The enumeration must include items.
         /// </summary>
         Items = 2
-    }
-
-    public class DetailsViewColumn
-    {
-        public string Name { get; private set; }
-    }
+    }s
 }

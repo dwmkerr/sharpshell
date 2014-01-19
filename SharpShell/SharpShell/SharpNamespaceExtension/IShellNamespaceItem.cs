@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
@@ -55,12 +56,14 @@ namespace SharpShell.SharpNamespaceExtension
 
     public sealed class DefaultNamespaceFolderView : ShellNamespaceFolderView
     {
-        public DefaultNamespaceFolderView(IEnumerable<ShellDetailColumn> detailColumns)
+
+        public DefaultNamespaceFolderView(IEnumerable<ShellDetailColumn> detailColumns,
+            Func<IShellNamespaceItem, ShellDetailColumn, object> itemDetailProvider)
         {
+            this.itemDetailProvider = itemDetailProvider;
             columns = new List<ShellDetailColumn>(detailColumns);
         }
 
-        private readonly List<ShellDetailColumn> columns;
         internal override IShellView CreateShellView(IShellFolder folder)
         {
             //  Setup create info for a new default folder view.
@@ -79,6 +82,26 @@ namespace SharpShell.SharpNamespaceExtension
 
             return view;
         }
+
+        internal object GetItemDetail(IShellNamespaceItem item, ShellDetailColumn column)
+        {
+            return itemDetailProvider(item, column);
+        }
+
+        /// <summary>
+        /// Gets the columns.
+        /// </summary>
+        public ReadOnlyCollection<ShellDetailColumn> Columns { get { return columns.AsReadOnly(); } }
+
+        /// <summary>
+        /// The internal list of columns.
+        /// </summary>
+        private readonly List<ShellDetailColumn> columns;
+
+        /// <summary>
+        /// A provider to get the details of an item.
+        /// </summary>
+        private readonly Func<IShellNamespaceItem, ShellDetailColumn, object> itemDetailProvider;
     }
 
     public sealed class CustomNamespaceFolderView : ShellNamespaceFolderView
@@ -102,8 +125,13 @@ namespace SharpShell.SharpNamespaceExtension
         public ShellDetailColumn(string name)
         {
             this.name = name;
+            this.uniqueId = Guid.NewGuid();
         }
 
+        public string Name { get { return name; } }
+        public Guid UniqueId { get {return uniqueId;}}
+
         private readonly string name;
+        private readonly Guid uniqueId;
     }
 }

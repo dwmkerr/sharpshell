@@ -74,7 +74,7 @@ namespace ServerManager.ShellDebugger
 
         int IShellBrowser.GetWindow(out IntPtr phwnd)
         {
-            phwnd = Handle;
+            phwnd = GetFolderViewHost();
             return WinError.S_OK;
         }
 
@@ -307,5 +307,10 @@ namespace ServerManager.ShellDebugger
 
         private readonly FOLDERFLAGS folderFlags =  FOLDERFLAGS.FWF_SHOWSELALWAYS |
                                                    FOLDERFLAGS.FWF_SINGLESEL | FOLDERFLAGS.FWF_NOWEBVIEW;
+
+        private IntPtr GetFolderViewHost()
+        {
+            return splitContainerTreeAndDetails.Panel2.Handle;
+        }
     }
 }
