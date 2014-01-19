@@ -17,12 +17,27 @@ namespace RegistryNamespaceExtension
         {
             this.hiveKey = hiveKey;
             this.displayName = displayName;
-            lazyChildKeys = new Lazy<List<RegistryKeyItem>>(() => 
-                hiveKey.GetSubKeyNames().ToList().Select(subKeyName => 
-                    new RegistryKeyItem(hiveKey.OpenSubKey(subKeyName), subKeyName)).ToList());
+            lazyChildKeys = new Lazy<List<RegistryKeyItem>>(CreateChildKeys);
+                
             lazyAttributes = new Lazy<List<KeyAttribute>>(() =>
                 hiveKey.GetValueNames().Select(valueName => 
                     new KeyAttribute(valueName, hiveKey.GetValue(valueName).ToString())).ToList());
+        }
+
+        private List<RegistryKeyItem> CreateChildKeys()
+        {
+            var childKeys = new List<RegistryKeyItem>();
+            foreach (var subkeyName in hiveKey.GetSubKeyNames())
+            {
+                try
+                {
+                    childKeys.Add( new RegistryKeyItem(hiveKey.OpenSubKey(subkeyName), subkeyName));
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return childKeys;
         }
 
         ShellId IShellNamespaceItem.GetShellId()

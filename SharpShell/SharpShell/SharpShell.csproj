@@ -164,6 +164,8 @@
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionRegistrationSettings.cs" />
+    <Compile Include="SharpNamespaceExtension\ShellFolderImpl.cs" />
+    <Compile Include="SharpNamespaceExtension\ShellFolderProxy.cs" />
     <Compile Include="SharpNamespaceExtension\ShellViewHost.cs" />
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
