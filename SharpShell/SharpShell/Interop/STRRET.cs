@@ -9,7 +9,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// Contains strings returned from the IShellFolder interface methods.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, Size=272)]
     public struct STRRET
     {
         /// <summary>
@@ -19,14 +19,12 @@ namespace SharpShell.Interop
         /// <returns>A unicode <see cref="STRRET"/> allocated on the shell allocator.</returns>
         public static STRRET CreateUnicode(string str)
         {
-            //  Return a unicode string.
+            //  Return a unicode string. In this case, data is just a pointer to the 
+            //  unicode string.
             return new STRRET
             {
                 uType = STRRETTYPE.STRRET_WSTR,
-                data = new STRRETUNION
-                {
-                    pOleStr = Marshal.StringToCoTaskMemUni(str)
-                }
+                data = Marshal.StringToCoTaskMemUni(str)
             };
         }
 
@@ -43,7 +41,7 @@ namespace SharpShell.Interop
             switch (uType)
             {
                 case STRRETTYPE.STRRET_WSTR:
-                    return Marshal.PtrToStringUni(data.pOleStr);
+                    return Marshal.PtrToStringUni(data);
                 case STRRETTYPE.STRRET_OFFSET:
                     throw new NotImplementedException();
                 case STRRETTYPE.STRRET_CSTR:
@@ -51,32 +49,6 @@ namespace SharpShell.Interop
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        /// <summary>
-        /// Struct used internally to fake a C union.
-        /// </summary>
-        [StructLayout(LayoutKind.Explicit, Size = 520)]
-        public struct STRRETUNION
-        {
-            /// <summary>
-            /// A pointer to the string. This memory must be allocated with CoTaskMemAlloc. It is the calling application's responsibility to free this memory with CoTaskMemFree when it is no longer needed.
-            /// </summary>
-            [FieldOffset(0)]
-            public IntPtr pOleStr;
-
-            /// <summary>
-            /// The buffer to receive the display name.
-            /// </summary>
-            [FieldOffset(0)]
-            public IntPtr pStr;
-
-            /// <summary>
-            /// The offset into the item identifier list.
-            /// </summary>
-            [FieldOffset(0)]
-            public uint uOffset;
-
         }
 
         /// <summary>
@@ -107,7 +79,7 @@ namespace SharpShell.Interop
         /// <summary>
         /// The string data.
         /// </summary>
-        public STRRETUNION data;
+        public IntPtr data;
     }
 
     // ReSharper restore InconsistentNaming

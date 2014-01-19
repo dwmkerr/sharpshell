@@ -168,7 +168,7 @@ namespace SharpShell.Pidl
             if(Ids == null || Ids.Count != 1 || id == null || Ids[0].Length != id.Length)
                 return false;
 
-            return ids[0] == id;
+            return ids[0].Equals(id);
         
         }
 

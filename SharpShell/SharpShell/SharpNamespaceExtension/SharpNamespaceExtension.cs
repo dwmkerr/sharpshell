@@ -330,7 +330,7 @@ namespace SharpShell.SharpNamespaceExtension
 
             //  Now we can ask for the attributes of each item. We only ask for attributes that
             //  are set in the flags - clearing them if they don't apply to every item.
-            var allItems = idlists.Select(GetChildItem);
+            var allItems = idlists.Select(GetChildItem).ToList();
             var allAttributes = allItems.Select(sni => sni.GetAttributes()).ToList();
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_BROWSABLE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsBrowsable)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANCOPY, allAttributes.All(a => a.HasFlag(AttributeFlags.CanByCopied)));
@@ -823,8 +823,9 @@ IQueryInfo	The cidl parameter can only be one.
 
         private IShellNamespaceItem GetChildItem(IdList idList)
         {
-            return GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items)
-                .SingleOrDefault(ci => idList.Matches(ci.GetShellId()));
+            var kids = GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items);
+            var item = kids.FirstOrDefault(ci => idList.Matches(ci.GetShellId()));
+            return item;
         }
 
         /// <summary>
