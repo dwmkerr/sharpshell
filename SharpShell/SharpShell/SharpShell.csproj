@@ -151,6 +151,7 @@
     <Compile Include="Interop\_SVGIO.cs" />
     <Compile Include="Interop\_SVSIF.cs" />
     <Compile Include="Pidl\PidlManager.cs" />
+    <Compile Include="Pidl\ShellId.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
@@ -167,7 +168,7 @@
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolder.cs" />
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
-    <Compile Include="SharpNamespaceExtension\SharpNamespaceExtensionIdListEnumerator.cs" />
+    <Compile Include="SharpNamespaceExtension\ShellNamespaceFolderIdListEnumerator.cs" />
     <Compile Include="SharpNamespaceExtension\VirtualFolder.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>

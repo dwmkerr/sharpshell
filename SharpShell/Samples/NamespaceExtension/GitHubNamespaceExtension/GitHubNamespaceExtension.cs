@@ -16,35 +16,6 @@ namespace GitHubNamespaceExtension
     [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.Everyone, VirtualFolder.Desktop, "GitHub")]
     public class GitHubNamespaceExtension : SharpNamespaceExtension
     {
-        /// <summary>
-        /// Gets the attributes for the namespace extension. These attributes can be used
-        /// to identify that a shell extension is a folder, contains folders, is part of the
-        /// file system and so on and so on.
-        /// </summary>
-        /// <returns>
-        /// The attributes for the shell item
-        /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public override AttributeFlags GetAttributes()
-        {
-            //  The GitHub namespace extension is a folder, contains folders and is faked as part of the file system.
-            return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
-        }
-
-        public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, Targets flags)
-        {
-            //  If we've asked for folders, don't return items.
-            if (flags.HasFlag(Targets.Folders))
-                return new List<IShellNamespaceItem>();
-
-            //  Return the children we've been asked for.
-            if (index + count <= sampleRepos.Length)
-                return sampleRepos.Skip((int) index).Take((int) count).ToList();
-
-            //  We've got no items to return.
-            return new List<IShellNamespaceItem>();
-        }
-
         private readonly GitHubRepo[] sampleRepos = new GitHubRepo[]
         {
             new GitHubRepo("SharpShell"),
@@ -67,9 +38,14 @@ namespace GitHubNamespaceExtension
             };
         }
 
-        public override Control CreateView()
+        protected override IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags)
         {
-            return null;
+            return sampleRepos;
+        }
+
+        protected override ShellNamespaceFolderView GetView()
+        {
+            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name"), });
         }
     }
 }

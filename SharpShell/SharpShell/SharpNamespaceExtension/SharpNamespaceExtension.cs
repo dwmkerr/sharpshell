@@ -31,7 +31,8 @@ namespace SharpShell.SharpNamespaceExtension
     public abstract class SharpNamespaceExtension : 
         SharpShellServer, 
         IPersistFolder2,
-        IShellFolder2
+        IShellFolder2,
+        IShellNamespaceFolder
 
     {
         protected SharpNamespaceExtension()
@@ -152,7 +153,7 @@ namespace SharpShell.SharpNamespaceExtension
         {
             //  Create an object that will enumerate the contents of this shell folder (that implements
             //  IEnumIdList). This can be returned to the shell.
-            ppenumIDList = new SharpNamespaceExtensionIdListEnumerator(this, grfFlags, 0);
+            ppenumIDList = new ShellNamespaceFolderIdListEnumerator(this, grfFlags, 0);
 
             //  TODO we should also store the window handle for user interaction.
 
@@ -253,38 +254,24 @@ namespace SharpShell.SharpNamespaceExtension
 
             if (riid == typeof (IShellView).GUID)
             {
-                //  If we can create a view object, we'll use that.
-                var customView = CreateView();
-                if (customView != null)
+                //  Create the folder view.
+                var folderView = ((IShellNamespaceFolder) this).GetView();
+
+                //  Now create the actual shell view.
+                try
                 {
-                    //  TODO: we need to split the classes - one custom view folder, one def view folder.
-                    var host = new ShellViewHost(customView);
-                    ppv = Marshal.GetComInterfaceForObject(host, typeof(IShellView));
+                    //  Create the view, get its pointer and return success.
+                    var shellFolderView = folderView.CreateShellView(this);
+                    ppv = Marshal.GetComInterfaceForObject(shellFolderView, typeof (IShellView));
                     return WinError.S_OK;
                 }
-
-                //  TODO: Currently we are only support the default shell view. By allowing 
-                //  clients to implement IShellView via a SharpShell wrapper we can take this further.
-
-                //  Create a default folder view.
-                SFV_CREATE createInfo = new SFV_CREATE
+                catch (Exception exception)
                 {
-                    cbSize = (uint) Marshal.SizeOf(typeof (SFV_CREATE)),
-                    pshf = this, //  We are the IShellFolder.
-                    psvOuter = null, //  We have no outer view.
-                    psfvcb = null //  No callback provided.
-                };
-                IShellView view;
-                if (Shell32.SHCreateShellFolderView(createInfo, out view) != WinError.S_OK)
-                {
-                    LogError("An error occured creating the default folder view for this shell folder.");
+                    //  Log the exception, set the view to null and fail.
+                    LogError("An unhandled exception occured createing the folder view.", exception);
                     ppv = IntPtr.Zero;
                     return WinError.E_FAIL;
-                } 
-
-                //  We've created the view, return it.
-                ppv = Marshal.GetComInterfaceForObject(view, typeof (IShellView));
-                return WinError.S_OK;
+                }
             }
             else if (riid == typeof (Interop.IDropTarget).GUID)
             {
@@ -804,42 +791,41 @@ IQueryInfo	The cidl parameter can only be one.
 
         #endregion
 
-        private IShellNamespaceItem GetChildItem(IdList idList)
+        #region Implementation of IShellNamespaceItem and IShellNamespaceFolder
+
+        ShellId IShellNamespaceItem.GetShellId()
         {
-            //  todo optimise this heavily to allow the folder to find it's own child.
-            var childItems = new List<IShellNamespaceItem>();
-            uint index = 0, count = 10;
-            while (true)
-            {
-                var taken = EnumerateChildren(index, count, new Targets()).ToList();
-                childItems.AddRange(taken);
-                if (taken.Count < count)
-                    break;
-                index += (uint)taken.Count;
-            }
-            return childItems.SingleOrDefault(ci => idList.Matches(ci.GetUniqueId()));
+            throw new NotImplementedException();
         }
 
+        string IShellNamespaceItem.GetDisplayName(DisplayNameContext displayNameContext)
+        {
+            //  TODO handle all cases in future, for now we can just use the attribute version
+            return DisplayName;
+        }
 
-        /// <summary>
-        /// Gets the attributes for the namespace extension. These attributes can be used
-        /// to identify that a shell extension is a folder, contains folders, is part of the
-        /// file system and so on and so on.
-        /// </summary>
-        /// <returns>The attributes for the shell item</returns>
-        public abstract AttributeFlags GetAttributes();
+        AttributeFlags IShellNamespaceItem.GetAttributes()
+        {
+            return GetRegistrationSettings().ExtensionAttributes;
+        }
 
-        /// <summary>
-        /// This function is called by SharpShell to get the children of a Shell Folder. For performance reasons,
-        /// children will often be loaded in batches, so they must be returned as a list.
-        /// </summary>
-        /// <param name="index">The index of the first item in the set to load.</param>
-        /// <param name="count">The number of items to load.</param>
-        /// <param name="flags">The enumeration flags.</param>
-        /// <returns>A set of child items that corresponds to the requested range.</returns>
-        public abstract IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count,
-            Targets flags);
+        IEnumerable<IShellNamespaceItem> IShellNamespaceFolder.GetChildren(ShellNamespaceEnumerationFlags flags)
+        {
+            return GetChildren(flags);
+        }
 
+        ShellNamespaceFolderView IShellNamespaceFolder.GetView()
+        {
+            return GetView();
+        }
+
+        #endregion
+
+        private IShellNamespaceItem GetChildItem(IdList idList)
+        {
+            return GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items)
+                .SingleOrDefault(ci => idList.Matches(ci.GetShellId()));
+        }
 
         /// <summary>
         /// Gets the registration settings. This function is called only during the initial
@@ -848,17 +834,17 @@ IQueryInfo	The cidl parameter can only be one.
         /// <returns>Registration settings for the server.</returns>
         public abstract NamespaceExtensionRegistrationSettings GetRegistrationSettings();
 
-        public abstract Control CreateView();
+        protected abstract IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags);
+        protected abstract ShellNamespaceFolderView GetView();
 
         private IdList extensionAbsolutePidl;
-
     }
 
     /// <summary>
-    /// Targets for an enumeration of shell items.
+    /// ShellNamespaceEnumerationFlags for an enumeration of shell items.
     /// </summary>
     [Flags]
-    public enum Targets
+    public enum ShellNamespaceEnumerationFlags
     {
         /// <summary>
         /// The enumeration must include folders.

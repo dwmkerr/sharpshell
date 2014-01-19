@@ -17,16 +17,6 @@ namespace TrivialNamespaceExtension
     [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.Everyone, VirtualFolder.MyComputer, "Trivial Extension")]
     public class TrivialNamespaceExtension : SharpNamespaceExtension
     {
-        public override AttributeFlags GetAttributes()
-        {
-            return 0;
-        }
-
-        public override IEnumerable<IShellNamespaceItem> EnumerateChildren(uint index, uint count, Targets flags)
-        {
-            yield break;
-        }
-
         public override NamespaceExtensionRegistrationSettings GetRegistrationSettings()
         {
             return new NamespaceExtensionRegistrationSettings
@@ -35,9 +25,14 @@ namespace TrivialNamespaceExtension
             };
         }
 
-        public override Control CreateView()
+        protected override IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags)
         {
-            return new ExtensionViewControl();
+            yield break;
+        }
+
+        protected override ShellNamespaceFolderView GetView()
+        {
+            return new CustomNamespaceFolderView(new ExtensionViewControl());
         }
     }
 }

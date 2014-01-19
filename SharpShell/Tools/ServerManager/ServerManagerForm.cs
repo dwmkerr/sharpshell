@@ -111,7 +111,8 @@ namespace ServerManager
             desktopProcessToolStripMenuItem.Checked = explorerConfigurationManager.DesktopProcess;
             alwaysUnloadDLLToolStripMenuItem.Checked = explorerConfigurationManager.AlwaysUnloadDll;
 
-            //  Add the recently used servers.
+            //  Add the recently used servers. If any of them fail to load, we'll remove them from the list.
+            var recentlyUsedFilesToRemove = new List<string>();
             if (Properties.Settings.Default.RecentlyUsedFiles != null)
             {
                 foreach(var path in Properties.Settings.Default.RecentlyUsedFiles)

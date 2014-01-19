@@ -86,6 +86,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AEF490
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistryNamespaceExtension", "Samples\NamespaceExtension\RegistryNamespaceExtension\RegistryNamespaceExtension.csproj", "{ACA406B5-4E8A-4AB2-A974-1E5C86880462}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -408,6 +410,20 @@ Global
 		{83062DA1-1841-46CD-A2F7-3F6469CE106D}.Release|Win32.ActiveCfg = Release|Any CPU
 		{83062DA1-1841-46CD-A2F7-3F6469CE106D}.Release|x64.ActiveCfg = Release|Any CPU
 		{83062DA1-1841-46CD-A2F7-3F6469CE106D}.Release|x86.ActiveCfg = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|Win32.ActiveCfg = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|x64.ActiveCfg = Release|Any CPU
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -443,5 +459,6 @@ Global
 		{F87EC4C6-1E25-4433-8C15-B9550AF1D0EA} = {B2D5C18D-4DC8-468B-B45B-C23829AC658F}
 		{4A577120-B6A1-490D-BE53-82D81E1581B4} = {915BB9DF-13F0-4E44-865F-4816C1FAB538}
 		{83062DA1-1841-46CD-A2F7-3F6469CE106D} = {915BB9DF-13F0-4E44-865F-4816C1FAB538}
+		{ACA406B5-4E8A-4AB2-A974-1E5C86880462} = {915BB9DF-13F0-4E44-865F-4816C1FAB538}
 	EndGlobalSection
 EndGlobal

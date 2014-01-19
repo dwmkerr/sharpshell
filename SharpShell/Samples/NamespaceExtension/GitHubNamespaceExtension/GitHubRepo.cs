@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using SharpShell.Pidl;
 using SharpShell.SharpNamespaceExtension;
 
 namespace GitHubNamespaceExtension
@@ -10,14 +11,15 @@ namespace GitHubNamespaceExtension
         {
             Name = name;
         }
+
         /// <summary>
         /// Gets the unique identifier.
         /// </summary>
         /// <returns>The unique identifier, which in this case is based on the repo name.</returns>
-        public override byte[] GetUniqueId()
+        public override ShellId GetShellId()
         {
             //  Use the name as the source of the ID.
-            return Encoding.UTF8.GetBytes(Name);
+            return ShellId.FromString(Name);
         }
 
         /// <summary>

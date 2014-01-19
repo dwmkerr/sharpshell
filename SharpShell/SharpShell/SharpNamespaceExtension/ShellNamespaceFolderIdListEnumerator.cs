@@ -9,23 +9,23 @@ namespace SharpShell.SharpNamespaceExtension
     /// <summary>
     /// Internally used class to enumerate the contents of a Sharp Namespace Extension folder.
     /// </summary>
-    internal class SharpNamespaceExtensionIdListEnumerator : IEnumIDList
+    internal class ShellNamespaceFolderIdListEnumerator : IEnumIDList
     {
-        public SharpNamespaceExtensionIdListEnumerator(SharpNamespaceExtension sharpNamespaceExtension, SHCONTF grfFlags, uint index)
+        public ShellNamespaceFolderIdListEnumerator(IShellNamespaceFolder shellNamespaceFolder, SHCONTF grfFlags, uint index)
         {
             //  todo: The flags should be a type in the sharpshell domain, not the shell.
             //  Store the extension for the folder we're enuerating.
-            this.namespaceExtension = sharpNamespaceExtension;
+            this.shellNamespaceFolder = shellNamespaceFolder;
 
             this.currentIndex = index;
             this.flags = grfFlags;
             //  Map the flags.
             //  TODO: more to be done here.
-            targets = 0;
+            _shellNamespaceEnumerationFlags = 0;
             if (grfFlags.HasFlag(SHCONTF.SHCONTF_FOLDERS))
-                targets |= Targets.Folders;
+                _shellNamespaceEnumerationFlags |= ShellNamespaceEnumerationFlags.Folders;
             if (grfFlags.HasFlag(SHCONTF.SHCONTF_NONFOLDERS))
-                targets |= Targets.Items;
+                _shellNamespaceEnumerationFlags |= ShellNamespaceEnumerationFlags.Items;
         }
 
         /// <summary>
@@ -42,22 +42,27 @@ namespace SharpShell.SharpNamespaceExtension
         /// <returns></returns>
         public int Next(uint celt, IntPtr[] rgelt, out uint pceltFetched)
         {
-            
-
             //  Request the children from the extension. As this is an abstract call, we always 
             //  use an exception handler.
             var items = new List<IShellNamespaceItem>();
             try
             {
+                //  TODO: We may want to improve on the public api here so that we don't have to enumerate
+                //  everything to get certain items.
+
                 //  Enumerate the children, adding them to the items collection and moving the index forwards
                 //  by the number of items we've enumerated.
-                items.AddRange(namespaceExtension.EnumerateChildren(currentIndex, celt, targets));
+                items.AddRange(
+                    shellNamespaceFolder
+                        .GetChildren(_shellNamespaceEnumerationFlags)
+                        .Skip((int)currentIndex)
+                        .Take((int)celt));
                 currentIndex += (uint)items.Count;
             }
             catch (Exception exception)
             {
                 //  Log the exception, but continue as if we've enumerated nothing.
-                Diagnostics.Logging.Error(string.Format("An unhandled exception occured enumerating {0} items from the {1} namespace extension.", celt, namespaceExtension.DisplayName),
+                Diagnostics.Logging.Error(string.Format("An unhandled exception occured enumerating {0} items from the {1} namespace extension.", celt, shellNamespaceFolder.GetDisplayName(DisplayNameContext.Normal)),
                     exception);
             }
 
@@ -69,10 +74,10 @@ namespace SharpShell.SharpNamespaceExtension
             }
 
             //  For every item enumerated, use the PIDL manager to create a shell allocated PIDL.
-            //  These PIDLs must not be relative, so using the value returned by the GetUniqueId
+            //  These PIDLs must not be relative, so using the value returned by the GetShellId
             //  function is enough.
             var pidlArray = items.Select(
-                iid => PidlManager.IdListToPidl(IdList.Create(IdListType.Relative, new List<byte[]> { iid.GetUniqueId()} ))).ToArray();
+                iid => PidlManager.IdListToPidl(IdList.Create(IdListType.Relative, new List<ShellId> { iid.GetShellId()} ))).ToArray();
 
             //  We can now return the pidl array.
             for (int i = 0; i < pidlArray.Length; i++)
@@ -117,7 +122,7 @@ namespace SharpShell.SharpNamespaceExtension
         {
             //  Create a brand new enumerator, pointing at the same object
             //  and move it's index to the same position.
-            ppenum = new SharpNamespaceExtensionIdListEnumerator(namespaceExtension, flags, currentIndex);
+            ppenum = new ShellNamespaceFolderIdListEnumerator(shellNamespaceFolder, flags, currentIndex);
 
             //  We're done.
             return WinError.S_OK;
@@ -126,12 +131,12 @@ namespace SharpShell.SharpNamespaceExtension
         /// <summary>
         /// The namespace extension that we're enumerating.
         /// </summary>
-        private readonly SharpNamespaceExtension namespaceExtension;
+        private readonly IShellNamespaceFolder shellNamespaceFolder;
 
         /// <summary>
         /// The enumeration flags.
         /// </summary>
-        private readonly Targets targets;
+        private readonly ShellNamespaceEnumerationFlags _shellNamespaceEnumerationFlags;
 
         /// <summary>
         /// The current index of the enumerator.

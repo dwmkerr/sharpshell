@@ -22,7 +22,7 @@ namespace SharpShell.Pidl
     /// </remarks>
     public static class PidlManager
     {
-        public static List<byte[]> Decode(IntPtr pidl)
+        public static List<ShellId> Decode(IntPtr pidl)
         {
             //  Pidl is a pointer to an idlist, an idlist is a set of shitemid
             //  structures that have length indicator of two bytes, then the id data.
@@ -38,12 +38,12 @@ namespace SharpShell.Pidl
             {
                 //  Read the data.
                 var id = new byte[idLength - 2];
-                Marshal.Copy(pidl + bytesRead, id, 0, idLength - 2);
+                Marshal.Copy(pidl + bytesRead + 2, id, 0, idLength - 2);
                 idList.Add(id);
                 bytesRead += idLength;
             }
 
-            return idList;
+            return idList.Select(id => new ShellId(id)).ToList();
         }
 
         public static IdList GetDesktop()
@@ -87,7 +87,7 @@ namespace SharpShell.Pidl
                 //  Add the size and data.
                 short length = (short)(id.Length + 2);
                 rawBytes.AddRange(BitConverter.GetBytes(length));
-                rawBytes.AddRange(id);
+                rawBytes.AddRange(id.RawId);
             }
 
             //  Write the null termination.
@@ -110,23 +110,23 @@ namespace SharpShell.Pidl
 
     public sealed class IdList
     {
-        private IdList(IdListType type, List<byte[]> ids)
+        private IdList(IdListType type, List<ShellId> ids)
         {
             this.type = type;
             this.ids = ids;
         }
 
-        internal static IdList Create(IdListType type, List<byte[]> ids)
+        internal static IdList Create(IdListType type, List<ShellId> ids)
         {
             return new IdList(type, ids);
         }
 
-        private readonly List<byte[]> ids;
+        private readonly List<ShellId> ids;
         private readonly IdListType type;
 
         public IdListType Type { get { return type; } }
 
-        internal List<byte[]> Ids { get { return ids; }}
+        internal List<ShellId> Ids { get { return ids; }}
 
         public string ToParsingString()
         {
@@ -135,7 +135,7 @@ namespace SharpShell.Pidl
             foreach (var id in ids)
             {
                 sb.AppendFormat("{0:x4}", (short)id.Length);
-                foreach(var idi in id)
+                foreach(var idi in id.RawId)
                     sb.AppendFormat("{0:x2}", idi);
             }
 
@@ -145,7 +145,7 @@ namespace SharpShell.Pidl
         public static IdList FromParsingString(string str)
         {
             //  Create the id storage.
-            var ids = new List<byte[]>();
+            var ids = new List<ShellId>();
 
             //  Repeatedly read a short length then the data.
             int index = 0;
@@ -156,22 +156,30 @@ namespace SharpShell.Pidl
                 index += 4;
                 for (var i = 0; i < length; i++, index += 2)
                     id[i] = Convert.ToByte(str.Substring(index, 2), 16);
-                ids.Add(id);
+                ids.Add(ShellId.FromData(id));
             }
 
             //  Return the list.
             return new IdList(IdListType.Relative, ids);
         }
 
-        public bool Matches(byte[] id)
+        public bool Matches(ShellId id)
         {
             if(Ids == null || Ids.Count != 1 || id == null || Ids[0].Length != id.Length)
                 return false;
-            for(var i=0;i<id.Length; i++)
-                if(Ids[0][i] != id[i])
+
+            return ids[0] == id;
+        
+        }
+
+        public bool Matches(IdList idList)
+        {
+            if (idList == null || idList.ids == null || idList.ids.Count != ids.Count)
+                return false;
+            for(var i=0; i<ids.Count; i++)
+                if (!ids[i].Equals(idList.ids[i]))
                     return false;
             return true;
-        
         }
     }
 
