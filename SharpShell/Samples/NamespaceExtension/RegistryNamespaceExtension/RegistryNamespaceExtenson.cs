@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Microsoft.Win32;
 using SharpShell.SharpNamespaceExtension;
 
@@ -50,7 +51,11 @@ namespace RegistryNamespaceExtension
 
         protected override ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name"), new ShellDetailColumn("Value") });
+            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name"), new ShellDetailColumn("Value") },
+                (item, column) =>
+                {
+                    return "Example";
+                });
         }
 
         private readonly List<RegistryKeyItem> hives;

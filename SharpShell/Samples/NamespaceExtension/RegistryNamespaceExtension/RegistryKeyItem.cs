@@ -74,7 +74,11 @@ namespace RegistryNamespaceExtension
 
         public ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new[] { new ShellDetailColumn("Name"), new ShellDetailColumn("Value") });
+            return new DefaultNamespaceFolderView(new[] { new ShellDetailColumn("Name"), new ShellDetailColumn("Value") },
+                (item, column) =>
+                {
+                    return "Example";
+                });
         }
 
         private readonly Lazy<List<RegistryKeyItem>> lazyChildKeys;

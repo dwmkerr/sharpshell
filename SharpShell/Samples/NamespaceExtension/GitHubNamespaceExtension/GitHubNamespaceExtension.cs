@@ -45,7 +45,7 @@ namespace GitHubNamespaceExtension
 
         protected override ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name"), });
+            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name")}, null);
         }
     }
 }

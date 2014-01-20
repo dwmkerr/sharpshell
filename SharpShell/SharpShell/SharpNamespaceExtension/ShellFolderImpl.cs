@@ -274,10 +274,10 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.S_OK;
         }
 
-        internal static int GetDetailsEx(IShellNamespaceFolder folder, IntPtr pidl, SHCOLUMNID pscid, out IntPtr pv)
+        internal static int GetDetailsEx(IShellNamespaceFolder folder, IntPtr pidl, SHCOLUMNID pscid, out object pv)
         {
             //  Get the column.
-            var detailView = ((DefaultNamespaceFolderView)folder.GetView())
+            var detailView = (DefaultNamespaceFolderView) folder.GetView();
             var column = detailView.Columns.Single(c => c.UniqueId == pscid.fmtid);
 
             //  Get the item.

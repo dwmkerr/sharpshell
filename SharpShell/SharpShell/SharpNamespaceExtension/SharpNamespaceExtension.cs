@@ -376,7 +376,7 @@ namespace SharpShell.SharpNamespaceExtension
             return ShellFolderImpl.GetDefaultColumnState(this, iColumn, out pcsFlags);
         }
 
-        int IShellFolder2.GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out IntPtr pv)
+        int IShellFolder2.GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv)
         {
             //  Use the ShellFolderImpl to handle the details.
             return ShellFolderImpl.GetDetailsEx(this, pidl, pscid, out pv);
@@ -645,5 +645,5 @@ namespace SharpShell.SharpNamespaceExtension
         /// The enumeration must include items.
         /// </summary>
         Items = 2
-    }s
+    }
 }
