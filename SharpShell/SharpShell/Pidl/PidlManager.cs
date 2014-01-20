@@ -65,6 +65,9 @@ namespace SharpShell.Pidl
         /// <returns>An <see cref="IdList"/> that corresponds to the PIDL.</returns>
         public static IdList PidlToIdlist(IntPtr pidl)
         {
+            if(pidl == IntPtr.Zero)
+                throw new Exception("Cannot create an ID list from a null pidl.");
+
             //  Create the raw ID list.
             var ids = Decode(pidl);
 

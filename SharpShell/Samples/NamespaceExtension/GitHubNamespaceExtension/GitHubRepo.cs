@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using SharpShell.Pidl;
 using SharpShell.SharpNamespaceExtension;
 
 namespace GitHubNamespaceExtension
 {
-    public class GitHubRepo : ShellNamespaceFolder
+    public class GitHubRepo : IShellNamespaceFolder
     {
         internal GitHubRepo(string name)
         {
@@ -16,7 +17,7 @@ namespace GitHubNamespaceExtension
         /// Gets the unique identifier.
         /// </summary>
         /// <returns>The unique identifier, which in this case is based on the repo name.</returns>
-        public override ShellId GetShellId()
+        public ShellId GetShellId()
         {
             //  Use the name as the source of the ID.
             return ShellId.FromString(Name);
@@ -27,17 +28,26 @@ namespace GitHubNamespaceExtension
         /// </summary>
         /// <param name="displayNameContext">The display name context.</param>
         /// <returns></returns>
-        public override string GetDisplayName(DisplayNameContext displayNameContext)
+        public string GetDisplayName(DisplayNameContext displayNameContext)
         {
             //  In all cases, we just use the repo name
             return Name;
         }
 
-        public override AttributeFlags GetAttributes()
+        public AttributeFlags GetAttributes()
         {
             return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
         }
 
         public string Name { get; private set; }
+        public IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShellNamespaceFolderView GetView()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

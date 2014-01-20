@@ -7,9 +7,23 @@ using SharpShell.Pidl;
 
 namespace SharpShell.SharpNamespaceExtension
 {
-    internal static class ShellFolderImpl
+    internal class ShellFolderImpl
     {
-        internal static int ParseDisplayName(IShellNamespaceFolder folder, IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl,
+        private IShellNamespaceFolder folder;
+        private readonly Lazy<ShellNamespaceFolderView> lazyView;
+
+        private ShellNamespaceFolderView folderView
+        {
+            get { return lazyView.Value; }
+        }
+
+        public ShellFolderImpl(IShellNamespaceFolder folder)
+        {
+            this.folder = folder;
+            this.lazyView = new Lazy<ShellNamespaceFolderView>(() => folder.GetView());
+        }
+
+        internal int ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl,
             ref SFGAO pdwAttributes)
         {
             //  First we can decode the pidl from the display name.
@@ -22,7 +36,7 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal static int EnumObjects(IShellNamespaceFolder folder, IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIdList)
+        internal int EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIdList)
         {
             //  Create an object that will enumerate the contents of this shell folder (that implements
             //  IEnumIdList). This can be returned to the shell.
@@ -34,13 +48,13 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal static int BindToObject(IShellNamespaceFolder folder, IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
+        internal int BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
             //  Have we been asked to bind to a folder?
             if (riid == typeof(IShellFolder).GUID || riid == typeof(IShellFolder2).GUID)
             {
                 //  Get the child item.
-                var childItem = GetChildItem(folder, PidlManager.PidlToIdlist(pidl));
+                var childItem = GetChildItem(PidlManager.PidlToIdlist(pidl));
 
                 //  If the item is a folder, we can create a proxy for it and return the proxy.
                 var subFolder = childItem as IShellNamespaceFolder;
@@ -57,14 +71,14 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.E_NOINTERFACE;
         }
 
-        internal static int BindToStorage(IShellNamespaceFolder folder, IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
+        internal int BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
             //  TODO: this will need to be implemented at some stage.
             ppv = IntPtr.Zero;
             return WinError.E_NOTIMPL;
         }
 
-        internal static int CompareIDs(IShellNamespaceFolder folder, IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
+        internal int CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
         {
             //  Get the low short from the lParam, this is the sorting option.
             short sortingRule = (short)(lParam.ToInt64() & 0x000000FF);
@@ -75,7 +89,7 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal static int CreateViewObject(IShellNamespaceFolder folder, IShellFolder shellFolder, IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
+        internal int CreateViewObject(IShellFolder shellFolder, IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
         {
             //  Before the contents of the folder are displayed, the shell asks for an IShellView.
             //  This function is also called to get other shell interfaces for interacting with the
@@ -83,9 +97,6 @@ namespace SharpShell.SharpNamespaceExtension
 
             if (riid == typeof(IShellView).GUID)
             {
-                //  Create the folder view.
-                var folderView = folder.GetView();
-
                 //  Now create the actual shell view.
                 try
                 {
@@ -138,7 +149,7 @@ namespace SharpShell.SharpNamespaceExtension
             }
         }
 
-        internal static int GetAttributesOf(IShellNamespaceFolder folder, uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
+        internal int GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
         {
             //  Get each pidl as an idlist.
             var idlists = (cidl > 0 && apidl != null)
@@ -147,7 +158,7 @@ namespace SharpShell.SharpNamespaceExtension
 
             //  Now we can ask for the attributes of each item. We only ask for attributes that
             //  are set in the flags - clearing them if they don't apply to every item.
-            var allItems = idlists.Select(idl => GetChildItem(folder, idl)).ToList();
+            var allItems = idlists.Select(GetChildItem).ToList();
             var allAttributes = allItems.Select(sni => sni.GetAttributes()).ToList();
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_BROWSABLE, allAttributes.All(a => a.HasFlag(AttributeFlags.IsBrowsable)));
             UpdateFlagIfSet(ref rgfInOut, SFGAO.SFGAO_CANCOPY, allAttributes.All(a => a.HasFlag(AttributeFlags.CanByCopied)));
@@ -180,7 +191,7 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal static int GetUIObjectOf(IShellNamespaceFolder folder, IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
+        internal int GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  We have a set of child pidls (i.e. length one). We can now offer interfaces such as:
             /*
@@ -197,14 +208,14 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.E_NOTIMPL;
         }
 
-        internal static int GetDisplayNameOf(IShellNamespaceFolder folder, IntPtr pidl, SHGDNF uFlags, out STRRET pName)
+        internal int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
             //  Create an idlist from the pidl.
             var idlist = PidlManager.PidlToIdlist(pidl);
 
             //  Get the shell item.
             //  TODO; handle errors
-            var shellItem = GetChildItem(folder, idlist);
+            var shellItem = GetChildItem(idlist);
 
             //  If the flags are normal only, we're asking for the display name only.
             if (uFlags == SHGDNF.SHGDN_NORMAL)
@@ -238,34 +249,34 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.S_OK;
         }
 
-        internal static int SetNameOf(IShellNamespaceFolder folder, IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
+        internal int SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
         {
             //  TODO this needs to be implemented.
             ppidlOut = IntPtr.Zero;
             return WinError.E_NOTIMPL;
         }
 
-        internal static int GetDefaultSearchGUID(IShellNamespaceFolder folder, out Guid pguid)
+        internal int GetDefaultSearchGUID(out Guid pguid)
         {
             pguid = Guid.Empty;
             return WinError.E_NOTIMPL;
         }
 
-        internal static int EnumSearches(IShellNamespaceFolder folder, out IEnumExtraSearch ppenum)
+        internal int EnumSearches(out IEnumExtraSearch ppenum)
         {
             ppenum = null;
             return WinError.E_NOTIMPL;
         }
 
-        internal static int GetDefaultColumn(IShellNamespaceFolder folder, uint dwRes, out uint pSort, out uint pDisplay)
+        internal int GetDefaultColumn(uint dwRes, out uint pSort, out uint pDisplay)
         {
             //  TODO: expose this to the API in the future. For now, default column is the first.
             pSort = 0;
             pDisplay = 0;
-            return WinError.S_OK;
+            return WinError.E_NOTIMPL;
         }
 
-        internal static int GetDefaultColumnState(IShellNamespaceFolder folder, uint iColumn, out SHCOLSTATEF pcsFlags)
+        internal int GetDefaultColumnState(uint iColumn, out SHCOLSTATEF pcsFlags)
         {
             //  TODO: expose this to the API via properties on the column. For now, the default state is text.
             pcsFlags = SHCOLSTATEF.SHCOLSTATE_TYPE_STR;
@@ -274,27 +285,32 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.S_OK;
         }
 
-        internal static int GetDetailsEx(IShellNamespaceFolder folder, IntPtr pidl, SHCOLUMNID pscid, out object pv)
+        internal int GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv)
         {
             //  Get the column.
-            var detailView = (DefaultNamespaceFolderView) folder.GetView();
-            var column = detailView.Columns.Single(c => c.UniqueId == pscid.fmtid);
+            var detailView = (DefaultNamespaceFolderView)folderView;
+            if (detailView == null || pidl == IntPtr.Zero)
+            {
+                pv = "how";
+                return WinError.S_OK;
+            }
+            var column = detailView.Columns.SingleOrDefault(c => c.UniqueId == pscid.fmtid);
 
             //  Get the item.
-            var item = GetChildItem(folder, PidlManager.PidlToIdlist(pidl));
+            var item = GetChildItem(PidlManager.PidlToIdlist(pidl));
 
             //  Return the detail for the item.
             var detail = detailView.GetItemDetail(item, column);
 
             //  Todo marshal variant
-            pv = IntPtr.Zero;
-            return WinError.E_NOTIMPL;
+            pv = detail;
+            return WinError.S_OK;
         }
 
-        internal static int GetDetailsOf(IShellNamespaceFolder folder, IntPtr pidl, uint iColumn, out IntPtr psd)
+        internal int GetDetailsOf(IntPtr pidl, uint iColumn, out IntPtr psd)
         {
             //  Get the folder view columns.
-            var columns = ((DefaultNamespaceFolderView) folder.GetView()).Columns;
+            var columns = ((DefaultNamespaceFolderView)folderView).Columns;
 
             //  If details are being requested for a column we don't have, we must fail.
             if (iColumn >= columns.Count)
@@ -315,20 +331,25 @@ IQueryInfo	The cidl parameter can only be one.
             //  Allocate enough space for the structure and copy it to the allocated memory.
             var buffer = Marshal.AllocHGlobal(Marshal.SizeOf(details));
             Marshal.StructureToPtr(details, buffer, false);
-            psd = buffer;
 
             //  Return the pointer to the buffer and we're done.
             psd = buffer;
             return WinError.S_OK;
         }
 
-        internal static int MapColumnToSCID(IShellNamespaceFolder folder, uint iColumn, out SHCOLUMNID pscid)
+        internal int MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid)
         {
             //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb759748(v=vs.85).aspx
             //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb773381(v=vs.85).aspx
 
+            if (iColumn >= (int) ((DefaultNamespaceFolderView) folderView).Columns.Count)
+            {
+                pscid = new SHCOLUMNID {fmtid = new Guid(), pid = 2};
+                return WinError.E_FAIL;
+            }
+
             //  Get the column.
-            var column = ((DefaultNamespaceFolderView)folder.GetView()).Columns[(int)iColumn];
+            var column = ((DefaultNamespaceFolderView)folderView).Columns[(int)iColumn];
 
             //  TODO: there are 'default' columns such as 'Name' we can map to, see notes above.
             //  Set the column id for it.
@@ -351,7 +372,7 @@ IQueryInfo	The cidl parameter can only be one.
             }
         }
 
-        private static IShellNamespaceItem GetChildItem(IShellNamespaceFolder folder, IdList idList)
+        private IShellNamespaceItem GetChildItem(IdList idList)
         {
             return folder
                 .GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items)

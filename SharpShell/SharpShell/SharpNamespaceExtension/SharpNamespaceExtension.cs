@@ -39,6 +39,8 @@ namespace SharpShell.SharpNamespaceExtension
         protected SharpNamespaceExtension()
         {
             Log("Instatiated Namespace Extension");
+
+            folderImpl = new ShellFolderImpl(this);
         }
 
         #region Implementation of IPersistFolder2.
@@ -128,7 +130,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl, ref SFGAO pdwAttributes)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.ParseDisplayName(this, hwnd, pbc, pszDisplayName, ref pchEaten, out ppidl,
+            return folderImpl.ParseDisplayName(hwnd, pbc, pszDisplayName, ref pchEaten, out ppidl,
                 ref pdwAttributes);
         }
         
@@ -146,7 +148,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.EnumObjects(this, hwnd, grfFlags, out ppenumIDList);
+            return folderImpl.EnumObjects(hwnd, grfFlags, out ppenumIDList);
         }
 
         /// <summary>
@@ -161,7 +163,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.BindToObject(this, pidl, pbc, ref riid, out ppv);
+            return folderImpl.BindToObject(pidl, pbc, ref riid, out ppv);
         }
 
         /// <summary>
@@ -178,7 +180,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.BindToStorage(this, pidl, pbc, ref riid, out ppv);
+            return folderImpl.BindToStorage(pidl, pbc, ref riid, out ppv);
         }
 
         /// <summary>
@@ -200,7 +202,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.CompareIDs(this, lParam, pidl1, pidl2);
+            return folderImpl.CompareIDs(lParam, pidl1, pidl2);
         }
 
         /// <summary>
@@ -218,7 +220,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.CreateViewObject(IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.CreateViewObject(this, this, hwndOwner, ref riid, out ppv);
+            return folderImpl.CreateViewObject(this, hwndOwner, ref riid, out ppv);
         }
 
         /// <summary>
@@ -236,7 +238,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetAttributesOf(this, cidl, apidl, ref rgfInOut);
+            return folderImpl.GetAttributesOf(cidl, apidl, ref rgfInOut);
         }
 
         /// <summary>
@@ -255,7 +257,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetUIObjectOf(this, hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
+            return folderImpl.GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
         }
 
         /// <summary>
@@ -271,7 +273,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetDisplayNameOf(this, pidl, uFlags, out pName);
+            return folderImpl.GetDisplayNameOf(pidl, uFlags, out pName);
         }
 
         /// <summary>
@@ -291,7 +293,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.SetNameOf(this, hwnd, pidl, pszName, uFlags, out ppidlOut);
+            return folderImpl.SetNameOf(hwnd, pidl, pszName, uFlags, out ppidlOut);
         }
         
         #endregion
@@ -355,43 +357,43 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder2.GetDefaultSearchGUID(out Guid pguid)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetDefaultSearchGUID(this, out pguid);
+            return folderImpl.GetDefaultSearchGUID(out pguid);
         }
 
         int IShellFolder2.EnumSearches(out IEnumExtraSearch ppenum)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.EnumSearches(this, out ppenum);
+            return folderImpl.EnumSearches(out ppenum);
         }
 
         int IShellFolder2.GetDefaultColumn(uint dwRes, out uint pSort, out uint pDisplay)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetDefaultColumn(this, dwRes, out pSort, out pDisplay);
+            return folderImpl.GetDefaultColumn(dwRes, out pSort, out pDisplay);
         }
 
         int IShellFolder2.GetDefaultColumnState(uint iColumn, out SHCOLSTATEF pcsFlags)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetDefaultColumnState(this, iColumn, out pcsFlags);
+            return folderImpl.GetDefaultColumnState(iColumn, out pcsFlags);
         }
 
         int IShellFolder2.GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetDetailsEx(this, pidl, pscid, out pv);
+            return folderImpl.GetDetailsEx(pidl, pscid, out pv);
         }
 
         int IShellFolder2.GetDetailsOf(IntPtr pidl, uint iColumn, out IntPtr psd)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.GetDetailsOf(this, pidl, iColumn, out psd);
+            return folderImpl.GetDetailsOf(pidl, iColumn, out psd);
         }
 
         int IShellFolder2.MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return ShellFolderImpl.MapColumnToSCID(this, iColumn, out pscid);
+            return folderImpl.MapColumnToSCID(iColumn, out pscid);
         }
 
         #endregion
@@ -594,13 +596,6 @@ namespace SharpShell.SharpNamespaceExtension
 
         #endregion
 
-        private IShellNamespaceItem GetChildItem(IdList idList)
-        {
-            var kids = GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items);
-            var item = kids.FirstOrDefault(ci => idList.Matches(ci.GetShellId()));
-            return item;
-        }
-
         /// <summary>
         /// Gets the registration settings. This function is called only during the initial
         /// registration of a shell namespace extension to provide core configuration.
@@ -628,22 +623,10 @@ namespace SharpShell.SharpNamespaceExtension
         /// The extension absolute pidl.
         /// </summary>
         private IdList extensionAbsolutePidl;
-    }
-
-    /// <summary>
-    /// ShellNamespaceEnumerationFlags for an enumeration of shell items.
-    /// </summary>
-    [Flags]
-    public enum ShellNamespaceEnumerationFlags
-    {
-        /// <summary>
-        /// The enumeration must include folders.
-        /// </summary>
-        Folders = 1,
 
         /// <summary>
-        /// The enumeration must include items.
+        /// The shell folder implementation internally used.
         /// </summary>
-        Items = 2
+        private readonly ShellFolderImpl folderImpl;
     }
 }
