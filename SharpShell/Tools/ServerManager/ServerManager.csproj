@@ -245,6 +245,7 @@
   <ItemGroup>
     <None Include="Resources\ChangeYourView.png" />
     <Content Include="Resources\ContextMenu.png" />
+    <Content Include="Resources\Debug.png" />
     <Content Include="Resources\Icon.png" />
     <None Include="Resources\PlayHS.png" />
     <None Include="Resources\openHS.png" />

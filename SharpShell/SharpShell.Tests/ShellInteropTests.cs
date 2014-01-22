@@ -54,17 +54,20 @@ namespace SharpShell.Tests
             IEnumIDList enumerator;
             desktopFolder.EnumObjects(IntPtr.Zero, SHCONTF.SHCONTF_FOLDERS, out enumerator);
             uint fetched;
-            var items = new IntPtr[20];
-            enumerator.Next((uint)items.Length, items, out fetched);
-            items = items.Take((int)fetched).ToArray();
+            var count = 20;
+            IntPtr apidl = Marshal.AllocCoTaskMem(IntPtr.Size * count);
+            enumerator.Next((uint)count, apidl, out fetched);
+            var pidls = new IntPtr[fetched];
+            Marshal.Copy(apidl, pidls, 0, (int)fetched);
+
 
             //  Assert the we can get the display name of each item.
-            foreach (var item in items)
+            foreach (var pidl in pidls)
             {
                 STRRET name;
-                desktopFolder.GetDisplayNameOf(item, SHGDNF.SHGDN_NORMAL, out name);
+                desktopFolder.GetDisplayNameOf(pidl, SHGDNF.SHGDN_NORMAL, out name);
                 Assert.IsNotNullOrEmpty(name.GetStringValue());
-                Assert.DoesNotThrow(() => Marshal.FreeCoTaskMem(item));
+                Assert.DoesNotThrow(() => Marshal.FreeCoTaskMem(pidl));
             }
             
         }

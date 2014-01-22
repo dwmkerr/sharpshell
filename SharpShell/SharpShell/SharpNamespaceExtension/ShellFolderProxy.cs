@@ -138,7 +138,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        int IShellFolder.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
+        int IShellFolder.GetAttributesOf(uint cidl, IntPtr apidl, ref SFGAO rgfInOut)
         {
             //  Use the ShellFolderImpl to handle the details.
             return folderImpl.GetAttributesOf(cidl, apidl, ref rgfInOut);
@@ -157,7 +157,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// <returns>
         /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
         /// </returns>
-        int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
+        int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
             return folderImpl.GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
@@ -236,12 +236,12 @@ namespace SharpShell.SharpNamespaceExtension
             return ((IShellFolder)this).CreateViewObject(hwndOwner, ref riid, out ppv);
         }
 
-        int IShellFolder2.GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
+        int IShellFolder2.GetAttributesOf(uint cidl, IntPtr apidl, ref SFGAO rgfInOut)
         {
             return ((IShellFolder)this).GetAttributesOf(cidl, apidl, ref rgfInOut);
         }
 
-        int IShellFolder2.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved,
+        int IShellFolder2.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved,
             out IntPtr ppv)
         {
             return ((IShellFolder)this).GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);

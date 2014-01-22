@@ -149,12 +149,10 @@ namespace SharpShell.SharpNamespaceExtension
             }
         }
 
-        internal int GetAttributesOf(uint cidl, IntPtr[] apidl, ref SFGAO rgfInOut)
+        internal int GetAttributesOf(uint cidl, IntPtr apidl, ref SFGAO rgfInOut)
         {
-            //  Get each pidl as an idlist.
-            var idlists = (cidl > 0 && apidl != null)
-                ? from pidl in apidl select PidlManager.PidlToIdlist(pidl)
-                : new List<IdList>();
+            //  Get each id list.
+            var idlists = PidlManager.APidlToIdListArray(apidl, (int)cidl);
 
             //  Now we can ask for the attributes of each item. We only ask for attributes that
             //  are set in the flags - clearing them if they don't apply to every item.
@@ -191,7 +189,7 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal int GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr[] apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
+        internal int GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  We have a set of child pidls (i.e. length one). We can now offer interfaces such as:
             /*
@@ -374,10 +372,53 @@ IQueryInfo	The cidl parameter can only be one.
 
         private IShellNamespaceItem GetChildItem(IdList idList)
         {
-            return folder
-                .GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items)
-                .SingleOrDefault(i => idList.Matches(i.GetShellId()));
+            //  TODO: Get child item can actually be asked for a deeper child item, if there
+            //  are multiple items in the ID list.
 
+            //  Go through each item in the list.
+            var currentFolder = folder;
+            for (int depth = 0; depth < idList.Ids.Count; depth++)
+            {
+                //  If we are NOT on the last item, we're looking for a folder.
+                if (depth != idList.Ids.Count - 1)
+                {
+                    currentFolder = GetChildFolder(folder, idList.Ids[depth]);
+                    continue;
+                }
+
+                //  We ARE looking for an item, so get it.
+                var item =
+                    currentFolder
+                        .GetChildren(ShellNamespaceEnumerationFlags.Folders | ShellNamespaceEnumerationFlags.Items)
+                        .SingleOrDefault(i => i.GetShellId().Equals(idList.Ids[depth]));
+                if (item == null)
+                {
+                    var me = currentFolder.GetDisplayName(DisplayNameContext.Normal);
+                    var you = idList.Ids[depth].ToString();
+                    return null;
+                }
+                return item;
+            }
+            return null;
+        }
+
+        private static IShellNamespaceFolder GetChildFolder(IShellNamespaceFolder folder, ShellId itemId)
+        {
+            //  Get the item that is represented by the shell id.
+            var childFolder = folder
+                .GetChildren(ShellNamespaceEnumerationFlags.Folders)
+                .OfType<IShellNamespaceFolder>()
+                .SingleOrDefault(i => i.GetShellId().Equals(itemId));
+
+            //  If we don't find the item, we've got a problem.
+            if (childFolder == null)
+            {
+                //  TODO how will we handle this error?
+                var me = folder.GetDisplayName(DisplayNameContext.Normal);
+                var you = itemId.ToString();
+                return null;
+            }
+            return childFolder;
         }
     }
 }

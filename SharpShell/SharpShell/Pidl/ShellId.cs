@@ -127,5 +127,32 @@ namespace SharpShell.Pidl
         /// The identifier.
         /// </summary>
         private readonly byte[] id;
+
+        public string AsUTF8()
+        {
+            var utf8 = string.Empty;
+            try
+            {
+                utf8 = Encoding.UTF8.GetString(id.ToArray());
+            }
+            catch
+            {
+                utf8 = "[Undecodable]";
+            }
+            return utf8;
+        }
+        public string AsASCII()
+        {
+            var utf8 = string.Empty;
+            try
+            {
+                utf8 = Encoding.ASCII.GetString(id.ToArray());
+            }
+            catch
+            {
+                utf8 = "[Undecodable]";
+            }
+            return utf8;
+        }
     }
 }

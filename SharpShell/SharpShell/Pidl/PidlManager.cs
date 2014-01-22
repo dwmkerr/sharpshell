@@ -78,6 +78,13 @@ namespace SharpShell.Pidl
             return IdList.Create(type, ids);
         }
 
+        public static IdList[] APidlToIdListArray(IntPtr apidl, int count)
+        {
+            var pidls = new IntPtr[count];
+            Marshal.Copy(apidl, pidls, 0, count);
+            return pidls.Select(PidlToIdlist).ToArray();
+        }
+
         public static IntPtr IdListToPidl(IdList idList)
         {
             //  Turn the ID list into a set of raw bytes.

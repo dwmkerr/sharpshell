@@ -438,7 +438,11 @@ namespace ServerManager.ShellDebugger
             //  Use the desktop folder to get attributes.
             var flags = SFGAO.SFGAO_FOLDER | SFGAO.SFGAO_HASSUBFOLDER | SFGAO.SFGAO_BROWSABLE | SFGAO.SFGAO_FILESYSTEM;
             //todo was this parentFolder.ShellFolderInterface.GetAttributesOf(1, ref pidl, ref flags);
-            parentFolder.ShellFolderInterface.GetAttributesOf(1,new IntPtr[] {pidl},  ref flags);
+
+            var apidl = Marshal.AllocCoTaskMem(IntPtr.Size*1);
+            Marshal.Copy(new IntPtr[] {pidl}, 0, apidl, 1);
+
+            parentFolder.ShellFolderInterface.GetAttributesOf(1, apidl, ref flags);
            
             IsFolder = (flags & SFGAO.SFGAO_FOLDER) != 0;
             HasSubFolders = (flags & SFGAO.SFGAO_HASSUBFOLDER) != 0;
@@ -518,12 +522,15 @@ namespace ServerManager.ShellDebugger
                     //  Throw the failure as an exception.
                     Marshal.ThrowExceptionForHR((int)result);
                 }
-
+                
                 //  Start going through children.
+                IntPtr apidl = Marshal.AllocCoTaskMem(IntPtr.Size * 1);
                 IntPtr[] childPIDLs = new IntPtr[1];
                 uint enumResult;
-                pEnum.Next(1, childPIDLs, out enumResult);
-                var childPIDL = childPIDLs[0];
+                pEnum.Next(1, apidl, out enumResult);
+                var pidls = new IntPtr[enumResult];
+                Marshal.Copy(apidl, pidls, 0, (int)enumResult);
+                var childPIDL = pidls[0];
                 //  Now start enumerating.
                 while (childPIDL != IntPtr.Zero && enumResult == 1)
                 {
@@ -547,7 +554,9 @@ namespace ServerManager.ShellDebugger
                     Marshal.FreeCoTaskMem(childPIDL);
 
                     //  Move onwards.
-                    pEnum.Next(1, childPIDLs, out enumResult);
+                    pEnum.Next(1, apidl, out enumResult);
+                    pidls = new IntPtr[enumResult];
+                    Marshal.Copy(apidl, pidls, 0, (int)enumResult);
                     childPIDL = childPIDLs[0];
                 }
 

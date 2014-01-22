@@ -26,11 +26,11 @@ namespace SharpShell.Interop
         [PreserveSig]
         new int CreateViewObject(IntPtr hwndOwner, [In] ref Guid riid, out IntPtr ppv);
         [PreserveSig]
-        new int GetAttributesOf(UInt32 cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] apidl,
+        new int GetAttributesOf(UInt32 cidl, IntPtr apidl,
                             ref SFGAO rgfInOut);
         [PreserveSig]
         new int GetUIObjectOf(IntPtr hwndOwner, UInt32 cidl,
-                          [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] IntPtr[] apidl, [In] ref Guid riid,
+                          IntPtr apidl, [In] ref Guid riid,
                           UInt32 rgfReserved, out IntPtr ppv);
         [PreserveSig]
         new int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName);

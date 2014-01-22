@@ -105,7 +105,7 @@ namespace SharpShell.Interop
         /// </param>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        int GetAttributesOf(UInt32 cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] apidl,
+        int GetAttributesOf(UInt32 cidl, IntPtr apidl,
                             ref SFGAO rgfInOut);
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace SharpShell.Interop
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
         int GetUIObjectOf(IntPtr hwndOwner, UInt32 cidl,
-                          [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] IntPtr[] apidl, [In] ref Guid riid,
+                          IntPtr apidl, [In] ref Guid riid,
                           UInt32 rgfReserved, out IntPtr ppv);
 
         /// <summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using SharpShell.Interop;
 using SharpShell.Pidl;
 
@@ -40,7 +41,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// <param name="pceltFetched">Address of a value that receives a count of the item identifiers actually returned in rgelt. The count can be smaller than the value
         /// specified in the celt parameter. This parameter can be NULL only if celt is one.</param>
         /// <returns></returns>
-        public int Next(uint celt, IntPtr[] rgelt, out uint pceltFetched)
+        public int Next(uint celt, IntPtr rgelt, out uint pceltFetched)
         {
             //  Request the children from the extension. As this is an abstract call, we always 
             //  use an exception handler.
@@ -79,9 +80,8 @@ namespace SharpShell.SharpNamespaceExtension
             var pidlArray = items.Select(
                 iid => PidlManager.IdListToPidl(IdList.Create(IdListType.Relative, new List<ShellId> { iid.GetShellId()} ))).ToArray();
 
-            //  We can now return the pidl array.
-            for (int i = 0; i < pidlArray.Length; i++)
-                rgelt[i] = pidlArray[i];    //  todo wrap in exception handler due to risk of access violation.
+            //  Copy the data to the provided array.
+            Marshal.Copy(pidlArray, 0, rgelt, pidlArray.Length);
             pceltFetched = (uint)items.Count;
 
             //  We're done.

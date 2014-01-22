@@ -28,7 +28,7 @@ namespace SharpShell.Interop
         /// </param>
         [PreserveSig]
         //TODO: it might be this or the one below 
-            int Next(uint celt, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] rgelt, out uint pceltFetched);
+            int Next(uint celt, IntPtr rgelt, out uint pceltFetched);
        /* uint Next(
             uint celt,                // Number of elements in the array pointed to by the rgelt parameter.
             out IntPtr rgelt,         // Address of an array of ITEMIDLIST pointers that receives the item identifiers. The implementation must allocate these item identifiers using the Shell's allocator (retrieved by the SHGetMalloc function). 

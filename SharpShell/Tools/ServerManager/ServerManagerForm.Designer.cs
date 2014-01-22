@@ -472,7 +472,7 @@ namespace ServerManager
             this.toolStripButtonShellDebugger});
             this.toolStripMain.Location = new System.Drawing.Point(3, 24);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(561, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(530, 25);
             this.toolStripMain.TabIndex = 3;
             // 
             // toolStripButtonOpenTestShell
@@ -503,7 +503,7 @@ namespace ServerManager
             // 
             // toolStripButtonShellDebugger
             // 
-            this.toolStripButtonShellDebugger.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonShellDebugger.Image")));
+            this.toolStripButtonShellDebugger.Image = global::ServerManager.Properties.Resources.Debug;
             this.toolStripButtonShellDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonShellDebugger.Name = "toolStripButtonShellDebugger";
             this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(186, 22);
