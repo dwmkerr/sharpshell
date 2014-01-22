@@ -25,6 +25,14 @@ namespace ServerManager.ShellDebugger
             //  Get the desktop folder PIDL and interface.
             Shell32.SHGetFolderLocation(IntPtr.Zero, CSIDL.CSIDL_DESKTOP, IntPtr.Zero, 0, out desktopFolderPidl);
             Shell32.SHGetDesktopFolder(out desktopFolder);
+
+            shellTreeView.OnShellItemSelected += shellTreeView_OnShellItemSelected;
+        }
+
+        void shellTreeView_OnShellItemSelected(object sender, ShellTreeEventArgs e)
+        {
+            //  TODO: Update the browser.
+         //   ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER);
         }
 
         protected override void OnHandleCreated(EventArgs e)

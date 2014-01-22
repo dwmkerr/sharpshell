@@ -10,6 +10,16 @@ using SharpShell.Interop;
 
 namespace ServerManager.ShellDebugger
 {
+    public class ShellTreeEventArgs : EventArgs
+    {
+        public ShellTreeEventArgs(ShellItem shellItem)
+        {
+            ShellItem = shellItem;
+        }
+
+        public ShellItem ShellItem { get; private set; }
+    }
+
     /// <summary>
     /// The ShellTreeView is a tree view that is designed to show contents of the system,
     /// just like in Windows Explorer.
@@ -25,6 +35,14 @@ namespace ServerManager.ShellDebugger
 
             //  Set the image list to the shell image list.
             this.SetImageList(TreeViewExtensions.ImageListType.Normal, ShellImageList.GetImageList(ShellImageListSize.Small));
+
+            this.AfterSelect += ShellTreeView_AfterSelect;
+        }
+
+        void ShellTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var shellItem = GetShellItem(e.Node);
+            FireOnShellItemSelected(shellItem);
         }
 
         /// <summary>
@@ -150,6 +168,13 @@ namespace ServerManager.ShellDebugger
                 theEvent(this, new TreeViewEventArgs(nodeAdded));
         }
 
+        private void FireOnShellItemSelected(ShellItem shellItem)
+        {
+            var theEvent = OnShellItemSelected;
+            if(theEvent != null)
+                theEvent(this, new ShellTreeEventArgs(shellItem));
+        }
+
         /// <summary>
         /// A map of tree nodes to the Shell Folders.
         /// </summary>
@@ -189,7 +214,11 @@ namespace ServerManager.ShellDebugger
         [Category("Shell Tree View")]
         [Description("Called when a shell item is added.")]
         public event TreeViewEventHandler OnShellItemAdded;
+
+        public event ShellItemTreeEventHandler OnShellItemSelected;
     }
+
+    public delegate void ShellItemTreeEventHandler(object sender, ShellTreeEventArgs e);
 
     public static class TreeViewExtensions
     {

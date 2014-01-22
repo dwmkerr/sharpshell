@@ -277,7 +277,7 @@ IQueryInfo	The cidl parameter can only be one.
         internal int GetDefaultColumnState(uint iColumn, out SHCOLSTATEF pcsFlags)
         {
             //  TODO: expose this to the API via properties on the column. For now, the default state is text.
-            pcsFlags = SHCOLSTATEF.SHCOLSTATE_TYPE_STR;
+            pcsFlags = SHCOLSTATEF.SHCOLSTATE_ONBYDEFAULT | SHCOLSTATEF.SHCOLSTATE_TYPE_STR;
             
             //  We've successfully set the column state.
             return WinError.S_OK;
@@ -285,6 +285,10 @@ IQueryInfo	The cidl parameter can only be one.
 
         internal int GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv)
         {
+            //  Currently, we use the old mechanism for details.
+            pv = null;
+            return WinError.E_NOTIMPL;
+
             //  Get the column.
             var detailView = (DefaultNamespaceFolderView)folderView;
             if (detailView == null || pidl == IntPtr.Zero)
