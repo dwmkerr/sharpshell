@@ -522,6 +522,8 @@ namespace ServerManager.ShellDebugger
                     //  Throw the failure as an exception.
                     Marshal.ThrowExceptionForHR((int)result);
                 }
+
+                // TODO: This logic should go in the pidl manager.
                 
                 //  Start going through children.
                 IntPtr apidl = Marshal.AllocCoTaskMem(IntPtr.Size * 1);
