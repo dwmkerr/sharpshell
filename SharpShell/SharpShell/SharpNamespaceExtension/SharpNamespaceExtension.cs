@@ -40,7 +40,7 @@ namespace SharpShell.SharpNamespaceExtension
         {
             Log("Instatiated Namespace Extension");
 
-            folderImpl = new ShellFolderImpl(this);
+            folderImpl = new ShellFolderImpl(this, ServerClsid);
         }
 
         #region Implementation of IPersistFolder2.

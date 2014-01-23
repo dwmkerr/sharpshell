@@ -12,26 +12,38 @@ namespace SharpShell.SharpNamespaceExtension
     {
         private IShellNamespaceFolder folder;
         private readonly Lazy<ShellNamespaceFolderView> lazyView;
+        private readonly Guid serverGuid;
 
         private ShellNamespaceFolderView folderView
         {
             get { return lazyView.Value; }
         }
 
-        public ShellFolderImpl(IShellNamespaceFolder folder)
+        public ShellFolderImpl(IShellNamespaceFolder folder, Guid serverGuid)
         {
             this.folder = folder;
             this.lazyView = new Lazy<ShellNamespaceFolderView>(() => folder.GetView());
+            this.serverGuid = serverGuid;
         }
 
         internal int ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl,
             ref SFGAO pdwAttributes)
         {
             //  First we can decode the pidl from the display name.
-            ppidl = PidlManager.IdListToPidl(IdList.FromParsingString(pszDisplayName));
+            var idList = IdList.FromParsingString(pszDisplayName);
+            ppidl = PidlManager.IdListToPidl(idList);
 
             //  We always eat the entire display string for SharpShell PIDL/DisplayName parsing.
             pchEaten = (uint) pszDisplayName.Length;
+
+            if (pdwAttributes != 0)
+            {
+                int i = 0;
+            }
+
+            //  In theory, we should understand the pidl.
+            var item = GetChildItem(idList);
+            var name = item.GetDisplayName(DisplayNameContext.Normal);
 
             //  TODO: We may be asked to get the attributes at the same time. If so, we must set them here.
             return WinError.S_OK;
@@ -61,7 +73,7 @@ namespace SharpShell.SharpNamespaceExtension
                 var subFolder = childItem as IShellNamespaceFolder;
                 if (subFolder != null)
                 {
-                    var folderProxy = new ShellFolderProxy(subFolder);
+                    var folderProxy = new ShellFolderProxy(subFolder, serverGuid);
                     ppv = Marshal.GetComInterfaceForObject(folderProxy, typeof(IShellFolder2));
                     return WinError.S_OK;
                 }

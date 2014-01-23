@@ -170,6 +170,7 @@
     <Compile Include="ShellDebugger\ShellDebuggerForm.Designer.cs">
       <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ShellDebugger\ShellTreeEventArgs.cs" />
     <Compile Include="ShellDebugger\ShellTreeView.cs">
       <SubType>Component</SubType>
     </Compile>

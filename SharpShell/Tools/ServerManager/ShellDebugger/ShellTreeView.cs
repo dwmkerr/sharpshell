@@ -10,16 +10,6 @@ using SharpShell.Interop;
 
 namespace ServerManager.ShellDebugger
 {
-    public class ShellTreeEventArgs : EventArgs
-    {
-        public ShellTreeEventArgs(ShellItem shellItem)
-        {
-            ShellItem = shellItem;
-        }
-
-        public ShellItem ShellItem { get; private set; }
-    }
-
     /// <summary>
     /// The ShellTreeView is a tree view that is designed to show contents of the system,
     /// just like in Windows Explorer.

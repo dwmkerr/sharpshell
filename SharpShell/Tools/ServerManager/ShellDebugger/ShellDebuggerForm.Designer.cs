@@ -28,22 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.shellTreeView = new ServerManager.ShellDebugger.ShellTreeView();
             this.splitContainerTreeAndDetails = new System.Windows.Forms.SplitContainer();
+            this.shellTreeView = new ServerManager.ShellDebugger.ShellTreeView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTreeAndDetails)).BeginInit();
             this.splitContainerTreeAndDetails.Panel1.SuspendLayout();
             this.splitContainerTreeAndDetails.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // shellTreeView
-            // 
-            this.shellTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.shellTreeView.Location = new System.Drawing.Point(0, 0);
-            this.shellTreeView.Name = "shellTreeView";
-            this.shellTreeView.ShowFiles = false;
-            this.shellTreeView.ShowHiddenFilesAndFolders = false;
-            this.shellTreeView.Size = new System.Drawing.Size(194, 441);
-            this.shellTreeView.TabIndex = 0;
             // 
             // splitContainerTreeAndDetails
             // 
@@ -58,6 +48,16 @@
             this.splitContainerTreeAndDetails.SplitterDistance = 194;
             this.splitContainerTreeAndDetails.TabIndex = 2;
             // 
+            // shellTreeView
+            // 
+            this.shellTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.shellTreeView.Location = new System.Drawing.Point(0, 0);
+            this.shellTreeView.Name = "shellTreeView";
+            this.shellTreeView.ShowFiles = false;
+            this.shellTreeView.ShowHiddenFilesAndFolders = false;
+            this.shellTreeView.Size = new System.Drawing.Size(194, 441);
+            this.shellTreeView.TabIndex = 0;
+            // 
             // ShellDebuggerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -65,7 +65,8 @@
             this.ClientSize = new System.Drawing.Size(584, 441);
             this.Controls.Add(this.splitContainerTreeAndDetails);
             this.Name = "ShellDebuggerForm";
-            this.Text = "ShellDebuggerForm";
+            this.Text = "Shell Debugger";
+            this.Load += new System.EventHandler(this.ShellDebuggerForm_Load);
             this.splitContainerTreeAndDetails.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTreeAndDetails)).EndInit();
             this.splitContainerTreeAndDetails.ResumeLayout(false);

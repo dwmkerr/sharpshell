@@ -1,20 +1,21 @@
 using System;
 using SharpShell.Interop;
+using SharpShell.Pidl;
 
 namespace SharpShell.SharpNamespaceExtension
 {
     //  todo important we can merge this class an shellfolderimpl
 
-    internal class ShellFolderProxy : IShellFolder2
+    internal class ShellFolderProxy : IShellFolder2, IPersistFolder2
     {
-        public ShellFolderProxy(IShellNamespaceFolder folder)
+        public ShellFolderProxy(IShellNamespaceFolder folder, Guid serverGuid)
         {
             this.folder = folder;
-            folderImpl = new ShellFolderImpl(folder);
+            this.serverGuid = serverGuid;
+            folderImpl = new ShellFolderImpl(folder, serverGuid);
+
         }
 
-        private readonly IShellNamespaceFolder folder;
-        private readonly ShellFolderImpl folderImpl;
         #region Implmentation of IShellFolder
 
         /// <summary>
@@ -300,5 +301,57 @@ namespace SharpShell.SharpNamespaceExtension
         }
 
         #endregion
+
+        #region Implementation IPersist, IPersistFolder, IPersistFolder2
+
+        /// <summary>
+        /// Gets the class identifier.
+        /// </summary>
+        /// <param name="pClassID">The p class identifier.</param>
+        /// <returns></returns>
+        int IPersist.GetClassID(out Guid pClassID)
+        {
+            //  Set the class ID to the server id.
+            pClassID = serverGuid;
+            return WinError.S_OK;
+        }
+        int IPersistFolder.GetClassID(out Guid pClassID) { return ((IPersist)this).GetClassID(out pClassID); }
+        int IPersistFolder2.GetClassID(out Guid pClassID) { return ((IPersist)this).GetClassID(out pClassID); }
+
+        int IPersistFolder.Initialize(IntPtr pidl)
+        {
+            //  Store the folder pidl.
+            folderIdList = PidlManager.PidlToIdlist(pidl);
+            return WinError.S_OK;
+        }
+        int IPersistFolder2.Initialize(IntPtr pidl) { return ((IPersistFolder)this).Initialize(pidl); }
+
+        /// <summary>
+        /// Gets the ITEMIDLIST for the folder object.
+        /// </summary>
+        /// <param name="ppidl">The address of an ITEMIDLIST pointer. This PIDL represents the absolute location of the folder and must be relative to the desktop. This is typically a copy of the PIDL passed to Initialize.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// If the folder object has not been initialized, this method returns S_FALSE and ppidl is set to NULL.
+        /// </remarks>
+        public int GetCurFolder(out IntPtr ppidl)
+        {
+            //  Return the pidl.
+            ppidl = PidlManager.IdListToPidl(folderIdList);
+            return WinError.S_OK;
+        }
+
+        #endregion
+
+        private readonly IShellNamespaceFolder folder;
+        private readonly Guid serverGuid;
+        private readonly ShellFolderImpl folderImpl;
+
+        /// <summary>
+        /// The folder pidl. This is provided by IPersistFolder.
+        /// </summary>
+        private IdList folderIdList;
     }
 }

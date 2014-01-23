@@ -663,7 +663,7 @@ namespace SharpShell.ServerRegistration
 
                 case ServerType.ShellNamespaceExtension:
 
-                    //  TODO: follow the code path through for this.
+                    //  We don't have a key for shell namespace extensions.
                     return null;
                     
                 default:

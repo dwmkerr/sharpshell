@@ -32,7 +32,7 @@ namespace ServerManager.ShellDebugger
         void shellTreeView_OnShellItemSelected(object sender, ShellTreeEventArgs e)
         {
             //  TODO: Update the browser.
-         //   ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER);
+            //((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_ABSOLUTE);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -319,6 +319,11 @@ namespace ServerManager.ShellDebugger
         private IntPtr GetFolderViewHost()
         {
             return splitContainerTreeAndDetails.Panel2.Handle;
+        }
+
+        private void ShellDebuggerForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
