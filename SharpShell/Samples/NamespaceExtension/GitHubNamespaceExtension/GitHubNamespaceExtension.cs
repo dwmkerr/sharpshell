@@ -34,7 +34,7 @@ namespace GitHubNamespaceExtension
         {
             return new NamespaceExtensionRegistrationSettings
             {
-                ExtensionAttributes = AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders | AttributeFlags.IsBrowsable,
+                ExtensionAttributes = AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders,
                 Tooltip = "GitHub Shell Namespace Extension (SharpShell)"
             };
         }

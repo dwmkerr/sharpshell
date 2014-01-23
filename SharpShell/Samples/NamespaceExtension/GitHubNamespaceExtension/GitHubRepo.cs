@@ -36,7 +36,7 @@ namespace GitHubNamespaceExtension
 
         public AttributeFlags GetAttributes()
         {
-            return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders | AttributeFlags.IsBrowsable;
+            return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
         }
 
         public string Name { get; private set; }

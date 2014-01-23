@@ -63,6 +63,8 @@ namespace SharpShell.SharpNamespaceExtension
 
         internal int BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
+            var name = string.Join(Environment.NewLine, PidlManager.PidlToIdlist(pidl).Ids.Select(id => id.ToString()));
+
             //  Have we been asked to bind to a folder?
             if (riid == typeof(IShellFolder).GUID || riid == typeof(IShellFolder2).GUID)
             {
@@ -78,6 +80,8 @@ namespace SharpShell.SharpNamespaceExtension
                     return WinError.S_OK;
                 }
             }
+
+            //  Note: We are also asked to bind to IPropertyStore IPropertyStoreFactory and IPropertyStoreCache.
 
             //  If we cannot return the required interface, we must return no interface.
             ppv = IntPtr.Zero;
