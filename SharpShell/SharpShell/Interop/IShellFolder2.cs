@@ -82,7 +82,7 @@ namespace SharpShell.Interop
         /// <param name="pv">A pointer to a VARIANT with the requested information. The value is fully typed. The value returned for properties from the property system must conform to the type specified in that property definition's typeInfo as the legacyType attribute.</param>
         /// <returns>Returns S_OK if successful, or a COM error value otherwise.</returns>
         [PreserveSig]
-        int GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv);
+        int GetDetailsEx(IntPtr pidl, PROPERTYKEY pscid, out object pv);
 
         /// <summary>
         /// Gets detailed information, identified by a column index, on an item in a Shell folder.
@@ -101,6 +101,6 @@ namespace SharpShell.Interop
         /// <param name="pscid">A pointer to an SHCOLUMNID structure containing the FMTID and PID.</param>
         /// <returns>Returns S_OK if successful, or a COM error value otherwise.</returns>
         [PreserveSig]
-        int MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid);
+        int MapColumnToSCID(uint iColumn, out PROPERTYKEY pscid);
     };
 }

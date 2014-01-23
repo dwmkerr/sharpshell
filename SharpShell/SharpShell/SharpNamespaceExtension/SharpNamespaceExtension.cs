@@ -378,7 +378,7 @@ namespace SharpShell.SharpNamespaceExtension
             return folderImpl.GetDefaultColumnState(iColumn, out pcsFlags);
         }
 
-        int IShellFolder2.GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv)
+        int IShellFolder2.GetDetailsEx(IntPtr pidl, PROPERTYKEY pscid, out object pv)
         {
             //  Use the ShellFolderImpl to handle the details.
             return folderImpl.GetDetailsEx(pidl, pscid, out pv);
@@ -390,7 +390,7 @@ namespace SharpShell.SharpNamespaceExtension
             return folderImpl.GetDetailsOf(pidl, iColumn, out psd);
         }
 
-        int IShellFolder2.MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid)
+        int IShellFolder2.MapColumnToSCID(uint iColumn, out PROPERTYKEY pscid)
         {
             //  Use the ShellFolderImpl to handle the details.
             return folderImpl.MapColumnToSCID(iColumn, out pscid);

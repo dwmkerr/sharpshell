@@ -51,11 +51,14 @@ namespace RegistryNamespaceExtension
 
         protected override ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name"), new ShellDetailColumn("Value") },
+            return new DefaultNamespaceFolderView(new []
+            {
+                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay))
+            },
                 (item, column) =>
-                {
-                    return "Example";
-                });
+                    {
+                        return item.GetDisplayName(DisplayNameContext.Normal);
+                    });
         }
 
         private readonly List<RegistryKeyItem> hives;

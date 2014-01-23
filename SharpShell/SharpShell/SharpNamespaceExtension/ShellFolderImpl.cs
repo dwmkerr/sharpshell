@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using SharpShell.Interop;
@@ -283,29 +284,26 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.S_OK;
         }
 
-        internal int GetDetailsEx(IntPtr pidl, SHCOLUMNID pscid, out object pv)
+        internal int GetDetailsEx(IntPtr pidl, PROPERTYKEY pkey, out object pv)
         {
-            //  Currently, we use the old mechanism for details.
-            pv = null;
-            return WinError.E_NOTIMPL;
+            // todo If the item is not a folder and the property key is PKEY_PropList_PreviewDetails
+            //  we need to return a string like:
+            //  "prop:Microsoft.SDKSample.AreaSize;Microsoft.SDKSample.NumberOfSides;Microsoft.SDKSample.DirectoryLevel");
+            //  to indicate what to show in the details pane.
 
-            //  Get the column.
-            var detailView = (DefaultNamespaceFolderView)folderView;
-            if (detailView == null || pidl == IntPtr.Zero)
-            {
-                pv = "how";
-                return WinError.S_OK;
-            }
-            var column = detailView.Columns.SingleOrDefault(c => c.UniqueId == pscid.fmtid);
+            /*
+            if (!pfIsFolder && IsEqualPropertyKey(*pkey, PKEY_PropList_PreviewDetails))
+        {
+            // This proplist indicates what properties are shown in the details pane at the bottom of the explorer browser.
+            pv->vt = VT_BSTR;
+            pv->bstrVal = SysAllocString(L"prop:Microsoft.SDKSample.AreaSize;Microsoft.SDKSample.NumberOfSides;Microsoft.SDKSample.DirectoryLevel");
+            hr = pv->bstrVal ? S_OK : E_OUTOFMEMORY;
+        }*/
 
-            //  Get the item.
-            var item = GetChildItem(PidlManager.PidlToIdlist(pidl));
+            //  Get the detail todo rename
+            pv = GetItemColumnValue(pidl, pkey);
 
-            //  Return the detail for the item.
-            var detail = detailView.GetItemDetail(item, column);
-
-            //  Todo marshal variant
-            pv = detail;
+            //  We're done.
             return WinError.S_OK;
         }
 
@@ -321,45 +319,76 @@ IQueryInfo	The cidl parameter can only be one.
                 return WinError.E_FAIL;
             }
 
-            //  Create shell details for the column.
-            var column = columns[(int) iColumn];
-            var details = new SHELLDETAILS
+            //  Whatever shell details we create we store here.
+            SHELLDETAILS shellDetails;
+
+            //  If we have no pidl, we need the details of the column itself.
+            if (pidl == IntPtr.Zero)
             {
-                fmt = 0, // todo, currently set to 'left'.
-                cxChar = column.Name.Length,
-                str = STRRET.CreateUnicode(column.Name)
-            };
+                //  Create shell details for the column.
+                var column = columns[(int)iColumn];
+                shellDetails = new SHELLDETAILS
+                {
+                    fmt = 0, // todo, currently set to 'left'.
+                    cxChar = column.Name.Length,
+                    str = STRRET.CreateUnicode(column.Name)
+                };
+            }
+            else
+            {
+                //  We've been asked for the details of an item.
+                //  Get the column ID.
+                PROPERTYKEY propertyKey;
+                MapColumnToSCID(iColumn, out propertyKey);
+
+                //  Get the value of an item at a column.
+                var valueText = GetItemColumnValue(pidl, propertyKey);
+                shellDetails = new SHELLDETAILS
+                {
+                    fmt = 0, // todo, currently set to 'left'.
+                    cxChar = valueText.Length,
+                    str = STRRET.CreateUnicode(valueText)
+                };
+            }
+
+            
 
             //  Allocate enough space for the structure and copy it to the allocated memory.
-            var buffer = Marshal.AllocHGlobal(Marshal.SizeOf(details));
-            Marshal.StructureToPtr(details, buffer, false);
+            var buffer = Marshal.AllocHGlobal(Marshal.SizeOf(shellDetails));
+            Marshal.StructureToPtr(shellDetails, buffer, false);
 
             //  Return the pointer to the buffer and we're done.
             psd = buffer;
             return WinError.S_OK;
         }
 
-        internal int MapColumnToSCID(uint iColumn, out SHCOLUMNID pscid)
+        private string GetItemColumnValue(IntPtr pidl, PROPERTYKEY propertyKey)
         {
-            //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb759748(v=vs.85).aspx
-            //  TODO: see http://msdn.microsoft.com/en-us/library/windows/desktop/bb773381(v=vs.85).aspx
+            //  Get the value for the property key.
+            var item = GetChildItem(PidlManager.PidlToIdlist(pidl));
+            var column = ((DefaultNamespaceFolderView) folderView).Columns.FirstOrDefault(c =>
+                {
+                    var key = c.PropertyKey.CreateShellPropertyKey();
+                    return key.fmtid == propertyKey.fmtid && key.pid == propertyKey.pid;
+                });
+            var detail = ((DefaultNamespaceFolderView) folderView).GetItemDetail(item, column);
+            return detail.ToString();
+        }
 
-            if (iColumn >= (int) ((DefaultNamespaceFolderView) folderView).Columns.Count)
+        internal int MapColumnToSCID(uint iColumn, out PROPERTYKEY pscid)
+        {
+            //  Get the detail columns.
+            var columns = ((DefaultNamespaceFolderView) folderView).Columns;
+            
+            //  If we've been asked for a column we don't have, return failure.
+            if (iColumn >= columns.Count)
             {
-                pscid = new SHCOLUMNID {fmtid = new Guid(), pid = 2};
+                pscid = new PROPERTYKEY();
                 return WinError.E_FAIL;
             }
 
-            //  Get the column.
-            var column = ((DefaultNamespaceFolderView)folderView).Columns[(int)iColumn];
-
-            //  TODO: there are 'default' columns such as 'Name' we can map to, see notes above.
-            //  Set the column id for it.
-            pscid = new SHCOLUMNID
-            {
-                fmtid = column.UniqueId,
-                pid = 2
-            };
+            //  Get the column property id.
+            pscid = columns[(int) iColumn].PropertyKey.CreateShellPropertyKey();
 
             //  We've mapped the column.
             return WinError.S_OK;

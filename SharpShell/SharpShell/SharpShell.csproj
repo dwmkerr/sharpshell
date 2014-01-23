@@ -82,6 +82,7 @@
     <Compile Include="InitializeWithStreamServer.cs" />
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
+    <Compile Include="Interop\PROPERTYKEY.cs" />
     <Compile Include="Interop\CSFV.cs" />
     <Compile Include="Interop\CSIDL.cs" />
     <Compile Include="Interop\EXTRASEARCH.cs" />
@@ -167,6 +168,8 @@
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionRegistrationSettings.cs" />
+    <Compile Include="SharpNamespaceExtension\PropertyKey.cs" />
+    <Compile Include="SharpNamespaceExtension\PropertyKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\ShellDetailColumn.cs" />
     <Compile Include="SharpNamespaceExtension\ShellFolderImpl.cs" />
     <Compile Include="SharpNamespaceExtension\ShellFolderProxy.cs" />
@@ -176,6 +179,7 @@
     <Compile Include="SharpNamespaceExtension\RegistryKeyAttribute.cs" />
     <Compile Include="SharpNamespaceExtension\SharpNamespaceExtension.cs" />
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolderIdListEnumerator.cs" />
+    <Compile Include="SharpNamespaceExtension\StandardPropertyKey.cs" />
     <Compile Include="SharpNamespaceExtension\VirtualFolder.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>

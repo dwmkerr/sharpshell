@@ -45,7 +45,14 @@ namespace GitHubNamespaceExtension
 
         protected override ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new [] {new ShellDetailColumn("Name")}, null);
+            return new DefaultNamespaceFolderView(new[]
+            {
+                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay))
+            },
+                (item, column) =>
+                {
+                    return item.GetDisplayName(DisplayNameContext.Normal);
+                });
         }
     }
 }
