@@ -27,5 +27,10 @@ namespace SharpShell.SharpNamespaceExtension
         /// By default, none are set.
         /// </summary>
         public AttributeFlags ExtensionAttributes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tooltip.
+        /// </summary>
+        public string Tooltip { get; set; }
     }
 }

@@ -497,8 +497,9 @@ namespace SharpShell.SharpNamespaceExtension
                     //  The default value is the junction point name.
                     classKey.SetValue(null, junctionPoint.Name, RegistryValueKind.String);
 
-                    //  Set the infotip. TODO
-                    // classKey.SetValue(@"InfoTip", infoTip, RegistryValueKind.String);
+                    //  Set the infotip.
+                    if(string.IsNullOrEmpty(registrationSettings.Tooltip) != true)
+                        classKey.SetValue(@"InfoTip", registrationSettings.Tooltip, RegistryValueKind.String);
 
                     //  Set the default icon. TODO key not attribute
                     //  classKey.SetValue(@"DefaultIcon", "File.dll,index", RegistryValueKind.String);

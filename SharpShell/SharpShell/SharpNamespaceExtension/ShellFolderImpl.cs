@@ -140,6 +140,8 @@ namespace SharpShell.SharpNamespaceExtension
                 return WinError.E_NOINTERFACE;
             }
             //  TODO: we have to deal with others later.
+            //  IID_ICategoryProvider
+            //  IID_IExplorerCommandProvider
             else
             {
                 //  We've been asked for a com inteface we cannot handle.
@@ -202,6 +204,9 @@ IExtractIcon	The cidl parameter can only be one.
 IQueryInfo	The cidl parameter can only be one.
              * */
 
+            //  IID_IExtractIconW
+            //  IID_IDataObject
+            //  IID_IQueryAssociations
             //  Currently, we don't offer any extra child item UI objects.
             ppv = IntPtr.Zero;
             return WinError.E_NOTIMPL;
@@ -209,6 +214,13 @@ IQueryInfo	The cidl parameter can only be one.
 
         internal int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
+            //  If we have an invalid PIDL, we must fail.
+            if (pidl == IntPtr.Zero)
+            {
+                pName = new STRRET();
+                return WinError.E_INVALIDARG;
+            }
+
             //  Create an idlist from the pidl.
             var idlist = PidlManager.PidlToIdlist(pidl);
 
@@ -286,6 +298,13 @@ IQueryInfo	The cidl parameter can only be one.
 
         internal int GetDetailsEx(IntPtr pidl, PROPERTYKEY pkey, out object pv)
         {
+            //  If we have no pidl, we cannot get details.
+            if (pidl == IntPtr.Zero)
+            {
+                pv = null;
+                return WinError.E_INVALIDARG;
+            }
+
             // todo If the item is not a folder and the property key is PKEY_PropList_PreviewDetails
             //  we need to return a string like:
             //  "prop:Microsoft.SDKSample.AreaSize;Microsoft.SDKSample.NumberOfSides;Microsoft.SDKSample.DirectoryLevel");

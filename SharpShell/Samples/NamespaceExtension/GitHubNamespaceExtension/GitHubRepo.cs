@@ -40,14 +40,27 @@ namespace GitHubNamespaceExtension
         }
 
         public string Name { get; private set; }
+
         public IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags)
         {
-            throw new NotImplementedException();
+            return new[]
+            {
+                new GitHubBranch {Name = "Branch1"},
+                new GitHubBranch {Name = "Branch2"},
+                new GitHubBranch {Name = "Branch3"}
+            };
         }
 
         public ShellNamespaceFolderView GetView()
         {
-            throw new NotImplementedException();
+            return new DefaultNamespaceFolderView(new[]
+            {
+                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay))
+            },
+                   (item, column) =>
+                   {
+                       return item.GetDisplayName(DisplayNameContext.Normal);
+                   });
         }
     }
 }

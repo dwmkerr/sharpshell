@@ -68,10 +68,10 @@ namespace SharpShell.SharpNamespaceExtension
             }
 
             //  If we've not enumerated anything, we can return now.
-            if (items.Any() == false)
+            if (items.Any() == false && celt > 0)
             {
                 pceltFetched = 0;
-                return WinError.S_OK;
+                return WinError.S_FALSE;
             }
 
             //  For every item enumerated, use the PIDL manager to create a shell allocated PIDL.
@@ -84,8 +84,8 @@ namespace SharpShell.SharpNamespaceExtension
             Marshal.Copy(pidlArray, 0, rgelt, pidlArray.Length);
             pceltFetched = (uint)items.Count;
 
-            //  We're done.
-            return WinError.S_OK;
+            //  We're done. We return OK if we've got more to enumerate and false otherwise.
+            return pceltFetched == celt ? WinError.S_OK : WinError.S_FALSE;
         }
 
         /// <summary>
