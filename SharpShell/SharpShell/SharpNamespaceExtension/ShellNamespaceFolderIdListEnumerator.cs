@@ -15,6 +15,7 @@ namespace SharpShell.SharpNamespaceExtension
         public ShellNamespaceFolderIdListEnumerator(IShellNamespaceFolder shellNamespaceFolder, SHCONTF grfFlags, uint index)
         {
             //  todo: The flags should be a type in the sharpshell domain, not the shell.
+            //  todo the flags might change how we have to do this.
             //  Store the extension for the folder we're enuerating.
             this.shellNamespaceFolder = shellNamespaceFolder;
 
