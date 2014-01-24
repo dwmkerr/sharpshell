@@ -17,7 +17,7 @@ namespace SharpShell.Interop
         /// <param name="lpszFile">The address of a buffer that receives the file name of a dropped file when the function returns. This file name is a null-terminated string. If this parameter is NULL, DragQueryFile returns the required size, in characters, of this buffer.</param>
         /// <param name="cch">The size, in characters, of the lpszFile buffer.</param>
         /// <returns>A nonzero value indicates a successful call.</returns>
-        [DllImport("shell32.dll", SetLastError = true)]
+        [DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint DragQueryFile(IntPtr hDrop, uint iFile, [Out] StringBuilder lpszFile, uint cch);
 
         /// <summary>
