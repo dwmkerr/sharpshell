@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace SharpShell.SharpNamespaceExtension
 {
     /// <summary>
@@ -32,5 +34,10 @@ namespace SharpShell.SharpNamespaceExtension
         /// Gets or sets the tooltip.
         /// </summary>
         public string Tooltip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the icon for the shell namespace extension.
+        /// </summary>
+        public Icon Icon { get; set; }
     }
 }

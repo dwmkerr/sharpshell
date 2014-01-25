@@ -158,5 +158,14 @@ namespace SharpShell.Interop
         public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
 
         public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+
+        /// <summary>
+        /// Creates a standard icon extractor, whose defaults can be further configured via the IDefaultExtractIconInit interface.
+        /// </summary>
+        /// <param name="guid">A reference to interface ID.</param>
+        /// <param name="pdxi">The address of IDefaultExtractIconInit interface pointer.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHCreateDefaultExtractIcon(Guid guid, out IDefaultExtractIconInit pdxi);
     }
 }

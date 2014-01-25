@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using SharpShell.Pidl;
 using SharpShell.SharpNamespaceExtension;
@@ -37,6 +38,11 @@ namespace GitHubNamespaceExtension
         public AttributeFlags GetAttributes()
         {
             return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
+        }
+
+        public Icon GetIcon()
+        {
+            return null;
         }
 
         public string Name { get; private set; }

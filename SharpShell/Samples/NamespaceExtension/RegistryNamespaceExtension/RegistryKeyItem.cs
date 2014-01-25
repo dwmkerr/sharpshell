@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using Microsoft.Win32;
@@ -53,6 +54,11 @@ namespace RegistryNamespaceExtension
         AttributeFlags IShellNamespaceItem.GetAttributes()
         {
             return AttributeFlags.IsFolder | AttributeFlags.MayContainSubFolders;
+        }
+
+        public Icon GetIcon()
+        {
+            return null;
         }
 
         IEnumerable<IShellNamespaceItem> IShellNamespaceFolder.GetChildren(ShellNamespaceEnumerationFlags flags)

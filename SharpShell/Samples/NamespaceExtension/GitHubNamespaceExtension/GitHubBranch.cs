@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpShell.Pidl;
@@ -28,6 +29,11 @@ namespace GitHubNamespaceExtension
         public AttributeFlags GetAttributes()
         {
             return AttributeFlags.IsReadOnly;
+        }
+
+        public Icon GetIcon()
+        {
+            return null;
         }
     }
 }

@@ -595,6 +595,11 @@ namespace SharpShell.SharpNamespaceExtension
             return GetView();
         }
 
+        Icon IShellNamespaceItem.GetIcon()
+        {
+            return GetRegistrationSettings().Icon;
+        }
+
         #endregion
 
         /// <summary>

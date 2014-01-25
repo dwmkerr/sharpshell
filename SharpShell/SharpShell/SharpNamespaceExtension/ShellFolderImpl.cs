@@ -140,7 +140,12 @@ namespace SharpShell.SharpNamespaceExtension
                 ppv = IntPtr.Zero;
                 return WinError.E_NOINTERFACE;
             }
-            else if (riid == typeof(IExtractIcon).GUID)
+            else if (riid == typeof(IExtractIconA).GUID)
+            {
+                ppv = IntPtr.Zero;
+                return WinError.E_NOINTERFACE;
+            }
+            else if (riid == typeof(IExtractIconW).GUID)
             {
                 ppv = IntPtr.Zero;
                 return WinError.E_NOINTERFACE;
@@ -210,6 +215,34 @@ namespace SharpShell.SharpNamespaceExtension
 
         internal int GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
+            //  Get the ID lists from the array of PIDLs provided.
+            var idLists = PidlManager.APidlToIdListArray(apidl, (int) cidl);
+
+            if (riid == typeof(IExtractIconW).GUID)
+            {
+                //  If we've been asked for an icon, it should only be for a single PIDL.
+                if(idLists.Length != 1)
+                {
+                    Diagnostics.Logging.Error(string.Format("The Shell Folder Impl for folder {0} has been asked for icons for multiple files at once, this is not supportedd.", 
+                        folder.GetDisplayName(DisplayNameContext.Normal)));
+                    ppv = IntPtr.Zero;
+                    return WinError.E_FAIL;
+                }
+
+                //  Get the idlist and item.
+                var idList = idLists[0];
+                var item = GetChildItem(idList);
+
+                //  Now get the icon. If we don't provide one we'll use the defaults.
+                var icon = item.GetIcon();
+                if(icon == null)
+                {
+                    ProvideDefaultIExtractIcon(item is IShellFolder, out ppv);
+                    return WinError.S_OK;
+                }
+            }
+
+
             //  We have a set of child pidls (i.e. length one). We can now offer interfaces such as:
             /*
              * IContextMenu	The cidl parameter can be greater than or equal to one.
@@ -225,7 +258,25 @@ IQueryInfo	The cidl parameter can only be one.
             //  IID_IQueryAssociations
             //  Currently, we don't offer any extra child item UI objects.
             ppv = IntPtr.Zero;
-            return WinError.E_NOTIMPL;
+            return WinError.E_NOINTERFACE;
+        }
+
+        /// <summary>
+        /// Provides a default IExtractIcon implementation.
+        /// </summary>
+        /// <param name="folderIcon">if set to <c>true</c> use a folder icon, otherwise use an item icon.</param>
+        /// <param name="interfacePointer">The interface pointer.</param>
+        private void ProvideDefaultIExtractIcon(bool folderIcon, out IntPtr interfacePointer)
+        {
+            //  Create a default extract icon init interface.
+            IDefaultExtractIconInit pdxi;
+            Shell32.SHCreateDefaultExtractIcon(typeof(IDefaultExtractIconInit).GUID, out pdxi);
+        
+            //  Set the normal icon.
+            pdxi.SetNormalIcon("shell32.dll", folderIcon ? 4 : 1);
+
+            //  Get the IExtractIconW interface.
+            interfacePointer = Marshal.GetComInterfaceForObject(pdxi, typeof (IExtractIconW));
         }
 
         internal int GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)

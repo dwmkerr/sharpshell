@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 using SharpShell.Pidl;
 
@@ -34,5 +35,11 @@ namespace SharpShell.SharpNamespaceExtension
         /// </summary>
         /// <returns>The attributes for the shell item.</returns>
         AttributeFlags GetAttributes();
+
+        /// <summary>
+        /// Gets the icon for a shell item. If none is provided, the system default is used.
+        /// </summary>
+        /// <returns>The icon to use for a shell item.</returns>
+        Icon GetIcon();
     }
 }
