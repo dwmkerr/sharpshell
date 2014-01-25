@@ -237,7 +237,14 @@ namespace SharpShell.SharpNamespaceExtension
                 var icon = item.GetIcon();
                 if(icon == null)
                 {
-                    ProvideDefaultIExtractIcon(item is IShellFolder, out ppv);
+                    ProvideDefaultIExtractIcon(item is IShellNamespaceFolder, out ppv);
+                    return WinError.S_OK;
+                }
+                else
+                {
+                    //  Create an icon provider.
+                    var provider = new Components.ExtractIconImpl() {DontCacheIcons = false, Icon = icon};
+                    ppv = Marshal.GetComInterfaceForObject(provider, typeof (IExtractIconW));
                     return WinError.S_OK;
                 }
             }

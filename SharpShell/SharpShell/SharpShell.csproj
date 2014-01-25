@@ -74,6 +74,7 @@
     <Compile Include="Attributes\HandlerSubkeyAttribute.cs" />
     <Compile Include="Attributes\ServerTypeAttribute.cs" />
     <Compile Include="Attributes\SpecialClassKeyAttribute.cs" />
+    <Compile Include="Components\ExtractIconImpl.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\GuidExtensions.cs" />
     <Compile Include="Extensions\IDataObjectExtensions.cs" />

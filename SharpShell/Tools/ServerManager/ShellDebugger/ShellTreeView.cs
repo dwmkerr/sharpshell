@@ -543,43 +543,43 @@ namespace ServerManager.ShellDebugger
                 }
 
                 // TODO: This logic should go in the pidl manager.
-                
-                //  Start going through children.
-                IntPtr apidl = Marshal.AllocCoTaskMem(IntPtr.Size * 1);
-                IntPtr[] childPIDLs = new IntPtr[1];
-                uint enumResult;
-                pEnum.Next(1, apidl, out enumResult);
-                var pidls = new IntPtr[enumResult];
-                Marshal.Copy(apidl, pidls, 0, (int)enumResult);
-                var childPIDL = pidls[0];
-                //  Now start enumerating.
-                while (childPIDL != IntPtr.Zero && enumResult == 1)
+
+                //  Enumerate the children, ten at a time.
+                const int batchSize = 10;
+                var pidlArray = Marshal.AllocCoTaskMem(IntPtr.Size * 10);
+                uint itemsFetched;
+                result = WinError.S_OK;
+                do
                 {
-                    //  Create a new shell folder.
-                    var childShellFolder = new ShellItem();
+                    result = pEnum.Next(batchSize, pidlArray, out itemsFetched);
 
-                    //  Initialize it.
-                    try
+                    //  Get each pidl.
+                    var pidls = new IntPtr[itemsFetched];
+                    Marshal.Copy(pidlArray, pidls, 0, (int) itemsFetched);
+                    foreach (var childPidl in pidls)
                     {
-                        childShellFolder.Initialise(childPIDL, this);
+                        //  Create a new shell folder.
+                        var childShellFolder = new ShellItem();
+
+                        //  Initialize it.
+                        try
+                        {
+                            childShellFolder.Initialise(childPidl, this);
+                        }
+                        catch (Exception exception)
+                        {
+                            throw new InvalidOperationException("Failed to initialise child.", exception);
+                        }
+
+                        //  Add the child.
+                        children.Add(childShellFolder);
+
+                        //  Free the PIDL, reset the result.
+                        Marshal.FreeCoTaskMem(childPidl);
                     }
-                    catch (Exception exception)
-                    {
-                        throw new InvalidOperationException("Failed to initialise child.", exception);
-                    }
-
-                    //  Add the child.
-                    children.Add(childShellFolder);
-
-                    //  Free the PIDL, reset the result.
-                    Marshal.FreeCoTaskMem(childPIDL);
-
-                    //  Move onwards.
-                    pEnum.Next(1, apidl, out enumResult);
-                    pidls = new IntPtr[enumResult];
-                    Marshal.Copy(apidl, pidls, 0, (int)enumResult);
-                    childPIDL = childPIDLs[0];
-                }
+                } while (result == WinError.S_OK);
+            
+                Marshal.FreeCoTaskMem(pidlArray);
 
                 //  Release the enumerator.
                 if(Marshal.IsComObject(pEnum))

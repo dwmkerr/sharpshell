@@ -58,7 +58,7 @@ namespace RegistryNamespaceExtension
 
         public Icon GetIcon()
         {
-            return null;
+            return Properties.Resources.RegistryKey;
         }
 
         IEnumerable<IShellNamespaceItem> IShellNamespaceFolder.GetChildren(ShellNamespaceEnumerationFlags flags)

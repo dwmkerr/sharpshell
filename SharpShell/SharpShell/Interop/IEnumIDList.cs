@@ -27,14 +27,8 @@ namespace SharpShell.Interop
         /// specified in the celt parameter. This parameter can be NULL only if celt is one.
         /// </param>
         [PreserveSig]
-        //TODO: it might be this or the one below 
-            int Next(uint celt, IntPtr rgelt, out uint pceltFetched);
-       /* uint Next(
-            uint celt,                // Number of elements in the array pointed to by the rgelt parameter.
-            out IntPtr rgelt,         // Address of an array of ITEMIDLIST pointers that receives the item identifiers. The implementation must allocate these item identifiers using the Shell's allocator (retrieved by the SHGetMalloc function). 
-            // The calling application is responsible for freeing the item identifiers using the Shell's allocator.
-            out Int32 pceltFetched    // Address of a value that receives a count of the item identifiers actually returned in rgelt. The count can be smaller than the value specified in the celt parameter. This parameter can be NULL only if celt is one. 
-            );*/
+        int Next(uint celt, IntPtr rgelt, out uint pceltFetched);
+
         /// <summary>
         /// Skips over the specified number of elements in the enumeration sequence. 
         /// </summary>
