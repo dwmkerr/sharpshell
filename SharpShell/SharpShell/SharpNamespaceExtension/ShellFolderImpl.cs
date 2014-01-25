@@ -383,6 +383,10 @@ IQueryInfo	The cidl parameter can only be one.
                 if (column.HasImage)
                     format |= (int)LVCFMT.LVCFMT_COL_HAS_IMAGES;
 
+
+                //  TODO I have no idea why the shell details are not correctly respecting the cxChar..
+
+
                 //  Create shell details for the column.
                 psd = new SHELLDETAILS
                 {
