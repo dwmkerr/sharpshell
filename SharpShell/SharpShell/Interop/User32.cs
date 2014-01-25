@@ -8,7 +8,7 @@ namespace SharpShell.Interop
 {
     internal static class User32
     {
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition,
            [In] ref MENUITEMINFO lpmii);
 

@@ -6,7 +6,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// Contains information about a menu item.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct MENUITEMINFO
     {
         /// <summary>
