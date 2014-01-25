@@ -69,13 +69,14 @@ namespace SharpShell.SharpNamespaceExtension
             if (riid == typeof(IShellFolder).GUID || riid == typeof(IShellFolder2).GUID)
             {
                 //  Get the child item.
-                var childItem = GetChildItem(PidlManager.PidlToIdlist(pidl));
+                var idList = PidlManager.PidlToIdlist(pidl);
+                var childItem = GetChildItem(idList);
 
                 //  If the item is a folder, we can create a proxy for it and return the proxy.
                 var subFolder = childItem as IShellNamespaceFolder;
                 if (subFolder != null)
                 {
-                    var folderProxy = new ShellFolderProxy(subFolder, serverGuid);
+                    var folderProxy = new ShellFolderProxy(subFolder, serverGuid, idList);
                     ppv = Marshal.GetComInterfaceForObject(folderProxy, typeof(IShellFolder2));
                     return WinError.S_OK;
                 }
@@ -526,7 +527,7 @@ IQueryInfo	The cidl parameter can only be one.
                 //  If we are NOT on the last item, we're looking for a folder.
                 if (depth != idList.Ids.Count - 1)
                 {
-                    currentFolder = GetChildFolder(folder, idList.Ids[depth]);
+                    currentFolder = GetChildFolder(currentFolder, idList.Ids[depth]);
                     continue;
                 }
 

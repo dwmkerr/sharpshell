@@ -8,10 +8,11 @@ namespace SharpShell.SharpNamespaceExtension
 
     internal class ShellFolderProxy : IShellFolder2, IPersistFolder2
     {
-        public ShellFolderProxy(IShellNamespaceFolder folder, Guid serverGuid)
+        public ShellFolderProxy(IShellNamespaceFolder folder, Guid serverGuid, IdList idList)
         {
             this.folder = folder;
             this.serverGuid = serverGuid;
+            this.folderIdList = idList;
             folderImpl = new ShellFolderImpl(folder, serverGuid);
 
         }
