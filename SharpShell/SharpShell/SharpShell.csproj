@@ -82,6 +82,7 @@
     <Compile Include="InitializeWithStreamServer.cs" />
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
+    <Compile Include="Interop\LVCFMT.cs" />
     <Compile Include="Interop\PROPERTYKEY.cs" />
     <Compile Include="Interop\CSFV.cs" />
     <Compile Include="Interop\CSIDL.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
     <Compile Include="SharpNamespaceExtension\AttributeFlags.cs" />
+    <Compile Include="SharpNamespaceExtension\ColumnAlignment.cs" />
     <Compile Include="SharpNamespaceExtension\CustomNamespaceFolderView.cs" />
     <Compile Include="SharpNamespaceExtension\DefaultNamespaceFolderView.cs" />
     <Compile Include="SharpNamespaceExtension\DisplayNameContext.cs" />

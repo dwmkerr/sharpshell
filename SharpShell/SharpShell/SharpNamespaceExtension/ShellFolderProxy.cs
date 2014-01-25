@@ -288,7 +288,7 @@ namespace SharpShell.SharpNamespaceExtension
             return folderImpl.GetDetailsEx(pidl, pscid, out pv);
         }
 
-        int IShellFolder2.GetDetailsOf(IntPtr pidl, uint iColumn, out IntPtr psd)
+        int IShellFolder2.GetDetailsOf(IntPtr pidl, uint iColumn, out SHELLDETAILS psd)
         {
             //  Use the ShellFolderImpl to handle the details.
             return folderImpl.GetDetailsOf(pidl, iColumn, out psd);

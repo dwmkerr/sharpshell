@@ -18,28 +18,47 @@ namespace SharpShell.SharpNamespaceExtension
         /// <param name="propertyKey">The property key.</param>
         public ShellDetailColumn(string name, PropertyKey propertyKey)
         {
-            this.name = name;
-            this.propertyKey = propertyKey;
+            Name = name;
+            PropertyKey = propertyKey;
+            AverageItemLength = 50;
         }
 
         /// <summary>
         /// Gets the name of the column.
         /// </summary>
-        public string Name { get { return name; } }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets the property key for the column and detail.
         /// </summary>
-        public PropertyKey PropertyKey { get { return propertyKey; } }
+        public PropertyKey PropertyKey { get; private set; }
 
         /// <summary>
-        /// The name of the column.
+        /// Gets or sets the column alignment. The default column alignment is left.
         /// </summary>
-        private readonly string name;
+        /// <value>
+        /// The column alignment.
+        /// </value>
+        public ColumnAlignment ColumnAlignment { get; set; }
 
         /// <summary>
-        /// The property key for the column and detail.
+        /// Gets or sets the average length of the text for items in the column, used to 
+        /// provide an initial size. The default value is 50 characters.
         /// </summary>
-        private readonly PropertyKey propertyKey;
+        /// <value>
+        /// The average length of the item.
+        /// </value>
+        public uint AverageItemLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this column has an image.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this column has an image; otherwise, <c>false</c>.
+        /// </value>
+        /// <remarks>
+        /// TODO: replace this with an icon member and set it automatically if the icon is not null.
+        /// </remarks>
+        public bool HasImage { get; set; }
     }
 }

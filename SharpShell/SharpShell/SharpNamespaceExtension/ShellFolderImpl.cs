@@ -342,7 +342,7 @@ IQueryInfo	The cidl parameter can only be one.
             return WinError.S_OK;
         }
 
-        internal int GetDetailsOf(IntPtr pidl, uint iColumn, out IntPtr psd)
+        internal int GetDetailsOf(IntPtr pidl, uint iColumn, out SHELLDETAILS psd)
         {
             //  Get the folder view columns.
             var columns = ((DefaultNamespaceFolderView)folderView).Columns;
@@ -350,7 +350,7 @@ IQueryInfo	The cidl parameter can only be one.
             //  If details are being requested for a column we don't have, we must fail.
             if (iColumn >= columns.Count)
             {
-                psd = IntPtr.Zero;
+                psd = new SHELLDETAILS { cxChar = 0, fmt = 0, str = new STRRET { uType = STRRET.STRRETTYPE.STRRET_WSTR, data = IntPtr.Zero}};
                 return WinError.E_FAIL;
             }
 
@@ -360,11 +360,33 @@ IQueryInfo	The cidl parameter can only be one.
             //  If we have no pidl, we need the details of the column itself.
             if (pidl == IntPtr.Zero)
             {
-                //  Create shell details for the column.
                 var column = columns[(int)iColumn];
-                shellDetails = new SHELLDETAILS
+
+                //  Create the column format.
+                int format = 0;
+                switch (column.ColumnAlignment)
                 {
-                    fmt = 0, // todo, currently set to 'left'.
+                    case ColumnAlignment.Left:
+                        format = (int)LVCFMT.LVCFMT_LEFT;
+                        break;
+                    case ColumnAlignment.Centre:
+                        format = (int)LVCFMT.LVCFMT_CENTER;
+                        break;
+                    case ColumnAlignment.Right:
+                        format = (int)LVCFMT.LVCFMT_RIGHT;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                //  Set the column icon flag (if we have one).
+                if (column.HasImage)
+                    format |= (int)LVCFMT.LVCFMT_COL_HAS_IMAGES;
+
+                //  Create shell details for the column.
+                psd = new SHELLDETAILS
+                {
+                    fmt = format,
                     cxChar = column.Name.Length,
                     str = STRRET.CreateUnicode(column.Name)
                 };
@@ -378,7 +400,7 @@ IQueryInfo	The cidl parameter can only be one.
 
                 //  Get the value of an item at a column.
                 var valueText = GetItemColumnValue(pidl, propertyKey);
-                shellDetails = new SHELLDETAILS
+                psd = new SHELLDETAILS
                 {
                     fmt = 0, // todo, currently set to 'left'.
                     cxChar = valueText.Length,
@@ -386,14 +408,6 @@ IQueryInfo	The cidl parameter can only be one.
                 };
             }
 
-            
-
-            //  Allocate enough space for the structure and copy it to the allocated memory.
-            var buffer = Marshal.AllocHGlobal(Marshal.SizeOf(shellDetails));
-            Marshal.StructureToPtr(shellDetails, buffer, false);
-
-            //  Return the pointer to the buffer and we're done.
-            psd = buffer;
             return WinError.S_OK;
         }
 

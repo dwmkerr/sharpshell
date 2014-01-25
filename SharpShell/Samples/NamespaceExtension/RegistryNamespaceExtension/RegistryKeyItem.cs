@@ -76,7 +76,8 @@ namespace RegistryNamespaceExtension
         {
             return new DefaultNamespaceFolderView(new[]
             {
-                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay))
+                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay)),
+                new ShellDetailColumn("Value", new PropertyKey(KeyProperties.valueGuid, KeyProperties.valuePid))
             },
                 (item, column) =>
                 {

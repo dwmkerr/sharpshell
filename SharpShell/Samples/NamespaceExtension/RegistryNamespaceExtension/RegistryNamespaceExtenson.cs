@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using Microsoft.Win32;
 using SharpShell.SharpNamespaceExtension;
@@ -53,7 +54,8 @@ namespace RegistryNamespaceExtension
         {
             return new DefaultNamespaceFolderView(new []
             {
-                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay))
+                new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay)),
+                new ShellDetailColumn("Value", new PropertyKey(KeyProperties.valueGuid, KeyProperties.valuePid)), 
             },
                 (item, column) =>
                     {
@@ -61,6 +63,16 @@ namespace RegistryNamespaceExtension
                     });
         }
 
+
+
         private readonly List<RegistryKeyItem> hives;
     }
+
+    public static class KeyProperties
+    {
+        public static Guid valueGuid = new Guid("{71DDFA53-2148-4C21-8C99-F619308FC73B}");
+        public static uint valuePid = 3;
+    }
+
+
 }

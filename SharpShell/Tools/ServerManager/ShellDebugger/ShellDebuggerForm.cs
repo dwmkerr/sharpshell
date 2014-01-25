@@ -313,8 +313,8 @@ namespace ServerManager.ShellDebugger
 
         private readonly FOLDERVIEWMODE folderViewMode = FOLDERVIEWMODE.FVM_DETAILS;
 
-        private readonly FOLDERFLAGS folderFlags =  FOLDERFLAGS.FWF_SHOWSELALWAYS |
-                                                   FOLDERFLAGS.FWF_SINGLESEL | FOLDERFLAGS.FWF_NOWEBVIEW;
+        private readonly FOLDERFLAGS folderFlags = 0;/*  FOLDERFLAGS.FWF_SHOWSELALWAYS |
+                                                   FOLDERFLAGS.FWF_SINGLESEL | FOLDERFLAGS.FWF_NOWEBVIEW;*/
 
         private IntPtr GetFolderViewHost()
         {

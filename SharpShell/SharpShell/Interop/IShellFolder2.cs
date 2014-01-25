@@ -92,7 +92,7 @@ namespace SharpShell.Interop
         /// <param name="psd">The zero-based index of the desired information field. It is identical to the column number of the information as it is displayed in a Windows Explorer Details view.</param>
         /// <returns>Returns S_OK if successful, or a COM error value otherwise.</returns>
         [PreserveSig]
-        int GetDetailsOf(IntPtr pidl, uint iColumn, out IntPtr psd);
+        int GetDetailsOf(IntPtr pidl, uint iColumn, out SHELLDETAILS psd);
 
         /// <summary>
         /// Converts a column to the appropriate property set ID (FMTID) and property ID (PID).

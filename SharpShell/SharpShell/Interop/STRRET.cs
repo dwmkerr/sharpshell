@@ -21,11 +21,13 @@ namespace SharpShell.Interop
         {
             //  Return a unicode string. In this case, data is just a pointer to the 
             //  unicode string.
-            return new STRRET
+            var strret = new STRRET
             {
                 uType = STRRETTYPE.STRRET_WSTR,
                 data = Marshal.StringToCoTaskMemUni(str)
             };
+            Shell32.SHStrDup(str, out strret.data);
+            return strret;
         }
 
         /// <summary>

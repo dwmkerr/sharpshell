@@ -105,6 +105,16 @@ namespace SharpShell.Interop
         public static extern bool SHGetPathFromIDList(IntPtr pidl, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder pszPath);
 
         /// <summary>
+        /// Makes a copy of a string in newly allocated memory.
+        /// </summary>
+        /// <param name="pszSource">A pointer to the null-terminated string to be copied.</param>
+        /// <param name="ppwsz">A pointer to an allocated Unicode string that contains the result. SHStrDup allocates memory for this string with CoTaskMemAlloc. You should free the string with CoTaskMemFree when it is no longer needed. In the case of failure, this value is NULL.</param>
+        /// <returns>Returns S_OK if successful, or a COM error value otherwise.</returns>
+        [DllImport("shlwapi.dll", EntryPoint = "SHStrDupW")]
+        public static extern int SHStrDup([MarshalAs(UnmanagedType.LPWStr)] string pszSource, out IntPtr ppwsz);
+
+
+        /// <summary>
         /// TODO: document this.
         /// </summary>
         /// <param name="pidl1"></param>
