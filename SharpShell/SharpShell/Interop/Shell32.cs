@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -113,6 +114,27 @@ namespace SharpShell.Interop
         [DllImport("shlwapi.dll", EntryPoint = "SHStrDupW")]
         public static extern int SHStrDup([MarshalAs(UnmanagedType.LPWStr)] string pszSource, out IntPtr ppwsz);
 
+        /// <summary>
+        /// Creates an object that represents the Shell's default context menu implementation.
+        /// </summary>
+        /// <param name="pdcm">A pointer to a constant DEFCONTEXTMENU structure.</param>
+        /// <param name="riid">Reference to the interface ID of the interface on which to base the object. This is typically the IID of IContextMenu, IContextMenu2, or IContextMenu3.</param>
+        /// <param name="ppv">When this method returns, contains the interface pointer requested in riid.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHCreateDefaultContextMenu(DEFCONTEXTMENU pdcm, Guid riid, out IntPtr ppv);
+
+        /// <summary>
+        /// Retrieves an object that implements an IQueryAssociations interface.
+        /// </summary>
+        /// <param name="rgClasses">A pointer to an array of ASSOCIATIONELEMENT structures.</param>
+        /// <param name="cClasses">The number of elements in the array pointed to by rgClasses.</param>
+        /// <param name="riid">Reference to the desired IID, normally IID_IQueryAssociations.</param>
+        /// <param name="ppv">When this method returns, contains the interface pointer requested in riid. This is normally IQueryAssociations.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int AssocCreateForClasses(ASSOCIATIONELEMENT[] rgClasses, uint cClasses, Guid riid, out IntPtr ppv);
+
 
         /// <summary>
         /// TODO: document this.
@@ -167,5 +189,9 @@ namespace SharpShell.Interop
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("shell32.dll")]
         public static extern int SHCreateDefaultExtractIcon(Guid guid, out IDefaultExtractIconInit pdxi);
+
+        public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
+
+        public static Guid IID_ExtractIconW = new Guid("{000214FA-0000-0000-C000-000000000046}");
     }
 }

@@ -81,9 +81,13 @@
     <Compile Include="Helpers\ComStream.cs" />
     <Compile Include="Helpers\Win32Helper.cs" />
     <Compile Include="InitializeWithStreamServer.cs" />
+    <Compile Include="Interop\ASSOCCLASS.cs" />
+    <Compile Include="Interop\ASSOCIATIONELEMENT.cs" />
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
+    <Compile Include="Interop\DEFCONTEXTMENU.cs" />
     <Compile Include="Interop\GILInFlags.cs" />
+    <Compile Include="Interop\IContextMenuCB.cs" />
     <Compile Include="Interop\IDefaultExtractIconInit.cs" />
     <Compile Include="Interop\IExtractIconA.cs" />
     <Compile Include="Interop\IExtractIconW.cs" />

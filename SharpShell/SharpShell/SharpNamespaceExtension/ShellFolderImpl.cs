@@ -214,12 +214,30 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal int GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
+        internal int GetUIObjectOf(IShellFolder shellFolder, IdList folderIdList, IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  Get the ID lists from the array of PIDLs provided.
             var idLists = PidlManager.APidlToIdListArray(apidl, (int) cidl);
 
-            if (riid == typeof(IExtractIconW).GUID)
+            if (riid == typeof (IContextMenu).GUID || riid == typeof(IContextMenu2).GUID || riid == typeof(IContextMenu3).GUID)
+            {
+                var dcm = new DEFCONTEXTMENU
+                {
+                    hwnd = hwndOwner,
+                    pcmcb = null,
+                    pidlFolder = PidlManager.IdListToPidl(folderIdList),
+                    psf = shellFolder,
+                    cidl = cidl,
+                    apidl = apidl,
+                    punkAssociationInfo = IntPtr.Zero,
+                    cKeys = 0,
+                    aKeys = null
+                };
+
+                //  Create the default context menu.
+                var result = Shell32.SHCreateDefaultContextMenu(dcm, riid, out ppv);
+            }
+            else if (riid == Shell32.IID_ExtractIconW)
             {
                 //  If we've been asked for an icon, it should only be for a single PIDL.
                 if(idLists.Length != 1)
@@ -248,6 +266,34 @@ namespace SharpShell.SharpNamespaceExtension
                     ppv = Marshal.GetComInterfaceForObject(provider, typeof (IExtractIconW));
                     return WinError.S_OK;
                 }
+            }
+            else if (riid == Shell32.IID_IQueryAssociations)
+            {
+                /*
+                 * BOOL fIsFolder = FALSE;
+        hr = _GetFolderness(apidl[0], &fIsFolder);
+        if (SUCCEEDED(hr))
+        {
+            // the type of the item can be determined here.  we default to "FolderViewSampleType", which has
+            // a context menu registered for it.
+            if (fIsFolder)
+            {
+                ASSOCIATIONELEMENT const rgAssocFolder[] =
+                {
+                    { ASSOCCLASS_PROGID_STR, NULL, L"FolderViewSampleType"},
+                    { ASSOCCLASS_FOLDER, NULL, NULL},
+                };
+                hr = AssocCreateForClasses(rgAssocFolder, ARRAYSIZE(rgAssocFolder), riid, ppv);
+            }
+            else
+            {
+                ASSOCIATIONELEMENT const rgAssocItem[] =
+                {
+                    { ASSOCCLASS_PROGID_STR, NULL, L"FolderViewSampleType"},
+                };
+                hr = AssocCreateForClasses(rgAssocItem, ARRAYSIZE(rgAssocItem), riid, ppv);
+            }
+        }*/
             }
 
 

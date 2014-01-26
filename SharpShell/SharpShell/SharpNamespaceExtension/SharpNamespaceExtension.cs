@@ -257,7 +257,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
+            return folderImpl.GetUIObjectOf(this, extensionAbsolutePidl, hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
         }
 
         /// <summary>
