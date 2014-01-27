@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using SharpShell.Interop;
 using SharpShell.Pidl;
 
@@ -267,8 +268,13 @@ namespace SharpShell.SharpNamespaceExtension
                     return WinError.S_OK;
                 }
             }
-            else if (riid == Shell32.IID_IQueryAssociations)
+            else if (riid == Shell32.IID_IDataObject)
             {
+                //  Create the data object.
+                Shell32.SHCreateDataObject(PidlManager.IdListToPidl(folderIdList), cidl, apidl, null, riid, out ppv);
+            }
+           /* else if (riid == Shell32.IID_IQueryAssociations)
+            { */
                 /*
                  * BOOL fIsFolder = FALSE;
         hr = _GetFolderness(apidl[0], &fIsFolder);
@@ -294,7 +300,7 @@ namespace SharpShell.SharpNamespaceExtension
                 hr = AssocCreateForClasses(rgAssocItem, ARRAYSIZE(rgAssocItem), riid, ppv);
             }
         }*/
-            }
+         /*   } */
 
 
             //  We have a set of child pidls (i.e. length one). We can now offer interfaces such as:

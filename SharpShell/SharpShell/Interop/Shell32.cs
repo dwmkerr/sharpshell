@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 namespace SharpShell.Interop
@@ -193,5 +194,20 @@ namespace SharpShell.Interop
         public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
 
         public static Guid IID_ExtractIconW = new Guid("{000214FA-0000-0000-C000-000000000046}");
+        public static Guid IID_IDataObject = new Guid("{0000010E-0000-0000-C000-000000000046}");
+
+        /// <summary>
+        /// Creates a data object in a parent folder.
+        /// </summary>
+        /// <param name="pidlFolder">A pointer to an ITEMIDLIST (PIDL) of the parent folder that contains the data object.</param>
+        /// <param name="cidl">The number of file objects or subfolders specified in the apidl parameter.</param>
+        /// <param name="apidl">An array of pointers to constant ITEMIDLIST structures, each of which uniquely identifies a file object or subfolder relative to the parent folder. Each item identifier list must contain exactly one SHITEMID structure followed by a terminating zero.</param>
+        /// <param name="pdtInner">A pointer to interface IDataObject. This parameter can be NULL. Specify pdtInner only if the data object created needs to support additional FORMATETC clipboard formats beyond the default formats it is assigned at creation. Alternatively, provide support for populating the created data object using non-default clipboard formats by calling method IDataObject::SetData and specifying the format in the FORMATETC structure passed in parameter pFormatetc.</param>
+        /// <param name="riid">A reference to the IID of the interface to retrieve through ppv. This must be IID_IDataObject.</param>
+        /// <param name="ppv">When this method returns successfully, contains the IDataObject interface pointer requested in riid.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [DllImport("shell32.dll")]
+        public static extern int SHCreateDataObject(IntPtr pidlFolder, uint cidl, IntPtr apidl, IDataObject pdtInner, Guid riid,
+            out IntPtr ppv);
     }
 }
