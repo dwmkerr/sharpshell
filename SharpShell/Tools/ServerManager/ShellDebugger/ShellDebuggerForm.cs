@@ -39,7 +39,7 @@ namespace ServerManager.ShellDebugger
         {
             base.OnHandleCreated(e);
 
-            ((IShellBrowser)this).BrowseObject(desktopFolderPidl,
+           ((IShellBrowser)this).BrowseObject(desktopFolderPidl,
                                         SBSP.SBSP_ABSOLUTE);
         }
 

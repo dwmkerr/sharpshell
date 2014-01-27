@@ -16,11 +16,14 @@ namespace GitHubNamespaceExtension
     [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.Everyone, VirtualFolder.Desktop, "GitHub")]
     public class GitHubNamespaceExtension : SharpNamespaceExtension
     {
-        private readonly GitHubRepo[] sampleRepos = new GitHubRepo[]
+        private readonly IShellNamespaceItem[] sampleRepos = new IShellNamespaceItem[]
         {
             new GitHubRepo("SharpShell"),
             new GitHubRepo("SharpGL"),
-            new GitHubRepo("Space Invaders")
+            new GitHubRepo("Space Invaders"),
+                new GitHubBranch {Name = "Branch1"},
+                new GitHubBranch {Name = "Branch2"},
+                new GitHubBranch {Name = "Branch3"}
         };
 
         /// <summary>

@@ -273,33 +273,54 @@ namespace SharpShell.SharpNamespaceExtension
                 //  Create the data object.
                 Shell32.SHCreateDataObject(PidlManager.IdListToPidl(folderIdList), cidl, apidl, null, riid, out ppv);
             }
-           /* else if (riid == Shell32.IID_IQueryAssociations)
-            { */
-                /*
-                 * BOOL fIsFolder = FALSE;
-        hr = _GetFolderness(apidl[0], &fIsFolder);
-        if (SUCCEEDED(hr))
-        {
-            // the type of the item can be determined here.  we default to "FolderViewSampleType", which has
-            // a context menu registered for it.
-            if (fIsFolder)
-            {
-                ASSOCIATIONELEMENT const rgAssocFolder[] =
+            else if (riid == Shell32.IID_IQueryAssociations)
+            { 
+                //  If we've been asked for a query associations, it should only be for a single PIDL.
+                if(idLists.Length != 1)
                 {
-                    { ASSOCCLASS_PROGID_STR, NULL, L"FolderViewSampleType"},
-                    { ASSOCCLASS_FOLDER, NULL, NULL},
-                };
-                hr = AssocCreateForClasses(rgAssocFolder, ARRAYSIZE(rgAssocFolder), riid, ppv);
-            }
-            else
-            {
-                ASSOCIATIONELEMENT const rgAssocItem[] =
+                    Diagnostics.Logging.Error(string.Format("The Shell Folder Impl for folder {0} has been asked for query associations for multiple files at once, this is not supportedd.", 
+                        folder.GetDisplayName(DisplayNameContext.Normal)));
+                    ppv = IntPtr.Zero;
+                    return WinError.E_FAIL;
+                }
+                var item = GetChildItem(idLists[0]);
+                var isFolder = item is IShellNamespaceFolder;
+   
+                if(isFolder)
                 {
-                    { ASSOCCLASS_PROGID_STR, NULL, L"FolderViewSampleType"},
-                };
-                hr = AssocCreateForClasses(rgAssocItem, ARRAYSIZE(rgAssocItem), riid, ppv);
+                    var associations = new ASSOCIATIONELEMENT[]
+                    {
+                        new ASSOCIATIONELEMENT
+                            {
+                                ac = ASSOCCLASS.ASSOCCLASS_PROGID_STR,
+                                hkClass = IntPtr.Zero,
+                                pszClass = "FolderViewSampleType"
+                            },
+                        new ASSOCIATIONELEMENT
+                            {
+                                ac = ASSOCCLASS.ASSOCCLASS_FOLDER,
+                                hkClass = IntPtr.Zero,
+                                pszClass = "FolderViewSampleType"
+                            }
+                    };
+                    Shell32.AssocCreateForClasses(associations, (uint)associations.Length, riid, out ppv);
+
+                }
+                else
+                {
+                    var associations = new ASSOCIATIONELEMENT[]
+                    {
+                        new ASSOCIATIONELEMENT
+                            {
+                                ac = ASSOCCLASS.ASSOCCLASS_PROGID_STR,
+                                hkClass = IntPtr.Zero,
+                                pszClass = "FolderViewSampleType"
+                            }
+                    };
+                    Shell32.AssocCreateForClasses(associations, (uint)associations.Length, riid, out ppv);
+               }
             }
-        }*/
+            
          /*   } */
 
 
