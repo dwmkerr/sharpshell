@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
+using SharpShell.Interop;
 using SharpShell.Pidl;
+using SharpShell.SharpContextMenu;
 using SharpShell.SharpNamespaceExtension;
 
 namespace GitHubNamespaceExtension
 {
-    public class GitHubRepo : IShellNamespaceFolder
+    public class GitHubRepo : IShellNamespaceFolder, IShellNamespaceFolderContextMenuProvider
     {
         internal GitHubRepo(string name)
         {
@@ -67,6 +70,26 @@ namespace GitHubNamespaceExtension
                    {
                        return item.GetDisplayName(DisplayNameContext.Normal);
                    });
+        }
+
+        public IContextMenu CreateContextMenu(IdList folderIdList, IdList[] folderItemIdLists)
+        {
+            return new GithubContextMenu();
+        }
+    }
+
+    public class GithubContextMenu : SharpContextMenu
+    {
+        protected override bool CanShowMenu()
+        {
+            return true;
+        }
+
+        protected override ContextMenuStrip CreateMenu()
+        {
+            var menu = new ContextMenuStrip();
+            menu.Items.Add("Open");
+            return menu;
         }
     }
 }

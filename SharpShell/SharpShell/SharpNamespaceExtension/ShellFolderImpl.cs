@@ -215,13 +215,21 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        internal int GetUIObjectOf(IShellFolder shellFolder, IdList folderIdList, IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
+        internal int GetUIObjectOf(object proxyTarget, IShellFolder shellFolder, IdList folderIdList, IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  Get the ID lists from the array of PIDLs provided.
             var idLists = PidlManager.APidlToIdListArray(apidl, (int) cidl);
 
             if (riid == typeof (IContextMenu).GUID || riid == typeof(IContextMenu2).GUID || riid == typeof(IContextMenu3).GUID)
             {
+                //  If the folder implments the context menu provider, we can use that.
+                var contextMenuProvider = proxyTarget as IShellNamespaceFolderContextMenuProvider;
+                if (contextMenuProvider != null)
+                {
+                    ppv = Marshal.GetComInterfaceForObject(contextMenuProvider.CreateContextMenu(folderIdList, idLists),
+                        typeof (IContextMenu));
+                    return WinError.S_OK;
+                }
                 var dcm = new DEFCONTEXTMENU
                 {
                     hwnd = hwndOwner,
@@ -288,6 +296,9 @@ namespace SharpShell.SharpNamespaceExtension
    
                 if(isFolder)
                 {
+                    //  todo perhaps a good class name would simply be the 
+                    //  name of the item type? or an attribute that uses the classname as a 
+                    //  fallback.
                     var associations = new ASSOCIATIONELEMENT[]
                     {
                         new ASSOCIATIONELEMENT

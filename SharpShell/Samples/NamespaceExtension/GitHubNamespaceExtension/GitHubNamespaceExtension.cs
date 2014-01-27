@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using SharpShell.Interop;
 using SharpShell.Pidl;
 using SharpShell.SharpNamespaceExtension;
 
@@ -14,7 +15,7 @@ namespace GitHubNamespaceExtension
     /// </summary>
     [ComVisible(true)]
     [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.Everyone, VirtualFolder.Desktop, "GitHub")]
-    public class GitHubNamespaceExtension : SharpNamespaceExtension
+    public class GitHubNamespaceExtension : SharpNamespaceExtension, IShellNamespaceFolderContextMenuProvider
     {
         private readonly IShellNamespaceItem[] sampleRepos = new IShellNamespaceItem[]
         {
@@ -57,6 +58,11 @@ namespace GitHubNamespaceExtension
                 {
                     return item.GetDisplayName(DisplayNameContext.Normal);
                 });
+        }
+
+        public IContextMenu CreateContextMenu(IdList folderIdList, IdList[] folderItemIdLists)
+        {
+            return new GithubContextMenu();
         }
     }
 }

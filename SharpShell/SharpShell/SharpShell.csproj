@@ -175,6 +175,7 @@
     <Compile Include="SharpNamespaceExtension\DefaultNamespaceFolderView.cs" />
     <Compile Include="SharpNamespaceExtension\DisplayNameContext.cs" />
     <Compile Include="SharpNamespaceExtension\IShellNamespaceFolder.cs" />
+    <Compile Include="SharpNamespaceExtension\IShellNamespaceFolderContextMenuProvider.cs" />
     <Compile Include="SharpNamespaceExtension\IShellNamespaceItem.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionAvailability.cs" />
     <Compile Include="SharpNamespaceExtension\NamespaceExtensionJunctionPointAttribute.cs" />
