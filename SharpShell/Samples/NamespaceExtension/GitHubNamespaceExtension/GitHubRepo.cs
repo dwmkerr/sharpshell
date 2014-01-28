@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using SharpShell.Interop;
 using SharpShell.Pidl;
-using SharpShell.SharpContextMenu;
 using SharpShell.SharpNamespaceExtension;
 
 namespace GitHubNamespaceExtension
@@ -74,22 +72,7 @@ namespace GitHubNamespaceExtension
 
         public IContextMenu CreateContextMenu(IdList folderIdList, IdList[] folderItemIdLists)
         {
-            return new GithubContextMenu();
-        }
-    }
-
-    public class GithubContextMenu : SharpContextMenu
-    {
-        protected override bool CanShowMenu()
-        {
-            return true;
-        }
-
-        protected override ContextMenuStrip CreateMenu()
-        {
-            var menu = new ContextMenuStrip();
-            menu.Items.Add("Open");
-            return menu;
+            return new GithubContextMenu(folderIdList, folderItemIdLists);
         }
     }
 }

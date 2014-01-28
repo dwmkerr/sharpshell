@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GitHubBranch.cs" />
+    <Compile Include="GithubContextMenu.cs" />
     <Compile Include="GitHubNamespaceExtension.cs" />
     <Compile Include="GitHubRepo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

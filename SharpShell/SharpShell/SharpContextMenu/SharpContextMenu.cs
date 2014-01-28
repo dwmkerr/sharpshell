@@ -112,6 +112,11 @@ namespace SharpShell.SharpContextMenu
                 }
             }
 
+            //  The derived class MAY need some of the extended command data,
+            //  so we store it now. It can be retrieved and used in the handler
+            //  of the menu item.
+            SaveInvokeCommandInfo(isUnicode, ici, iciex);
+
             //  If we're not unicode and the verb hiword is not zero,
             //  we've got an ANSI verb string.
             if (!isUnicode && User32.HighWord(ici.verb.ToInt32()) != 0)
@@ -161,6 +166,34 @@ namespace SharpShell.SharpContextMenu
 
             //  Return success.
             return WinError.S_OK;
+        }
+
+        /// <summary>
+        /// Saves the invoke command information.
+        /// </summary>
+        /// <param name="isUnicode">if set to <c>true</c> the unicode structure is used.</param>
+        /// <param name="ici">The ici.</param>
+        /// <param name="iciex">The iciex.</param>
+        private void SaveInvokeCommandInfo(bool isUnicode, CMINVOKECOMMANDINFO ici, CMINVOKECOMMANDINFOEX iciex)
+        {
+            if (isUnicode)
+            {
+                //  Create command info from the Unicode structure.
+                currentInvokeCommandInfo = new InvokeCommandInfo
+                {
+                    WindowHandle = iciex.hwnd,
+                    ShowCommand = iciex.nShow
+                };
+            }
+            else
+            {
+                //  Create command info from the ANSI structure.
+                currentInvokeCommandInfo = new InvokeCommandInfo
+                {
+                    WindowHandle = ici.hwnd,
+                    ShowCommand = ici.nShow
+                };
+            }
         }
 
         /// <summary>
@@ -262,6 +295,13 @@ namespace SharpShell.SharpContextMenu
 
         #endregion
         */
+
+        /// <summary>
+        /// Gets the current invoke command information. This will only be set when a command
+        /// is invoked, and will be replaced when the next command is invoked.
+        /// </summary>
+        protected InvokeCommandInfo CurrentInvokeCommandInfo { get { return currentInvokeCommandInfo; }}
+
         /// <summary>
         /// Determines whether this instance can a shell context show menu, given the specified selected file list.
         /// </summary>
@@ -295,5 +335,10 @@ namespace SharpShell.SharpContextMenu
         /// The native context menu wrapper.
         /// </summary>
         private readonly NativeContextMenuWrapper nativeContextMenuWrapper = new NativeContextMenuWrapper();
+
+        /// <summary>
+        /// The current invoke command information.
+        /// </summary>
+        private InvokeCommandInfo currentInvokeCommandInfo;
     }
 }

@@ -62,7 +62,7 @@ namespace GitHubNamespaceExtension
 
         public IContextMenu CreateContextMenu(IdList folderIdList, IdList[] folderItemIdLists)
         {
-            return new GithubContextMenu();
+            return new GithubContextMenu(folderIdList, folderItemIdLists);
         }
     }
 }

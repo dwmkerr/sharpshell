@@ -116,6 +116,18 @@ namespace SharpShell.Pidl
             //  We've allocated the pidl, copied it and are ready to rock.
             return ptr;
         }
+
+        public static IdList Combine(IdList folderIdList, IdList folderItemIdList)
+        {
+            var combined = new List<ShellId>(folderIdList.Ids);
+            combined.AddRange(folderItemIdList.Ids);
+            return IdList.Create(IdListType.Absolute, combined);
+        }
+
+        public static void DeletePidl(IntPtr pidl)
+        {
+            Marshal.FreeCoTaskMem(pidl);
+        }
     }
 
     public sealed class IdList
