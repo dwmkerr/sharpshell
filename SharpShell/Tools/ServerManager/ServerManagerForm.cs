@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -96,6 +97,10 @@ namespace ServerManager
                     listItem.ImageIndex = 0;
                     break;
             }
+
+            if (serverEntry.IsInvalid)
+                listItem.ForeColor = Color.FromArgb(255, 0, 0);
+
             listViewServers.Items.Add(listItem);
 
         }
