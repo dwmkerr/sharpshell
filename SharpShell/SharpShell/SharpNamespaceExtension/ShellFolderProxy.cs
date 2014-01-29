@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using SharpShell.Interop;
 using SharpShell.Pidl;
 
@@ -6,7 +7,7 @@ namespace SharpShell.SharpNamespaceExtension
 {
     //  todo important we can merge this class an shellfolderimpl
 
-    internal class ShellFolderProxy : IShellFolder2, IPersistFolder2
+    internal class ShellFolderProxy : IShellFolder2, IPersistFolder2, IPersistIDList
     {
         public ShellFolderProxy(IShellNamespaceFolder folder, Guid serverGuid, IdList idList)
         {
@@ -303,7 +304,7 @@ namespace SharpShell.SharpNamespaceExtension
 
         #endregion
 
-        #region Implementation IPersist, IPersistFolder, IPersistFolder2
+        #region Implementation IPersist, IPersistFolder, IPersistFolder2, IPersistIDList
 
         /// <summary>
         /// Gets the class identifier.
@@ -318,6 +319,7 @@ namespace SharpShell.SharpNamespaceExtension
         }
         int IPersistFolder.GetClassID(out Guid pClassID) { return ((IPersist)this).GetClassID(out pClassID); }
         int IPersistFolder2.GetClassID(out Guid pClassID) { return ((IPersist)this).GetClassID(out pClassID); }
+        int IPersistIDList.GetClassID(out Guid pClassID) {return ((IPersist)this).GetClassID(out pClassID); }
 
         int IPersistFolder.Initialize(IntPtr pidl)
         {
@@ -337,11 +339,21 @@ namespace SharpShell.SharpNamespaceExtension
         /// <remarks>
         /// If the folder object has not been initialized, this method returns S_FALSE and ppidl is set to NULL.
         /// </remarks>
-        public int GetCurFolder(out IntPtr ppidl)
+        int IPersistFolder2.GetCurFolder(out IntPtr ppidl)
         {
             //  Return the pidl.
             ppidl = PidlManager.IdListToPidl(folderIdList);
             return WinError.S_OK;
+        }
+
+        int IPersistIDList.SetIDList(IntPtr pidl)
+        {
+            return ((IPersistFolder2) this).Initialize(pidl);
+        }
+
+        int IPersistIDList.GetIDList([Out] out IntPtr pidl)
+        {
+            return ((IPersistFolder2) this).GetCurFolder(out pidl);
         }
 
         #endregion

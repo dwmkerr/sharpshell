@@ -32,6 +32,7 @@ namespace SharpShell.SharpNamespaceExtension
     public abstract class SharpNamespaceExtension : 
         SharpShellServer, 
         IPersistFolder2,
+        IPersistIDList,
         IShellFolder2,
         IShellNamespaceFolder
 
@@ -65,6 +66,7 @@ namespace SharpShell.SharpNamespaceExtension
         }
         int IPersistFolder.GetClassID(out Guid pClassId) {return ((IPersist)this).GetClassID(out pClassId); }
         int IPersistFolder2.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
+        int IPersistIDList.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
 
         /// <summary>
         /// Instructs a Shell folder object to initialize itself based on the information passed.
@@ -109,6 +111,18 @@ namespace SharpShell.SharpNamespaceExtension
             ppidl = PidlManager.IdListToPidl(extensionAbsolutePidl);
             return WinError.S_OK;
         }
+        
+
+        int IPersistIDList.SetIDList(IntPtr pidl)
+        {
+            return ((IPersistFolder2)this).Initialize(pidl);
+        }
+
+        int IPersistIDList.GetIDList([Out] out IntPtr pidl)
+        {
+            return ((IPersistFolder2)this).GetCurFolder(out pidl);
+        }
+
 
         #endregion
 
