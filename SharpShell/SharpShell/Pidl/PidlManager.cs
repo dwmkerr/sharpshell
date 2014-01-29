@@ -128,6 +128,13 @@ namespace SharpShell.Pidl
         {
             Marshal.FreeCoTaskMem(pidl);
         }
+
+        public static IntPtr PidlsToAPidl(IntPtr[] pidls)
+        {
+            var buffer = Marshal.AllocCoTaskMem(pidls.Length*IntPtr.Size);
+            Marshal.Copy(pidls, 0, buffer, pidls.Length);
+            return buffer;
+        }
     }
 
     public sealed class IdList

@@ -104,3 +104,11 @@ Property Sheet Extensions
 ![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/propertysheetextensions.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
+
+Useful Resources
+----------------
+
+Below are some resources I've found useful during SharpShell development. Please get in touch if you have suggestions
+for more, or just make a pull request with changes to this file.
+
+[Create Namespace Extensions for Windows Explorer with the .NET Framework](http://msdn.microsoft.com/en-us/magazine/cc188741.aspx)

@@ -6,7 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using SharpShell.Interop;
+using SharpShell.Pidl;
 
 namespace ServerManager.ShellDebugger
 {
@@ -27,6 +29,7 @@ namespace ServerManager.ShellDebugger
             this.SetImageList(TreeViewExtensions.ImageListType.Normal, ShellImageList.GetImageList(ShellImageListSize.Small));
 
             this.AfterSelect += ShellTreeView_AfterSelect;
+            
         }
 
         void ShellTreeView_AfterSelect(object sender, TreeViewEventArgs e)
@@ -206,6 +209,68 @@ namespace ServerManager.ShellDebugger
         public event TreeViewEventHandler OnShellItemAdded;
 
         public event ShellItemTreeEventHandler OnShellItemSelected;
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // ShellTreeView
+            // 
+            this.ResumeLayout(false);
+
+        }
+
+        protected override void OnNodeMouseClick(TreeNodeMouseClickEventArgs e)
+        {
+            base.OnNodeMouseClick(e);
+
+            if (e.Button == MouseButtons.Right)
+            {
+                //  Get the item hit.
+                var itemHit = GetShellItem(e.Node);
+
+                //  Create a default context menu.
+                OpenItemContextMenu(itemHit, e.X, e.Y);
+
+            }
+        }
+
+        private void OpenItemContextMenu(ShellItem itemHit, int x, int y)
+        {
+                //  TODO: we need a min and max for the menu items.
+
+            //  see http://www.codeproject.com/Articles/4025/Use-Shell-ContextMenu-in-your-applications for more
+
+            //  The shell folder we use to get the UI object is either the folder itself if the
+            //  item is a folder, or the parent folder otherwise.
+            var shellFolder = itemHit.IsFolder ? itemHit.ShellFolderInterface : itemHit.ParentItem.ShellFolderInterface;
+
+            //  The item pidl is either the folder if the item is a folder, or the combined pidl otherwise.
+            var fullIdList = itemHit.IsFolder
+                ? PidlManager.PidlToIdlist(itemHit.PIDL)
+                : PidlManager.Combine(PidlManager.PidlToIdlist(itemHit.ParentItem.PIDL),
+                    PidlManager.PidlToIdlist(itemHit.RelativePIDL));
+                
+
+            //  Get the UI object of the context menu.
+            uint cidl = 1;
+            IntPtr apidl = PidlManager.PidlsToAPidl(new IntPtr[] {PidlManager.IdListToPidl(fullIdList)});
+
+
+            IntPtr ppv = IntPtr.Zero;
+            shellFolder.GetUIObjectOf(Handle, 1, apidl, ref Shell32.IID_IContextMenu, 0,
+                out ppv);
+
+            //  If we have an item, cast it.
+            if (ppv != IntPtr.Zero)
+            {
+                IContextMenu contextMenu = (IContextMenu)Marshal.GetObjectForIUnknown(ppv);
+
+                var popupMenu = new ContextMenu();
+                contextMenu.QueryContextMenu(popupMenu.Handle, 0, 0, 65525, CMF.CMF_EXPLORE);
+                popupMenu.Show(this, new Point(x, y));
+            }
+        }
     }
 
     public delegate void ShellItemTreeEventHandler(object sender, ShellTreeEventArgs e);
@@ -436,7 +501,10 @@ namespace ServerManager.ShellDebugger
                 DisplayName = fileInfo.szDisplayName,
                 IconIndex = fileInfo.iIcon,
                 HasSubFolders = true,
-                ShellFolderInterface = desktopShellFolderInterface
+                IsFolder = true,
+                ShellFolderInterface = desktopShellFolderInterface,
+                PIDL = desktopPIDL,
+                RelativePIDL = desktopPIDL
             };
         }
 

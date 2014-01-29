@@ -217,6 +217,9 @@
     <EmbeddedResource Include="ShellDebugger\ShellDebuggerForm.resx">
       <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShellDebugger\ShellTreeView.resx">
+      <DependentUpon>ShellTreeView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestShell\ShellThumbnailHost.resx">
       <DependentUpon>ShellThumbnailHost.cs</DependentUpon>
     </EmbeddedResource>

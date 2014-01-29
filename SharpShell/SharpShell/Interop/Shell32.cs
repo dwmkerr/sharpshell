@@ -195,6 +195,7 @@ namespace SharpShell.Interop
 
         public static Guid IID_ExtractIconW = new Guid("{000214FA-0000-0000-C000-000000000046}");
         public static Guid IID_IDataObject = new Guid("{0000010E-0000-0000-C000-000000000046}");
+        public static Guid IID_IContextMenu = new Guid("000214e4-0000-0000-c000-000000000046");
 
         /// <summary>
         /// Creates a data object in a parent folder.
