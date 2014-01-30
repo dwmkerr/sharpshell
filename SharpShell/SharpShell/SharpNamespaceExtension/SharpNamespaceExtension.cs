@@ -419,6 +419,17 @@ namespace SharpShell.SharpNamespaceExtension
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
         /// <param name="registrationType">Type of the registration.</param>
+        /// <exception cref="System.InvalidOperationException">
+        /// Unable to register a SharpNamespaceExtension as it is missing it's junction point definition.
+        /// or
+        /// Cannot open the Virtual Folder NameSpace key.
+        /// or
+        /// Failed to create the Virtual Folder NameSpace extension.
+        /// or
+        /// Cannot open the class key.
+        /// or
+        /// An exception occured creating the ShellFolder key.
+        /// </exception>
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
@@ -515,8 +526,16 @@ namespace SharpShell.SharpNamespaceExtension
                     if(string.IsNullOrEmpty(registrationSettings.Tooltip) != true)
                         classKey.SetValue(@"InfoTip", registrationSettings.Tooltip, RegistryValueKind.String);
 
-                    //  Set the default icon. TODO key not attribute
-                    //  classKey.SetValue(@"DefaultIcon", "File.dll,index", RegistryValueKind.String);
+                    //  Set the default icon to the assembly icon if we are using it.
+                    if (registrationSettings.UseAssemblyIcon)
+                    {
+                        using (var defaultIconKey = classKey.CreateSubKey(@"DefaultIcon"))
+                        {
+                            if (defaultIconKey == null)
+                                throw new InvalidOperationException("An exception occured creating the DefaultIcon key.");
+                            defaultIconKey.SetValue(null, serverType.Assembly.Location, RegistryValueKind.String);
+                        }
+                    }
                     
                     //  TODO support custom verbs with a 'Shell' subkey.
                     //  TODO support custom shortcut menu handler with ShellEx.
@@ -611,7 +630,7 @@ namespace SharpShell.SharpNamespaceExtension
 
         Icon IShellNamespaceItem.GetIcon()
         {
-            return GetRegistrationSettings().Icon;
+            return null;
         }
 
         #endregion

@@ -36,8 +36,9 @@ namespace SharpShell.SharpNamespaceExtension
         public string Tooltip { get; set; }
 
         /// <summary>
-        /// Gets or sets the icon for the shell namespace extension.
+        /// Gets or sets a value indicating whether to use the assembly icon for the 
+        /// namespace icon.
         /// </summary>
-        public Icon Icon { get; set; }
+        public bool UseAssemblyIcon { get; set; }
     }
 }
