@@ -32,15 +32,15 @@ namespace ServerManager.ShellDebugger
         void shellTreeView_OnShellItemSelected(object sender, ShellTreeEventArgs e)
         {
             //  TODO: Update the browser.
-            //((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_ABSOLUTE);
+            ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER | SBSP.SBSP_ABSOLUTE);
         }
 
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
 
-           ((IShellBrowser)this).BrowseObject(desktopFolderPidl,
-                                        SBSP.SBSP_ABSOLUTE);
+          /* ((IShellBrowser)this).BrowseObject(desktopFolderPidl,
+                                        SBSP.SBSP_ABSOLUTE); */
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
@@ -239,7 +239,6 @@ namespace ServerManager.ShellDebugger
                     lastIShellView.GetCurrentInfo(ref fs);
                     lastIShellView.UIActivate(SVUIA_STATUS.SVUIA_DEACTIVATE);
                     lastIShellView.DestroyViewWindow();
-                    Marshal.ReleaseComObject(lastIShellView);
                 }
 
                 // Set focus to the IShellView
@@ -292,11 +291,11 @@ namespace ServerManager.ShellDebugger
         {
             var shellBrowserGuid = typeof (IShellBrowser).GUID;
 
-            /*if (riid == Shell32.IID_IShellBrowser)
+            if (riid == Shell32.IID_IShellBrowser)
             {
                 ppvObject = this;
                 return WinError.S_OK;
-            }*/
+            }
 
             ppvObject = null;
             return WinError.E_NOINTERFACE;
