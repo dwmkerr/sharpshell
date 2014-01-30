@@ -33,7 +33,7 @@ namespace SharpShell.Interop
         /// <param name="lpmsg">The address of the message to be translated.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise. If the view returns S_OK, it indicates that the message was translated and should not be translated or dispatched by Windows Explorer. </returns>
         [PreserveSig]
-        int TranslateAccelerator(ref MSG lpmsg);
+        int TranslateAcceleratorA(MSG lpmsg);
 
         /// <summary>
         /// Enables or disables modeless dialog boxes. This method is not currently implemented.
@@ -48,7 +48,7 @@ namespace SharpShell.Interop
         /// <param name="uState">Flag specifying the activation state of the window.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int UIActivate([MarshalAs(UnmanagedType.U4)] SVUIA_STATUS uState);
+        int UIActivate(SVUIA_STATUS uState);
 
         /// <summary>
         /// Refreshes the view's contents in response to user input.
@@ -67,8 +67,8 @@ namespace SharpShell.Interop
         /// <param name="phWnd">The address of the window handle being created.</param>
         /// <returns>Returns a success code if successful, or a COM error code otherwise.</returns>
         [PreserveSig]
-        int CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious, 
-            [In] ref FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, [In] ref RECT prcView, [Out] out IntPtr phWnd);
+        int CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious,
+             [In] ref FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, [In]  ref RECT prcView, [In, Out] ref IntPtr phWnd);
 
         /// <summary>
         /// Destroys the view window.
@@ -83,7 +83,7 @@ namespace SharpShell.Interop
         /// <param name="pfs">The address of a FOLDERSETTINGS structure to receive the settings.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int GetCurrentInfo(out FOLDERSETTINGS pfs);
+        int GetCurrentInfo(ref FOLDERSETTINGS pfs);
 
         /// <summary>
         /// Allows the view to add pages to the Options property sheet from the View menu.
@@ -93,7 +93,7 @@ namespace SharpShell.Interop
         /// <param name="lparam">A value that must be passed as the callback function's lparam parameter.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int AddPropertySheetPages(uint dwReserved, IntPtr lpfn, IntPtr lparam);
+        int AddPropertySheetPages(long dwReserved, ref IntPtr lpfn, IntPtr lparam);
 
         /// <summary>
         /// Saves the Shell's view settings so the current state can be restored during a subsequent browsing session.

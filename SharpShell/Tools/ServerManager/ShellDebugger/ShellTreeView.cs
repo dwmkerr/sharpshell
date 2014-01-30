@@ -258,7 +258,7 @@ namespace ServerManager.ShellDebugger
 
 
             IntPtr ppv = IntPtr.Zero;
-            shellFolder.GetUIObjectOf(Handle, 1, apidl, ref Shell32.IID_IContextMenu, 0,
+            shellFolder.GetUIObjectOf(Handle, 1, apidl, Shell32.IID_IContextMenu, 0,
                 out ppv);
 
             //  If we have an item, cast it.

@@ -3,7 +3,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// Used with the IBrowserService2::_UIActivateView method to set the state of a browser view.
     /// </summary>
-    public enum SVUIA_STATUS
+    public enum SVUIA_STATUS : uint
     {
         /// <summary>
         /// Windows Explorer is about to destroy the Shell view window. The Shell view should remove all extended user interfaces. These are typically merged menus and merged modeless pop-up windows.

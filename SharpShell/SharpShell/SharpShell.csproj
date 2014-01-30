@@ -87,6 +87,7 @@
     <Compile Include="Interop\COLORREF.cs" />
     <Compile Include="Interop\DEFCONTEXTMENU.cs" />
     <Compile Include="Interop\GILInFlags.cs" />
+    <Compile Include="Interop\ICommDlgBrowser.cs" />
     <Compile Include="Interop\IContextMenuCB.cs" />
     <Compile Include="Interop\IDefaultExtractIconInit.cs" />
     <Compile Include="Interop\IExtractIconA.cs" />

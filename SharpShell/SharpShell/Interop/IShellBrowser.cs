@@ -39,7 +39,7 @@ namespace SharpShell.Interop
         /// <param name="lpMenuWidths">The address of an OLEMENUGROUPWIDTHS array of six LONG values. The container fills in elements 0, 2, and 4 to reflect the number of menu elements it provided in the File, View, and Window menu groups.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int InsertMenusSB(IntPtr hmenuShared, OLEMENUGROUPWIDTHS lpMenuWidths);
+        int InsertMenusSB(IntPtr hmenuShared, ref IntPtr lpMenuWidths);
 
         /// <summary>
         /// Installs the composite menu in the view window.
@@ -82,7 +82,7 @@ namespace SharpShell.Interop
         /// <param name="wID">The command identifier value corresponding to the keystroke in the container-provided accelerator table. Containers should use this value instead of translating again.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int TranslateAcceleratorSB(MSG pmsg, short wID);
+        int TranslateAcceleratorSB(IntPtr pmsg, short wID);
 
         /// <summary>
         /// Informs Windows Explorer to browse to another folder.
@@ -100,7 +100,7 @@ namespace SharpShell.Interop
         /// <param name="ppStrm">The address that receives the IStream interface pointer.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int GetViewStateStream(uint grfMode, out IStream ppStrm);
+        int GetViewStateStream(long grfMode, ref IStream ppStrm);
 
         /// <summary>
         /// Gets the window handle to a browser control.
@@ -109,7 +109,7 @@ namespace SharpShell.Interop
         /// <param name="phwnd">The address of the window handle to the Windows Explorer control.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int GetControlWindow(uint id, out IntPtr phwnd);
+        int GetControlWindow(uint id, ref IntPtr phwnd);
 
         /// <summary>
         /// Sends control messages to either the toolbar or the status bar in a Windows Explorer window.
@@ -121,7 +121,7 @@ namespace SharpShell.Interop
         /// <param name="pret">The address of the return value of the SendMessage function.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int SendControlMsg(uint id, uint uMsg, IntPtr wParam, IntPtr lParam, out IntPtr pret);
+        int SendControlMsg(uint id, uint uMsg, short wParam, long lParam, ref long pret);
 
         /// <summary>
         /// Retrieves the currently active (displayed) Shell view object.
@@ -129,7 +129,7 @@ namespace SharpShell.Interop
         /// <param name="ppshv">The address of the pointer to the currently active Shell view object.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int QueryActiveShellView(out IShellView ppshv);
+        int QueryActiveShellView(ref IShellView ppshv);
 
         /// <summary>
         /// Called by the Shell view when the view window or one of its child windows gets the focus or becomes active.
@@ -147,6 +147,6 @@ namespace SharpShell.Interop
         /// <param name="uFlags">Flags specifying where the toolbar buttons should go. This parameter can be one or more of the following values. TODO map FCT</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
-        int SetToolbarItems(TBBUTTON[] lpButtons, uint nButtons, uint uFlags);
+        int SetToolbarItems(IntPtr lpButtons, uint nButtons, uint uFlags);
     }
 }

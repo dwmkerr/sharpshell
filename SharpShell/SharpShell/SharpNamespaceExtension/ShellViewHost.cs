@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using SharpShell.Interop;
@@ -32,7 +33,7 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        int IShellView.TranslateAccelerator(ref MSG lpmsg)
+        int IShellView.TranslateAcceleratorA(MSG lpmsg)
         {
             //  TODO
             return WinError.S_OK;
@@ -56,8 +57,8 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        int IShellView.CreateViewWindow(IShellView psvPrevious, ref FOLDERSETTINGS pfs, IShellBrowser psb, ref RECT prcView,
-            out IntPtr phWnd)
+        int IShellView.CreateViewWindow([In, MarshalAs(UnmanagedType.Interface)] IShellView psvPrevious,
+             [In] ref FOLDERSETTINGS pfs, [In, MarshalAs(UnmanagedType.Interface)] IShellBrowser psb, [In]  ref RECT prcView, [In, Out] ref IntPtr phWnd)
         {
             //  Store the shell browser.
             shellBrowser = psb;
@@ -97,13 +98,13 @@ namespace SharpShell.SharpNamespaceExtension
             return WinError.S_OK;
         }
 
-        int IShellView.GetCurrentInfo(out FOLDERSETTINGS pfs)
+        int IShellView.GetCurrentInfo(ref FOLDERSETTINGS pfs)
         {
             pfs = new FOLDERSETTINGS {fFlags = 0, ViewMode = FOLDERVIEWMODE.FVM_AUTO};
             return WinError.S_OK;
         }
 
-        int IShellView.AddPropertySheetPages(uint dwReserved, IntPtr lpfn, IntPtr lparam)
+        int IShellView.AddPropertySheetPages(long dwReserved, ref IntPtr lpfn, IntPtr lparam)
         {
             //  TODO
             return WinError.S_OK;

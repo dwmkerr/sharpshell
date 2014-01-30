@@ -11,7 +11,7 @@ namespace SharpShell.Interop
     {
         #region Overriden IPersist Methods
         
-        int GetClassID(out Guid pClassID);
+        new int GetClassID(out Guid pClassID);
 
         #endregion
 

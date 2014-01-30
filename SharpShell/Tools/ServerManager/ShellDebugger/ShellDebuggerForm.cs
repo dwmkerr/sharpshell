@@ -16,7 +16,7 @@ namespace ServerManager.ShellDebugger
 {
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    public partial class ShellDebuggerForm : Form, IShellBrowser, IServiceProvider
+    public partial class ShellDebuggerForm : Form, IShellBrowser, IServiceProvider, ICommDlgBrowser
     {
         public ShellDebuggerForm()
         {
@@ -91,7 +91,7 @@ namespace ServerManager.ShellDebugger
             return WinError.E_NOTIMPL;
         }
 
-        int IShellBrowser.InsertMenusSB(IntPtr hmenuShared, OLEMENUGROUPWIDTHS lpMenuWidths)
+        int IShellBrowser.InsertMenusSB(IntPtr hmenuShared, ref IntPtr lpMenuWidths)
         {
             return WinError.E_NOTIMPL;
         }
@@ -116,7 +116,7 @@ namespace ServerManager.ShellDebugger
             return WinError.E_NOTIMPL;
         }
 
-        int IShellBrowser.TranslateAcceleratorSB(MSG pmsg, short wID)
+        int IShellBrowser.TranslateAcceleratorSB(IntPtr pmsg, short wID)
         {
             return WinError.S_OK;
         }
@@ -193,7 +193,7 @@ namespace ServerManager.ShellDebugger
             IShellView lastIShellView = shellView;
 
             if (lastIShellView != null)
-                lastIShellView.GetCurrentInfo(out fs);
+                lastIShellView.GetCurrentInfo(ref fs);
             // Copy the old folder settings
             else
             {
@@ -222,8 +222,8 @@ namespace ServerManager.ShellDebugger
                 try
                 {
                     // Create the actual list view.
-                    res = shellView.CreateViewWindow(lastIShellView, ref fs,
-                          this, ref rc, out hWndListView);
+                    res = shellView.CreateViewWindow( lastIShellView, ref fs,
+                          this, ref rc, ref hWndListView);
                 }
                 catch (COMException)
                 {
@@ -236,7 +236,7 @@ namespace ServerManager.ShellDebugger
                 // Release the old IShellView
                 if (lastIShellView != null)
                 {
-                    lastIShellView.GetCurrentInfo(out fs);
+                    lastIShellView.GetCurrentInfo(ref fs);
                     lastIShellView.UIActivate(SVUIA_STATUS.SVUIA_DEACTIVATE);
                     lastIShellView.DestroyViewWindow();
                     Marshal.ReleaseComObject(lastIShellView);
@@ -250,25 +250,25 @@ namespace ServerManager.ShellDebugger
             return WinError.S_OK;
         }
 
-        int IShellBrowser.GetViewStateStream(uint grfMode, out IStream ppStrm)
+        int IShellBrowser.GetViewStateStream(long grfMode, ref IStream ppStrm)
         {
             ppStrm = null;
             return WinError.E_NOTIMPL;
         }
 
-        int IShellBrowser.GetControlWindow(uint id, out IntPtr phwnd)
+        int IShellBrowser.GetControlWindow(uint id, ref IntPtr phwnd)
         {
             phwnd = IntPtr.Zero;
             return WinError.S_FALSE;
         }
 
-        int IShellBrowser.SendControlMsg(uint id, uint uMsg, IntPtr wParam, IntPtr lParam, out IntPtr pret)
+        int IShellBrowser.SendControlMsg(uint id, uint uMsg, short wParam, long lParam, ref long pret)
         {
-            pret = IntPtr.Zero;
+          //  pret = 0;
             return WinError.E_NOTIMPL;
         }
 
-        int IShellBrowser.QueryActiveShellView(out IShellView ppshv)
+        int IShellBrowser.QueryActiveShellView(ref IShellView ppshv)
         {
             Marshal.AddRef(Marshal.GetIUnknownForObject(shellView));
             ppshv = shellView;
@@ -280,7 +280,7 @@ namespace ServerManager.ShellDebugger
             return WinError.E_NOTIMPL;
         }
 
-        int IShellBrowser.SetToolbarItems(TBBUTTON[] lpButtons, uint nButtons, uint uFlags)
+        int IShellBrowser.SetToolbarItems(IntPtr lpButtons, uint nButtons, uint uFlags)
         {
             return WinError.E_NOTIMPL;
         }
@@ -288,20 +288,20 @@ namespace ServerManager.ShellDebugger
 
         #region IServiceProvider implementation
 
-        int IServiceProvider.QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject)
+        int IServiceProvider.QueryService(ref Guid guidService, ref Guid riid, out IShellBrowser ppvObject)
         {
             var shellBrowserGuid = typeof (IShellBrowser).GUID;
 
-            if (riid == shellBrowserGuid)
+          /*  if (riid == Shell32.IID_IShellBrowser)
             {
-                ppvObject = Marshal.GetComInterfaceForObject(this, typeof (IShellBrowser));
+                ppvObject = this;
                 return WinError.S_OK;
-            }
+            }*/
 
-            ppvObject = IntPtr.Zero;
+            ppvObject = null;
             return WinError.E_NOINTERFACE;
         }
-
+        
         #endregion
 
         private IShellFolder currentFolder;
@@ -324,6 +324,21 @@ namespace ServerManager.ShellDebugger
         private void ShellDebuggerForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        int ICommDlgBrowser.OnDefaultCommand(IntPtr ppshv)
+        {
+            return WinError.S_OK;
+        }
+
+        int ICommDlgBrowser.OnStateChange(IntPtr ppshv, IntPtr uChange)
+        {
+            return WinError.S_OK;
+        }
+
+        int ICommDlgBrowser.IncludeObject(IntPtr ppshv, IntPtr pidl)
+        {
+            return WinError.S_OK;
         }
     }
 }
