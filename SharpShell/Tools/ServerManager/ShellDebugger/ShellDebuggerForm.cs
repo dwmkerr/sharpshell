@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using SharpShell.Interop;
+using SharpShell.Pidl;
 using IServiceProvider = SharpShell.Interop.IServiceProvider;
 
 namespace ServerManager.ShellDebugger
@@ -31,8 +32,13 @@ namespace ServerManager.ShellDebugger
 
         void shellTreeView_OnShellItemSelected(object sender, ShellTreeEventArgs e)
         {
-            //  TODO: Update the browser.
-            ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER | SBSP.SBSP_ABSOLUTE);
+            if (e.ShellItem.IsFolder)
+            {
+                var test = PidlManager.GetPidlDisplayName(e.ShellItem.PIDL);
+
+                //  TODO: Update the browser.
+                ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER | SBSP.SBSP_ABSOLUTE);
+            }
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -182,7 +188,6 @@ namespace ServerManager.ShellDebugger
             // Check that we have a new pidl
             if (Shell32.ILIsEqual(pidlTmp, currentAbsolutePidl))
             {
-                Marshal.ReleaseComObject(folderTmp);
                 Shell32.ILFree(pidlTmp);
                 return WinError.S_OK;
             }
@@ -213,9 +218,9 @@ namespace ServerManager.ShellDebugger
 
                 hWndListView = IntPtr.Zero;
                 RECT rc =
-                    new RECT(8, 8,
-                   ClientSize.Width - 8,
-                   ClientSize.Height - 8);
+                    new RECT(0, 0,
+                   ClientSize.Width,
+                   ClientSize.Height);
 
                 int res;
 

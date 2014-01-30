@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Configuration;
 using System.Runtime.InteropServices;
@@ -134,6 +135,13 @@ namespace SharpShell.Pidl
             var buffer = Marshal.AllocCoTaskMem(pidls.Length*IntPtr.Size);
             Marshal.Copy(pidls, 0, buffer, pidls.Length);
             return buffer;
+        }
+
+        public static string GetPidlDisplayName(IntPtr pidl)
+        {
+            SHFILEINFO fileInfo = new SHFILEINFO();
+            Shell32.SHGetFileInfo(pidl, 0, out fileInfo, (uint)Marshal.SizeOf(fileInfo), SHGFI.SHGFI_PIDL | SHGFI.SHGFI_DISPLAYNAME);
+            return fileInfo.szDisplayName;
         }
     }
 

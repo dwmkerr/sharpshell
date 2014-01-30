@@ -49,6 +49,17 @@ namespace SharpShell.Tests
         }
 
         [Test]
+        public void CanGetPidlDisplayName()
+        {
+            IntPtr pidl;
+            Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Documents, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero,
+                out pidl);
+            var displayName = PidlManager.GetPidlDisplayName(pidl);
+            Shell32.ILFree(pidl);
+            Assert.AreEqual(displayName, "Documents");
+        }
+
+        [Test]
         public void CanBouncePidl()
         {
 
