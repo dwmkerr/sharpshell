@@ -296,11 +296,11 @@ namespace ServerManager.ShellDebugger
         {
             var shellBrowserGuid = typeof (IShellBrowser).GUID;
 
-            if (riid == Shell32.IID_IShellBrowser)
+            /*if (riid == Shell32.IID_IShellBrowser)
             {
                 ppvObject = this;
                 return WinError.S_OK;
-            }
+            }*/
 
             ppvObject = null;
             return WinError.E_NOINTERFACE;
