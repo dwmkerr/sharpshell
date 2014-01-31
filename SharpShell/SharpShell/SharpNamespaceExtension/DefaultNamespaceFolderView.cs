@@ -6,7 +6,7 @@ using SharpShell.Interop;
 
 namespace SharpShell.SharpNamespaceExtension
 {
-    public sealed class DefaultNamespaceFolderView : ShellNamespaceFolderView
+    public sealed class DefaultNamespaceFolderView : ShellNamespaceFolderView, IShellFolderViewCB
     {
 
         public DefaultNamespaceFolderView(IEnumerable<ShellDetailColumn> detailColumns,
@@ -26,6 +26,14 @@ namespace SharpShell.SharpNamespaceExtension
                 psvOuter = null,
                 psfvcb = null
             };
+
+            //  TODO: IMPORTANT: This is the function that's failing now for creating the 
+            //  view, it seems that it could be due to not providing psvOuter (which may be
+            //  required as we're not far off being a common dialog) or more likely because we
+            //  are not providing the callback. Try both...
+            //  NOTE: A quick test shows it's unlikely to be the psvOuter, try the CB.
+            //  NOTE: adding the callback hasn't helped, we can try the alternative call
+            //  which is shcreateshellfolderviewex
             IShellView view;
             if (Shell32.SHCreateShellFolderView(ref createInfo, out view) != WinError.S_OK)
             {
@@ -54,5 +62,10 @@ namespace SharpShell.SharpNamespaceExtension
         /// A provider to get the details of an item.
         /// </summary>
         private readonly Func<IShellNamespaceItem, ShellDetailColumn, object> itemDetailProvider;
+
+        public int MessageSFVCB(SFVM uMsg, IntPtr wParam, IntPtr lParam, ref IntPtr plResult)
+        {
+            return WinError.E_NOTIMPL;
+        }
     }
 }

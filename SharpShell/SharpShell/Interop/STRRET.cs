@@ -19,13 +19,9 @@ namespace SharpShell.Interop
         /// <returns>A unicode <see cref="STRRET"/> allocated on the shell allocator.</returns>
         public static STRRET CreateUnicode(string str)
         {
-            //  Return a unicode string. In this case, data is just a pointer to the 
-            //  unicode string.
-            var strret = new STRRET
-            {
-                uType = STRRETTYPE.STRRET_WSTR,
-                data = Marshal.StringToCoTaskMemUni(str)
-            };
+            //  Create a unicode string by using the SHStrDup shell function to make
+            //  a copy of the source string.
+            var strret = new STRRET { uType = STRRETTYPE.STRRET_WSTR };
             Shell32.SHStrDup(str, out strret.data);
             return strret;
         }
