@@ -5,3 +5,5 @@
 5. The environment variables extension should be shown under 'My Computer'.
 6. It should have the correct tooltip.
 7. It should have the cogs icon.
+8. Clicking on the icon should show the environment variables.
+9. You should be able to navigate to and from the environment variables repeatedly without crashing explorer.
