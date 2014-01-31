@@ -39,6 +39,10 @@ namespace SharpShell.SharpPropertySheet
         {
             //  DebugLog the event.
             Log("Adding Pages...");
+            
+            //  If we are not showing the sheet, we can end now.
+            if (CanShowSheet() == false)
+                return 0;
 
             //  Create the bridge.
             var bridge = new NativeBridge.NativeBridge();
