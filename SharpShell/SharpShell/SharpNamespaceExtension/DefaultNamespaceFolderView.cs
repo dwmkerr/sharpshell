@@ -27,7 +27,7 @@ namespace SharpShell.SharpNamespaceExtension
                 psfvcb = null
             };
             IShellView view;
-            if (Shell32.SHCreateShellFolderView(createInfo, out view) != WinError.S_OK)
+            if (Shell32.SHCreateShellFolderView(ref createInfo, out view) != WinError.S_OK)
             {
                 throw new Exception("An error occured creating the default folder view.");
             }

@@ -66,7 +66,7 @@ namespace SharpShell.Interop
         /// <param name="ppsv">When this function returns successfully, contains an interface pointer to the new IShellView object. On failure, this value is NULL.</param>
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("shell32.dll")]
-        public static extern int SHCreateShellFolderView(SFV_CREATE pcsfv, out IShellView ppsv);
+        public static extern int SHCreateShellFolderView(ref SFV_CREATE pcsfv, out IShellView ppsv);
 
         /// <summary>
         /// Creates a new instance of the default Shell folder view object. It is recommended that you use SHCreateShellFolderView rather than this function.

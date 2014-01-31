@@ -6,6 +6,7 @@ namespace SharpShell.Interop
     /// <summary>
     /// todo document and layout
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public struct SHFILEINFO
     {
         public IntPtr hIcon;

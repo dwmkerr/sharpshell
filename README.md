@@ -112,3 +112,4 @@ Below are some resources I've found useful during SharpShell development. Please
 for more, or just make a pull request with changes to this file.
 
 [Create Namespace Extensions for Windows Explorer with the .NET Framework](http://msdn.microsoft.com/en-us/magazine/cc188741.aspx)
+[Virtual Junction Points](http://msdn.microsoft.com/en-us/library/windows/desktop/cc144096.aspx)

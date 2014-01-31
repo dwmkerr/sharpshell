@@ -21,9 +21,6 @@ using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpNamespaceExtension
 {
-    //  More info:
-    //      Virtual Junction Points: http://msdn.microsoft.com/en-us/library/windows/desktop/cc144096(v=vs.85).aspx
-
     /// <summary>
     /// A <see cref="SharpNamespaceExtension"/> is a SharpShell implemented Shell Namespace Extension.
     /// This is the base class for all Shell Namespace Extensions.
@@ -37,96 +34,18 @@ namespace SharpShell.SharpNamespaceExtension
         IShellNamespaceFolder
 
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SharpNamespaceExtension"/> class.
+        /// </summary>
         protected SharpNamespaceExtension()
         {
             Log("Instatiated Namespace Extension");
 
-            folderImpl = new ShellFolderImpl(this, ServerClsid);
+            //  Create the shell folder implementation.
+            shellFolderImpl = new ShellFolderImpl(this, this);
         }
 
-        #region Implementation of IPersistFolder2.
-
-        /// <summary>
-        /// Retrieves the class identifier (CLSID) of the object.
-        /// </summary>
-        /// <param name="pClassID">A pointer to the location that receives the CLSID on return.
-        /// The CLSID is a globally unique identifier (GUID) that uniquely represents an object 
-        /// class that defines the code that can manipulate the object's data.</param>
-        /// <returns>
-        /// If the method succeeds, the return value is S_OK. Otherwise, it is E_FAIL.
-        /// </returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        int IPersist.GetClassID(out Guid pClassID)
-        {
-            //  In our case, we can provide our SharpShell server class ID.
-            pClassID = ServerClsid;
-
-            //  We're done.
-            return WinError.S_OK;
-        }
-        int IPersistFolder.GetClassID(out Guid pClassId) {return ((IPersist)this).GetClassID(out pClassId); }
-        int IPersistFolder2.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
-        int IPersistIDList.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
-
-        /// <summary>
-        /// Instructs a Shell folder object to initialize itself based on the information passed.
-        /// </summary>
-        /// <param name="pidl">The address of the ITEMIDLIST (item identifier list) structure 
-        /// that specifies the absolute location of the folder.</param>
-        /// <returns>
-        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
-        /// </returns>
-        int IPersistFolder.Initialize(IntPtr pidl)
-        {
-            //  The shell has initialised the extension and provided an absolute PIDL
-            //  from the root (desktop) to the extension folder. We can store this
-            //  pidl in our own format.
-            extensionAbsolutePidl = PidlManager.PidlToIdlist(pidl);
-
-            //  We're good, we've got the ID list.
-            return WinError.S_OK;
-        }
-        int IPersistFolder2.Initialize(IntPtr pidl) { return ((IPersistFolder)this).Initialize(pidl); }
-
-        /// <summary>
-        /// Gets the ITEMIDLIST for the folder object.
-        /// </summary>
-        /// <param name="ppidl">The address of an ITEMIDLIST pointer. This PIDL represents the absolute location of the folder and must be relative to the desktop. This is typically a copy of the PIDL passed to Initialize.</param>
-        /// <returns>
-        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
-        /// </returns>
-        /// <remarks>
-        /// If the folder object has not been initialized, this method returns S_FALSE and ppidl is set to NULL.
-        /// </remarks>
-        int IPersistFolder2.GetCurFolder(out IntPtr ppidl)
-        {
-            //  If we haven't been initialised set a null pidl and return false.
-            if (this.extensionAbsolutePidl == null)
-            {
-                ppidl = IntPtr.Zero;
-                return WinError.S_FALSE;
-            }
-
-            //  Otherwise, set the pidl and return.
-            ppidl = PidlManager.IdListToPidl(extensionAbsolutePidl);
-            return WinError.S_OK;
-        }
-        
-
-        int IPersistIDList.SetIDList(IntPtr pidl)
-        {
-            return ((IPersistFolder2)this).Initialize(pidl);
-        }
-
-        int IPersistIDList.GetIDList([Out] out IntPtr pidl)
-        {
-            return ((IPersistFolder2)this).GetCurFolder(out pidl);
-        }
-
-
-        #endregion
-
-        #region Implmentation of IShellFolder
+        #region Implmentation of IShellFolder and IShellFolder2
 
         /// <summary>
         /// Translates the display name of a file object or a folder into an item identifier list.
@@ -144,7 +63,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl, ref SFGAO pdwAttributes)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.ParseDisplayName(hwnd, pbc, pszDisplayName, ref pchEaten, out ppidl,
+            return ((IShellFolder)shellFolderImpl).ParseDisplayName(hwnd, pbc, pszDisplayName, ref pchEaten, out ppidl,
                 ref pdwAttributes);
         }
         
@@ -162,7 +81,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.EnumObjects(hwnd, grfFlags, out ppenumIDList);
+            return ((IShellFolder)shellFolderImpl).EnumObjects(hwnd, grfFlags, out ppenumIDList);
         }
 
         /// <summary>
@@ -177,7 +96,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.BindToObject(pidl, pbc, ref riid, out ppv);
+            return ((IShellFolder)shellFolderImpl).BindToObject(pidl, pbc, ref riid, out ppv);
         }
 
         /// <summary>
@@ -194,7 +113,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.BindToStorage(pidl, pbc, ref riid, out ppv);
+            return ((IShellFolder)shellFolderImpl).BindToStorage(pidl, pbc, ref riid, out ppv);
         }
 
         /// <summary>
@@ -216,7 +135,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.CompareIDs(lParam, pidl1, pidl2);
+            return ((IShellFolder)shellFolderImpl).CompareIDs(lParam, pidl1, pidl2);
         }
 
         /// <summary>
@@ -234,7 +153,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.CreateViewObject(IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.CreateViewObject(this, hwndOwner, ref riid, out ppv);
+            return ((IShellFolder)shellFolderImpl).CreateViewObject(hwndOwner, ref riid, out ppv);
         }
 
         /// <summary>
@@ -252,7 +171,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetAttributesOf(uint cidl, IntPtr apidl, ref SFGAO rgfInOut)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetAttributesOf(cidl, apidl, ref rgfInOut);
+            return ((IShellFolder)shellFolderImpl).GetAttributesOf(cidl, apidl, ref rgfInOut);
         }
 
         /// <summary>
@@ -271,7 +190,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved, out IntPtr ppv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetUIObjectOf(this, this, extensionAbsolutePidl, hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
+            return ((IShellFolder)shellFolderImpl).GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
         }
 
         /// <summary>
@@ -287,7 +206,7 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetDisplayNameOf(pidl, uFlags, out pName);
+            return ((IShellFolder)shellFolderImpl).GetDisplayNameOf(pidl, uFlags, out pName);
         }
 
         /// <summary>
@@ -307,107 +226,168 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.SetNameOf(hwnd, pidl, pszName, uFlags, out ppidlOut);
+            return ((IShellFolder)shellFolderImpl).SetNameOf(hwnd, pidl, pszName, uFlags, out ppidlOut);
         }
-        
-        #endregion
-
-        #region IShellFolder2 Implementation
 
         int IShellFolder2.ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten,
             out IntPtr ppidl, ref SFGAO pdwAttributes)
         {
-            return ((IShellFolder)this).ParseDisplayName(hwnd, pbc, pszDisplayName, pchEaten, out ppidl,
+            return ((IShellFolder2)shellFolderImpl).ParseDisplayName(hwnd, pbc, pszDisplayName, pchEaten, out ppidl,
                 ref pdwAttributes);
         }
 
         int IShellFolder2.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
         {
-            return ((IShellFolder)this).EnumObjects(hwnd, grfFlags, out ppenumIDList);
+            return ((IShellFolder2)shellFolderImpl).EnumObjects(hwnd, grfFlags, out ppenumIDList);
 
         }
 
         int IShellFolder2.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
-            return ((IShellFolder)this).BindToObject(pidl, pbc, ref riid, out ppv);
+            return ((IShellFolder2)shellFolderImpl).BindToObject(pidl, pbc, ref riid, out ppv);
         }
 
         int IShellFolder2.BindToStorage(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)
         {
-            return ((IShellFolder)this).BindToStorage(pidl, pbc, ref riid, out ppv);
+            return ((IShellFolder2)shellFolderImpl).BindToStorage(pidl, pbc, ref riid, out ppv);
         }
 
         int IShellFolder2.CompareIDs(IntPtr lParam, IntPtr pidl1, IntPtr pidl2)
         {
-            return ((IShellFolder)this).CompareIDs(lParam, pidl1, pidl2);
+            return ((IShellFolder2)shellFolderImpl).CompareIDs(lParam, pidl1, pidl2);
         }
 
         int IShellFolder2.CreateViewObject(IntPtr hwndOwner, ref Guid riid, out IntPtr ppv)
         {
-            return ((IShellFolder)this).CreateViewObject(hwndOwner, ref riid, out ppv);
+            return ((IShellFolder2)shellFolderImpl).CreateViewObject(hwndOwner, ref riid, out ppv);
         }
 
         int IShellFolder2.GetAttributesOf(uint cidl, IntPtr apidl, ref SFGAO rgfInOut)
         {
-            return ((IShellFolder)this).GetAttributesOf(cidl, apidl, ref rgfInOut);
+            return ((IShellFolder2)shellFolderImpl).GetAttributesOf(cidl, apidl, ref rgfInOut);
         }
 
         int IShellFolder2.GetUIObjectOf(IntPtr hwndOwner, uint cidl, IntPtr apidl, ref Guid riid, uint rgfReserved,
             out IntPtr ppv)
         {
-            return ((IShellFolder)this).GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
+            return ((IShellFolder2)shellFolderImpl).GetUIObjectOf(hwndOwner, cidl, apidl, ref riid, rgfReserved, out ppv);
         }
 
         int IShellFolder2.GetDisplayNameOf(IntPtr pidl, SHGDNF uFlags, out STRRET pName)
         {
-            return ((IShellFolder)this).GetDisplayNameOf(pidl, uFlags, out pName);
+            return ((IShellFolder2)shellFolderImpl).GetDisplayNameOf(pidl, uFlags, out pName);
         }
 
         int IShellFolder2.SetNameOf(IntPtr hwnd, IntPtr pidl, string pszName, SHGDNF uFlags, out IntPtr ppidlOut)
         {
-            return ((IShellFolder)this).SetNameOf(hwnd, pidl, pszName, uFlags, out ppidlOut);
+            return ((IShellFolder2)shellFolderImpl).SetNameOf(hwnd, pidl, pszName, uFlags, out ppidlOut);
         }
         
         int IShellFolder2.GetDefaultSearchGUID(out Guid pguid)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetDefaultSearchGUID(out pguid);
+            return ((IShellFolder2)shellFolderImpl).GetDefaultSearchGUID(out pguid);
         }
 
         int IShellFolder2.EnumSearches(out IEnumExtraSearch ppenum)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.EnumSearches(out ppenum);
+            return ((IShellFolder2)shellFolderImpl).EnumSearches(out ppenum);
         }
 
         int IShellFolder2.GetDefaultColumn(uint dwRes, out uint pSort, out uint pDisplay)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetDefaultColumn(dwRes, out pSort, out pDisplay);
+            return ((IShellFolder2)shellFolderImpl).GetDefaultColumn(dwRes, out pSort, out pDisplay);
         }
 
         int IShellFolder2.GetDefaultColumnState(uint iColumn, out SHCOLSTATEF pcsFlags)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetDefaultColumnState(iColumn, out pcsFlags);
+            return ((IShellFolder2)shellFolderImpl).GetDefaultColumnState(iColumn, out pcsFlags);
         }
 
         int IShellFolder2.GetDetailsEx(IntPtr pidl, PROPERTYKEY pscid, out object pv)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetDetailsEx(pidl, pscid, out pv);
+            return ((IShellFolder2)shellFolderImpl).GetDetailsEx(pidl, pscid, out pv);
         }
 
         int IShellFolder2.GetDetailsOf(IntPtr pidl, uint iColumn, out SHELLDETAILS psd)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.GetDetailsOf(pidl, iColumn, out psd);
+            return ((IShellFolder2)shellFolderImpl).GetDetailsOf(pidl, iColumn, out psd);
         }
 
         int IShellFolder2.MapColumnToSCID(uint iColumn, out PROPERTYKEY pscid)
         {
             //  Use the ShellFolderImpl to handle the details.
-            return folderImpl.MapColumnToSCID(iColumn, out pscid);
+            return ((IShellFolder2)shellFolderImpl).MapColumnToSCID(iColumn, out pscid);
+        }
+
+        #endregion
+
+        #region Implementation of IPersist, IPersistFolder, IPersistFolder2 and IPersistIDList
+
+        /// <summary>
+        /// Retrieves the class identifier (CLSID) of the object.
+        /// </summary>
+        /// <param name="pClassID">A pointer to the location that receives the CLSID on return.
+        /// The CLSID is a globally unique identifier (GUID) that uniquely represents an object 
+        /// class that defines the code that can manipulate the object's data.</param>
+        /// <returns>
+        /// If the method succeeds, the return value is S_OK. Otherwise, it is E_FAIL.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        int IPersist.GetClassID(out Guid pClassID)
+        {
+            //  Use the ShellFolderImpl to handle the details.
+            return ((IPersist)shellFolderImpl).GetClassID(out pClassID);
+        }
+        int IPersistFolder.GetClassID(out Guid pClassId) {return ((IPersist)this).GetClassID(out pClassId); }
+        int IPersistFolder2.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
+        int IPersistIDList.GetClassID(out Guid pClassId) { return ((IPersist)this).GetClassID(out pClassId); }
+
+        /// <summary>
+        /// Instructs a Shell folder object to initialize itself based on the information passed.
+        /// </summary>
+        /// <param name="pidl">The address of the ITEMIDLIST (item identifier list) structure 
+        /// that specifies the absolute location of the folder.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        int IPersistFolder.Initialize(IntPtr pidl)
+        {
+            //  Use the ShellFolderImpl to handle the details.
+            return ((IPersistFolder)shellFolderImpl).Initialize(pidl);
+        }
+        int IPersistFolder2.Initialize(IntPtr pidl) { return ((IPersistFolder)this).Initialize(pidl); }
+
+        /// <summary>
+        /// Gets the ITEMIDLIST for the folder object.
+        /// </summary>
+        /// <param name="ppidl">The address of an ITEMIDLIST pointer. This PIDL represents the absolute location of the folder and must be relative to the desktop. This is typically a copy of the PIDL passed to Initialize.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// If the folder object has not been initialized, this method returns S_FALSE and ppidl is set to NULL.
+        /// </remarks>
+        int IPersistFolder2.GetCurFolder(out IntPtr ppidl)
+        {
+            //  Use the ShellFolderImpl to handle the details.
+            return ((IPersistFolder2)shellFolderImpl).GetCurFolder(out ppidl);
+        }
+
+        int IPersistIDList.SetIDList(IntPtr pidl)
+        {
+            //  Use the ShellFolderImpl to handle the details.
+            return ((IPersistIDList)shellFolderImpl).SetIDList(pidl);
+        }
+
+        int IPersistIDList.GetIDList([Out] out IntPtr pidl)
+        {
+            return ((IPersistIDList)shellFolderImpl).GetIDList(out pidl);
         }
 
         #endregion
@@ -659,13 +639,9 @@ namespace SharpShell.SharpNamespaceExtension
         protected abstract ShellNamespaceFolderView GetView();
 
         /// <summary>
-        /// The extension absolute pidl.
+        /// The shell folder implementation internally used to handle the implementation
+        /// of the functionality.
         /// </summary>
-        private IdList extensionAbsolutePidl;
-
-        /// <summary>
-        /// The shell folder implementation internally used.
-        /// </summary>
-        private readonly ShellFolderImpl folderImpl;
+        private readonly ShellFolderImpl shellFolderImpl;
     }
 }
