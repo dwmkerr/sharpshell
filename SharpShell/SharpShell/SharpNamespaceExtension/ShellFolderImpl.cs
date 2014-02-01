@@ -838,11 +838,9 @@ IQueryInfo	The cidl parameter can only be one.
             }
             return childFolder;
         }
+
         private IShellNamespaceItem GetChildItem(IdList idList)
         {
-            //  TODO: Get child item can actually be asked for a deeper child item, if there
-            //  are multiple items in the ID list.
-
             //  Go through each item in the list.
             var currentFolder = proxyFolder;
             for (int depth = 0; depth < idList.Ids.Count; depth++)

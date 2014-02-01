@@ -12,7 +12,7 @@ namespace SharpShell.Interop
     [Guid("000214E2-0000-0000-C000-000000000046")]
     public interface IShellBrowser : IOleWindow
     {
-        #region Explicit Overrides of IOleWindow functions (needed as COM doesn't like C# interface heirarchies. TODO: see if we can get round this)
+        #region Explicit Overrides of IOleWindow functions
 
         /// <summary>
         /// Retrieves a handle to one of the windows participating in in-place activation (frame, document, parent, or in-place object window).
