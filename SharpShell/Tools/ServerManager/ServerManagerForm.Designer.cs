@@ -41,7 +41,6 @@ namespace ServerManager
             this.columnHeaderServerType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +79,9 @@ namespace ServerManager
             this.toolStripButtonTestServer = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonOpenShellDialog = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonShellDebugger = new System.Windows.Forms.ToolStripButton();
+            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
+            this.toolStripStatusLabelOSProcessor = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelProcessProcessor = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -103,7 +105,7 @@ namespace ServerManager
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(872, 439);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(872, 437);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -120,16 +122,18 @@ namespace ServerManager
             // 
             this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabelOSProcessor,
+            this.toolStripStatusLabelProcessProcessor});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(872, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(872, 24);
             this.statusStrip1.TabIndex = 0;
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(307, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(307, 19);
             this.toolStripStatusLabel1.Text = "Drop SharpShell Server DLLs onto the list to analyse them";
             // 
             // splitContainer1
@@ -146,7 +150,7 @@ namespace ServerManager
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.serverDetailsView1);
-            this.splitContainer1.Size = new System.Drawing.Size(872, 439);
+            this.splitContainer1.Size = new System.Drawing.Size(872, 437);
             this.splitContainer1.SplitterDistance = 492;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -161,7 +165,7 @@ namespace ServerManager
             this.listViewServers.FullRowSelect = true;
             this.listViewServers.Location = new System.Drawing.Point(0, 0);
             this.listViewServers.Name = "listViewServers";
-            this.listViewServers.Size = new System.Drawing.Size(492, 439);
+            this.listViewServers.Size = new System.Drawing.Size(492, 437);
             this.listViewServers.SmallImageList = this.imageList1;
             this.listViewServers.TabIndex = 0;
             this.listViewServers.UseCompatibleStateImageBehavior = false;
@@ -195,14 +199,6 @@ namespace ServerManager
             this.imageList1.Images.SetKeyName(2, "PropertySheet.png");
             this.imageList1.Images.SetKeyName(3, "InfoTip.png");
             this.imageList1.Images.SetKeyName(4, "IconOverlayHandler.png");
-            // 
-            // serverDetailsView1
-            // 
-            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
-            this.serverDetailsView1.Name = "serverDetailsView1";
-            this.serverDetailsView1.Size = new System.Drawing.Size(376, 439);
-            this.serverDetailsView1.TabIndex = 1;
             // 
             // menuStrip1
             // 
@@ -253,14 +249,14 @@ namespace ServerManager
             // 
             this.serverToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.installServerx86ToolStripMenuItem,
-            this.installServerx64ToolStripMenuItem,
-            this.uninstallServerx86ToolStripMenuItem,
-            this.uninstallServerx64ToolStripMenuItem,
-            this.toolStripSeparator3,
             this.registerServerx86ToolStripMenuItem,
-            this.registerServerx64ToolStripMenuItem,
             this.unregisterServerx86ToolStripMenuItem,
+            this.uninstallServerx86ToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.installServerx64ToolStripMenuItem,
+            this.registerServerx64ToolStripMenuItem,
             this.unregisterServerx64ToolStripMenuItem,
+            this.uninstallServerx64ToolStripMenuItem,
             this.toolStripSeparator1,
             this.testServerToolStripMenuItem});
             this.serverToolStripMenuItem.Name = "serverToolStripMenuItem";
@@ -510,6 +506,30 @@ namespace ServerManager
             this.toolStripButtonShellDebugger.Text = "Shell Debugger (Experimental)";
             this.toolStripButtonShellDebugger.Click += new System.EventHandler(this.toolStripButtonShellDebugger_Click);
             // 
+            // serverDetailsView1
+            // 
+            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
+            this.serverDetailsView1.Name = "serverDetailsView1";
+            this.serverDetailsView1.Size = new System.Drawing.Size(376, 437);
+            this.serverDetailsView1.TabIndex = 1;
+            // 
+            // toolStripStatusLabelOSProcessor
+            // 
+            this.toolStripStatusLabelOSProcessor.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabelOSProcessor.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.toolStripStatusLabelOSProcessor.Name = "toolStripStatusLabelOSProcessor";
+            this.toolStripStatusLabelOSProcessor.Size = new System.Drawing.Size(83, 19);
+            this.toolStripStatusLabelOSProcessor.Text = "Windows: x64";
+            // 
+            // toolStripStatusLabelProcessProcessor
+            // 
+            this.toolStripStatusLabelProcessProcessor.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabelProcessProcessor.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
+            this.toolStripStatusLabelProcessProcessor.Name = "toolStripStatusLabelProcessProcessor";
+            this.toolStripStatusLabelProcessProcessor.Size = new System.Drawing.Size(74, 19);
+            this.toolStripStatusLabelProcessProcessor.Text = "Process: x86";
+            // 
             // ServerManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -592,6 +612,8 @@ namespace ServerManager
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenTestShell;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenShellDialog;
         private System.Windows.Forms.ToolStripButton toolStripButtonShellDebugger;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelOSProcessor;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelProcessProcessor;
     }
 }
 
