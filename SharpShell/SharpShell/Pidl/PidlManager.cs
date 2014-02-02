@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Configuration;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using SharpShell.Interop;
 
 // Notes:
@@ -142,81 +141,6 @@ namespace SharpShell.Pidl
             SHFILEINFO fileInfo = new SHFILEINFO();
             Shell32.SHGetFileInfo(pidl, 0, out fileInfo, (uint)Marshal.SizeOf(fileInfo), SHGFI.SHGFI_PIDL | SHGFI.SHGFI_DISPLAYNAME);
             return fileInfo.szDisplayName;
-        }
-    }
-
-    public sealed class IdList
-    {
-        private IdList(IdListType type, List<ShellId> ids)
-        {
-            this.type = type;
-            this.ids = ids;
-        }
-
-        internal static IdList Create(IdListType type, List<ShellId> ids)
-        {
-            return new IdList(type, ids);
-        }
-
-        private readonly List<ShellId> ids;
-        private readonly IdListType type;
-
-        public IdListType Type { get { return type; } }
-
-        internal List<ShellId> Ids { get { return ids; }}
-
-        public string ToParsingString()
-        {
-            //  TODO document and validate.
-            var sb = new StringBuilder(ids.Sum(id => id.Length*2 + 4));
-            foreach (var id in ids)
-            {
-                sb.AppendFormat("{0:x4}", (short)id.Length);
-                foreach(var idi in id.RawId)
-                    sb.AppendFormat("{0:x2}", idi);
-            }
-
-            return sb.ToString();
-        }
-
-        public static IdList FromParsingString(string str)
-        {
-            //  Create the id storage.
-            var ids = new List<ShellId>();
-
-            //  Repeatedly read a short length then the data.
-            int index = 0;
-            while (index < str.Length)
-            {
-                var length = Convert.ToInt16(str.Substring(index, 4), 16);
-                var id = new byte[length];
-                index += 4;
-                for (var i = 0; i < length; i++, index += 2)
-                    id[i] = Convert.ToByte(str.Substring(index, 2), 16);
-                ids.Add(ShellId.FromData(id));
-            }
-
-            //  Return the list.
-            return new IdList(IdListType.Relative, ids);
-        }
-
-        public bool Matches(ShellId id)
-        {
-            if(Ids == null || Ids.Count != 1 || id == null || Ids[0].Length != id.Length)
-                return false;
-
-            return ids[0].Equals(id);
-        
-        }
-
-        public bool Matches(IdList idList)
-        {
-            if (idList == null || idList.ids == null || idList.ids.Count != ids.Count)
-                return false;
-            for(var i=0; i<ids.Count; i++)
-                if (!ids[i].Equals(idList.ids[i]))
-                    return false;
-            return true;
         }
     }
 

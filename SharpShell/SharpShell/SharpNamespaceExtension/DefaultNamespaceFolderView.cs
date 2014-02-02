@@ -34,6 +34,7 @@ namespace SharpShell.SharpNamespaceExtension
             //  NOTE: A quick test shows it's unlikely to be the psvOuter, try the CB.
             //  NOTE: adding the callback hasn't helped, we can try the alternative call
             //  which is shcreateshellfolderviewex
+            //  NOTE: None of those suggestions worked.
             IShellView view;
             if (Shell32.SHCreateShellFolderView(ref createInfo, out view) != WinError.S_OK)
             {

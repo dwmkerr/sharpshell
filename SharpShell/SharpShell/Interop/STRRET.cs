@@ -35,7 +35,6 @@ namespace SharpShell.Interop
         /// <exception cref="System.ArgumentOutOfRangeException"></exception>
         public string GetStringValue()
         {
-            //  TODO: one day support all string types.
             switch (uType)
             {
                 case STRRETTYPE.STRRET_WSTR:
@@ -43,7 +42,7 @@ namespace SharpShell.Interop
                 case STRRETTYPE.STRRET_OFFSET:
                     throw new NotImplementedException();
                 case STRRETTYPE.STRRET_CSTR:
-                    throw new NotImplementedException();
+                    return Marshal.PtrToStringAnsi(data);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -58,6 +57,7 @@ namespace SharpShell.Interop
             /// The string is at the address specified by pOleStr member.
             /// </summary>
             STRRET_WSTR = 0x0000,
+
             /// <summary>
             /// The uOffset member value indicates the number of bytes from the beginning of the item identifier list where the string is located.
             /// </summary>

@@ -1,21 +1,67 @@
 namespace SharpShell.Interop
 {
+    // ReSharper disable InconsistentNaming
+
     /// <summary>
     /// Specifies the folder view type.
-    /// TODO document and tidy this up.
     /// </summary>
     public enum FOLDERVIEWMODE
     {
-        FVM_AUTO = -1,    //The view should determine the best option.
-        FVM_FIRST = 1,    //The minimum constant value in FOLDERVIEWMODE, for validation purposes.
-        FVM_ICON = 1,     //The view should display medium-size icons.
-        FVM_SMALLICON = 2,    //The view should display small icons.
-        FVM_LIST = 3,     //Object names are displayed in a list view.
-        FVM_DETAILS = 4,      //Object names and other selected information, such as the size or date last updated, are shown.
-        FVM_THUMBNAIL =5,    //The view should display thumbnail icons.
-        FVM_TILE = 6,       //The view should display large icons.
-        FVM_THUMBSTRIP = 7, //The view should display icons in a filmstrip format.
-        FVM_CONTENT = 8,    //Windows 7 and later. The view should display content mode.
-        FVM_LAST = 8       //The maximum constant value in FOLDERVIEWMODE, for validation purposes.
+        /// <summary>
+        /// The view should determine the best option.
+        /// </summary>
+        FVM_AUTO = -1,
+
+        /// <summary>
+        /// The minimum constant value in FOLDERVIEWMODE, for validation purposes.
+        /// </summary>
+        FVM_FIRST = 1,
+        
+        /// <summary>
+        /// The view should display medium-size icons.
+        /// </summary>
+        FVM_ICON = 1,
+
+        /// <summary>
+        /// The view should display small icons.
+        /// </summary>
+        FVM_SMALLICON = 2,
+
+        /// <summary>
+        /// Object names are displayed in a list view.
+        /// </summary>
+        FVM_LIST = 3,
+
+        /// <summary>
+        /// Object names and other selected information, such as the size or date last updated, are shown.
+        /// </summary>
+        FVM_DETAILS = 4,
+
+        /// <summary>
+        /// The view should display thumbnail icons.
+        /// </summary>
+        FVM_THUMBNAIL =5,
+
+        /// <summary>
+        /// The view should display large icons.
+        /// </summary>
+        FVM_TILE = 6,
+
+        /// <summary>
+        /// The view should display icons in a filmstrip format.
+        /// </summary>
+        FVM_THUMBSTRIP = 7,
+
+        /// <summary>
+        /// Windows 7 and later. The view should display content mode.
+        /// </summary>
+        FVM_CONTENT = 8,
+
+        /// <summary>
+        /// The maximum constant value in FOLDERVIEWMODE, for validation purposes.
+        /// </summary>
+        FVM_LAST = 8
     }
+
+    // ReSharper restore InconsistentNaming
 }

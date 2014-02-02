@@ -16,26 +16,6 @@ namespace SharpShell.Tests
             Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Cookies, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero, out pidl);
             var idList = PidlManager.Decode(pidl);
             Shell32.ILFree(pidl);
-
-            //  TODO: need to validate the pidl, a bounce would do it.
-        }
-
-        [Test]
-        public void CanIdentifyAbsolutePidl()
-        {
-            var dt = PidlManager.GetDesktop();
-            IntPtr pidl;
-            Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Cookies, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero, out pidl);
-            var idList = PidlManager.Decode(pidl);
-            Shell32.ILFree(pidl);
-
-            Assert.Fail();
-        }
-
-        [Test]
-        public void CanIdenitfyRelativePidl()
-        {
-            Assert.Fail();
         }
 
         [Test]
@@ -62,7 +42,6 @@ namespace SharpShell.Tests
         [Test]
         public void CanBouncePidl()
         {
-
             IntPtr pidl;
             Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Documents, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero,
                 out pidl);
@@ -70,9 +49,8 @@ namespace SharpShell.Tests
             Shell32.ILFree(pidl);
             pidl = PidlManager.IdListToPidl(idList);
             var pszPath = new StringBuilder();
-            var name = Shell32.SHGetPathFromIDList(pidl, pszPath);
-            //  todo assert mydocs
-
+            var displayName = PidlManager.GetPidlDisplayName(pidl);
+            Assert.AreEqual(displayName, "Documents");
         }
 
         [Test]
@@ -82,10 +60,8 @@ namespace SharpShell.Tests
             Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Downloads, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero,
                 out pidl);
             var idList = PidlManager.PidlToIdlist(pidl);
-
-            //  Compare the shell length to the PidlManager length.
+            Assert.AreEqual(idList.Ids.Count, 4);
         }
-
 
         [Test]
         public void CanFullRoundTripPidl()
@@ -98,8 +74,6 @@ namespace SharpShell.Tests
             var idList2 = PidlManager.PidlToIdlist(pidl2);
             
             Assert.IsTrue(idList.Matches(idList2));
-
-            //  Compare the shell length to the PidlManager length.
         }
     }
 }
