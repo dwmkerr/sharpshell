@@ -259,6 +259,7 @@
     <None Include="Resources\View_Details.png" />
     <None Include="Resources\View_Tiles.png" />
     <None Include="Resources\View_List.png" />
+    <None Include="Resources\View_ExtraLargeIcons.png" />
     <Content Include="SharpShell.ico" />
   </ItemGroup>
   <ItemGroup />

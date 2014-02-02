@@ -94,6 +94,7 @@
     <Compile Include="Interop\IExtractIconW.cs" />
     <Compile Include="Interop\IMAGEINFO.cs" />
     <Compile Include="Interop\IMAGELISTDRAWPARAMS.cs" />
+    <Compile Include="Interop\IFolderView.cs" />
     <Compile Include="Interop\IPersistIDList.cs" />
     <Compile Include="Interop\LVCFMT.cs" />
     <Compile Include="Interop\PROPERTYKEY.cs" />

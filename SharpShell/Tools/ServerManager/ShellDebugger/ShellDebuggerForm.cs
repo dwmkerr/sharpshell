@@ -32,21 +32,8 @@ namespace ServerManager.ShellDebugger
 
         void shellTreeView_OnShellItemSelected(object sender, ShellTreeEventArgs e)
         {
-            if (e.ShellItem.IsFolder)
-            {
-                var test = PidlManager.GetPidlDisplayName(e.ShellItem.PIDL);
-
-                //  TODO: Update the browser.
-                ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER | SBSP.SBSP_ABSOLUTE);
-            }
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-
-          /* ((IShellBrowser)this).BrowseObject(desktopFolderPidl,
-                                        SBSP.SBSP_ABSOLUTE); */
+            //  Browse to the selected item if it is a folder.
+            ((IShellBrowser) this).BrowseObject(e.ShellItem.PIDL, SBSP.SBSP_SAMEBROWSER | SBSP.SBSP_ABSOLUTE);
         }
 
         protected override void OnHandleDestroyed(EventArgs e)

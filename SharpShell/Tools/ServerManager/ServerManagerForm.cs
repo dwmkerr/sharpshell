@@ -112,6 +112,10 @@ namespace ServerManager
 
         private void ServerManagerForm_Load(object sender, EventArgs e)
         {
+            //  Setup the statusbar.
+            toolStripStatusLabelOSProcessor.Text = Environment.Is64BitOperatingSystem ? "Windows (x64)" : "Windows (x86)";
+            toolStripStatusLabelProcessProcessor.Text = Environment.Is64BitProcess ? "Process (x64)" : "Process (x86)";
+
             //  Set the settings.
             desktopProcessToolStripMenuItem.Checked = explorerConfigurationManager.DesktopProcess;
             alwaysUnloadDLLToolStripMenuItem.Checked = explorerConfigurationManager.AlwaysUnloadDll;
