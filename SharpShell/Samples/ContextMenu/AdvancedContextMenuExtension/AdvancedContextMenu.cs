@@ -68,6 +68,7 @@ namespace AdvancedContextMenuExtension
             var copyPathItem = new ToolStripMenuItem
             {
                 Text = "Copy Path",
+                Image = Properties.Resources.Copy
             };
             copyPathItem.Click += (sender, args) => DoCopyPath();
 

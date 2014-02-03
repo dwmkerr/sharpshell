@@ -15,7 +15,7 @@ namespace SharpShell.SharpContextMenu
     /// functional shell context menu.
     /// </summary>
     [ServerType(ServerType.ShellContextMenu)]
-    public abstract class SharpContextMenu : ShellExtInitServer, IContextMenu/*, IContextMenu2, IContextMenu3*/
+    public abstract class SharpContextMenu : ShellExtInitServer, IContextMenu3
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SharpContextMenu"/> class.
@@ -84,6 +84,14 @@ namespace SharpShell.SharpContextMenu
             //  Return success, passing the the last item ID plus one (which will be the next command id).
             //  MSDN documentation is flakey here - to be explicit we need to return the count of the items added plus one.
             return WinError.MAKE_HRESULT(WinError.SEVERITY_SUCCESS, 0, (lastItemId - firstItemId) + 1);
+        }
+        int IContextMenu2.QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags)
+        {
+            return ((IContextMenu) this).QueryContextMenu(hMenu, indexMenu, idCmdFirst, idCmdLast, uFlags);
+        }
+        int IContextMenu3.QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags)
+        {
+            return ((IContextMenu)this).QueryContextMenu(hMenu, indexMenu, idCmdFirst, idCmdLast, uFlags);
         }
 
         /// <summary>
@@ -167,6 +175,14 @@ namespace SharpShell.SharpContextMenu
             //  Return success.
             return WinError.S_OK;
         }
+        int IContextMenu2.InvokeCommand(IntPtr pici)
+        {
+            return ((IContextMenu)this).InvokeCommand(pici);
+        }
+        int IContextMenu3.InvokeCommand(IntPtr pici)
+        {
+            return ((IContextMenu)this).InvokeCommand(pici);
+        }
 
         /// <summary>
         /// Saves the invoke command information.
@@ -241,9 +257,17 @@ namespace SharpShell.SharpContextMenu
             //  Return success.
             return WinError.S_OK;
         }
+        int IContextMenu2.GetCommandString(int idcmd, GCS uflags, int reserved, StringBuilder commandstring, int cch)
+        {
+            return ((IContextMenu)this).GetCommandString(idcmd, uflags, reserved, commandstring, cch);
+        }
+        int IContextMenu3.GetCommandString(int idcmd, GCS uflags, int reserved, StringBuilder commandstring, int cch)
+        {
+            return ((IContextMenu)this).GetCommandString(idcmd, uflags, reserved, commandstring, cch);
+        }
 
         #endregion
-        /*
+        
         #region Implementation of IContextMenu2
 
         /// <summary>
@@ -260,6 +284,11 @@ namespace SharpShell.SharpContextMenu
         {
             //  Always delegate to the IContextMenu3 version.
             return ((IContextMenu3) this).HandleMenuMsg2(uMsg, wParam, lParam, IntPtr.Zero);
+        }
+        int IContextMenu3.HandleMenuMsg(uint uMsg, IntPtr wParam, IntPtr lParam)
+        {
+            //  Always delegate to the IContextMenu3 version.
+            return ((IContextMenu3)this).HandleMenuMsg2(uMsg, wParam, lParam, IntPtr.Zero);
         }
 
         #endregion
@@ -294,7 +323,6 @@ namespace SharpShell.SharpContextMenu
         }
 
         #endregion
-        */
 
         /// <summary>
         /// Gets the current invoke command information. This will only be set when a command

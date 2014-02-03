@@ -97,6 +97,7 @@
     <Compile Include="Interop\IFolderView.cs" />
     <Compile Include="Interop\IPersistIDList.cs" />
     <Compile Include="Interop\LVCFMT.cs" />
+    <Compile Include="Interop\MEASUREITEMSTRUCT.cs" />
     <Compile Include="Interop\PROPERTYKEY.cs" />
     <Compile Include="Interop\CSFV.cs" />
     <Compile Include="Interop\CSIDL.cs" />

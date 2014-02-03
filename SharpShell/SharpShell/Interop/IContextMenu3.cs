@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SharpShell.Interop
 {
@@ -11,6 +12,15 @@ namespace SharpShell.Interop
     [Guid("BCFCE0A0-EC17-11d0-8D10-00A0C90F2719")]
     public interface IContextMenu3 : IContextMenu2
     {
+        #region IContextMenu and IContextMenu2 overrides
+
+        new int QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags);
+        new int InvokeCommand(IntPtr pici);
+        new int GetCommandString(int idcmd, GCS uflags, int reserved, StringBuilder commandstring, int cch);
+        new int HandleMenuMsg(uint uMsg, IntPtr wParam, IntPtr lParam);
+
+        #endregion
+
         /// <summary>
         /// Allows client objects of the IContextMenu3 interface to handle messages associated with owner-drawn menu items.
         /// </summary>
