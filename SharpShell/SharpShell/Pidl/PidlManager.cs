@@ -51,7 +51,7 @@ namespace SharpShell.Pidl
             IntPtr pidl;
             Shell32.SHGetKnownFolderIDList(KnownFolders.FOLDERID_Desktop, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero,
                 out pidl);
-            var idlist = IdList.Create(IdListType.Absolute, Decode(pidl));
+            var idlist = IdList.Create(Decode(pidl));
             Shell32.ILFree(pidl);
             return idlist;
         }
@@ -71,11 +71,8 @@ namespace SharpShell.Pidl
             //  Create the raw ID list.
             var ids = Decode(pidl);
 
-            //  Determine whether it's relative or absolute.
-            var type = IdListType.Absolute; // todo we might be able to simple always specify it in the arugments.-
-
             //  Return a new idlist from the pidl.
-            return IdList.Create(type, ids);
+            return IdList.Create(ids);
         }
 
         public static IdList[] APidlToIdListArray(IntPtr apidl, int count)
@@ -121,7 +118,7 @@ namespace SharpShell.Pidl
         {
             var combined = new List<ShellId>(folderIdList.Ids);
             combined.AddRange(folderItemIdList.Ids);
-            return IdList.Create(IdListType.Absolute, combined);
+            return IdList.Create(combined);
         }
 
         public static void DeletePidl(IntPtr pidl)

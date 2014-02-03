@@ -96,7 +96,7 @@ namespace SharpShell.Interop
         /// <summary>
         /// Gets an IStream interface that can be used for storage of view-specific state information.
         /// </summary>
-        /// <param name="grfMode">TODO: map this The GRF mode.</param>
+        /// <param name="grfMode">Read/write access of the IStream interface. This may be one of the following values.</param>
         /// <param name="ppStrm">The address that receives the IStream interface pointer.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
@@ -105,7 +105,7 @@ namespace SharpShell.Interop
         /// <summary>
         /// Gets the window handle to a browser control.
         /// </summary>
-        /// <param name="id">The control handle that is being requested. This parameter can be one of the following values: TODO map</param>
+        /// <param name="id">The control handle that is being requested. This parameter can be one of the following values:</param>
         /// <param name="phwnd">The address of the window handle to the Windows Explorer control.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
@@ -144,7 +144,7 @@ namespace SharpShell.Interop
         /// </summary>
         /// <param name="lpButtons">The address of an array of TBBUTTON structures.</param>
         /// <param name="nButtons">The number of TBBUTTON structures in the lpButtons array.</param>
-        /// <param name="uFlags">Flags specifying where the toolbar buttons should go. This parameter can be one or more of the following values. TODO map FCT</param>
+        /// <param name="uFlags">Flags specifying where the toolbar buttons should go. This parameter can be one or more of the following values.</param>
         /// <returns>Returns S_OK if successful, or a COM-defined error value otherwise.</returns>
         [PreserveSig]
         int SetToolbarItems(IntPtr lpButtons, uint nButtons, uint uFlags);

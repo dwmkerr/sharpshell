@@ -14,23 +14,20 @@ namespace SharpShell.Pidl
         /// <summary>
         /// Prevents a default instance of the <see cref="IdList"/> class from being created.
         /// </summary>
-        /// <param name="type">The type.</param>
         /// <param name="ids">The ids.</param>
-        private IdList(IdListType type, List<ShellId> ids)
+        private IdList(List<ShellId> ids)
         {
-            this.type = type;
             this.ids = ids;
         }
 
         /// <summary>
         /// Creates an IdList.
         /// </summary>
-        /// <param name="type">The type.</param>
         /// <param name="ids">The ids.</param>
         /// <returns></returns>
-        internal static IdList Create(IdListType type, List<ShellId> ids)
+        internal static IdList Create(List<ShellId> ids)
         {
-            return new IdList(type, ids);
+            return new IdList(ids);
         }
 
         /// <summary>
@@ -73,7 +70,7 @@ namespace SharpShell.Pidl
             }
 
             //  Return the list.
-            return new IdList(IdListType.Relative, ids);
+            return new IdList(ids);
         }
 
         /// <summary>
@@ -95,16 +92,6 @@ namespace SharpShell.Pidl
         /// The ids.
         /// </summary>
         private readonly List<ShellId> ids;
-
-        /// <summary>
-        /// The id list type.
-        /// </summary>
-        private readonly IdListType type;
-
-        /// <summary>
-        /// Gets the Id list type.
-        /// </summary>
-        public IdListType Type { get { return type; } }
 
         /// <summary>
         /// Gets the ids.

@@ -413,8 +413,6 @@ namespace SharpShell.SharpNamespaceExtension
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
-            //  TODO: currently, we will only support virtual junction points.
-
             //  Get the junction point.
             var junctionPoint = NamespaceExtensionJunctionPointAttribute.GetJunctionPoint(serverType);
 
@@ -492,12 +490,7 @@ namespace SharpShell.SharpNamespaceExtension
                     var registrationSettings = serverInstance.GetRegistrationSettings();
 
                     //  Apply basic settings.
-                    if(registrationSettings.HideFolderVerbs) classKey.SetValue("HideFolderVerbs", 1, RegistryValueKind.DWord);
-
-                    //  TODO: at some stage, we may handle WantsFORPARSING
-                    //  TODO: at some stage, we must handle HideAsDelete
-                    //  TODO: at some stage, we must handle HideAsDeletePerUser
-                    //  TODO: at some stage, we must handle QueryForOverlay
+                    if(registrationSettings.HideFolderVerbs) classKey.SetValue("HideFolderVerbs", 1, RegistryValueKind.DWord);    
 
                     //  The default value is the junction point name.
                     classKey.SetValue(null, junctionPoint.Name, RegistryValueKind.String);
@@ -517,10 +510,6 @@ namespace SharpShell.SharpNamespaceExtension
                         }
                     }
                     
-                    //  TODO support custom verbs with a 'Shell' subkey.
-                    //  TODO support custom shortcut menu handler with ShellEx.
-                    //  TODO tie in support for a property sheet handler.
-                    
                     //  Set the attributes.
                     using (var shellFolderKey = classKey.CreateSubKey("ShellFolder"))
                     {
@@ -528,8 +517,6 @@ namespace SharpShell.SharpNamespaceExtension
                             throw new InvalidOperationException("An exception occured creating the ShellFolder key.");
                         shellFolderKey.SetValue("Attributes", (int)registrationSettings.ExtensionAttributes, RegistryValueKind.DWord);
                     }
-                    //  TODO Critical, as we don't set SGFAO_FOLDER in the above currently, we can't display child items.
-                    //  See documentation at: http://msdn.microsoft.com/en-us/library/windows/desktop/cc144093.aspx#ishellfolder
                 }
             }
         }
@@ -589,7 +576,6 @@ namespace SharpShell.SharpNamespaceExtension
 
         string IShellNamespaceItem.GetDisplayName(DisplayNameContext displayNameContext)
         {
-            //  TODO handle all cases in future, for now we can just use the attribute version
             return DisplayName;
         }
 

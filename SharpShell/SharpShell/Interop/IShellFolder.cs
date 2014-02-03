@@ -21,8 +21,6 @@ namespace SharpShell.Interop
         /// <param name="pdwAttributes">The value used to query for file attributes. If not used, it should be set to NULL.</param>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        //  TODO: We should map the IBindCtx interface for the second parameter, although it's not trivial
-        //  it should be there for completeness.
         int ParseDisplayName(IntPtr hwnd, IntPtr pbc, string pszDisplayName, ref uint pchEaten, out IntPtr ppidl,
                              ref SFGAO pdwAttributes);
 

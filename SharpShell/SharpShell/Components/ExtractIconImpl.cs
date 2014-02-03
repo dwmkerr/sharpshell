@@ -15,9 +15,6 @@ namespace SharpShell.Components
     /// </summary>
     public class ExtractIconImpl : IExtractIconA, IExtractIconW
     {
-
-        //  TODO refactor and reposition
-
         #region Implementation of IExtractIconA and IExtractIconW
 
         /// <summary>

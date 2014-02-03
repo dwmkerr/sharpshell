@@ -79,7 +79,7 @@ namespace SharpShell.SharpNamespaceExtension
             //  These PIDLs must not be relative, so using the value returned by the GetShellId
             //  function is enough.
             var pidlArray = items.Select(
-                iid => PidlManager.IdListToPidl(IdList.Create(IdListType.Relative, new List<ShellId> { iid.GetShellId()} ))).ToArray();
+                iid => PidlManager.IdListToPidl(IdList.Create(new List<ShellId> { iid.GetShellId()} ))).ToArray();
 
             //  Copy the data to the provided array.
             Marshal.Copy(pidlArray, 0, rgelt, pidlArray.Length);
