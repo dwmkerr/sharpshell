@@ -103,6 +103,16 @@ namespace ServerManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap process_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("process_16xLG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PropertySheet {
             get {
                 object obj = ResourceManager.GetObject("PropertySheet", resourceCulture);

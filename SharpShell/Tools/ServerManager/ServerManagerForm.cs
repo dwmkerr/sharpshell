@@ -449,5 +449,10 @@ namespace ServerManager
             var debugger = new ShellDebuggerForm();
             debugger.ShowDialog(this);
         }
+
+        private void toolStripButtonAttachDebugger_Click(object sender, EventArgs e)
+        {
+            Debugger.Launch();
+        }
     }
 }

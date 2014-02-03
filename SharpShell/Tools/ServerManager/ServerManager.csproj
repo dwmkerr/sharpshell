@@ -253,6 +253,7 @@
     <Content Include="Resources\Icon.png" />
     <None Include="Resources\PlayHS.png" />
     <None Include="Resources\openHS.png" />
+    <None Include="Resources\process_16xLG.png" />
     <Content Include="Resources\PropertySheet.png" />
     <None Include="Resources\View_SmallIcons.png" />
     <None Include="Resources\View_LargeIcons.png" />
