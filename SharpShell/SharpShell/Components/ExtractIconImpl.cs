@@ -84,7 +84,7 @@ namespace SharpShell.Components
                 phiconLarge = GetIcon( iconSizeLarge).Handle;
                 phiconSmall = GetIcon( iconSizeSmall).Handle;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 //  DebugLog the exception.
                 //LogError("An exception occured extracting icons.", exception);

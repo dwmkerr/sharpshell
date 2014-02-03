@@ -253,7 +253,6 @@ namespace ServerManager.ShellDebugger
                 
 
             //  Get the UI object of the context menu.
-            uint cidl = 1;
             IntPtr apidl = PidlManager.PidlsToAPidl(new IntPtr[] {PidlManager.IdListToPidl(fullIdList)});
 
 

@@ -57,10 +57,6 @@ namespace SharpShell.SharpNamespaceExtension
             //  We always eat the entire display string for SharpShell PIDL/DisplayName parsing.
             pchEaten = (uint)pszDisplayName.Length;
 
-            if (pdwAttributes != 0)
-            {
-                int i = 0;
-            }
 
             //  In theory, we should understand the pidl.
             var item = GetChildItem(idList);
@@ -677,10 +673,7 @@ IQueryInfo	The cidl parameter can only be one.
                 psd = new SHELLDETAILS { cxChar = 0, fmt = 0, str = new STRRET { uType = STRRET.STRRETTYPE.STRRET_WSTR, data = IntPtr.Zero } };
                 return WinError.E_FAIL;
             }
-
-            //  Whatever shell details we create we store here.
-            SHELLDETAILS shellDetails;
-
+            
             //  If we have no pidl, we need the details of the column itself.
             if (pidl == IntPtr.Zero)
             {

@@ -41,7 +41,7 @@ namespace ServerManager
                     {
                         server = serverType.Value;
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
                         servers.Add(new ServerEntry
                         {
