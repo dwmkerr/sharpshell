@@ -138,21 +138,28 @@ namespace SharpShell.Interop
 
 
         /// <summary>
-        /// TODO: document this.
+        /// Tests whether two ITEMIDLIST structures are equal in a binary comparison.
         /// </summary>
-        /// <param name="pidl1"></param>
-        /// <param name="pidl2"></param>
-        /// <returns></returns>
+        /// <param name="pidl1">The first ITEMIDLIST structure.</param>
+        /// <param name="pidl2">The second ITEMIDLIST structure.</param>
+        /// <returns>Returns TRUE if the two structures are equal, FALSE otherwise.</returns>
         [DllImport("shell32.dll")]
         public static extern bool ILIsEqual(IntPtr pidl1, IntPtr pidl2);
+
         /// <summary>
-        /// TODO: document this.
+        /// Combines two ITEMIDLIST structures.
         /// </summary>
+        /// <param name="pidl1">A pointer to the first ITEMIDLIST structure.</param>
+        /// <param name="pidl2">A pointer to the second ITEMIDLIST structure. This structure is appended to the structure pointed to by pidl1.</param>
+        /// <returns>Returns an ITEMIDLIST containing the combined structures. If you set either pidl1 or pidl2 to NULL, the returned ITEMIDLIST structure is a clone of the non-NULL parameter. Returns NULL if pidl1 and pidl2 are both set to NULL.</returns>
         [DllImport("shell32.dll")]
         public static extern IntPtr ILCombine(IntPtr pidl1, IntPtr pidl2);
+
         /// <summary>
-        /// TODO: document this.
+        /// Clones an ITEMIDLIST structure.
         /// </summary>
+        /// <param name="pidl">A pointer to the ITEMIDLIST structure to be cloned.</param>
+        /// <returns>Returns a pointer to a copy of the ITEMIDLIST structure pointed to by pidl.</returns>
         [DllImport("shell32.dll")]
         public static extern IntPtr ILClone(IntPtr pidl);
 
@@ -185,20 +192,19 @@ namespace SharpShell.Interop
         /// <returns>A combination of one or more file attribute flags (FILE_ATTRIBUTE_ values as defined in Winnt.h). If uFlags does not include the SHGFI_USEFILEATTRIBUTES flag, this parameter is ignored.</returns>
         [DllImport("shell32.dll")]
         public static extern IntPtr SHGetFileInfo(IntPtr pszPath, uint dwFileAttribs, out SHFILEINFO psfi, uint cbFileInfo, SHGFI uFlags);
-
        
         /// <summary>
-        /// todo: document
+        /// Retrieves an image list.
         /// </summary>
+        /// <param name="iImageList">The image type contained in the list. One of the following values:</param>
+        /// <param name="riid">Reference to the image list interface identifier, normally IID_IImageList.</param>
+        /// <param name="ppv">When this method returns, contains the interface pointer requested in riid. This is typically IImageList.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("shell32.dll", EntryPoint = "#727")]
         public extern static int SHGetImageList(int iImageList, ref Guid riid, ref IImageList ppv);
 
         [DllImport("shell32.dll")]
         public static extern Int32 SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, ref IntPtr ppidl);
-
-        public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
-
-        public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 
         /// <summary>
         /// Creates a standard icon extractor, whose defaults can be further configured via the IDefaultExtractIconInit interface.
@@ -208,14 +214,6 @@ namespace SharpShell.Interop
         /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [DllImport("shell32.dll")]
         public static extern int SHCreateDefaultExtractIcon(Guid guid, out IDefaultExtractIconInit pdxi);
-
-        public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
-
-        public static Guid IID_ExtractIconW = new Guid("{000214FA-0000-0000-C000-000000000046}");
-        public static Guid IID_IDataObject = new Guid("{0000010E-0000-0000-C000-000000000046}");
-        public static Guid IID_IContextMenu = new Guid("000214e4-0000-0000-c000-000000000046");
-        public static Guid IID_IShellBrowser = new Guid("000214E2-0000-0000-C000-000000000046");
-        public static Guid IID_IFolderView = new Guid("cde725b0-ccc9-4519-917e-325d72fab4ce");
 
         /// <summary>
         /// Creates a data object in a parent folder.
@@ -230,5 +228,14 @@ namespace SharpShell.Interop
         [DllImport("shell32.dll")]
         public static extern int SHCreateDataObject(IntPtr pidlFolder, uint cidl, IntPtr apidl, IDataObject pdtInner, Guid riid,
             out IntPtr ppv);
+
+        public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
+        public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
+        public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+        public static Guid IID_ExtractIconW = new Guid("{000214FA-0000-0000-C000-000000000046}");
+        public static Guid IID_IDataObject = new Guid("{0000010E-0000-0000-C000-000000000046}");
+        public static Guid IID_IContextMenu = new Guid("000214e4-0000-0000-c000-000000000046");
+        public static Guid IID_IShellBrowser = new Guid("000214E2-0000-0000-C000-000000000046");
+        public static Guid IID_IFolderView = new Guid("cde725b0-ccc9-4519-917e-325d72fab4ce");
     }
 }
