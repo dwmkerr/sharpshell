@@ -142,7 +142,7 @@ namespace SharpShell.SharpContextMenu
 
         private void Initialize()
         {
-            hTheme = Uxtheme.OpenThemeData(hwndTheme, VSCLASS_MENU);
+            hTheme = Uxtheme.OpenThemeData(IntPtr.Zero, VSCLASS_MENU);
             Uxtheme.GetThemePartSize(hTheme, IntPtr.Zero, MENU_POPUPCHECK, 0, IntPtr.Zero,
                                      TS_TRUE, out sizePopupCheck);
             Uxtheme.GetThemePartSize(hTheme, IntPtr.Zero, MENU_POPUPSEPARATOR, 0, IntPtr.Zero,
@@ -194,7 +194,7 @@ namespace SharpShell.SharpContextMenu
             }
         }
 
-        private POPUPITEMSTATES ToItemStateId(UInt32 uItemState)
+        public static POPUPITEMSTATES ToItemStateId(UInt32 uItemState)
         {
             bool fDisabled = ((uItemState & (ODS_INACTIVE |
                                              ODS_DISABLED)) != 0);
@@ -286,8 +286,8 @@ namespace SharpShell.SharpContextMenu
         }
 
 
-        private void MeasureMenuItem(string szItemText, int cch, UInt32 fType, SIZE[] rgPopupSize, MENUITEMINFO pmii,
-                                     ref MEASUREITEMSTRUCT pmis, out int itemWidth, out int itemHeight)
+        public void MeasureMenuItem(string szItemText, int cch, UInt32 fType, SIZE[] rgPopupSize, 
+                                     out uint itemWidth, out uint itemHeight)
         {
             int cxTotal = 0;
             int cyMax = 0;
@@ -360,8 +360,8 @@ namespace SharpShell.SharpContextMenu
             }
 
             // Return the composite sizes.
-            itemWidth = cxTotal;
-            itemHeight = cyMax;
+            itemWidth = (uint)cxTotal;
+            itemHeight = (uint)cyMax;
         }
 
         void LayoutMenuItem(int fType, SIZE[] rgPopupSize, DRAWITEMSTRUCT pdis, out DRAWITEMMETRICS pdim, RECT[] rgrc)

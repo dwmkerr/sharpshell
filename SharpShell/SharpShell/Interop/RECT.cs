@@ -41,5 +41,10 @@ namespace SharpShell.Interop
             this.right = right;
             this.bottom = bottom;
         }
+
+        public bool IsEmpty()
+        {
+            return Width() == 0 && Height() == 0;
+        }
     }
 }

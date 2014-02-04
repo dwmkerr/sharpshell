@@ -45,8 +45,9 @@ namespace SharpShell.SharpContextMenu
                 if (string.IsNullOrEmpty(item.Name))
                     item.Name = Guid.NewGuid().ToString();
 
-                //  Map the command by verb.
+                //  Map the command by verb and id.
                 verbsToCommands[item.Name] = item;
+                idsToItems[idCounter] = item;
 
                 //  Create the native menu item info.
                 var menuItemInfo = CreateNativeMenuItem(item, idCounter);
@@ -119,7 +120,7 @@ namespace SharpShell.SharpContextMenu
             }
             
             //  The type is the string.
-            menuItemInfo.fType = (uint)MFT.MFT_STRING;
+            menuItemInfo.fType = (uint)MFT.MFT_OWNERDRAW; /*todo this must be optional! */ // (uint)MFT.MFT_STRING;
 
             //  The type data is the text of the menu item.
             menuItemInfo.dwTypeData = menuItem.Text;
@@ -216,6 +217,8 @@ namespace SharpShell.SharpContextMenu
             //  The command was invoked, return true,
             return true;
         }
+
+        private readonly Dictionary<uint, ToolStripItem> idsToItems = new Dictionary<uint, ToolStripItem>();
         
         /// <summary>
         /// Map of indexes to commands.
@@ -226,6 +229,16 @@ namespace SharpShell.SharpContextMenu
         /// Map of verbs to commands.
         /// </summary>
         private readonly Dictionary<string, ToolStripItem> verbsToCommands = new Dictionary<string, ToolStripItem>();
+
+        public bool IsValidItemId(uint itemId)
+        {
+            return idsToItems.ContainsKey(itemId);
+        }
+
+        public ToolStripItem GetMenuItemById(uint id)
+        {
+            return idsToItems[id];
+        }
     }
 
    /* internal static class TransparentBitmapCreator
@@ -463,5 +476,5 @@ HRESULT AddIconToMenuItem(HMENU hmenu, int iMenuItem, BOOL fByPosition, HICON hi
 
     return hr;
 }*/
-   /* }*/
-}
+            /* }*/
+        }

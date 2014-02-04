@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Windows.Forms;
 using SharpShell.Attributes;
@@ -80,6 +81,9 @@ namespace SharpShell.SharpContextMenu
                 //  Return the failure.
                 return WinError.E_FAIL;
             }
+
+            //  We've built the context menu, but we'll also need the menu metrics.
+            menuMetrics.EnsureInitialised(hMenu);
 
             //  Return success, passing the the last item ID plus one (which will be the next command id).
             //  MSDN documentation is flakey here - to be explicit we need to return the count of the items added plus one.
@@ -310,15 +314,28 @@ namespace SharpShell.SharpContextMenu
         {
             if (uMsg == (uint)WM.INITMENUPOPUP)
             {
+                //  TODO IMPORTANT: What we have here is not quite right, this is only called when a popup item 
+                //  is being opened, not when we initialise the whole menu.
+
                 var menuHandle = wParam;
                 var parentIndex = Win32Helper.LoWord(lParam);
                 var isWindowMenu = Win32Helper.HiWord(lParam) != 0;
 
-                //  Initialise the menu metrics.
-                menuMetrics.EnsureInitialised(menuHandle);
 
                 //  Call the virtual function allowing derived classes to customise the menu.
                 OnInitialiseMenu(parentIndex);
+            }
+            else if (uMsg == (uint) WM.MEASUREITEM)
+            {
+                //  Get the MEASUREITEMSTRUCT and pass to the handler.
+                var measureItemStruct = (MEASUREITEMSTRUCT)Marshal.PtrToStructure(lParam, typeof (MEASUREITEMSTRUCT));
+                return OnMeasureItem(measureItemStruct, ref plResult);
+            }
+            else if (uMsg == (uint) WM.DRAWITEM)
+            {
+                //  Get the DRAWITEMSTRUCT and pass to the handler.
+                var drawItemStruct = (DRAWITEMSTRUCT) Marshal.PtrToStructure(lParam, typeof (DRAWITEMSTRUCT));
+                return OnDrawItem(drawItemStruct, ref plResult);
             }
 
             //  Return success.
@@ -326,6 +343,59 @@ namespace SharpShell.SharpContextMenu
         }
 
         #endregion
+
+        private int OnMeasureItem(MEASUREITEMSTRUCT mis, ref IntPtr result)
+        {
+            //  TODO: Check the ID of the item - if it's not one of ours, we're done.
+            if (nativeContextMenuWrapper.IsValidItemId(mis.itemID) == false)
+                return WinError.S_OK;
+            var menuItem = nativeContextMenuWrapper.GetMenuItemById(mis.itemID);
+
+            //  Now we can use the menu metrics to measure the item.
+            SIZE[] popupSizes = new SIZE[10];
+            menuMetrics.MeasureMenuItem(menuItem.Text, menuItem.Text.Length, 0, popupSizes, out mis.itemWidth, out mis.itemHeight);
+            
+            //  Set the result to 1, i.e. true, we've handled the message.
+            result = new IntPtr(1);
+            return WinError.S_OK;
+        }
+
+        private int OnDrawItem(DRAWITEMSTRUCT dis, ref IntPtr result)
+        {
+            //  TODO: Check the ID of the item - if it's not one of ours, we're done.
+            if (nativeContextMenuWrapper.IsValidItemId(dis.itemID) == false)
+                return WinError.S_OK;
+            var menuItem = nativeContextMenuWrapper.GetMenuItemById(dis.itemID);
+
+            //  If the rectangle is empty, no drawing needed.
+            if(dis.rcItem.IsEmpty())
+            {
+                result = new IntPtr(0);
+                return WinError.S_OK;
+            }
+
+                int iSaveDC = Gdi32.SaveDC(dis.hDC);
+
+            DrawItem(menuItem, ref result);
+
+            result = new IntPtr(1);
+
+                Gdi32.RestoreDC(dis.hDC, iSaveDC);
+
+            return WinError.S_OK;
+        }
+
+        private void DrawItem(ToolStripItem menuItem, DRAWITEMSTRUCT dis, ref IntPtr result)
+        {
+            if (dis.itemAction != ODA_DRAWENTIRE || dis.itemAction != ODA_SELECT)
+                return;
+
+            /// ******** this is where we are at the moment.
+            POPUPITEMSTATES iStateId = MenuMetrics.ToItemStateId(dis.itemState);
+
+            MenuMetrics.DRAWITEMMETRICS dim;
+           // menuMetrics.LayoutMenuItem(pmi, pdis, &dim);
+        }
 
         /// <summary>
         /// Gets the current invoke command information. This will only be set when a command

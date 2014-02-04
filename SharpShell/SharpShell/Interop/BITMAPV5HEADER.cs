@@ -136,6 +136,12 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
         [DllImport("user32.dll")]
         public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
+        [DllImport("gdi32.dll")]
+        public static extern int SaveDC(IntPtr hdc);
+
+        [DllImport("gdi32.dll")]
+        public static extern bool RestoreDC(IntPtr hdc, int nSavedDC);
+
         /// <summary>
         ///        Retrieves the bits of the specified compatible bitmap and copies them into a buffer as a DIB using the specified format.
         /// </summary>
