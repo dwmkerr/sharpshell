@@ -7,7 +7,7 @@ namespace SharpShell.Interop
     {
         [DllImport("comctl32.dll", SetLastError = true)]
         public static extern IntPtr CreatePropertySheetPage(ref PROPSHEETPAGE psp);
-        
+
         [DllImport("comctl32.dll", SetLastError = true)]
         public static extern IntPtr PropertySheet(ref PROPSHEETHEADER psh);
     }

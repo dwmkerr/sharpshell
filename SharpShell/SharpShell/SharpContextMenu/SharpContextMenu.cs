@@ -314,6 +314,9 @@ namespace SharpShell.SharpContextMenu
                 var parentIndex = Win32Helper.LoWord(lParam);
                 var isWindowMenu = Win32Helper.HiWord(lParam) != 0;
 
+                //  Initialise the menu metrics.
+                menuMetrics.EnsureInitialised(menuHandle);
+
                 //  Call the virtual function allowing derived classes to customise the menu.
                 OnInitialiseMenu(parentIndex);
             }
@@ -353,6 +356,8 @@ namespace SharpShell.SharpContextMenu
         protected virtual void OnInitialiseMenu(int parentItemIndex)
         {
         }
+
+        private readonly MenuMetrics menuMetrics = new MenuMetrics();
 
         /// <summary>
         /// The lazy context menu strip, only created when we actually need it.

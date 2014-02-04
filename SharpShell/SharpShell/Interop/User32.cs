@@ -35,6 +35,9 @@ namespace SharpShell.Interop
 
         [DllImport("user32.dll")]
         internal static extern IntPtr GetDC(IntPtr hWnd);
+        
+        [DllImport("user32.dll")]
+        internal static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         [DllImport("user32.dll")]
         internal static extern bool DestroyWindow(IntPtr hostWindowHandle);
