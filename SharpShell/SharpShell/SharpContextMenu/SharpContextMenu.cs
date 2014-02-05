@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
@@ -344,6 +345,8 @@ namespace SharpShell.SharpContextMenu
 
         #endregion
 
+        private Dictionary<uint, SIZE[]> idsToPopupSizes = new Dictionary<uint, SIZE[]>();
+
         private int OnMeasureItem(MEASUREITEMSTRUCT mis, ref IntPtr result)
         {
             //  TODO: Check the ID of the item - if it's not one of ours, we're done.
@@ -352,9 +355,10 @@ namespace SharpShell.SharpContextMenu
             var menuItem = nativeContextMenuWrapper.GetMenuItemById(mis.itemID);
 
             //  Now we can use the menu metrics to measure the item.
-            SIZE[] popupSizes = new SIZE[10];
-            menuMetrics.MeasureMenuItem(menuItem.Text, menuItem.Text.Length, 0, popupSizes, out mis.itemWidth, out mis.itemHeight);
-            
+            SIZE[] popupSizes;
+            menuMetrics.MeasureMenuItem(menuItem.Text, menuItem.Text.Length, 0, out popupSizes, out mis.itemWidth, out mis.itemHeight);
+            idsToPopupSizes[mis.itemID] = popupSizes;
+
             //  Set the result to 1, i.e. true, we've handled the message.
             result = new IntPtr(1);
             return WinError.S_OK;
@@ -366,6 +370,7 @@ namespace SharpShell.SharpContextMenu
             if (nativeContextMenuWrapper.IsValidItemId(dis.itemID) == false)
                 return WinError.S_OK;
             var menuItem = nativeContextMenuWrapper.GetMenuItemInfoById(dis.itemID);
+            var menuItemText = nativeContextMenuWrapper.GetMenuItemById(dis.itemID).Text;
 
             //  If the rectangle is empty, no drawing needed.
             if(dis.rcItem.IsEmpty())
@@ -376,7 +381,7 @@ namespace SharpShell.SharpContextMenu
 
                 int iSaveDC = Gdi32.SaveDC(dis.hDC);
 
-            menuMetrics.DrawItem(menuItem, dis);
+            menuMetrics.DrawItem(menuItem, menuItemText,idsToPopupSizes[dis.itemID], dis);
 
             result = new IntPtr(1);
 

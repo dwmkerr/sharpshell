@@ -295,12 +295,14 @@ private const uint ETO_OPAQUE                    = 0x0002;
         }
 
 
-        public void MeasureMenuItem(string szItemText, int cch, UInt32 fType, SIZE[] rgPopupSize, 
+        public void MeasureMenuItem(string szItemText, int cch, UInt32 fType, out SIZE[] rgPopupSize, 
                                      out uint itemWidth, out uint itemHeight)
         {
             int cxTotal = 0;
             int cyMax = 0;
             SIZE sizeDraw;
+
+            rgPopupSize = new SIZE[POPUP_MAX];
 
             // Size the check rectangle.
             sizeDraw = sizePopupCheck;
@@ -373,7 +375,7 @@ private const uint ETO_OPAQUE                    = 0x0002;
             itemHeight = (uint)cyMax;
         }
 
-        public void LayoutMenuItem(int fType, SIZE[] rgPopupSize, DRAWITEMSTRUCT pdis, out DRAWITEMMETRICS pdim, RECT[] rgrc)
+        public void LayoutMenuItem(int fType, SIZE[] rgPopupSize, DRAWITEMSTRUCT pdis, out DRAWITEMMETRICS pdim)
         {
             RECT prcItem = pdis.rcItem;
             int cyItem = pdis.rcItem.Height();
@@ -383,6 +385,7 @@ private const uint ETO_OPAQUE                    = 0x0002;
             int y = prcItem.top;
             RECT rcMeasure = new RECT();
             pdim = new DRAWITEMMETRICS();
+            pdim.rgrc = new RECT[POPUP_MAX];
 
             for (uint i = 0; i < POPUP_MAX; i++)
             {
@@ -412,13 +415,13 @@ private const uint ETO_OPAQUE                    = 0x0002;
                     rcMeasure = new RECT(x, y, x + cx, y + cy);
                     if (i == POPUP_CHECK)
                     {
-                        ToDrawRect(rcMeasure, marPopupCheck, out rgrc[i]);
+                        ToDrawRect(rcMeasure, marPopupCheck, out pdim.rgrc[i]);
                     }
                     else
                     {
-                        ToDrawRect(rcMeasure, marPopupText, out rgrc[i]);
+                        ToDrawRect(rcMeasure, marPopupText, out pdim.rgrc[i]);
                     }
-                    rgrc[i].Offset(0, (cyItem - cy)/2);
+                    pdim.rgrc[i].Offset(0, (cyItem - cy) / 2);
 
                     // Add right padding for the check background rectangle.
                     if (i == POPUP_CHECK)
@@ -464,8 +467,8 @@ private const uint ETO_OPAQUE                    = 0x0002;
                 x = pdim.rcGutter.right + marPopupItem.cxLeftWidth;
 
                 rcMeasure.Set(x, y, prcItem.right - marPopupItem.cxRightWidth, y + prgsize[POPUP_SEPARATOR].cy);
-                ToDrawRect(rcMeasure, marPopupItem, out rgrc[POPUP_SEPARATOR]);
-                rgrc[POPUP_SEPARATOR].Offset(0, (cyItem -
+                ToDrawRect(rcMeasure, marPopupItem, out pdim.rgrc[POPUP_SEPARATOR]);
+                pdim.rgrc[POPUP_SEPARATOR].Offset(0, (cyItem -
                                                  prgsize[POPUP_SEPARATOR].cy)/2);
             }
             else
@@ -482,15 +485,15 @@ private const uint ETO_OPAQUE                    = 0x0002;
         private const uint ODA_SELECT = 0x0002;
         private const uint ODA_FOCUS = 0x0004;
 
-        public void DrawItem(MENUITEMINFO mii, DRAWITEMSTRUCT dis)
+        public void DrawItem(MENUITEMINFO mii, string menuItemText, SIZE[] rgPopupSize, DRAWITEMSTRUCT dis)
         {
-            if (dis.itemAction != ODA_DRAWENTIRE || dis.itemAction != ODA_SELECT)
+            if (!(dis.itemAction == ODA_DRAWENTIRE || dis.itemAction == ODA_SELECT))
                 return;
 
             POPUPITEMSTATES iStateId = MenuMetrics.ToItemStateId(dis.itemState);
 
             MenuMetrics.DRAWITEMMETRICS dim;
-            LayoutMenuItem((int)mii.fType, null, dis, out dim, null);
+            LayoutMenuItem((int)mii.fType, rgPopupSize, dis, out dim);
 
             if (Uxtheme.IsThemeBackgroundPartiallyTransparent(hTheme,
        MENU_POPUPITEM, (int)iStateId) != 0)
@@ -553,8 +556,8 @@ private const uint ETO_OPAQUE                    = 0x0002;
                               dis.hDC,
                               MENU_POPUPITEM,
                               (int)iStateId,
-                              mii.dwTypeData,
-                              (int)mii.cch,
+                              menuItemText,
+                              (int)menuItemText.Length,
                               DT_SINGLELINE | DT_LEFT | uAccel,
                               0,
                               ref dim.rgrc[POPUP_TEXT]);
