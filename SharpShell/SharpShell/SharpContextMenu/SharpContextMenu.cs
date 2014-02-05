@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
@@ -349,44 +350,24 @@ namespace SharpShell.SharpContextMenu
 
         private int OnMeasureItem(MEASUREITEMSTRUCT mis, ref IntPtr result)
         {
-            //  TODO: Check the ID of the item - if it's not one of ours, we're done.
-            if (nativeContextMenuWrapper.IsValidItemId(mis.itemID) == false)
-                return WinError.S_OK;
-            var menuItem = nativeContextMenuWrapper.GetMenuItemById(mis.itemID);
-
-            //  Now we can use the menu metrics to measure the item.
-            SIZE[] popupSizes;
-            menuMetrics.MeasureMenuItem(menuItem.Text, menuItem.Text.Length, 0, out popupSizes, out mis.itemWidth, out mis.itemHeight);
-            idsToPopupSizes[mis.itemID] = popupSizes;
-
-            //  Set the result to 1, i.e. true, we've handled the message.
-            result = new IntPtr(1);
+          /*  mis.itemWidth += 16;
+            if (mis.itemHeight < 16)
+                mis.itemHeight = 16;
+            result = new IntPtr(1);*/
             return WinError.S_OK;
         }
 
         private int OnDrawItem(DRAWITEMSTRUCT dis, ref IntPtr result)
         {
             //  TODO: Check the ID of the item - if it's not one of ours, we're done.
-            if (nativeContextMenuWrapper.IsValidItemId(dis.itemID) == false)
+      /*      if (nativeContextMenuWrapper.IsValidItemId(dis.itemID) == false)
                 return WinError.S_OK;
-            var menuItem = nativeContextMenuWrapper.GetMenuItemInfoById(dis.itemID);
-            var menuItemText = nativeContextMenuWrapper.GetMenuItemById(dis.itemID).Text;
-
-            //  If the rectangle is empty, no drawing needed.
-            if(dis.rcItem.IsEmpty())
-            {
-                result = new IntPtr(0);
-                return WinError.S_OK;
-            }
-
-                int iSaveDC = Gdi32.SaveDC(dis.hDC);
-
-            menuMetrics.DrawItem(menuItem, menuItemText,idsToPopupSizes[dis.itemID], dis);
-
+            var menuItem = nativeContextMenuWrapper.GetMenuItemById(dis.itemID);
+            var graphics = Graphics.FromHdc(dis.hDC);
+            graphics.DrawImage(menuItem.Image, new Rectangle(dis.rcItem.left -16,
+                dis.rcItem.top + dis.rcItem.bottom + dis.rcItem.Height()/2, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel);
+            */
             result = new IntPtr(1);
-
-                Gdi32.RestoreDC(dis.hDC, iSaveDC);
-
             return WinError.S_OK;
         }
 

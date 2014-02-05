@@ -150,6 +150,22 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
            [In] ref RECT lprc, [MarshalAs(UnmanagedType.LPWStr)] string lpString,
            uint cbCount, [In] int[] lpDx);
 
+        [DllImport("gdi32.dll", EntryPoint = "SelectObject", SetLastError = true)]
+        public static extern IntPtr SelectObject([In] IntPtr hdc, [In] IntPtr hgdiobj);
+        /// <summary>
+        ///        Deletes the specified device context (DC).
+        /// </summary>
+        /// <param name="hdc">A handle to the device context.</param>
+        /// <returns>If the function succeeds, the return value is <c>true</c>. If the function fails, the return value is <c>false</c>.</returns>
+        [DllImport("gdi32.dll", EntryPoint = "DeleteDC")]
+        public static extern bool DeleteDC([In] IntPtr hdc);
+
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool DrawIconEx(IntPtr hdc, int xLeft, int yTop, IntPtr hIcon,
+                                             int cxWidth, int cyHeight, int istepIfAniCur, IntPtr hbrFlickerFreeDraw,
+                                             int diFlags);
+
         /// <summary>
         ///        Retrieves the bits of the specified compatible bitmap and copies them into a buffer as a DIB using the specified format.
         /// </summary>

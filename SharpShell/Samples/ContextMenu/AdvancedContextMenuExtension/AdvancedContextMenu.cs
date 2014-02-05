@@ -46,7 +46,8 @@ namespace AdvancedContextMenuExtension
             //  Create a menu item to hold all of the subitems.
             var advancedItem = new ToolStripMenuItem
                 {
-                    Text = "Advanced"
+                    Text = "Advanced",
+                Image = Properties.Resources.Copy
                 };
 
             //  Now add the child items.

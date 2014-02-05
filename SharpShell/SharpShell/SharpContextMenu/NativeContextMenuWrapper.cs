@@ -121,7 +121,7 @@ namespace SharpShell.SharpContextMenu
             }
             
             //  The type is the string.
-            menuItemInfo.fType = (uint)MFT.MFT_OWNERDRAW; /*todo this must be optional! */ // (uint)MFT.MFT_STRING;
+            menuItemInfo.fType = (uint)MFT.MFT_STRING;
 
             //  The type data is the text of the menu item.
             menuItemInfo.dwTypeData = menuItem.Text;
@@ -136,8 +136,10 @@ namespace SharpShell.SharpContextMenu
             }
 
             //  Is there an icon?
-            menuItemInfo.hbmpItem = menuItem.Image != null ? CreatePARGB32(menuItem.Image) : IntPtr.Zero;
+            menuItemInfo.hbmpItem = menuItem.Image != null ? HBMMENU_CALLBACK : IntPtr.Zero;
         }
+
+        private static IntPtr HBMMENU_CALLBACK = new IntPtr(-1);
 
         private static IntPtr CreatePARGB32(Image source)
         {
