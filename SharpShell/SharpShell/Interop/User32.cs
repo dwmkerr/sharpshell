@@ -41,6 +41,9 @@ namespace SharpShell.Interop
 
         [DllImport("user32.dll")]
         internal static extern bool DestroyWindow(IntPtr hostWindowHandle);
+        
+        [DllImport("user32.dll")]
+        internal static extern bool GetIconInfo(IntPtr hIcon, out ICONINFO piconinfo);
 
         /// <summary>
         /// Converts an item identifier list to a file system path. (Note: SHGetPathFromIDList calls the ANSI version, must call SHGetPathFromIDListW for .NET)
@@ -59,7 +62,11 @@ namespace SharpShell.Interop
         /// <returns>If the window is a child window, the return value is a handle to the parent window. If the window is a top-level window with the WS_POPUP style, the return value is a handle to the owner window. If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern IntPtr GetParent(IntPtr hWnd);
-        
+
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr CreateIconIndirect([In] ref ICONINFO iconInfo);
+
         public static int GWL_STYLE = -16;
         public static int WS_CHILD = 0x40000000; 
 

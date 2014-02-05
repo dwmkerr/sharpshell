@@ -150,6 +150,17 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
            [In] ref RECT lprc, [MarshalAs(UnmanagedType.LPWStr)] string lpString,
            uint cbCount, [In] int[] lpDx);
 
+        /// <summary>
+        ///        Deletes a logical pen, brush, font, bitmap, region, or palette, freeing all system resources associated with the object. After the object is deleted, the specified handle is no longer valid.
+        /// </summary>
+        /// <param name="hObject">A handle to a logical pen, brush, font, bitmap, region, or palette.</param>
+        /// <returns>
+        ///        If the function succeeds, the return value is <c>true</c>. If the specified handle is not valid or is currently selected into a DC, the return value is <c>false</c>.
+        /// </returns>
+        [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DeleteObject([In] IntPtr hObject);
+
         [DllImport("gdi32.dll", EntryPoint = "SelectObject", SetLastError = true)]
         public static extern IntPtr SelectObject([In] IntPtr hdc, [In] IntPtr hgdiobj);
         /// <summary>
@@ -182,6 +193,9 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
         /// This function can return the following value: ERROR_INVALID_PARAMETER (87 (0×57))</returns>
         [DllImport("gdi32.dll", EntryPoint = "GetDIBits")]
         public static extern int GetDIBits([In] IntPtr hdc, [In] IntPtr hbmp, uint uStartScan, uint cScanLines, [Out] byte[] lpvBits, ref BITMAPINFO lpbi, uint uUsage);
+
+        [DllImport("gdi32.dll", EntryPoint = "GetDIBits")]
+        public static extern int GetDIBits([In] IntPtr hdc, [In] IntPtr hbmp, uint uStartScan, uint cScanLines, ref IntPtr lpvBits, ref BITMAPINFO lpbi, uint uUsage);
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]

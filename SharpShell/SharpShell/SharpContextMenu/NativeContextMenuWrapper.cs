@@ -136,7 +136,9 @@ namespace SharpShell.SharpContextMenu
             }
 
             //  Is there an icon?
-            menuItemInfo.hbmpItem = menuItem.Image != null ? HBMMENU_CALLBACK : IntPtr.Zero;
+            var bitmap = menuItem.Image as Bitmap;
+            if (bitmap != null)
+                menuItemInfo.hbmpItem = PARGB32.CreatePARGB32HBitmap(bitmap.GetHicon(), bitmap.Size);
         }
 
         private static IntPtr HBMMENU_CALLBACK = new IntPtr(-1);

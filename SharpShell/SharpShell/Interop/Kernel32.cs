@@ -38,6 +38,16 @@ namespace SharpShell.Interop
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr LoadResource(IntPtr hModule, IntPtr hResInfo);
 
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetProcessHeap();
+
+        [DllImport("kernel32.dll", SetLastError = false)]
+        public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, UIntPtr dwBytes);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
+
         public const uint RT_CURSOR = 0x00000001;
         public const uint RT_BITMAP = 0x00000002;
         public const uint RT_ICON = 0x00000003;

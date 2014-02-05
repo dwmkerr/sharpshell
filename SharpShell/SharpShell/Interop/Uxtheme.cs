@@ -39,6 +39,16 @@ namespace SharpShell.Interop
         [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
         public extern static Int32 DrawThemeText(IntPtr hTheme, IntPtr hdc, int iPartId, int iStateId, String text, int textLength, UInt32 textFlags, UInt32 textFlags2, ref RECT pRect);
 
+        [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        public static extern Int32 GetBufferedPaintBits(IntPtr hBufferedPaint, out IntPtr ppbBuffer, out int pcxRow);
+
+        [DllImport("uxtheme.dll")]
+        public static extern IntPtr BeginBufferedPaint(IntPtr hdc, ref RECT prcTarget, BP_BUFFERFORMAT dwFormat,
+                                                       BP_PAINTPARAMS pPaintParams, out IntPtr phdc);
+
+        [DllImport("uxtheme.dll")]
+        public static extern IntPtr EndBufferedPaint(IntPtr hBufferedPaint, bool fUpdateTarget);
+
         public enum WindowPartState : int
         {
             // Frame States
@@ -144,5 +154,43 @@ namespace SharpShell.Interop
         MC_CHECKMARKDISABLED = 2,
         MC_BULLETNORMAL = 3,
         MC_BULLETDISABLED = 4,
+    }
+
+    //todo tidy up and name properly.
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ICONINFO
+    {
+        public bool IsIcon;
+        public int xHotspot;
+        public int yHotspot;
+        public IntPtr MaskBitmap;
+        public IntPtr ColorBitmap;
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct BLENDFUNCTION
+    {
+        public byte BlendOp;
+        public byte BlendFlags;
+        public byte SourceConstantAlpha;
+        public byte AlphaFormat;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct BP_PAINTPARAMS
+    {
+        public uint cbSize;
+        public uint dwFlags; // BPPF_ flags
+        public RECT prcExclude;
+        public BLENDFUNCTION pBlendFunction;
+    }
+
+    public enum BP_BUFFERFORMAT
+    {
+        BPBF_COMPATIBLEBITMAP, // Compatible bitmap
+        BPBF_DIB, // Device-independent bitmap
+        BPBF_TOPDOWNDIB, // Top-down device-independent bitmap
+        BPBF_TOPDOWNMONODIB // Top-down monochrome device-independent bitmap
     }
 }

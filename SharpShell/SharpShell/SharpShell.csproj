@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -180,6 +180,7 @@
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
     <Compile Include="SharpContextMenu\InvokeCommandInfo.cs" />
     <Compile Include="SharpContextMenu\MenuMetrics.cs" />
+    <Compile Include="SharpContextMenu\PARGB32.cs" />
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
     <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
