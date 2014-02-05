@@ -142,6 +142,14 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
         [DllImport("gdi32.dll")]
         public static extern bool RestoreDC(IntPtr hdc, int nSavedDC);
 
+        [DllImport("gdi32.dll")]
+        public static extern uint SetBkColor(IntPtr hdc, int crColor);
+
+        [DllImport("gdi32.dll", EntryPoint = "ExtTextOutW")]
+        public static extern bool ExtTextOut(IntPtr hdc, int X, int Y, uint fuOptions,
+           [In] ref RECT lprc, [MarshalAs(UnmanagedType.LPWStr)] string lpString,
+           uint cbCount, [In] int[] lpDx);
+
         /// <summary>
         ///        Retrieves the bits of the specified compatible bitmap and copies them into a buffer as a DIB using the specified format.
         /// </summary>

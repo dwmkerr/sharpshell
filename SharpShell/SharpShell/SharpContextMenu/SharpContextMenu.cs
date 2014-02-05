@@ -365,7 +365,7 @@ namespace SharpShell.SharpContextMenu
             //  TODO: Check the ID of the item - if it's not one of ours, we're done.
             if (nativeContextMenuWrapper.IsValidItemId(dis.itemID) == false)
                 return WinError.S_OK;
-            var menuItem = nativeContextMenuWrapper.GetMenuItemById(dis.itemID);
+            var menuItem = nativeContextMenuWrapper.GetMenuItemInfoById(dis.itemID);
 
             //  If the rectangle is empty, no drawing needed.
             if(dis.rcItem.IsEmpty())
@@ -376,7 +376,7 @@ namespace SharpShell.SharpContextMenu
 
                 int iSaveDC = Gdi32.SaveDC(dis.hDC);
 
-            DrawItem(menuItem, ref result);
+            menuMetrics.DrawItem(menuItem, dis);
 
             result = new IntPtr(1);
 
@@ -385,17 +385,8 @@ namespace SharpShell.SharpContextMenu
             return WinError.S_OK;
         }
 
-        private void DrawItem(ToolStripItem menuItem, DRAWITEMSTRUCT dis, ref IntPtr result)
-        {
-            if (dis.itemAction != ODA_DRAWENTIRE || dis.itemAction != ODA_SELECT)
-                return;
-
-            /// ******** this is where we are at the moment.
-            POPUPITEMSTATES iStateId = MenuMetrics.ToItemStateId(dis.itemState);
-
-            MenuMetrics.DRAWITEMMETRICS dim;
-           // menuMetrics.LayoutMenuItem(pmi, pdis, &dim);
-        }
+        
+       
 
         /// <summary>
         /// Gets the current invoke command information. This will only be set when a command

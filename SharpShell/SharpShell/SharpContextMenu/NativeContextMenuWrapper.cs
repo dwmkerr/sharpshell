@@ -51,6 +51,7 @@ namespace SharpShell.SharpContextMenu
 
                 //  Create the native menu item info.
                 var menuItemInfo = CreateNativeMenuItem(item, idCounter);
+                idsToMenuItemInfos[idCounter] = menuItemInfo;
 
                 //  Insert the native menu item.
                 if (User32.InsertMenuItem(hMenu, positionCounter, true, ref menuItemInfo) == false)
@@ -219,6 +220,7 @@ namespace SharpShell.SharpContextMenu
         }
 
         private readonly Dictionary<uint, ToolStripItem> idsToItems = new Dictionary<uint, ToolStripItem>();
+        private readonly Dictionary<uint, MENUITEMINFO> idsToMenuItemInfos = new Dictionary<uint, MENUITEMINFO>();
         
         /// <summary>
         /// Map of indexes to commands.
@@ -238,6 +240,11 @@ namespace SharpShell.SharpContextMenu
         public ToolStripItem GetMenuItemById(uint id)
         {
             return idsToItems[id];
+        }
+
+        public MENUITEMINFO GetMenuItemInfoById(uint id)
+        {
+            return idsToMenuItemInfos[id];
         }
     }
 

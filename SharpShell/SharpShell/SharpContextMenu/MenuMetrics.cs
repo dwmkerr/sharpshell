@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using SharpShell.Interop;
 
 namespace SharpShell.SharpContextMenu
@@ -69,6 +70,9 @@ namespace SharpShell.SharpContextMenu
         /// </summary>
         private int cyMarCheckBackground;
 
+        private decimal _idLastSelected = 0;
+        private int _rgbPreviousSelection;
+
         private const string VSCLASS_MENU = "MENU";
         private const int MENU_MENUITEM_TMSCHEMA = 1;
         private const int MENU_MENUDROPDOWN_TMSCHEMA = 2;
@@ -90,6 +94,7 @@ namespace SharpShell.SharpContextMenu
         private const int MENU_SYSTEMMAXIMIZE = 18;
         private const int MENU_SYSTEMMINIMIZE = 19;
         private const int MENU_SYSTEMRESTORE = 20;
+        private const int MFS_CHECKED = 0x00000008;
         private const int TS_MIN = 0;
         private const int TS_TRUE = 1;
         private const int TS_DRAW = 2;
@@ -125,6 +130,10 @@ namespace SharpShell.SharpContextMenu
         private const uint DT_CALCRECT = 0x00000400;
         private const uint DT_NOPREFIX = 0x00000800;
         private const uint DT_INTERNAL = 0x00001000;
+        private const uint DT_HIDEPREFIX               = 0x00100000;
+        private const uint DT_PREFIXONLY = 0x00200000;
+private const uint ETO_OPAQUE                    = 0x0002;
+        private const uint ETO_CLIPPED = 0x0004;
 
         private const int POPUP_CHECK = 0;
         private const int POPUP_TEXT = 1;
@@ -364,7 +373,7 @@ namespace SharpShell.SharpContextMenu
             itemHeight = (uint)cyMax;
         }
 
-        void LayoutMenuItem(int fType, SIZE[] rgPopupSize, DRAWITEMSTRUCT pdis, out DRAWITEMMETRICS pdim, RECT[] rgrc)
+        public void LayoutMenuItem(int fType, SIZE[] rgPopupSize, DRAWITEMSTRUCT pdis, out DRAWITEMMETRICS pdim, RECT[] rgrc)
         {
             RECT prcItem = pdis.rcItem;
             int cyItem = pdis.rcItem.Height();
@@ -466,6 +475,90 @@ namespace SharpShell.SharpContextMenu
 
                 pdim.rcSelection.Set(x, y, prcItem.right -
                                            marPopupItem.cxRightWidth, y + cyItem);
+            }
+        }
+
+        private const uint ODA_DRAWENTIRE = 0x0001;
+        private const uint ODA_SELECT = 0x0002;
+        private const uint ODA_FOCUS = 0x0004;
+
+        public void DrawItem(MENUITEMINFO mii, DRAWITEMSTRUCT dis)
+        {
+            if (dis.itemAction != ODA_DRAWENTIRE || dis.itemAction != ODA_SELECT)
+                return;
+
+            POPUPITEMSTATES iStateId = MenuMetrics.ToItemStateId(dis.itemState);
+
+            MenuMetrics.DRAWITEMMETRICS dim;
+            LayoutMenuItem((int)mii.fType, null, dis, out dim, null);
+
+            if (Uxtheme.IsThemeBackgroundPartiallyTransparent(hTheme,
+       MENU_POPUPITEM, (int)iStateId) != 0)
+            {
+                Uxtheme.DrawThemeBackground(hTheme, dis.hDC,
+                                    MENU_POPUPBACKGROUND, 0, ref dis.rcItem,
+                                    IntPtr.Zero);
+            }
+
+            Uxtheme.DrawThemeBackground(hTheme,
+                                dis.hDC,
+                                MENU_POPUPGUTTER,
+                                0,
+                                ref dim.rcGutter,
+                                IntPtr.Zero);
+
+            if ((mii.fType & MFT_SEPARATOR) != 0)
+            {
+                Uxtheme.DrawThemeBackground(hTheme, dis.hDC,
+                                    MENU_POPUPSEPARATOR, 0,
+                                    ref dim.rgrc[POPUP_SEPARATOR], IntPtr.Zero);
+            }
+            else
+            {
+                // Draw last selected item.
+                if (mii.wID == _idLastSelected)
+                {
+                    RECT rc = dim.rcSelection;
+                    Gdi32.SetBkColor(dis.hDC, _rgbPreviousSelection);
+                    Gdi32.ExtTextOut(dis.hDC, rc.left, rc.top, ETO_OPAQUE, ref rc,
+                               null, 0, null);
+                }
+
+                // Item selection
+                Uxtheme.DrawThemeBackground(hTheme, dis.hDC,
+                                    MENU_POPUPITEM, (int)iStateId, ref dim.rcSelection,
+                                    IntPtr.Zero);
+
+                // Draw the checkbox if necessary.
+                if ((mii.fState & MFS_CHECKED) != 0)
+                {
+                    Uxtheme.DrawThemeBackground(hTheme,
+                                        dis.hDC,
+                                        MENU_POPUPCHECKBACKGROUND,
+                                       (int)ToCheckBackgroundStateId((int)iStateId),
+                                        ref dim.rcCheckBackground,
+                                        IntPtr.Zero);
+
+                    Uxtheme.DrawThemeBackground(hTheme,
+                                        dis.hDC,
+                                        MENU_POPUPCHECK,
+                                        (int)ToCheckStateId(mii.fType, (int)iStateId),
+                                        ref dim.rgrc[POPUP_CHECK],
+                                        IntPtr.Zero);
+                }
+
+                // Draw the text.
+                var uAccel = (((dis.itemState & ODS_NOACCEL) != 0) ? DT_HIDEPREFIX : 0);
+                Uxtheme.DrawThemeText(hTheme,
+                              dis.hDC,
+                              MENU_POPUPITEM,
+                              (int)iStateId,
+                              mii.dwTypeData,
+                              (int)mii.cch,
+                              DT_SINGLELINE | DT_LEFT | uAccel,
+                              0,
+                              ref dim.rgrc[POPUP_TEXT]);
+
             }
         }
     }

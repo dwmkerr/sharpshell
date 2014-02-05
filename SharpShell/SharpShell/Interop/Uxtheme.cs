@@ -28,6 +28,16 @@ namespace SharpShell.Interop
 
         [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
         public extern static Int32 GetThemeTextExtent(IntPtr hTheme, IntPtr hdc, int iPartId, int iStateId, String text, int textLength, UInt32 textFlags, IntPtr boundingRect, out RECT extentRect);
+        
+        [DllImport("uxtheme", ExactSpelling = true)]
+        public extern static Int32 DrawThemeBackground(IntPtr hTheme, IntPtr hdc, int iPartId,
+           int iStateId, ref RECT pRect, IntPtr pClipRect);
+
+        [DllImport("uxtheme", ExactSpelling = true)]
+        public extern static int IsThemeBackgroundPartiallyTransparent(IntPtr hTheme, int iPartId, int iStateId);
+
+        [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        public extern static Int32 DrawThemeText(IntPtr hTheme, IntPtr hdc, int iPartId, int iStateId, String text, int textLength, UInt32 textFlags, UInt32 textFlags2, ref RECT pRect);
 
         public enum WindowPartState : int
         {
