@@ -46,7 +46,7 @@ namespace SharpShell
         /// <summary>
         /// A Shell Icon Overlay Handler.
         /// </summary>
-        [Description("Shell Icon OVerlay Handler")]
+        [Description("Shell Icon Overlay Handler")]
         ShellIconOverlayHandler,
 
         /// <summary>
@@ -71,6 +71,12 @@ namespace SharpShell
         /// A Shell Namespace Extension
         /// </summary>
         [Description("Shell Namespace Extension")]
-        ShellNamespaceExtension
+        ShellNamespaceExtension,
+
+        /// <summary>
+        /// A Shell Desk Band Extension
+        /// </summary>
+        [Description("Shell Desk Band Extension")]
+        ShellDeskBand
     }
 }
