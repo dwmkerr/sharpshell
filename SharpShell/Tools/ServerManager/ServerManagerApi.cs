@@ -34,16 +34,35 @@ namespace ServerManager
                 var serverTypes = container.GetExports<ISharpShellServer>();
 
                 //  Go through each servertype (creating the instance from the lazy).
-                foreach(var serverTypeInstance in serverTypes.Select(st => st.Value))
+                foreach(var serverType in serverTypes)
                 {
+                    ISharpShellServer server = null;
+                    try
+                    {
+                        server = serverType.Value;
+                    }
+                    catch (Exception)
+                    {
+                        servers.Add(new ServerEntry
+                        {
+                            ServerName = "Invalid",
+                            ServerPath = path,
+                            ServerType = ServerType.None,
+                            ClassId = new Guid(),
+                            Server = null,
+                            IsInvalid = true
+                        });
+                        continue;
+                    }
+
                     //  Yield a server entry for the server type.
                     servers.Add(new ServerEntry
                                           {
-                                              ServerName = serverTypeInstance.DisplayName, 
+                                              ServerName = server.DisplayName, 
                                               ServerPath = path,
-                                              ServerType = serverTypeInstance.ServerType,
-                                              ClassId = serverTypeInstance.ServerClsid,
-                                              Server = serverTypeInstance
+                                              ServerType = server.ServerType,
+                                              ClassId = server.ServerClsid,
+                                              Server = server
                                           });
 
                 }

@@ -46,7 +46,7 @@ namespace SharpShell.Attributes
             return string.IsNullOrEmpty(displayName) ? type.Name : displayName;
         }
 
-    /// <summary>
+        /// <summary>
         /// Gets the display name.
         /// </summary>
         public string DisplayName { get; private set; }

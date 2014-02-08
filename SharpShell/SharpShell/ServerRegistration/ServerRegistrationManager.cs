@@ -121,6 +121,9 @@ namespace SharpShell.ServerRegistration
             //  Pass the server type to the SharpShellServer internal registration function and let it 
             //  take over from there.
             SharpShellServer.DoRegister(server.GetType(), registrationType);
+
+            //  Approve the extension.
+            ApproveExtension(server, registrationType);
         }
 
         /// <summary>
@@ -131,6 +134,9 @@ namespace SharpShell.ServerRegistration
         /// <param name="registrationType">Type of the registration to undo.</param>
         public static void UnregisterServer(ISharpShellServer server, RegistrationType registrationType)
         {
+            //  Unapprove the extension.
+            UnapproveExtension(server, registrationType);
+
             //  Pass the server type to the SharpShellServer internal unregistration function and let it 
             //  take over from there.
             SharpShellServer.DoUnregister(server.GetType(), registrationType);
@@ -660,6 +666,11 @@ namespace SharpShell.ServerRegistration
                     //  Create the key name for a thumbnail handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
                     return string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
+
+                case ServerType.ShellNamespaceExtension:
+
+                    //  We don't have a key for shell namespace extensions.
+                    return null;
                     
                 default:
                     throw new ArgumentOutOfRangeException("serverType");
@@ -713,6 +724,50 @@ namespace SharpShell.ServerRegistration
             if (value == null)
                 return string.Empty;
             return value.ToString();
+        }
+
+        /// <summary>
+        /// Approves an extension.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
+        private static void ApproveExtension(ISharpShellServer server, RegistrationType registrationType)
+        {
+            //  Open the approved extensions key.
+            using(var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, 
+                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
+                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree))
+            {
+                //  If we can't open the key, we're going to have problems.
+                if(approvedKey == null)
+                    throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+
+                //  Create an entry for the server.
+                approvedKey.SetValue(server.ServerClsid.ToRegistryString(), server.DisplayName);
+            }
+        }
+
+        /// <summary>
+        /// Unapproves an extension.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
+        private static void UnapproveExtension(ISharpShellServer server, RegistrationType registrationType)
+        {
+            //  Open the approved extensions key.
+            using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
+                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
+                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree))
+            {
+                //  If we can't open the key, we're going to have problems.
+                if (approvedKey == null)
+                    throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+
+                //  Delete the value if it's there.
+                approvedKey.DeleteValue(server.ServerClsid.ToRegistryString(), false);
+            }
         }
 
         /// <summary>

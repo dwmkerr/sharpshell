@@ -305,7 +305,7 @@ namespace ServerManager.TestShell
             persistFile.Load(path, 0);
 
             //  Test the icon handler.
-            var extractIcon = (IExtractIcon)iconHandler;
+            var extractIcon = (IExtractIconW)iconHandler;
             var size = 32 + (16 << 16);
             extractIcon.Extract(path, 0, out iconLarge, out iconSmall, (uint)size);
         }

@@ -44,8 +44,9 @@ namespace SharpShell.SharpContextMenu
                 if (string.IsNullOrEmpty(item.Name))
                     item.Name = Guid.NewGuid().ToString();
 
-                //  Map the command by verb.
+                //  Map the command by verb and id.
                 verbsToCommands[item.Name] = item;
+                idsToItems[idCounter] = item;
 
                 //  Create the native menu item info.
                 var menuItemInfo = CreateNativeMenuItem(item, idCounter);
@@ -133,8 +134,11 @@ namespace SharpShell.SharpContextMenu
             }
 
             //  Is there an icon?
-            menuItemInfo.hbmpItem = menuItem.Image != null ? new Bitmap(menuItem.Image).GetHbitmap() : IntPtr.Zero;
+            var bitmap = menuItem.Image as Bitmap;
+            if (bitmap != null)
+                menuItemInfo.hbmpItem = PARGB32.CreatePARGB32HBitmap(bitmap.GetHicon(), bitmap.Size);
         }
+
 
         /// <summary>
         /// Builds the menu item info.
@@ -183,6 +187,8 @@ namespace SharpShell.SharpContextMenu
             //  The command was invoked, return true,
             return true;
         }
+
+        private readonly Dictionary<uint, ToolStripItem> idsToItems = new Dictionary<uint, ToolStripItem>();
         
         /// <summary>
         /// Map of indexes to commands.

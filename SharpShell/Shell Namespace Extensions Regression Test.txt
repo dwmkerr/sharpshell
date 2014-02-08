@@ -1,0 +1,9 @@
+1. Load the Server Manager.
+2. Load the EnvironmentVariablesNamespaceExtension.
+3. Install and Register the Environment Variables namespace extension.
+4. Open the Experimental Shell Debugger.
+5. The environment variables extension should be shown under 'My Computer'.
+6. It should have the correct tooltip.
+7. It should have the cogs icon.
+8. Clicking on the icon should show the environment variables.
+9. You should be able to navigate to and from the environment variables repeatedly without crashing explorer.

@@ -118,40 +118,49 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="View_Details" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\View_Details.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ChangeYourView" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ChangeYourView.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="View_SmallIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\View_SmallIcons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="View_List" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\View_List.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="View_ExtraLargeIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\View_ExtraLargeIcons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="UrlSharpShellProjectHomePage" xml:space="preserve">
     <value>http://sharpshell.codeplex.com</value>
   </data>
-  <data name="View_LargeIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\View_LargeIcons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="View_Tiles" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\View_Tiles.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Debug" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Debug.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="URlSuggestAFeature" xml:space="preserve">
     <value>http://sharpshell.codeplex.com/WorkItem/Create</value>
   </data>
+  <data name="View_SmallIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\View_SmallIcons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="PlayHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PlayHS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="UrlReportABug" xml:space="preserve">
-    <value>http://sharpshell.codeplex.com/WorkItem/Create</value>
+  <data name="View_Details" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\View_Details.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="View_List" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\View_List.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="openHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\openHS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PropertySheet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PropertySheet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ChangeYourView" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ChangeYourView.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="UrlReportABug" xml:space="preserve">
+    <value>http://sharpshell.codeplex.com/WorkItem/Create</value>
   </data>
-  <data name="View_Tiles" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\View_Tiles.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="View_LargeIcons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\View_LargeIcons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="openHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\openHS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="process_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\process_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

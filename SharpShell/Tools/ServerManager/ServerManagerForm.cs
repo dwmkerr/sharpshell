@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Apex.WinForms.Interop;
 using Apex.WinForms.Shell;
+using ServerManager.ShellDebugger;
 using ServerManager.TestShell;
 using SharpShell;
 using SharpShell.Attributes;
@@ -95,6 +97,10 @@ namespace ServerManager
                     listItem.ImageIndex = 0;
                     break;
             }
+
+            if (serverEntry.IsInvalid)
+                listItem.ForeColor = Color.FromArgb(255, 0, 0);
+
             listViewServers.Items.Add(listItem);
 
         }
@@ -106,11 +112,16 @@ namespace ServerManager
 
         private void ServerManagerForm_Load(object sender, EventArgs e)
         {
+            //  Setup the statusbar.
+            toolStripStatusLabelOSProcessor.Text = Environment.Is64BitOperatingSystem ? "Windows (x64)" : "Windows (x86)";
+            toolStripStatusLabelProcessProcessor.Text = Environment.Is64BitProcess ? "Process (x64)" : "Process (x86)";
+
             //  Set the settings.
             desktopProcessToolStripMenuItem.Checked = explorerConfigurationManager.DesktopProcess;
             alwaysUnloadDLLToolStripMenuItem.Checked = explorerConfigurationManager.AlwaysUnloadDll;
 
-            //  Add the recently used servers.
+            //  Add the recently used servers. If any of them fail to load, we'll remove them from the list.
+            var recentlyUsedFilesToRemove = new List<string>();
             if (Properties.Settings.Default.RecentlyUsedFiles != null)
             {
                 foreach(var path in Properties.Settings.Default.RecentlyUsedFiles)
@@ -430,6 +441,18 @@ namespace ServerManager
             //  Show a shell dialog.
             var openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog(this);
+        }
+
+        private void toolStripButtonShellDebugger_Click(object sender, EventArgs e)
+        {
+            //  Create and show a new shell debugger.
+            var debugger = new ShellDebuggerForm();
+            debugger.ShowDialog(this);
+        }
+
+        private void toolStripButtonAttachDebugger_Click(object sender, EventArgs e)
+        {
+            Debugger.Launch();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace SharpShell.SharpIconHandler
     /// custom Icon Handlers.
     /// </summary>
     [ServerType(ServerType.ShellIconHandler)]
-    public abstract class SharpIconHandler : PersistFileServer, IExtractIcon
+    public abstract class SharpIconHandler : PersistFileServer, IExtractIconA, IExtractIconW
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SharpIconHandler"/> class.
@@ -24,7 +24,7 @@ namespace SharpShell.SharpIconHandler
             DontCacheIcons = true;
         }
 
-       #region Implementation of IExtractIcon
+       #region Implementation of IExtractIconA and IExtractIconW
 
         /// <summary>
         /// Gets the location and index of an icon.
@@ -35,7 +35,15 @@ namespace SharpShell.SharpIconHandler
         /// <param name="piIndex">A pointer to an int that receives the index of the icon in the file pointed to by pszIconFile.</param>
         /// <param name="pwFlags">A pointer to a UINT value that receives zero or a combination of the following value</param>
         /// <returns></returns>
-        int IExtractIcon.GetIconLocation(GILInFlags uFlags, StringBuilder szIconFile, int cchMax, out int piIndex, out GILOutFlags pwFlags)
+        int IExtractIconA.GetIconLocation(GILInFlags uFlags, StringBuilder szIconFile, int cchMax, out int piIndex, out GILOutFlags pwFlags)
+        {
+            return GetIconLocation(uFlags, out piIndex, out pwFlags);
+        }
+        int IExtractIconW.GetIconLocation(GILInFlags uFlags, StringBuilder szIconFile, int cchMax, out int piIndex, out GILOutFlags pwFlags)
+        {
+            return GetIconLocation(uFlags, out piIndex, out pwFlags);
+        }
+        private int GetIconLocation(GILInFlags uFlags, out int piIndex, out GILOutFlags pwFlags)
         {
             //  DebugLog this key event.
             Log(string.Format("Getting icon location icon for {0}", SelectedItemPath));
@@ -43,7 +51,7 @@ namespace SharpShell.SharpIconHandler
             //  We're always going to return by handle.
             //  This will cause the 'Extract' function to be called.
             pwFlags = GILOutFlags.GIL_NOTFILENAME;
-            if(DontCacheIcons)
+            if (DontCacheIcons)
                 pwFlags |= GILOutFlags.GIL_DONTCACHE;
 
             //  No need for an index.
@@ -52,7 +60,6 @@ namespace SharpShell.SharpIconHandler
             //  Return success.
             return WinError.S_OK;
         }
-
         /// <summary>
         /// Extracts an icon image from the specified location.
         /// </summary>
@@ -64,7 +71,15 @@ namespace SharpShell.SharpIconHandler
         /// <returns>
         /// Returns S_OK if the function extracted the icon, or S_FALSE if the calling application should extract the icon.
         /// </returns>
-        int IExtractIcon.Extract(string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
+        int IExtractIconA.Extract(string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
+        {
+            return Extract(out phiconLarge, out phiconSmall, nIconSize);
+        }
+        int IExtractIconW.Extract(string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
+        {
+            return Extract(out phiconLarge, out phiconSmall, nIconSize);
+        }
+        private int Extract(out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
         {
             //  DebugLog this key event.
             Log(string.Format("Extracting icon for {0}", SelectedItemPath));
@@ -76,7 +91,7 @@ namespace SharpShell.SharpIconHandler
             //  Default the icons to null.
             phiconLarge = IntPtr.Zero;
             phiconSmall = IntPtr.Zero;
-            
+
             try
             {
                 //  Set the large and small icons.
@@ -88,7 +103,7 @@ namespace SharpShell.SharpIconHandler
                 //  DebugLog the exception.
                 LogError("An exception occured extracting icons.", exception);
             }
-            
+
             //  Return succes.
             return WinError.S_OK;
         }

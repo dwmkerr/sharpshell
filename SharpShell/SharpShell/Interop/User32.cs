@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SharpShell.Interop
 {
-    internal static class User32
+    public static class User32
     {
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition,
@@ -16,7 +16,7 @@ namespace SharpShell.Interop
         internal static extern IntPtr CreatePopupMenu();
 
         [DllImport("user32.dll", SetLastError = true)] // SETLAST by us
-        internal static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern bool SetWindowText(IntPtr hwnd, String lpString);
@@ -28,16 +28,22 @@ namespace SharpShell.Interop
         internal static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         
         [DllImport("user32.dll")]
-        internal static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, IntPtr lParam);
+        public static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
         internal static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
         internal static extern IntPtr GetDC(IntPtr hWnd);
+        
+        [DllImport("user32.dll")]
+        internal static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         [DllImport("user32.dll")]
         internal static extern bool DestroyWindow(IntPtr hostWindowHandle);
+        
+        [DllImport("user32.dll")]
+        internal static extern bool GetIconInfo(IntPtr hIcon, out ICONINFO piconinfo);
 
         /// <summary>
         /// Converts an item identifier list to a file system path. (Note: SHGetPathFromIDList calls the ANSI version, must call SHGetPathFromIDListW for .NET)
@@ -56,7 +62,11 @@ namespace SharpShell.Interop
         /// <returns>If the window is a child window, the return value is a handle to the parent window. If the window is a top-level window with the WS_POPUP style, the return value is a handle to the owner window. If the function fails, the return value is NULL. To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern IntPtr GetParent(IntPtr hWnd);
-        
+
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr CreateIconIndirect([In] ref ICONINFO iconInfo);
+
         public static int GWL_STYLE = -16;
         public static int WS_CHILD = 0x40000000; 
 

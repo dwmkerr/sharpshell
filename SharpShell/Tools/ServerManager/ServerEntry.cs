@@ -51,6 +51,11 @@ namespace ServerManager
         public ISharpShellServer Server { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the server is invalid.
+        /// </summary>
+        public bool IsInvalid { get; set; }
+
+        /// <summary>
         /// Gets the security status.
         /// </summary>
         /// <returns></returns>

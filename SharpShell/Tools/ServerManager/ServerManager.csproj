@@ -164,6 +164,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShellDebugger\ShellDebuggerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShellDebugger\ShellDebuggerForm.Designer.cs">
+      <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ShellDebugger\ShellTreeEventArgs.cs" />
+    <Compile Include="ShellDebugger\ShellTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TestShell\ShellThumbnailHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -204,6 +214,12 @@
     <EmbeddedResource Include="ServerManagerForm.resx">
       <DependentUpon>ServerManagerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShellDebugger\ShellDebuggerForm.resx">
+      <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShellDebugger\ShellTreeView.resx">
+      <DependentUpon>ShellTreeView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestShell\ShellThumbnailHost.resx">
       <DependentUpon>ShellThumbnailHost.cs</DependentUpon>
     </EmbeddedResource>
@@ -233,15 +249,18 @@
   <ItemGroup>
     <None Include="Resources\ChangeYourView.png" />
     <Content Include="Resources\ContextMenu.png" />
+    <Content Include="Resources\Debug.png" />
     <Content Include="Resources\Icon.png" />
     <None Include="Resources\PlayHS.png" />
     <None Include="Resources\openHS.png" />
+    <None Include="Resources\process_16xLG.png" />
     <Content Include="Resources\PropertySheet.png" />
     <None Include="Resources\View_SmallIcons.png" />
     <None Include="Resources\View_LargeIcons.png" />
     <None Include="Resources\View_Details.png" />
     <None Include="Resources\View_Tiles.png" />
     <None Include="Resources\View_List.png" />
+    <None Include="Resources\View_ExtraLargeIcons.png" />
     <Content Include="SharpShell.ico" />
   </ItemGroup>
   <ItemGroup />
