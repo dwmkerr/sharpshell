@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpShell.Attributes;
+using SharpShell.Components;
 using SharpShell.Interop;
 using System.Windows.Forms;
+using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpDeskBand
 {
     [ServerType(ServerType.ShellDeskBand)]
-    public abstract class SharpDeskBand : SharpShellServer, IDeskBand, IPersistStream, IObjectWithSite
+    public abstract class SharpDeskBand : SharpShellServer, IDeskBand2, IPersistStream, IObjectWithSite
     {
-        //  TODO: Implement IContextMenu
-        //  TODO: Implement IInputObject
+        protected SharpDeskBand()
+        {
+            //  Log key events.
+            Log("SharpDeskBand constructed.");
+        }
+
+        //  TODO: Optionally Implement IContextMenu to support a context menu for the band.
+        //  TODO: Optionally Implement IInputObject to allow input
 
         /// <summary>
         /// The COM site (see IObjectWithSite implementation).
@@ -98,16 +106,21 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_OK;
         }
 
-        /// <summary>
-        /// Called when the band is being removed from explorer.
-        /// </summary>
-        protected virtual void OnBandRemoved()
-        { 
-        }
-
         #endregion
 
         #region Implementation of IPersistStream
+
+        int IPersistStream.GetClassID(out Guid pClassID)
+        {
+            //  Log key events.
+            Log("IPersistStream.GetClassID called.");
+
+            //  Return the server class id.
+            pClassID = ServerClsid;
+
+            //  Return success.
+            return WinError.S_OK;
+        }
 
         int IPersistStream.IsDirty()
         {
@@ -167,7 +180,28 @@ namespace SharpShell.SharpDeskBand
 
         #region Implmentation of IDeskBand
 
-        int IDeskBand.GetBandInfo(uint dwBandID, DBIF dwViewMode, ref DESKBANDINFO pdbi)
+        int IOleWindow.GetWindow(out IntPtr phwnd)
+        {
+            //  Log key events.
+            Log("IOleWindow.GetWindow called.");
+
+            //   Easy enough, just return the handle of the deskband content.
+            phwnd = deskBand != null ? deskBand.Handle : IntPtr.Zero;
+
+            //  Return success.
+            return WinError.S_OK;
+        }
+        int IDeskBand2.GetWindow(out IntPtr phwnd)
+        {
+            return ((IOleWindow) this).GetWindow(out phwnd);
+        }
+
+        int IDeskBand.GetWindow(out IntPtr phwnd)
+        {
+            return ((IOleWindow)this).GetWindow(out phwnd);
+        }
+
+        int IDeskBand.GetBandInfo(uint dwBandID, DESKBANDINFO.DBIF dwViewMode, ref DESKBANDINFO pdbi)
         {
             //  Log key events.
             Log("IDeskBand.GetBandInfo called.");
@@ -178,60 +212,77 @@ namespace SharpShell.SharpDeskBand
             //  Depending on what we've been asked for, we'll return various band properties.
 
             //  Return the min size if needed.
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_MINSIZE))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_MINSIZE))
             {
                 //  TODO: provide minsize.
                 pdbi.ptMinSize.X = 200;
                 pdbi.ptMinSize.Y = 30;
             }
 
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_MAXSIZE))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_MAXSIZE))
             {
                 //  TODO: check documentation for this.
                 pdbi.ptMaxSize.Y = -1;
             }
 
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_INTEGRAL))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_INTEGRAL))
             {
                 //  TODO: check documentation for this.
                 pdbi.ptIntegral.Y = 1;
             }
 
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_ACTUAL))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_ACTUAL))
             {
                 //  TODO: Return actual size.
                 pdbi.ptActual.X = 200;
                 pdbi.ptActual.Y = 30;
             }
 
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_TITLE))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_TITLE))
             {
                 //  TODO: Handle titles.
                 // Don't show title by removing this flag.
-                pdbi.dwMask &= ~DBIM.DBIM_TITLE;
+                pdbi.dwMask &= ~DESKBANDINFO.DBIM.DBIM_TITLE;
             }
 
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_MODEFLAGS))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_MODEFLAGS))
             {
                 //  TODO: Handle flags.
-                pdbi.dwModeFlags = DBIMF.DBIMF_NORMAL | DBIMF.DBIMF_VARIABLEHEIGHT;
+                pdbi.dwModeFlags = DESKBANDINFO.DBIMF.DBIMF_NORMAL | DESKBANDINFO.DBIMF.DBIMF_VARIABLEHEIGHT;
             }
             
-            if (pdbi.dwMask.HasFlag(DBIM.DBIM_BKCOLOR))
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_BKCOLOR))
             {
                 //  TODO: Handle background colour.
                 // Use the default background color by removing this flag.
-                pdbi.dwMask &= ~DBIM.DBIM_BKCOLOR;
+                pdbi.dwMask &= ~DESKBANDINFO.DBIM.DBIM_BKCOLOR;
             }
                         
             //  Return success.
             return WinError.S_OK;
         }
+        int IDeskBand2.GetBandInfo(uint dwBandID, DESKBANDINFO.DBIF dwViewMode, ref DESKBANDINFO pdbi)
+        {
+            return ((IDeskBand)this).GetBandInfo(dwBandID, dwViewMode, ref pdbi);
+        }
+
+        int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
+        {
+            return WinError.E_NOTIMPL;
+        }
+        int IDeskBand.ContextSensitiveHelp(bool fEnterMode)
+        {
+            return ((IOleWindow) this).ContextSensitiveHelp(fEnterMode);
+        }
+        int IDeskBand2.ContextSensitiveHelp(bool fEnterMode)
+        {
+            return ((IOleWindow)this).ContextSensitiveHelp(fEnterMode);
+        }
 
         int IDockingWindow.ShowDW(bool bShow)
         {
             //  Log key events.
-            Log("IDockingWindow.GetBandInfo called.");
+            Log("IDockingWindow.ShowDW called.");
 
             //  If we've got a content window, show it or hide it.
             if (deskBand != null)
@@ -244,11 +295,13 @@ namespace SharpShell.SharpDeskBand
             //  Return success.
             return WinError.S_OK;
         }
+        int IDeskBand.ShowDW(bool bShow) { return ((IDockingWindow)this).ShowDW(bShow); }
+        int IDeskBand2.ShowDW(bool bShow) { return ((IDockingWindow)this).ShowDW(bShow); }
 
         int IDockingWindow.CloseDW(uint dwReserved)
         {
             //  Log key events.
-            Log("IDockingWindow.Close called.");
+            Log("IDockingWindow.CloseDW called.");
 
             //  If we've got a content window, hide it and then destroy it.
             if (deskBand != null)
@@ -262,6 +315,9 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_OK;
         }
 
+        int IDeskBand.CloseDW(uint dwReserved) { return ((IDockingWindow)this).CloseDW(dwReserved); }
+        int IDeskBand2.CloseDW(uint dwReserved) { return ((IDockingWindow)this).CloseDW(dwReserved); }
+
         int IDockingWindow.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved)
         {
             //  Log key events.
@@ -271,29 +327,84 @@ namespace SharpShell.SharpDeskBand
             //  should always return E_NOTIMPL.
             return WinError.E_NOTIMPL;
         }
-
-        int IOleWindow.GetWindow(out IntPtr phwnd)
+        int IDeskBand.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved) 
         {
-            //  Log key events.
-            Log("IOleWindow.GetWindow called.");
+            return ((IDockingWindow) this).ResizeBorderDW(rcBorder, punkToolbarSite, fReserved);
+        }
 
-            //   Easy enough, just return the handle of the deskband content.
-            phwnd = deskBand != null ? deskBand.Handle : IntPtr.Zero;
+        int IDeskBand2.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved)
+        {
+            return ((IDockingWindow)this).ResizeBorderDW(rcBorder, punkToolbarSite, fReserved);
+        }
 
-            //  Return success.
+        int IDeskBand2.CanRenderComposited(out bool pfCanRenderComposited)
+        {
+            Log("IDeskBand2.CanRenderComposited called.");
+
+            //  We don't support transluceny.
+            pfCanRenderComposited = false;
             return WinError.S_OK;
         }
 
-        int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
+        int IDeskBand2.SetCompositionState(bool fCompositionEnabled)
         {
-            //  Log key events.
-            Log("IOleWindow.ContextSensitiveHelp called.");
+            Log("IDeskBand2.SetCompositionState called.");
+            return WinError.S_OK;
+        }
 
-            //  TODO: Context sensitive help currently is not supported.
-            return WinError.E_NOTIMPL;
+        int IDeskBand2.GetCompositionState(out bool pfCompositionEnabled)
+        {
+            Log("IDeskBand2.GetCompositionState called.");
+            pfCompositionEnabled = false;
+            return WinError.S_OK;
         }
 
         #endregion
+
+        #region Custom Registration and Unregistration
+
+        /// <summary>
+        /// The custom registration function.
+        /// </summary>
+        /// <param name="serverType">Type of the server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <exception cref="System.InvalidOperationException">
+        /// Unable to register a SharpNamespaceExtension as it is missing it's junction point definition.
+        /// or
+        /// Cannot open the Virtual Folder NameSpace key.
+        /// or
+        /// Failed to create the Virtual Folder NameSpace extension.
+        /// or
+        /// Cannot open the class key.
+        /// or
+        /// An exception occured creating the ShellFolder key.
+        /// </exception>
+        [CustomRegisterFunction]
+        internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
+        {
+           //   Use the category manager to register this server as a Desk Band.
+            CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+        }
+
+        /// <summary>
+        /// Customs the unregister function.
+        /// </summary>
+        /// <param name="serverType">Type of the server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        [CustomUnregisterFunction]
+        internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
+        {
+            //   Use the category manager to unregister this server as a Desk Band.
+            CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+        }
+
+        #endregion
+        /// <summary>
+        /// Called when the band is being removed from explorer.
+        /// </summary>
+        protected virtual void OnBandRemoved()
+        {
+        }
 
         /// <summary>
         /// This function should return a new instance of the desk band's user interface,
