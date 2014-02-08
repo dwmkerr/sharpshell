@@ -13,9 +13,9 @@ namespace SharpShell.Interop
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-  //      [DllImport("kernel32.dll", SetLastError = true)]
-//        public extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
+        
+        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
+        public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
 
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
@@ -37,6 +37,16 @@ namespace SharpShell.Interop
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr LoadResource(IntPtr hModule, IntPtr hResInfo);
+
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetProcessHeap();
+
+        [DllImport("kernel32.dll", SetLastError = false)]
+        public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, UIntPtr dwBytes);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
 
         public const uint RT_CURSOR = 0x00000001;
         public const uint RT_BITMAP = 0x00000002;

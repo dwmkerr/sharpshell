@@ -31,6 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -86,6 +87,7 @@
     <Compile Include="Interop\BITMAPV5HEADER.cs" />
     <Compile Include="Interop\COLORREF.cs" />
     <Compile Include="Interop\DEFCONTEXTMENU.cs" />
+    <Compile Include="Interop\DRAWITEMSTRUCT.cs" />
     <Compile Include="Interop\GILInFlags.cs" />
     <Compile Include="Interop\ICommDlgBrowser.cs" />
     <Compile Include="Interop\IContextMenuCB.cs" />
@@ -97,6 +99,8 @@
     <Compile Include="Interop\IFolderView.cs" />
     <Compile Include="Interop\IPersistIDList.cs" />
     <Compile Include="Interop\LVCFMT.cs" />
+    <Compile Include="Interop\MARGINS.cs" />
+    <Compile Include="Interop\MEASUREITEMSTRUCT.cs" />
     <Compile Include="Interop\PROPERTYKEY.cs" />
     <Compile Include="Interop\CSFV.cs" />
     <Compile Include="Interop\CSIDL.cs" />
@@ -160,9 +164,11 @@
     <Compile Include="Interop\SHGDNF.cs" />
     <Compile Include="Interop\SHGFI.cs" />
     <Compile Include="Interop\Shlwapi.cs" />
+    <Compile Include="Interop\SIZE.cs" />
     <Compile Include="Interop\STRRET.cs" />
     <Compile Include="Interop\SVUIA_STATUS.cs" />
     <Compile Include="Interop\TBBUTTON.cs" />
+    <Compile Include="Interop\Uxtheme.cs" />
     <Compile Include="Interop\WTS_ALPHATYPE.cs" />
     <Compile Include="Interop\_SVGIO.cs" />
     <Compile Include="Interop\_SVSIF.cs" />
@@ -173,6 +179,7 @@
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
     <Compile Include="SharpContextMenu\InvokeCommandInfo.cs" />
+    <Compile Include="SharpContextMenu\PARGB32.cs" />
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
     <Compile Include="SharpIconHandler\SharpIconHandler.cs" />
     <Compile Include="SharpIconOverlayHandler\SharpIconOverlayHandler.cs" />
