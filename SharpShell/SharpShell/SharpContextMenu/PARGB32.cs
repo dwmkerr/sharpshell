@@ -50,9 +50,16 @@ namespace SharpShell.SharpContextMenu
             IntPtr hdcBuffer;
             var rcIcon = new RECT(0, 0, size.Width, size.Height);
 
-            //  *********** we're here.
+            //  *********** we're here. todo pass in paint params
+            //  Note: Currently, marshalling the paint params directly or allocating
+            //  them as an IntPtr both lead to null results - only not passing gives us a buffer....
+            var res = Uxtheme.BufferedPaintInit();
+            var memory = Marshal.AllocHGlobal((int) paintParams.cbSize);
+            Marshal.StructureToPtr(paintParams, memory, false);
             IntPtr hPaintBuffer = Uxtheme.BeginBufferedPaint(hDCDest, ref rcIcon,
-                                                     BP_BUFFERFORMAT.BPBF_DIB, paintParams, out hdcBuffer);
+                                                     BP_BUFFERFORMAT.BPBF_DIB, IntPtr.Zero, out hdcBuffer);
+            Marshal.FreeHGlobal(memory);
+            var er = Marshal.GetLastWin32Error();
             if (hPaintBuffer != IntPtr.Zero)
             {
                 if (Gdi32.DrawIconEx(hdcBuffer, 0, 0, hIcon, size.Width, size.Height, 0, IntPtr.Zero,
@@ -67,6 +74,7 @@ namespace SharpShell.SharpContextMenu
             }
             Gdi32.SelectObject(hDCDest, hbmpOld);
             Gdi32.DeleteDC(hDCDest);
+            res = Uxtheme.BufferedPaintUnInit();
 
             return hBitmap;
 
@@ -97,12 +105,8 @@ namespace SharpShell.SharpContextMenu
             bi.bmiHeader.biHeight = size.Height;
             bi.bmiHeader.biBitCount = 32;
 
-            var hdcUsed = User32.GetDC(IntPtr.Zero);
-            if (hdcUsed != IntPtr.Zero)
-            {
-                hBitmap = Gdi32.CreateDIBSection(hdcUsed, ref bi, DIB_RGB_COLORS, out bits, IntPtr.Zero, 0);
-                Gdi32.ReleaseDC(IntPtr.Zero, hdcUsed);
-            }
+            hBitmap = Gdi32.CreateDIBSection(hdc, ref bi, DIB_RGB_COLORS, out bits, IntPtr.Zero, 0);
+
             return true;
         }
 

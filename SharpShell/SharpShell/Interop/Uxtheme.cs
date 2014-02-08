@@ -42,12 +42,20 @@ namespace SharpShell.Interop
         [DllImport("uxtheme", ExactSpelling = true, CharSet = CharSet.Unicode)]
         public static extern Int32 GetBufferedPaintBits(IntPtr hBufferedPaint, out IntPtr ppbBuffer, out int pcxRow);
 
-        [DllImport("uxtheme.dll")]
+        [DllImport("uxtheme.dll", SetLastError = true)]
         public static extern IntPtr BeginBufferedPaint(IntPtr hdc, ref RECT prcTarget, BP_BUFFERFORMAT dwFormat,
-                                                       BP_PAINTPARAMS pPaintParams, out IntPtr phdc);
+                                                       IntPtr pPaintParams, out IntPtr phdc);
 
         [DllImport("uxtheme.dll")]
         public static extern IntPtr EndBufferedPaint(IntPtr hBufferedPaint, bool fUpdateTarget);
+
+        [DllImport("uxtheme.dll", SetLastError = true)]
+        [PreserveSig]
+        public static extern IntPtr BufferedPaintInit();
+
+        [DllImport("uxtheme.dll", SetLastError = true)]
+        [PreserveSig]
+        public static extern IntPtr BufferedPaintUnInit();
 
         public enum WindowPartState : int
         {
