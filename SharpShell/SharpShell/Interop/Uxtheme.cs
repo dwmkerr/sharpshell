@@ -44,7 +44,7 @@ namespace SharpShell.Interop
 
         [DllImport("uxtheme.dll", SetLastError = true)]
         public static extern IntPtr BeginBufferedPaint(IntPtr hdc, ref RECT prcTarget, BP_BUFFERFORMAT dwFormat,
-                                                       IntPtr pPaintParams, out IntPtr phdc);
+                                                       ref BP_PAINTPARAMS pPaintParams, out IntPtr phdc);
 
         [DllImport("uxtheme.dll")]
         public static extern IntPtr EndBufferedPaint(IntPtr hBufferedPaint, bool fUpdateTarget);
@@ -190,8 +190,8 @@ namespace SharpShell.Interop
     {
         public uint cbSize;
         public uint dwFlags; // BPPF_ flags
-        public RECT prcExclude;
-        public BLENDFUNCTION pBlendFunction;
+        public IntPtr prcExclude;
+        public IntPtr pBlendFunction;
     }
 
     public enum BP_BUFFERFORMAT

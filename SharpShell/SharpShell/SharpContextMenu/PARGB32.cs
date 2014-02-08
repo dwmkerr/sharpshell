@@ -35,6 +35,7 @@ namespace SharpShell.SharpContextMenu
                 return IntPtr.Zero;
             }
 
+            //  Create paint params that represent our alpha blending.
             var bfAlpha = new BLENDFUNCTION
                               {
                                   BlendOp = AC_SRC_OVER,
@@ -46,7 +47,10 @@ namespace SharpShell.SharpContextMenu
             var paintParams = new BP_PAINTPARAMS();
             paintParams.cbSize = (uint) Marshal.SizeOf(paintParams);
             paintParams.dwFlags = BPPF_ERASE;
-            paintParams.pBlendFunction = bfAlpha;
+            var pBlendFunction = Marshal.AllocHGlobal(Marshal.SizeOf(bfAlpha));
+            Marshal.StructureToPtr(bfAlpha, pBlendFunction, false);
+            paintParams.pBlendFunction = pBlendFunction;
+
             IntPtr hdcBuffer;
             var rcIcon = new RECT(0, 0, size.Width, size.Height);
 
@@ -57,8 +61,8 @@ namespace SharpShell.SharpContextMenu
             var memory = Marshal.AllocHGlobal((int) paintParams.cbSize);
             Marshal.StructureToPtr(paintParams, memory, false);
             IntPtr hPaintBuffer = Uxtheme.BeginBufferedPaint(hDCDest, ref rcIcon,
-                                                     BP_BUFFERFORMAT.BPBF_DIB, IntPtr.Zero, out hdcBuffer);
-            Marshal.FreeHGlobal(memory);
+                                                     BP_BUFFERFORMAT.BPBF_DIB, ref paintParams, out hdcBuffer);
+            Marshal.FreeHGlobal(paintParams.pBlendFunction);
             var er = Marshal.GetLastWin32Error();
             if (hPaintBuffer != IntPtr.Zero)
             {
