@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using SharpShell.Interop;
@@ -51,7 +50,6 @@ namespace SharpShell.SharpContextMenu
 
                 //  Create the native menu item info.
                 var menuItemInfo = CreateNativeMenuItem(item, idCounter);
-                idsToMenuItemInfos[idCounter] = menuItemInfo;
 
                 //  Insert the native menu item.
                 if (User32.InsertMenuItem(hMenu, positionCounter, true, ref menuItemInfo) == false)
@@ -141,39 +139,6 @@ namespace SharpShell.SharpContextMenu
                 menuItemInfo.hbmpItem = PARGB32.CreatePARGB32HBitmap(bitmap.GetHicon(), bitmap.Size);
         }
 
-        private static IntPtr HBMMENU_CALLBACK = new IntPtr(-1);
-
-        private static IntPtr CreatePARGB32(Image source)
-        {
-
-            //  Get the image a PARGB32 bit array.
-            var clone = new Bitmap(source.Width, source.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-            using (Graphics gr = Graphics.FromImage(clone))
-            {
-                gr.DrawImage(clone, new Rectangle(0, 0, clone.Width, clone.Height));
-            }
-
-            var bits = clone.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly,
-                                      PixelFormat.Format32bppPArgb);
-
-            BITMAPINFO bmi = new BITMAPINFO();
-            bmi.bmiHeader = new BITMAPINFOHEADER();
-            bmi.bmiHeader.biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER));
-            bmi.bmiHeader.biWidth = source.Width;
-            bmi.bmiHeader.biHeight = source.Height;
-            bmi.bmiHeader.biPlanes = 1;
-            bmi.bmiHeader.biBitCount = 32;
-            bmi.bmiHeader.biCompression = 0x0;
-
-            IntPtr pBits;
-            IntPtr hBitmap = Gdi32.CreateDIBSection(IntPtr.Zero, ref bmi, 0, out pBits, IntPtr.Zero, 0);
-
-            CopyMemory(pBits, bits.Scan0, (uint)(source.Width * source.Height * 4));
-            return hBitmap;
-        }
-
-        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
-        public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
 
         /// <summary>
         /// Builds the menu item info.
@@ -224,7 +189,6 @@ namespace SharpShell.SharpContextMenu
         }
 
         private readonly Dictionary<uint, ToolStripItem> idsToItems = new Dictionary<uint, ToolStripItem>();
-        private readonly Dictionary<uint, MENUITEMINFO> idsToMenuItemInfos = new Dictionary<uint, MENUITEMINFO>();
         
         /// <summary>
         /// Map of indexes to commands.
@@ -235,257 +199,5 @@ namespace SharpShell.SharpContextMenu
         /// Map of verbs to commands.
         /// </summary>
         private readonly Dictionary<string, ToolStripItem> verbsToCommands = new Dictionary<string, ToolStripItem>();
-
-        public bool IsValidItemId(uint itemId)
-        {
-            return idsToItems.ContainsKey(itemId);
-        }
-
-        public ToolStripItem GetMenuItemById(uint id)
-        {
-            return idsToItems[id];
-        }
-
-        public MENUITEMINFO GetMenuItemInfoById(uint id)
-        {
-            return idsToMenuItemInfos[id];
-        }
     }
-
-   /* internal static class TransparentBitmapCreator
-    {
-        public static IntPtr CreateTransparentBitmap(Image image)
-        {
-            // http://msdn.microsoft.com/en-us/library/bb757020.aspx
-        }
-
-        void Create32BitHBITMAP(Size size, out IntPtr bits, ref IntPtr hbitmap)
-        {
-            var header = new BITMAPINFOHEADER();
-            header.biSize = (uint)Marshal.SizeOf(header);
-            header.biPlanes = 1;
-            header.biCompression = 0;//BI_RGB
-            header.biWidth = size.Width;
-            header.biHeight = size.Height;
-            header.biBitCount = 32;
-
-            var hdc = User32.GetDC(IntPtr.Zero);
-
-            hbitmap = Gdi32.CreateDIBSection(hdc, header, 0 //DIB_RGB_COLORS, out bits, IntPtr.Zero, 0);
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        internal struct ARGB
-        {
-            public UInt32 A;
-            public UInt32 R;
-            public UInt32 G;
-            public UInt32 B;
-        }
-
-        static void ConvertToPARGB32(IntPtr hdc, ref RGBQUAD[] pargb, IntPtr hbmp, Size size, int cxRow)
-        {
-
-            var header = new BITMAPINFOHEADER();
-            header.biSize = (uint)Marshal.SizeOf(header);
-            header.biPlanes = 1;
-            header.biCompression = 0;//BI_RGB
-            header.biWidth = size.Width;
-            header.biHeight = size.Height;
-            header.biBitCount = 32;
-            var bmi = new BITMAPINFO {bmiHeader = header};
-
-            var mem = Marshal.AllocHGlobal(header.biWidth*4*header.biHeight);
-            var bits = new byte[header.biWidth*4*header.biHeight];
-            Gdi32.GetDIBits(hdc, hbmp, 0, (uint)header.biHeight, bits, ref bmi, 0 //DIB_RGB_COLORS);
-
-            var index = 0;
-            var pIndex = 0;
-            var cxDelta = cxRow - bmi.bmiHeader.biWidth;
-            for (var y = bmi.bmiHeader.biHeight; y != 0; --y)
-            {
-                for (var x = bmi.bmiHeader.biWidth; x != 0; --x)
-                {
-                    if (bits[index] != 0)
-                    {
-                        // transparent pixel
-                        pargb[pIndex] = 0;
-                    }
-                    else
-                    {
-                        // opaque pixel
-                        *pargb++ |= 0xFF000000;
-                    }
-                }
-
-                pargb += cxDelta;
-            }
-        }*/
-/*
-
-HRESULT ConvertToPARGB32(HDC hdc, __inout ARGB *pargb, HBITMAP hbmp, SIZE& sizImage, int cxRow)
-{
-    BITMAPINFO bmi;
-    InitBitmapInfo(&bmi, sizeof(bmi), sizImage.cx, sizImage.cy, 32);
-
-    HRESULT hr = E_OUTOFMEMORY;
-    HANDLE hHeap = GetProcessHeap();
-    void *pvBits = HeapAlloc(hHeap, 0, bmi.bmiHeader.biWidth * 4 * bmi.bmiHeader.biHeight);
-    if (pvBits)
-    {
-        hr = E_UNEXPECTED;
-        if (GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, pvBits, &bmi, DIB_RGB_COLORS) == bmi.bmiHeader.biHeight)
-        {
-            ULONG cxDelta = cxRow - bmi.bmiHeader.biWidth;
-            ARGB *pargbMask = static_cast<ARGB *>(pvBits);
-
-            for (ULONG y = bmi.bmiHeader.biHeight; y; --y)
-            {
-                for (ULONG x = bmi.bmiHeader.biWidth; x; --x)
-                {
-                    if (*pargbMask++)
-                    {
-                        // transparent pixel
-                        *pargb++ = 0;
-                    }
-                    else
-                    {
-                        // opaque pixel
-                        *pargb++ |= 0xFF000000;
-                    }
-                }
-
-                pargb += cxDelta;
-            }
-
-            hr = S_OK;
-        }
-
-        HeapFree(hHeap, 0, pvBits);
-    }
-
-    return hr;
 }
-
-bool HasAlpha(__in ARGB *pargb, SIZE& sizImage, int cxRow)
-{
-    ULONG cxDelta = cxRow - sizImage.cx;
-    for (ULONG y = sizImage.cy; y; --y)
-    {
-        for (ULONG x = sizImage.cx; x; --x)
-        {
-            if (*pargb++ & 0xFF000000)
-            {
-                return true;
-            }
-        }
-
-        pargb += cxDelta;
-    }
-
-    return false;
-}
-
-HRESULT ConvertBufferToPARGB32(HPAINTBUFFER hPaintBuffer, HDC hdc, HICON hicon, SIZE& sizIcon)
-{
-    RGBQUAD *prgbQuad;
-    int cxRow;
-    HRESULT hr = GetBufferedPaintBits(hPaintBuffer, &prgbQuad, &cxRow);
-    if (SUCCEEDED(hr))
-    {
-        ARGB *pargb = reinterpret_cast<ARGB *>(prgbQuad);
-        if (!HasAlpha(pargb, sizIcon, cxRow))
-        {
-            ICONINFO info;
-            if (GetIconInfo(hicon, &info))
-            {
-                if (info.hbmMask)
-                {
-                    hr = ConvertToPARGB32(hdc, pargb, info.hbmMask, sizIcon, cxRow);
-                }
-
-                DeleteObject(info.hbmColor);
-                DeleteObject(info.hbmMask);
-            }
-        }
-    }
-
-    return hr;
-}
-
-HRESULT AddIconToMenuItem(HMENU hmenu, int iMenuItem, BOOL fByPosition, HICON hicon, BOOL fAutoDestroy, __out_opt HBITMAP *phbmp)
-{
-    HRESULT hr = E_OUTOFMEMORY;
-    HBITMAP hbmp = NULL;
-
-    SIZE sizIcon;
-    sizIcon.cx = GetSystemMetrics(SM_CXSMICON);
-    sizIcon.cy = GetSystemMetrics(SM_CYSMICON);
-
-    RECT rcIcon;
-    SetRect(&rcIcon, 0, 0, sizIcon.cx, sizIcon.cy);
-
-    HDC hdcDest = CreateCompatibleDC(NULL);
-    if (hdcDest)
-    {
-        hr = Create32BitHBITMAP(hdcDest, &sizIcon, NULL, &hbmp);
-        if (SUCCEEDED(hr))
-        {
-            hr = E_FAIL;
-
-            HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcDest, hbmp);
-            if (hbmpOld)
-            {
-                BLENDFUNCTION bfAlpha = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-                BP_PAINTPARAMS paintParams = {0};
-                paintParams.cbSize = sizeof(paintParams);
-                paintParams.dwFlags = BPPF_ERASE;
-                paintParams.pBlendFunction = &bfAlpha;
-
-                HDC hdcBuffer;
-                HPAINTBUFFER hPaintBuffer = BeginBufferedPaint(hdcDest, &rcIcon, BPBF_DIB, &paintParams, &hdcBuffer);
-                if (hPaintBuffer)
-                {
-                    if (DrawIconEx(hdcBuffer, 0, 0, hicon, sizIcon.cx, sizIcon.cy, 0, NULL, DI_NORMAL))
-                    {
-                        // If icon did not have an alpha channel, we need to convert buffer to PARGB.
-                        hr = ConvertBufferToPARGB32(hPaintBuffer, hdcDest, hicon, sizIcon);
-                    }
-
-                    // This will write the buffer contents to the
-// destination bitmap.
-                    EndBufferedPaint(hPaintBuffer, TRUE);
-                }
-
-                SelectObject(hdcDest, hbmpOld);
-            }
-        }
-
-        DeleteDC(hdcDest);
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        hr = AddBitmapToMenuItem(hmenu, iMenuItem, fByPosition, hbmp);
-    }
-
-    if (FAILED(hr))
-    {
-        DeleteObject(hbmp);
-        hbmp = NULL;
-    }
-
-    if (fAutoDestroy)
-    {
-        DestroyIcon(hicon);
-    }
-
-    if (phbmp)
-    {
-        *phbmp = hbmp;
-    }
-
-    return hr;
-}*/
-            /* }*/
-        }

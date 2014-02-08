@@ -83,10 +83,7 @@ namespace SharpShell.SharpContextMenu
                 //  Return the failure.
                 return WinError.E_FAIL;
             }
-
-            //  We've built the context menu, but we'll also need the menu metrics.
-            menuMetrics.EnsureInitialised(hMenu);
-
+            
             //  Return success, passing the the last item ID plus one (which will be the next command id).
             //  MSDN documentation is flakey here - to be explicit we need to return the count of the items added plus one.
             return WinError.MAKE_HRESULT(WinError.SEVERITY_SUCCESS, 0, (lastItemId - firstItemId) + 1);
@@ -327,18 +324,6 @@ namespace SharpShell.SharpContextMenu
                 //  Call the virtual function allowing derived classes to customise the menu.
                 OnInitialiseMenu(parentIndex);
             }
-            else if (uMsg == (uint) WM.MEASUREITEM)
-            {
-                //  Get the MEASUREITEMSTRUCT and pass to the handler.
-                var measureItemStruct = (MEASUREITEMSTRUCT)Marshal.PtrToStructure(lParam, typeof (MEASUREITEMSTRUCT));
-                return OnMeasureItem(measureItemStruct, ref plResult);
-            }
-            else if (uMsg == (uint) WM.DRAWITEM)
-            {
-                //  Get the DRAWITEMSTRUCT and pass to the handler.
-                var drawItemStruct = (DRAWITEMSTRUCT) Marshal.PtrToStructure(lParam, typeof (DRAWITEMSTRUCT));
-                return OnDrawItem(drawItemStruct, ref plResult);
-            }
 
             //  Return success.
             return WinError.S_OK;
@@ -347,33 +332,7 @@ namespace SharpShell.SharpContextMenu
         #endregion
 
         private Dictionary<uint, SIZE[]> idsToPopupSizes = new Dictionary<uint, SIZE[]>();
-
-        private int OnMeasureItem(MEASUREITEMSTRUCT mis, ref IntPtr result)
-        {
-          /*  mis.itemWidth += 16;
-            if (mis.itemHeight < 16)
-                mis.itemHeight = 16;
-            result = new IntPtr(1);*/
-            return WinError.S_OK;
-        }
-
-        private int OnDrawItem(DRAWITEMSTRUCT dis, ref IntPtr result)
-        {
-            //  TODO: Check the ID of the item - if it's not one of ours, we're done.
-      /*      if (nativeContextMenuWrapper.IsValidItemId(dis.itemID) == false)
-                return WinError.S_OK;
-            var menuItem = nativeContextMenuWrapper.GetMenuItemById(dis.itemID);
-            var graphics = Graphics.FromHdc(dis.hDC);
-            graphics.DrawImage(menuItem.Image, new Rectangle(dis.rcItem.left -16,
-                dis.rcItem.top + dis.rcItem.bottom + dis.rcItem.Height()/2, 16, 16), 0, 0, 16, 16, GraphicsUnit.Pixel);
-            */
-            result = new IntPtr(1);
-            return WinError.S_OK;
-        }
-
         
-       
-
         /// <summary>
         /// Gets the current invoke command information. This will only be set when a command
         /// is invoked, and will be replaced when the next command is invoked.
@@ -403,8 +362,6 @@ namespace SharpShell.SharpContextMenu
         protected virtual void OnInitialiseMenu(int parentItemIndex)
         {
         }
-
-        private readonly MenuMetrics menuMetrics = new MenuMetrics();
 
         /// <summary>
         /// The lazy context menu strip, only created when we actually need it.

@@ -13,9 +13,9 @@ namespace SharpShell.Interop
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-  //      [DllImport("kernel32.dll", SetLastError = true)]
-//        public extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hFile, uint dwFlags);
+        
+        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
+        public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
 
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
