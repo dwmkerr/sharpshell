@@ -345,7 +345,7 @@ namespace SharpShell.SharpDeskBand
             Log("IDeskBand2.CanRenderComposited called.");
 
             //  We don't support transluceny.
-            pfCanRenderComposited = false;
+            pfCanRenderComposited = true;
             return WinError.S_OK;
         }
 
