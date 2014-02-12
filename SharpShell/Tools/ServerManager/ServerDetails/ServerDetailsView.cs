@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using SharpShell.Attributes;
 using SharpShell.ServerRegistration;
 
@@ -45,6 +46,8 @@ namespace ServerManager.ServerDetails
                     //  By default, our installation info is going to be empty.
                     textBox32BitServer.Text = "Not Installed";
                     textBox64BitServer.Text = "Not Installed";
+                    textBox32BitServerRegistration.Text = "Not Registered";
+                    textBox64BitServerRegistration.Text = "Not Registered";
 
                     //  Do we have 32 bit registration info?
                     if (info32 != null)
@@ -54,6 +57,10 @@ namespace ServerManager.ServerDetails
                             textBox32BitServer.Text = info32.CodeBase;
                         else if (!string.IsNullOrEmpty(info32.Assembly))
                             textBox32BitServer.Text = info32.Assembly + " (GAC)";
+
+                        //  Set the registration info.
+                        if (info32.IsApproved)
+                            textBox32BitServerRegistration.Text = "Registered";
                     }
 
                     //  Do we have 32 bit registration info?
@@ -64,6 +71,10 @@ namespace ServerManager.ServerDetails
                             textBox64BitServer.Text = info64.CodeBase;
                         else if (!string.IsNullOrEmpty(info64.Assembly))
                             textBox64BitServer.Text = info64.Assembly + " (GAC)";
+
+                        //  Set the registration info.
+                        if (info64.IsApproved)
+                            textBox64BitServerRegistration.Text = "Registered";
                     }
                 }
             }
