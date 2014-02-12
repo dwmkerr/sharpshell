@@ -90,23 +90,21 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="server">The server.</param>
         /// <param name="registrationType">Type of the registration.</param>
-        public static void UninstallServer(ISharpShellServer server, RegistrationType registrationType)
+        /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
+        public static bool UninstallServer(ISharpShellServer server, RegistrationType registrationType)
         {
             //  Open classes.
             using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
                 var subKeyTreeName = server.ServerClsid.ToRegistryString();
 
-                //  Try and delete the subkey tree. If we fail, it'll be because it's not 
-                //  there or we don't have permission to delete it.
-                try
-                {
-                    classesKey.DeleteSubKeyTree(subKeyTreeName);
-                }
-                catch(Exception exception)
-                {
-                    System.Diagnostics.Trace.WriteLine("Failed to delete server " + server + ". Exception is " + exception);
-                }
+                //  If the subkey doesn't exist, we can return false - we're already uninstalled.
+                if (classesKey.GetSubKeyNames().Any(skn => skn.Equals(subKeyTreeName, StringComparison.OrdinalIgnoreCase)) == false)
+                    return false;
+
+                //  Delete the subkey tree.
+                classesKey.DeleteSubKeyTree(subKeyTreeName);
+                return true;
             }
         }
 
