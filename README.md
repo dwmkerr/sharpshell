@@ -16,6 +16,7 @@ You can use SharpShell to build any of the extensions below:
  - [Icon Overlay Handlers](#icon-overlay-handlers)
  - [Thumbnail Hanlders](#thumnnail-handlers)
  - [Property Sheet Extensions](#property-sheet-extensions)
+ - [Desk Band Extensions](#desk-band-extensions)
 
 Projects that use SharpShell
 ----------------------------
@@ -104,6 +105,13 @@ Property Sheet Extensions
 ![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/propertysheetextensions.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
+
+DeskBand Extensions
+-------------------
+
+Useful notes:
+
+* Always include a DisplayName for a deskband extension, otherwise it won't register.
 
 Useful Resources
 ----------------

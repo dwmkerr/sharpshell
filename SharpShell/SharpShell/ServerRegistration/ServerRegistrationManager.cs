@@ -40,6 +40,10 @@ namespace SharpShell.ServerRegistration
                     if(serverKey == null)
                         throw new InvalidOperationException("Cannot create server key.");
 
+                    //  We always set the server key default value to the display name if we can.
+                    if(!string.IsNullOrEmpty(server.DisplayName))
+                        serverKey.SetValue(null, server.DisplayName, RegistryValueKind.String);
+
                     //  Create the inproc key.
                     using (var inproc32Key = serverKey.CreateSubKey(KeyName_InProc32))
                     {

@@ -37,7 +37,7 @@ namespace SharpShell.Interop
         #region IDeskBand Overrides
         
         [PreserveSig]
-        int GetBandInfo(UInt32 dwBandID, DESKBANDINFO.DBIF dwViewMode, ref DESKBANDINFO pdbi);
+        new int GetBandInfo(UInt32 dwBandID, DESKBANDINFO.DBIF dwViewMode, ref DESKBANDINFO pdbi);
 
         #endregion
 

@@ -22,7 +22,8 @@ namespace SharpShell.Interop
         /// CATID for multiple CATEGORYINFO structures, multiple locales can be 
         /// registered for the same component category. 
         /// </param>
-        void RegisterCategories(uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] CATEGORYINFO[] rgCategoryInfo);
+        [PreserveSig]
+        int RegisterCategories(uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] CATEGORYINFO[] rgCategoryInfo);
 
         /// <summary>
         /// Removes the registration of one or more component categories. Each component 
@@ -30,7 +31,8 @@ namespace SharpShell.Interop
         /// </summary>
         /// <param name="cCategories">The number of cCategories CATIDs to be removed.</param>
         /// <param name="rgcatid">Identifies the categories to be removed.</param>
-        void UnRegisterCategories(uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
+        [PreserveSig]
+        int UnRegisterCategories(uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
 
         /// <summary>
         /// Registers the class as implementing one or more component categories.
@@ -38,7 +40,8 @@ namespace SharpShell.Interop
         /// <param name="rclsid">The class ID of the relevent class for which category information will be set.</param>
         /// <param name="cCategories">The number of categories to associate as category identifiers for the class.</param>
         /// <param name="rgcatid">The array of cCategories CATIDs to associate as category identifiers for the class.</param>
-        void RegisterClassImplCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
+        [PreserveSig]
+        int RegisterClassImplCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
 
         /// <summary>
         /// Removes one or more implemented category identifiers from a class.
@@ -46,7 +49,8 @@ namespace SharpShell.Interop
         /// <param name="rclsid">The class ID of the relevant class to be manipulated.</param>
         /// <param name="cCategories">The number of category CATIDs to remove.</param>
         /// <param name="rgcatid">The array of cCategories CATID that are to be removed. Only the category IDs specified in this array are removed.</param>
-        void UnRegisterClassImplCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
+        [PreserveSig]
+        int UnRegisterClassImplCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
 
         /// <summary>
         /// Registers the class as requiring one or more component categories.
@@ -54,7 +58,8 @@ namespace SharpShell.Interop
         /// <param name="rclsid">The class ID of the relevent class for which category information will be set.</param>
         /// <param name="cCategories">The number of category CATIDs to associate as category identifiers for the class.</param>
         /// <param name="rgcatid">The array of cCategories CATID to associate as category identifiers for the class.</param>
-        void RegisterClassReqCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
+        [PreserveSig]
+        int RegisterClassReqCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
 
         /// <summary>
         /// Removes one or more required category identifiers from a class.
@@ -62,6 +67,7 @@ namespace SharpShell.Interop
         /// <param name="rclsid">The class ID of the relevent class to be manipulated.</param>
         /// <param name="cCategories">The number of category CATIDs to remove.</param>
         /// <param name="rgcatid">The array of cCategories CATID that are to be removed. Only the category IDs specified in this array are removed.</param>
-        void UnRegisterClassReqCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
+        [PreserveSig]
+        int UnRegisterClassReqCategories([In] ref Guid rclsid, uint cCategories, [In, MarshalAs(UnmanagedType.LPArray)] Guid[] rgcatid);
     }
 }

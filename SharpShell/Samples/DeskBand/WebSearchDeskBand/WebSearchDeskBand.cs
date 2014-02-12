@@ -11,6 +11,7 @@ namespace WebSearchDeskBand
 {
 
     [ComVisible(true)]
+    [DisplayName("Web Search")]
     public class WebSearchDeskBand : SharpDeskBand
     {
         protected override System.Windows.Forms.UserControl CreateDeskBand()

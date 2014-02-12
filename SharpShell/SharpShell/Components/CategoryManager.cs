@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpShell.Interop;
+using SharpShell.ServerRegistration;
 
 namespace SharpShell.Components
 {
@@ -12,6 +13,11 @@ namespace SharpShell.Components
         {
             var catRegister = CreateCategoryRegistrationManager();
             catRegister.RegisterClassImplCategories(ref clsid, 1, new Guid[] {categoryId});
+        }
+
+        public static void RegisterComCategory(Guid clsid, Guid categoryId, RegistrationType registrationType)
+        {
+            //  Open the class ID key.
         }
 
         public static void UnregisterComCategory(Guid clsid, Guid categoryId)

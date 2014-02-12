@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
+using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Components;
+using SharpShell.Extensions;
 using SharpShell.Interop;
 using System.Windows.Forms;
 using SharpShell.ServerRegistration;
@@ -383,7 +386,7 @@ namespace SharpShell.SharpDeskBand
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
            //   Use the category manager to register this server as a Desk Band.
-            CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+           CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
         }
 
         /// <summary>
@@ -395,7 +398,7 @@ namespace SharpShell.SharpDeskBand
         internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
         {
             //   Use the category manager to unregister this server as a Desk Band.
-            CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            CategoryManager.UnregisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
         }
 
         #endregion
