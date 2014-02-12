@@ -90,23 +90,21 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="server">The server.</param>
         /// <param name="registrationType">Type of the registration.</param>
-        public static void UninstallServer(ISharpShellServer server, RegistrationType registrationType)
+        /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
+        public static bool UninstallServer(ISharpShellServer server, RegistrationType registrationType)
         {
             //  Open classes.
             using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
                 var subKeyTreeName = server.ServerClsid.ToRegistryString();
 
-                //  Try and delete the subkey tree. If we fail, it'll be because it's not 
-                //  there or we don't have permission to delete it.
-                try
-                {
-                    classesKey.DeleteSubKeyTree(subKeyTreeName);
-                }
-                catch(Exception exception)
-                {
-                    System.Diagnostics.Trace.WriteLine("Failed to delete server " + server + ". Exception is " + exception);
-                }
+                //  If the subkey doesn't exist, we can return false - we're already uninstalled.
+                if (classesKey.GetSubKeyNames().Any(skn => skn.Equals(subKeyTreeName, StringComparison.OrdinalIgnoreCase)) == false)
+                    return false;
+
+                //  Delete the subkey tree.
+                classesKey.DeleteSubKeyTree(subKeyTreeName);
+                return true;
             }
         }
 
@@ -269,6 +267,9 @@ namespace SharpShell.ServerRegistration
         /// </returns>
         public static ShellExtensionRegistrationInfo GetServerRegistrationInfo(Guid serverCLSID, RegistrationType registrationType)
         {
+            //  We can very quickly check to see if the server is approved.
+            bool serverApproved = IsExtensionApproved(serverCLSID, registrationType);
+
             //  Open the classes.
             using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadSubTree))
             {
@@ -329,7 +330,8 @@ namespace SharpShell.ServerRegistration
                                                    AssemblyVersion = assemblyVersion,
                                                    Class = @class,
                                                    RuntimeVersion = runtimeVersion,
-                                                   CodeBase = codeBase != null ? codeBase.ToString() : null
+                                                   CodeBase = codeBase != null ? codeBase.ToString() : null,
+                                                   IsApproved = serverApproved
                                                };
                                 }
                             }
@@ -340,7 +342,8 @@ namespace SharpShell.ServerRegistration
                             return new ShellExtensionRegistrationInfo(ServerRegistationType.NativeInProc32, serverCLSID)
                                        {
                                            ThreadingModel = threadingModel,
-                                           ServerPath = defaultValue
+                                           ServerPath = defaultValue,
+                                           IsApproved = serverApproved
                                        };
                         }
                     }
@@ -745,6 +748,30 @@ namespace SharpShell.ServerRegistration
 
                 //  Create an entry for the server.
                 approvedKey.SetValue(server.ServerClsid.ToRegistryString(), server.DisplayName);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether an extension is approved.
+        /// </summary>
+        /// <param name="serverClsid">The server CLSID.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <returns>
+        ///   <c>true</c> if the extension is approved; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
+        private static bool IsExtensionApproved(Guid serverClsid, RegistrationType registrationType)
+        {
+            //  Open the approved extensions key.
+            using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
+                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
+                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree))
+            {
+                //  If we can't open the key, we're going to have problems.
+                if (approvedKey == null)
+                    throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+
+                return approvedKey.GetValueNames().Any(vn => vn.Equals(serverClsid.ToRegistryString(), StringComparison.OrdinalIgnoreCase));
             }
         }
 

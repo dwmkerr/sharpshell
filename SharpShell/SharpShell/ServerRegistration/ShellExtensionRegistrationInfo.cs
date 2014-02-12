@@ -86,6 +86,14 @@ namespace SharpShell.ServerRegistration
         public string CodeBase { get; internal set; }
 
         /// <summary>
+        /// Gets a value indicating whether this extension is on the approved list.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is approved; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsApproved { get; internal set; }
+
+        /// <summary>
         /// Gets the type of the server registation.
         /// </summary>
         /// <value>

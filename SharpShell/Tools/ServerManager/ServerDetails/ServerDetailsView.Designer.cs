@@ -33,6 +33,8 @@
             this.textBox64BitServer = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBoxAssociations = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.textBoxAssemblyPath = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxServerSecurity = new System.Windows.Forms.TextBox();
@@ -44,10 +46,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.textBoxAssociations = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.groupBoxRegistration = new System.Windows.Forms.GroupBox();
+            this.textBox32BitServerRegistration = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox64BitServerRegistration = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBoxRegistration.SuspendLayout();
             this.SuspendLayout();
             // 
             // label5
@@ -110,6 +116,25 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Server";
+            // 
+            // textBoxAssociations
+            // 
+            this.textBoxAssociations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxAssociations.Location = new System.Drawing.Point(128, 161);
+            this.textBoxAssociations.Name = "textBoxAssociations";
+            this.textBoxAssociations.ReadOnly = true;
+            this.textBoxAssociations.Size = new System.Drawing.Size(230, 20);
+            this.textBoxAssociations.TabIndex = 11;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(18, 164);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(113, 13);
+            this.label8.TabIndex = 10;
+            this.label8.Text = "Specified Associations";
             // 
             // textBoxAssemblyPath
             // 
@@ -221,29 +246,64 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Installation";
             // 
-            // textBoxAssociations
+            // groupBoxRegistration
             // 
-            this.textBoxAssociations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBoxRegistration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAssociations.Location = new System.Drawing.Point(128, 161);
-            this.textBoxAssociations.Name = "textBoxAssociations";
-            this.textBoxAssociations.ReadOnly = true;
-            this.textBoxAssociations.Size = new System.Drawing.Size(230, 20);
-            this.textBoxAssociations.TabIndex = 11;
+            this.groupBoxRegistration.Controls.Add(this.textBox32BitServerRegistration);
+            this.groupBoxRegistration.Controls.Add(this.label9);
+            this.groupBoxRegistration.Controls.Add(this.textBox64BitServerRegistration);
+            this.groupBoxRegistration.Controls.Add(this.label10);
+            this.groupBoxRegistration.Location = new System.Drawing.Point(0, 304);
+            this.groupBoxRegistration.Name = "groupBoxRegistration";
+            this.groupBoxRegistration.Size = new System.Drawing.Size(376, 91);
+            this.groupBoxRegistration.TabIndex = 2;
+            this.groupBoxRegistration.TabStop = false;
+            this.groupBoxRegistration.Text = "Registration";
             // 
-            // label8
+            // textBox32BitServerRegistration
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(18, 164);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(113, 13);
-            this.label8.TabIndex = 10;
-            this.label8.Text = "Specified Associations";
+            this.textBox32BitServerRegistration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox32BitServerRegistration.Location = new System.Drawing.Point(128, 30);
+            this.textBox32BitServerRegistration.Name = "textBox32BitServerRegistration";
+            this.textBox32BitServerRegistration.ReadOnly = true;
+            this.textBox32BitServerRegistration.Size = new System.Drawing.Size(230, 20);
+            this.textBox32BitServerRegistration.TabIndex = 1;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(18, 33);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(68, 13);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "32 Bit Server";
+            // 
+            // textBox64BitServerRegistration
+            // 
+            this.textBox64BitServerRegistration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox64BitServerRegistration.Location = new System.Drawing.Point(127, 56);
+            this.textBox64BitServerRegistration.Name = "textBox64BitServerRegistration";
+            this.textBox64BitServerRegistration.ReadOnly = true;
+            this.textBox64BitServerRegistration.Size = new System.Drawing.Size(230, 20);
+            this.textBox64BitServerRegistration.TabIndex = 3;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(18, 59);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(68, 13);
+            this.label10.TabIndex = 2;
+            this.label10.Text = "64 Bit Server";
             // 
             // ServerDetailsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBoxRegistration);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "ServerDetailsView";
@@ -252,6 +312,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBoxRegistration.ResumeLayout(false);
+            this.groupBoxRegistration.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -276,5 +338,10 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxAssociations;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.GroupBox groupBoxRegistration;
+        private System.Windows.Forms.TextBox textBox32BitServerRegistration;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox64BitServerRegistration;
+        private System.Windows.Forms.Label label10;
     }
 }

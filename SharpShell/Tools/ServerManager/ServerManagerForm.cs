@@ -301,6 +301,7 @@ namespace ServerManager
 
             //  Register the server, x86 mode.
             ServerRegistrationManager.RegisterServer(SelectedServerEntry.Server, RegistrationType.OS32Bit);
+            serverDetailsView1.Initialise(SelectedServerEntry);
             CheckIfRegisterOrUnregisterRequiresExplorerRestart(SelectedServerEntry.Server);
         }
 
@@ -312,6 +313,7 @@ namespace ServerManager
 
             //  Register the server, x64 mode.
             ServerRegistrationManager.RegisterServer(SelectedServerEntry.Server, RegistrationType.OS64Bit);
+            serverDetailsView1.Initialise(SelectedServerEntry);
             CheckIfRegisterOrUnregisterRequiresExplorerRestart(SelectedServerEntry.Server);
         }
 
@@ -323,6 +325,7 @@ namespace ServerManager
 
             //  Unregister the server, x86 mode.
             ServerRegistrationManager.UnregisterServer(SelectedServerEntry.Server, RegistrationType.OS32Bit);
+            serverDetailsView1.Initialise(SelectedServerEntry);
             CheckIfRegisterOrUnregisterRequiresExplorerRestart(SelectedServerEntry.Server);
         }
 
@@ -334,6 +337,7 @@ namespace ServerManager
 
             //  Unregister the server, x64 mode.
             ServerRegistrationManager.UnregisterServer(SelectedServerEntry.Server, RegistrationType.OS64Bit);
+            serverDetailsView1.Initialise(SelectedServerEntry);
             CheckIfRegisterOrUnregisterRequiresExplorerRestart(SelectedServerEntry.Server);
         }
 
