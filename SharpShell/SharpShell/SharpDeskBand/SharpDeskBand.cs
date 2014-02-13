@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Components;
-using SharpShell.Extensions;
 using SharpShell.Interop;
 using System.Windows.Forms;
 using SharpShell.ServerRegistration;
@@ -38,11 +32,6 @@ namespace SharpShell.SharpDeskBand
         /// The handle to the parent window site.
         /// </summary>
         private IntPtr parentWindowHandle;
-        
-        /// <summary>
-        /// The band ID provided by explorer to identify the band.
-        /// </summary>
-        private uint explorerBandId = 0;
 
         #region Implmentation of the IObjectWithSite interface
 
@@ -70,7 +59,14 @@ namespace SharpShell.SharpDeskBand
             //  If we have not been provided a site, the band is being removed.
             if (pUnkSite == null)
             {
-                DestroyBand();
+                OnBandRemoved();
+                if (lazyDeskBand.IsValueCreated)
+                {
+                    lazyDeskBand.Value.Hide();
+                    User32.SetParent(lazyDeskBand.Value.Handle, IntPtr.Zero);
+                    lazyDeskBand.Value.Dispose();
+                    lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
+                }
                 return WinError.S_OK;
             }
 
@@ -105,20 +101,6 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_OK;
         }
 
-        private void DestroyBand()
-        {
-            //  Log key events.
-            Log("SharpDeskban.DestroyBand called.");
-            OnBandRemoved();
-            if (lazyDeskBand.IsValueCreated)
-            {
-                lazyDeskBand.Value.Hide();
-                User32.SetParent(lazyDeskBand.Value.Handle, IntPtr.Zero);
-                lazyDeskBand.Value.Dispose();
-                lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
-            }
-        }
-
         #endregion
 
         #region Implementation of IPersistStream
@@ -147,7 +129,7 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_FALSE;
         }
 
-        int IPersistStream.Load(System.Runtime.InteropServices.ComTypes.IStream pStm)
+        int IPersistStream.Load(object pStm)
         {
             //  Log key events.
             Log("IPersistStream.Load called.");
@@ -156,7 +138,7 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_OK;
         }
 
-        int IPersistStream.Save(System.Runtime.InteropServices.ComTypes.IStream pStm, bool fClearDirty)
+        int IPersistStream.Save(IntPtr pStm, bool fClearDirty)
         {
             //  Log key events.
             Log("IPersistStream.Save called.");
@@ -218,9 +200,6 @@ namespace SharpShell.SharpDeskBand
         {
             //  Log key events.
             Log("IDeskBand.GetBandInfo called.");
-
-            //  Store the band id.
-            explorerBandId = dwBandID;
 
             //  Depending on what we've been asked for, we'll return various band properties.
             var bandOptions = GetBandOptions();

@@ -100,6 +100,7 @@
     <Compile Include="Interop\IDeskBand2.cs" />
     <Compile Include="Interop\IExtractIconA.cs" />
     <Compile Include="Interop\IExtractIconW.cs" />
+    <Compile Include="Interop\IInputObject.cs" />
     <Compile Include="Interop\IInputObjectSite.cs" />
     <Compile Include="Interop\IMAGEINFO.cs" />
     <Compile Include="Interop\IMAGELISTDRAWPARAMS.cs" />
