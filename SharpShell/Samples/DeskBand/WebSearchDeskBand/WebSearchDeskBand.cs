@@ -18,5 +18,17 @@ namespace WebSearchDeskBand
         {
             return new DeskBandUI();
         }
+
+        protected override BandOptions GetBandOptions()
+        {
+            return new BandOptions
+                   {
+                       HasVariableHeight = false,
+                       IsSunken = false,
+                       ShowTitle = true,
+                       Title = "Web Search",
+                       UseBackgroundColour = false
+                   };
+        }
     }
 }

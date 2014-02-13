@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -14,7 +15,14 @@ namespace WebSearchDeskBand
     {
         public DeskBandUI()
         {
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            BackColor = Color.Transparent;
             InitializeComponent();
+        }
+
+        private void buttonGo_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://google.com#q=" + textBoxSearch.Text);
         }
     }
 }

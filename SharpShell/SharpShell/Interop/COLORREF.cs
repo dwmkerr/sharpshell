@@ -6,6 +6,11 @@ namespace SharpShell.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct COLORREF
     {
+        public COLORREF(Color color)
+        {
+            Dword = (uint)color.R + (((uint)color.G) << 8) + (((uint)color.B) << 16);
+        }
+
         public uint Dword;
         public Color Color
         {

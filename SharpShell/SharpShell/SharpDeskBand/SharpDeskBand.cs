@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -20,6 +21,9 @@ namespace SharpShell.SharpDeskBand
         {
             //  Log key events.
             Log("SharpDeskBand constructed.");
+
+            //  Create the lazy deskband provider.
+            lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
         }
 
         //  TODO: Optionally Implement IContextMenu to support a context menu for the band.
@@ -34,12 +38,7 @@ namespace SharpShell.SharpDeskBand
         /// The handle to the parent window site.
         /// </summary>
         private IntPtr parentWindowHandle;
-
-        /// <summary>
-        /// The actual deskband user control.
-        /// </summary>
-        private UserControl deskBand;
-
+        
         /// <summary>
         /// The band ID provided by explorer to identify the band.
         /// </summary>
@@ -72,6 +71,8 @@ namespace SharpShell.SharpDeskBand
             if (pUnkSite == null)
             {                
                 OnBandRemoved();
+                lazyDeskBand.Value.Dispose();
+                lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
                 return WinError.S_OK;
             }
 
@@ -88,14 +89,11 @@ namespace SharpShell.SharpDeskBand
                     return WinError.E_FAIL;
                 }
 
-                //  Create the desk band user interface.
-                deskBand = CreateDeskBand();
+                //  Create the desk band user interface by getting the lazy band.
+                var band = lazyDeskBand.Value;
 
                 //  Set the parent.
-                User32.SetParent(deskBand.Handle, parentWindowHandle);
-                
-                //  Free the OLE window, we're done with it.
-                oleWindow = null;
+                User32.SetParent(band.Handle, parentWindowHandle);
             }
             catch(Exception exception)
             {
@@ -189,7 +187,7 @@ namespace SharpShell.SharpDeskBand
             Log("IOleWindow.GetWindow called.");
 
             //   Easy enough, just return the handle of the deskband content.
-            phwnd = deskBand != null ? deskBand.Handle : IntPtr.Zero;
+            phwnd = lazyDeskBand.Value.Handle;
 
             //  Return success.
             return WinError.S_OK;
@@ -213,52 +211,72 @@ namespace SharpShell.SharpDeskBand
             explorerBandId = dwBandID;
 
             //  Depending on what we've been asked for, we'll return various band properties.
+            var bandOptions = GetBandOptions();
+            var bandUi = lazyDeskBand.Value;
 
             //  Return the min size if needed.
             if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_MINSIZE))
             {
-                //  TODO: provide minsize.
-                pdbi.ptMinSize.X = 200;
-                pdbi.ptMinSize.Y = 30;
+                var minSize = GetMinimumSize();
+                pdbi.ptMinSize.X = minSize.Width;
+                pdbi.ptMinSize.Y = minSize.Height;
             }
 
+            //  Return the max size if needed.
             if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_MAXSIZE))
             {
-                //  TODO: check documentation for this.
-                pdbi.ptMaxSize.Y = -1;
+                var maxSize = GetMinimumSize();
+                pdbi.ptMaxSize.X = maxSize.Width;
+                pdbi.ptMaxSize.Y = maxSize.Height;
             }
 
             if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_INTEGRAL))
             {
-                //  TODO: check documentation for this.
-                pdbi.ptIntegral.Y = 1;
+                //  Set the integral.
+                pdbi.ptIntegral.Y = (int)bandOptions.VerticalSizingIncrement;
             }
 
             if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_ACTUAL))
             {
-                //  TODO: Return actual size.
-                pdbi.ptActual.X = 200;
-                pdbi.ptActual.Y = 30;
+                //  Return the ideal size.
+                var idealSize = bandUi.Size;
+                pdbi.ptActual.X = idealSize.Width;
+                pdbi.ptActual.Y = idealSize.Height;
             }
 
             if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_TITLE))
             {
-                //  TODO: Handle titles.
-                // Don't show title by removing this flag.
-                pdbi.dwMask &= ~DESKBANDINFO.DBIM.DBIM_TITLE;
+                //  Set the title.
+                if (bandOptions.ShowTitle)
+                {
+                    pdbi.wszTitle = bandUi.Text;
+                }
+                else
+                {
+                    pdbi.dwMask &= ~DESKBANDINFO.DBIM.DBIM_TITLE;
+                }
+            }
+
+            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_BKCOLOR))
+            {
+                if (bandOptions.UseBackgroundColour)
+                {
+                    pdbi.wszTitle = bandUi.Text;
+                    pdbi.crBkgnd = new COLORREF(bandUi.BackColor);
+                }
+                else
+                {
+                    pdbi.dwMask &= ~DESKBANDINFO.DBIM.DBIM_BKCOLOR;
+                }
             }
 
             if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_MODEFLAGS))
             {
-                //  TODO: Handle flags.
-                pdbi.dwModeFlags = DESKBANDINFO.DBIMF.DBIMF_NORMAL | DESKBANDINFO.DBIMF.DBIMF_VARIABLEHEIGHT;
-            }
-            
-            if (pdbi.dwMask.HasFlag(DESKBANDINFO.DBIM.DBIM_BKCOLOR))
-            {
-                //  TODO: Handle background colour.
-                // Use the default background color by removing this flag.
-                pdbi.dwMask &= ~DESKBANDINFO.DBIM.DBIM_BKCOLOR;
+                //  Set the flags.
+                pdbi.dwModeFlags = DESKBANDINFO.DBIMF.DBIMF_NORMAL;
+                if (bandOptions.HasVariableHeight) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_VARIABLEHEIGHT;
+                if (bandOptions.IsSunken) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_DEBOSSED;
+                if (bandOptions.UseBackgroundColour) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_BKCOLOR;
             }
                         
             //  Return success.
@@ -288,12 +306,10 @@ namespace SharpShell.SharpDeskBand
             Log("IDockingWindow.ShowDW called.");
 
             //  If we've got a content window, show it or hide it.
-            if (deskBand != null)
-            {
-                //  TODO: Desk Bands: Toggle the visibility of the content.
-            }
-
-            //  TODO: Desk Bands: Call a OnShowOrHide function or something similar.
+            if(bShow)
+                lazyDeskBand.Value.Show();
+            else 
+                lazyDeskBand.Value.Hide();
 
             //  Return success.
             return WinError.S_OK;
@@ -307,12 +323,12 @@ namespace SharpShell.SharpDeskBand
             Log("IDockingWindow.CloseDW called.");
 
             //  If we've got a content window, hide it and then destroy it.
-            if (deskBand != null)
+            if (lazyDeskBand.IsValueCreated)
             {
-                //  TODO: Desk Bands: Destroy the content.
+                lazyDeskBand.Value.Hide();
+                lazyDeskBand.Value.Dispose();
+                lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
             }
-
-            //  TODO: Desk Bands: Call a OnClose function or something similar.
 
             //  Return success.
             return WinError.S_OK;
@@ -402,6 +418,39 @@ namespace SharpShell.SharpDeskBand
         }
 
         #endregion
+
+        /// <summary>
+        /// Gets the minimum size of the Band UI. This uses the <see cref="Control.MinimumSize"/> value or
+        /// <see cref="Control.Size"/> if no minimum size is defined. This can be overriden to customise this
+        /// behaviour.
+        /// </summary>
+        /// <returns>The minimum size of the Band UI.</returns>
+        protected virtual Size GetMinimumSize()
+        {
+            //  Get the band.
+            var band = lazyDeskBand.Value;
+
+            //  Return the minimum size if none zero, otherwise the actual size.
+            return new Size(band.MinimumSize.Width > 0 ? band.MinimumSize.Width : band.Width,
+                band.MinimumSize.Height > 0 ? band.MinimumSize.Height : band.Height);
+        }
+
+        /// <summary>
+        /// Gets the maximum size of the Band UI. This uses the <see cref="Control.MaximumSize"/> value or
+        /// <see cref="Control.Size"/> if no maximum size is defined. This can be overriden to customise this
+        /// behaviour.
+        /// </summary>
+        /// <returns>The minimum size of the Band UI.</returns>
+        protected virtual Size GetMaximumSize()
+        {   
+            //  Get the band.
+            var band = lazyDeskBand.Value;
+
+            //  Return the minimum size if none zero, otherwise the actual size.
+            return new Size(band.MaximumSize.Width > 0 ? band.MaximumSize.Width : band.Width,
+                band.MaximumSize.Height > 0 ? band.MaximumSize.Height : band.Height);
+        }
+
         /// <summary>
         /// Called when the band is being removed from explorer.
         /// </summary>
@@ -415,5 +464,16 @@ namespace SharpShell.SharpDeskBand
         /// </summary>
         /// <returns></returns>
         protected abstract UserControl CreateDeskBand();
+
+        /// <summary>
+        /// Gets the band options.
+        /// </summary>
+        /// <returns>The band options. See <see cref="BandOptions"/> for more details.</returns>
+        protected abstract BandOptions GetBandOptions();
+
+        /// <summary>
+        /// The lazy desk band provider.
+        /// </summary>
+        private Lazy<UserControl> lazyDeskBand;
     }
 }

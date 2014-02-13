@@ -30,32 +30,44 @@
         {
             this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.labelSearch = new System.Windows.Forms.Label();
+            this.buttonGo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBoxSearch
             // 
-            this.textBoxSearch.Location = new System.Drawing.Point(125, 12);
+            this.textBoxSearch.Location = new System.Drawing.Point(53, 3);
             this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(100, 20);
+            this.textBoxSearch.Size = new System.Drawing.Size(145, 20);
             this.textBoxSearch.TabIndex = 0;
             // 
             // labelSearch
             // 
             this.labelSearch.AutoSize = true;
-            this.labelSearch.Location = new System.Drawing.Point(3, 15);
+            this.labelSearch.Location = new System.Drawing.Point(6, 6);
             this.labelSearch.Name = "labelSearch";
             this.labelSearch.Size = new System.Drawing.Size(41, 13);
             this.labelSearch.TabIndex = 1;
             this.labelSearch.Text = "Search";
             // 
+            // buttonGo
+            // 
+            this.buttonGo.Location = new System.Drawing.Point(204, 3);
+            this.buttonGo.Name = "buttonGo";
+            this.buttonGo.Size = new System.Drawing.Size(51, 20);
+            this.buttonGo.TabIndex = 2;
+            this.buttonGo.Text = "Go";
+            this.buttonGo.UseVisualStyleBackColor = true;
+            this.buttonGo.Click += new System.EventHandler(this.buttonGo_Click);
+            // 
             // DeskBandUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.buttonGo);
             this.Controls.Add(this.labelSearch);
             this.Controls.Add(this.textBoxSearch);
             this.Name = "DeskBandUI";
-            this.Size = new System.Drawing.Size(228, 35);
+            this.Size = new System.Drawing.Size(262, 28);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -65,5 +77,6 @@
 
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.Label labelSearch;
+        private System.Windows.Forms.Button buttonGo;
     }
 }

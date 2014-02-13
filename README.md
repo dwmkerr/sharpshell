@@ -112,6 +112,8 @@ DeskBand Extensions
 Useful notes:
 
 * Always include a DisplayName for a deskband extension, otherwise it won't register.
+* The UserControl for deskband should specify a minimum size and maximum size - if they're
+  not specified the actual size will be used.
 
 Useful Resources
 ----------------
@@ -119,5 +121,9 @@ Useful Resources
 Below are some resources I've found useful during SharpShell development. Please get in touch if you have suggestions
 for more, or just make a pull request with changes to this file.
 
-[Create Namespace Extensions for Windows Explorer with the .NET Framework](http://msdn.microsoft.com/en-us/magazine/cc188741.aspx)
-[Virtual Junction Points](http://msdn.microsoft.com/en-us/library/windows/desktop/cc144096.aspx)
+Namespace Extensions
+* [Create Namespace Extensions for Windows Explorer with the .NET Framework](http://msdn.microsoft.com/en-us/magazine/cc188741.aspx)
+* [Virtual Junction Points](http://msdn.microsoft.com/en-us/library/windows/desktop/cc144096.aspx)
+
+Desk Bands
+* [Shell Extensibility - Explorer Desk Band, Tray Notification Icon et al.](http://www.codeproject.com/Articles/39189/Shell-Extensibility-Explorer-Desk-Band-Tray-Notifi)
