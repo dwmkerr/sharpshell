@@ -47,5 +47,30 @@ namespace SharpShell.SharpDeskBand
         ///   <c>true</c> if the band has a sunken border; otherwise, <c>false</c>.
         /// </value>
         public bool IsSunken { get; set; }
+
+        /// <summary>
+        /// The band is of a fixed size - no grip is shown.
+        /// </summary>
+        public bool IsFixed { get; set; }
+
+        /// <summary>
+        /// Gets or sets a flag indicating whether the band cannot be removed from the container.
+        /// </summary>
+        public bool IsUndeletable { get; set; }
+
+        /// <summary>
+        /// Gets or sets a flag indicating whether to show a chevron if the band doesn't fit in the given space.
+        /// </summary>
+        public bool HasChevron { get; set; }
+
+        /// <summary>
+        /// Gets or sets a flag indicating whether to always show a gripper.
+        /// </summary>
+        public bool AlwaysShowGripper { get; set; }
+
+        /// <summary>
+        /// Gets or sets a flag indicating whether the band has no margins.
+        /// </summary>
+        public bool HasNoMargins { get; set; }
     }
 }

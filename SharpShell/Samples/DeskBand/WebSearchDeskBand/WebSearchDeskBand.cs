@@ -27,7 +27,8 @@ namespace WebSearchDeskBand
                        IsSunken = false,
                        ShowTitle = true,
                        Title = "Web Search",
-                       UseBackgroundColour = false
+                       UseBackgroundColour = false,
+                       AlwaysShowGripper = true
                    };
         }
     }

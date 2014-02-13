@@ -15,8 +15,6 @@ namespace WebSearchDeskBand
     {
         public DeskBandUI()
         {
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            BackColor = Color.Transparent;
             InitializeComponent();
         }
 

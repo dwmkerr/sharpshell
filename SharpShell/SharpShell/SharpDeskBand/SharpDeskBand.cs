@@ -69,10 +69,8 @@ namespace SharpShell.SharpDeskBand
 
             //  If we have not been provided a site, the band is being removed.
             if (pUnkSite == null)
-            {                
-                OnBandRemoved();
-                lazyDeskBand.Value.Dispose();
-                lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
+            {
+                DestroyBand();
                 return WinError.S_OK;
             }
 
@@ -105,6 +103,20 @@ namespace SharpShell.SharpDeskBand
             inputObjectSite = (IInputObjectSite)pUnkSite;
 
             return WinError.S_OK;
+        }
+
+        private void DestroyBand()
+        {
+            //  Log key events.
+            Log("SharpDeskban.DestroyBand called.");
+            OnBandRemoved();
+            if (lazyDeskBand.IsValueCreated)
+            {
+                lazyDeskBand.Value.Hide();
+                User32.SetParent(lazyDeskBand.Value.Handle, IntPtr.Zero);
+                lazyDeskBand.Value.Dispose();
+                lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
+            }
         }
 
         #endregion
@@ -277,6 +289,12 @@ namespace SharpShell.SharpDeskBand
                 if (bandOptions.HasVariableHeight) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_VARIABLEHEIGHT;
                 if (bandOptions.IsSunken) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_DEBOSSED;
                 if (bandOptions.UseBackgroundColour) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_BKCOLOR;
+                if (bandOptions.IsFixed) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_FIXED;
+                if (bandOptions.IsFixed) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_NOGRIPPER;
+                if (bandOptions.IsUndeletable) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_UNDELETEABLE;
+                if (bandOptions.HasChevron) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_USECHEVRON;
+                if (bandOptions.AlwaysShowGripper) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_ALWAYSGRIPPER;
+                if (bandOptions.HasNoMargins) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_NOMARGINS;
             }
                         
             //  Return success.
@@ -322,13 +340,8 @@ namespace SharpShell.SharpDeskBand
             //  Log key events.
             Log("IDockingWindow.CloseDW called.");
 
-            //  If we've got a content window, hide it and then destroy it.
-            if (lazyDeskBand.IsValueCreated)
-            {
-                lazyDeskBand.Value.Hide();
-                lazyDeskBand.Value.Dispose();
-                lazyDeskBand = new Lazy<UserControl>(CreateDeskBand);
-            }
+            //  Hide the band.
+            lazyDeskBand.Value.Hide();
 
             //  Return success.
             return WinError.S_OK;
