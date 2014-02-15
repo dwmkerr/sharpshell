@@ -9,7 +9,7 @@ using SharpShell.ServerRegistration;
 namespace SharpShell.SharpDeskBand
 {
     [ServerType(ServerType.ShellDeskBand)]
-    public abstract class SharpDeskBand : SharpShellServer, IDeskBand2, IPersistStream, IObjectWithSite
+    public abstract class SharpDeskBand : SharpShellServer, IDeskBand2, IPersistStream, IObjectWithSite, IInputObject
     {
         protected SharpDeskBand()
         {
@@ -367,6 +367,51 @@ namespace SharpShell.SharpDeskBand
         {
             Log("IDeskBand2.GetCompositionState called.");
             pfCompositionEnabled = false;
+            return WinError.S_OK;
+        }
+
+        #endregion
+
+        #region Implementation of IInputObject
+
+        /// <summary>
+        /// UI-activates or deactivates the object.
+        /// </summary>
+        /// <param name="fActivate">Indicates if the object is being activated or deactivated. If this value is nonzero, the object is being activated. If this value is zero, the object is being deactivated.</param>
+        /// <param name="msg">A pointer to an MSG structure that contains the message that caused the activation change. This value may be NULL.</param>
+        /// <returns>
+        /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
+        /// </returns>
+        int IInputObject.UIActivateIO(bool fActivate, ref MSG msg)
+        {
+            //  Set the focus to the UI if requested.
+            if (fActivate)
+                lazyDeskBand.Value.Focus();
+
+            //  We're done.
+            return WinError.S_OK;
+        }
+
+        /// <summary>
+        /// Determines if one of the object's windows has the keyboard focus.
+        /// </summary>
+        /// <returns>
+        /// Returns S_OK if one of the object's windows has the keyboard focus, or S_FALSE otherwise.
+        /// </returns>
+        int IInputObject.HasFocusIO()
+        {
+            return lazyDeskBand.Value.ContainsFocus ? WinError.S_OK : WinError.S_FALSE;
+        }
+
+        /// <summary>
+        /// Enables the object to process keyboard accelerators.
+        /// </summary>
+        /// <param name="msg">The address of an MSG structure that contains the keyboard message that is being translated.</param>
+        /// <returns>
+        /// Returns S_OK if the accelerator was translated, or S_FALSE otherwise.
+        /// </returns>
+        int IInputObject.TranslateAcceleratorIO(ref MSG msg)
+        {
             return WinError.S_OK;
         }
 

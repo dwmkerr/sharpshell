@@ -19,7 +19,7 @@ namespace SharpShell.Interop
         /// <param name="msg">A pointer to an MSG structure that contains the message that caused the activation change. This value may be NULL.</param>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig]
-        int UIActivateIO(int fActivate, ref MSG msg);
+        int UIActivateIO(bool fActivate, ref MSG msg);
 
         /// <summary>
         /// Determines if one of the object's windows has the keyboard focus.
