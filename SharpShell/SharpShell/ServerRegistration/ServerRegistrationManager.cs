@@ -769,7 +769,7 @@ namespace SharpShell.ServerRegistration
             //  Open the approved extensions key.
             using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
                 registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
-                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree))
+                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadSubTree))
             {
                 //  If we can't open the key, we're going to have problems.
                 if (approvedKey == null)
