@@ -110,6 +110,17 @@ namespace SharpShell
 
         /// <summary>
         /// Logs the specified message to the SharpShell log, with the name of the type.
+        /// This message is only logged in debug mode.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        protected virtual void DebugLog(string message)
+        {
+            //  Log the message, but put our type name first.
+            Logging.DebugLog(DisplayName + ": " + message);
+        }
+
+        /// <summary>
+        /// Logs the specified message to the SharpShell log, with the name of the type.
         /// </summary>
         /// <param name="message">The message.</param>
         protected virtual void Log(string message)
