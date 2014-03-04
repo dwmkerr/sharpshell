@@ -289,7 +289,6 @@
     <Compile Include="SharpPropertySheet\PropertyPageProxy.cs" />
     <Compile Include="SharpPropertySheet\SharpPropertySheet.cs" />
     <Compile Include="SharpShellServer.cs" />
-    <Compile Include="ShellStream.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

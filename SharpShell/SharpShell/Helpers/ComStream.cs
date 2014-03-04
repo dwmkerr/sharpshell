@@ -40,13 +40,27 @@ namespace SharpShell.Helpers
             //  Commit the underlying COM stream.
             comStream.Commit(0);
         }
-
-
+        
+        /// <summary>
+        /// When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+        /// </summary>
+        /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset" /> and (<paramref name="offset" /> + <paramref name="count" /> - 1) replaced by the bytes read from the current source.</param>
+        /// <param name="offset">The zero-based byte offset in <paramref name="buffer" /> at which to begin storing the data read from the current stream.</param>
+        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <returns>
+        /// The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override int Read(byte[] buffer, int offset, int count)
         {
+            //  We don't handle offsets.
             if (offset != 0) 
                 throw new NotImplementedException();
+
+            //  Read into the buffer and advance the position.
             comStream.Read(buffer, count, bufferPointer);
+            position += count;
+
             return Marshal.ReadInt32(bufferPointer);
         }
 
@@ -60,7 +74,18 @@ namespace SharpShell.Helpers
         /// </returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
+            //  Seek the stream.
             comStream.Seek(offset, (int)origin, bufferPointer);
+
+            //  Adjust the position.
+            switch (origin)
+            {
+                case SeekOrigin.Begin: position = offset; break;
+                case SeekOrigin.Current: position += offset; break;
+                case SeekOrigin.End: position = Length - offset; break;
+                default: throw new ArgumentOutOfRangeException("origin");
+            }
+
             return Marshal.ReadInt64(bufferPointer);
         }
 
@@ -82,9 +107,13 @@ namespace SharpShell.Helpers
         /// <exception cref="System.NotImplementedException"></exception>
         public override void Write(byte[] buffer, int offset, int count)
         {
+            //  We don't handle non zero offsets.
             if (offset != 0) 
                 throw new NotImplementedException();
+
+            //  Write to the stream and advance the position.
             comStream.Write(buffer, count, IntPtr.Zero);
+            position = count;
         }
 
         /// <summary>
@@ -96,6 +125,11 @@ namespace SharpShell.Helpers
         /// The buffer pointer.
         /// </summary>
         private readonly IntPtr bufferPointer;
+
+        /// <summary>
+        /// The position of the pointer in the stream.
+        /// </summary>
+        private long position;
 
         /// <summary>
         /// When overridden in a derived class, gets a value indicating whether the current stream supports reading.
@@ -147,8 +181,8 @@ namespace SharpShell.Helpers
         /// </exception>
         public override long Position
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return position; }
+            set { Seek(value, SeekOrigin.Begin); }
         }
     }
 }
