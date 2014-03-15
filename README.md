@@ -127,3 +127,8 @@ Namespace Extensions
 
 Desk Bands
 * [Shell Extensibility - Explorer Desk Band, Tray Notification Icon et al.](http://www.codeproject.com/Articles/39189/Shell-Extensibility-Explorer-Desk-Band-Tray-Notifi)
+
+License
+-------
+
+SharpShell is licensed under the MIT License - the details are at [LICENSE.md](https://raw.github.com/dwmkerr/sharpshell/master/LICENSE.md)
