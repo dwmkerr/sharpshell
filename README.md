@@ -25,6 +25,7 @@ Send me a message to add a project to this list:
 
  - [Trello Context Menu](https://github.com/GeorgeHahn/TrelloContextMenu)
  - [REAL Shuffle Player 2.0](http://hig.bplaced.net/en/)
+ - [The CmisSync context menu](http://aegif-labo.blogspot.jp/2014/08/the-cmissync-context-menu-check-out.html)
 
 Deploying SharpShell Servers
 ----------------------------
