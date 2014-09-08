@@ -133,3 +133,16 @@ License
 -------
 
 SharpShell is licensed under the MIT License - the details are at [LICENSE.md](https://raw.github.com/dwmkerr/sharpshell/master/LICENSE.md)
+
+Testimonials
+------------
+
+If you've used SharpShell and would like to add a testimonial, just send me a message!
+
+> CmisSync, our Dropbox-like client for Enterprise Content Management servers, just switched to SharpShell, 
+> and we are extremely pleased with this library. Our previous custom-built Windows Explorer integration 
+> was buggy, unreliable and hard to maintain, and SharpShell is really rock-solid in comparison. The best 
+> part: It only took 2 days to integrate SharpShell into our software, testing and installer included. 
+> Thanks SharpShell!
+
+Nicolas Raoul - [CmisSync.com](http://CmisSync.com)
