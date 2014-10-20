@@ -16,7 +16,7 @@ You can use SharpShell to build any of the extensions below:
  - [Icon Overlay Handlers](#icon-overlay-handlers)
  - [Thumbnail Hanlders](#thumnnail-handlers)
  - [Property Sheet Extensions](#property-sheet-extensions)
- - [Desk Band Extensions](#desk-band-extensions)
+ - [Desk Band Extensions](#deskband-extensions)
 
 Projects that use SharpShell
 ----------------------------
