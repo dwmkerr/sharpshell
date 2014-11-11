@@ -49,7 +49,7 @@ namespace SharpShell.Diagnostics
         /// <param name="message">The message.</param>
         public static void Log(string message)
         {
-            EventLog.WriteEntry(EventLog_Source, message);
+            DebugLog(EventLog_Source, message);
         }
 
         /// <summary>
