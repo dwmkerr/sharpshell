@@ -1,5 +1,8 @@
 ## Version 2.2
 
+ * Overhauled the logging mechanism.
+ 
+
 ### Breaking Changes
 
  * `Logging.DebugLog` and `Logging.DebugError` are no longer available. Logging is 
