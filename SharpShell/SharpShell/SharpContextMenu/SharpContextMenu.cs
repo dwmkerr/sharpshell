@@ -43,7 +43,7 @@ namespace SharpShell.SharpContextMenu
         int IContextMenu.QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags)
         {
             //  Log this key event.
-            DebugLog(string.Format("Query Context Menu for items: {0}{1}", Environment.NewLine, string.Join(Environment.NewLine, SelectedItemPaths)));
+            Log(string.Format("Query Context Menu for items: {0}{1}", Environment.NewLine, string.Join(Environment.NewLine, SelectedItemPaths)));
             
             //  If we've got the defaultonly flag, we're done.
             if (uFlags.HasFlag(CMF.CMF_DEFAULTONLY))

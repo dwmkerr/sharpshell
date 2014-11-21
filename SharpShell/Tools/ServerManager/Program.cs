@@ -17,9 +17,18 @@ namespace ServerManager
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if(EventLog.SourceExists("SharpShell") == false)
-                EventLog.CreateEventSource("SharpShell", "Application");
-
+            try
+            {
+                var guid = new Guid("A643C50D-4206-4121-A895-9EA5C919557A");
+                var type = Type.GetTypeFromCLSID(guid);
+                var instance = Activator.CreateInstance(type);
+            }
+            catch (Exception e)
+            {
+                
+                //throw;
+            }
+            
             Application.Run(new ServerManagerForm());
         }
     }

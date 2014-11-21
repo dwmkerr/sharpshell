@@ -36,6 +36,9 @@ namespace SharpShell.SharpPreviewHandler
         /// </summary>
         protected SharpPreviewHandler()
         {
+            //  DebugLog the event.
+            Log("Instantiating preview handler.");
+
             //  Create the preview handler host, we must do this in the constructor because the constructor
             //  is called on the VI thread which is STA, all subsequent calls will be on MTA threads.
             previewHandlerHost = new PreviewHandlerHost();
@@ -554,9 +557,21 @@ namespace SharpShell.SharpPreviewHandler
                     if (classKey == null)
                         throw new InvalidOperationException("Cannot open the class key.");
 
-                    //  Set the AppID as the preview host surrogate.
+                    //  For informational purposes, set the server as the default value for the CLSID.
                     classKey.SetValue(null, serverType.Name);
+
+                    //  Option 1: Use the surrogate.
                     classKey.SetValue("AppID", "{6d2b5079-2f0b-48dd-ab7f-97cec514d30b}");
+
+                    //  Option 2: Use a dedicated instance of the surrogate.
+                    //var appid = "{C3F9135C-14C5-4CF0-8571-6954FCD8ED5D}";
+                    //classKey.SetValue("AppID", appid);
+
+                    //using (RegistryKey appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
+                    //using (RegistryKey appIdKey = appIdsKey.CreateSubKey(appid))
+                    //{
+                    //    appIdKey.SetValue("DllSurrogate", @"%SystemRoot%\system32\prevhost.exe", RegistryValueKind.ExpandString);
+                    //}
                     
                     //  Set the display name and TODO icon.
                     classKey.SetValue("DisplayName", displayName, RegistryValueKind.String);

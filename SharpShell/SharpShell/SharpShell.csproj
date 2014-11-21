@@ -80,6 +80,11 @@
     <Compile Include="Attributes\SpecialClassKeyAttribute.cs" />
     <Compile Include="Components\CategoryManager.cs" />
     <Compile Include="Components\ExtractIconImpl.cs" />
+    <Compile Include="Configuration\LoggingMode.cs" />
+    <Compile Include="Configuration\SystemConfiguration.cs" />
+    <Compile Include="Diagnostics\Loggers\EventLogLogger.cs" />
+    <Compile Include="Diagnostics\Loggers\FileLogger.cs" />
+    <Compile Include="Diagnostics\Loggers\ILogger.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\GuidExtensions.cs" />
     <Compile Include="Extensions\IDataObjectExtensions.cs" />
@@ -289,6 +294,7 @@
     <Compile Include="SharpPropertySheet\PropertyPageProxy.cs" />
     <Compile Include="SharpPropertySheet\SharpPropertySheet.cs" />
     <Compile Include="SharpShellServer.cs" />
+    <Compile Include="Configuration\SystemConfigurationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

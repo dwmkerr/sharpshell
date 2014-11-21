@@ -136,9 +136,6 @@ namespace ServerManager
                 if(File.Exists(arg))
                     AddServer(arg, true);
             }
-
-            //  Set the log availability.
-            enableSharpShellLogToolStripMenuItem.Checked = Logging.IsLoggingEnabled();
         }
 
         private void alwaysUnloadDLLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -422,19 +419,7 @@ namespace ServerManager
         {
             (new AboutForm()).ShowDialog(this);
         }
-
-        private void enableSharpShellLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            enableSharpShellLogToolStripMenuItem.Checked = !enableSharpShellLogToolStripMenuItem.Checked;
-            Logging.EnableLogging(enableSharpShellLogToolStripMenuItem.Checked);
-        }
-
-        private void showLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //  Show a log view.
-            (new LogView.LogViewForm()).Show(this);
-        }
-
+        
         private void toolStripButtonOpenTestShell_Click(object sender, EventArgs e)
         {
             (new TestShellForm()).ShowDialog(this);

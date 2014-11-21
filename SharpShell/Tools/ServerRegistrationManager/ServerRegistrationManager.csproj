@@ -65,6 +65,8 @@
     <Compile Include="..\..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Actions\ShowConfigAction.cs" />
+    <Compile Include="Actions\ShowHelpAction.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="OutputService\IOutputService.cs" />
     <Compile Include="OutputService\ConsoleOutputService.cs" />
@@ -84,13 +86,18 @@
       <Name>SharpShell</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Actions\Help.txt" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedReferences\SharpShell.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\Build\Tools\srm.exe"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>copy "$(SolutionDir)..\Build\Core\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\SharpShell.dll"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

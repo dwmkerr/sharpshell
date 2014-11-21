@@ -40,14 +40,12 @@ namespace SharpShell.NativeBridge
                     {
                         resourceStream.CopyTo(tempStream);
                     }
-
-                    Logging.DebugLog("Native Bridge: Wrote to " + bridgeLibraryPath);
                 }
             }
             catch (Exception exception)
             {
-                //  DebugLog the exception.
-                Logging.DebugError("NativeBridge: Failed to extract the bridge library. The manifest path is '" +
+                //  Log the exception.
+                Logging.Error("NativeBridge: Failed to extract the bridge library. The manifest path is '" +
                               bridgeLibraryPath + "'", exception);
                 return false;
             }
@@ -55,25 +53,23 @@ namespace SharpShell.NativeBridge
             //  Load the bridge library.
             try
             {
-                Logging.DebugLog("Loading bridge");
                 libraryHandle = Kernel32.LoadLibrary(bridgeLibraryPath);
-                Logging.DebugLog("Loaded bridge");
             }
             catch (Exception exception)
             {
-                //  DebugLog the exception.
-                Logging.DebugError("NativeBridge: Exception loading the bridge library.", exception);
+                //  Log the exception.
+                Logging.Error("NativeBridge: Exception loading the bridge library.", exception);
             }
 
             //  If the library hasn't been loaded, log the last windows error.
             if (libraryHandle == IntPtr.Zero)
             {
-                Logging.DebugError("NativeBridge: Failure to load the brige library.",
+                Logging.Error("NativeBridge: Failure to load the brige library.",
                               new Win32Exception(Marshal.GetLastWin32Error()));
                 return false;
             }
 
-            Logging.DebugLog("Bridge Initialised");
+            Logging.Log("Bridge Initialised");
 
             //  We've successfully loaded the bridge library.
             return true;
@@ -100,8 +96,8 @@ namespace SharpShell.NativeBridge
             }
             catch (Exception exception)
             {
-                //  DebugLog the exception and fail.
-                Logging.DebugError(
+                //  Log the exception and fail.
+                Logging.Error(
                     "NativeBridge: Failed to either load the proc (address is '" + procAddress.ToString("x8") +
                     "'), marshal it or call it.", exception);
                 return 0;
@@ -126,8 +122,8 @@ namespace SharpShell.NativeBridge
             }
             catch (Exception exception)
             {
-                //  DebugLog the exception and fail.
-                Logging.DebugError(
+                //  Log the exception and fail.
+                Logging.Error(
                     "NativeBridge: Failed to either load the proc (address is '" + procAddress.ToString("x8") +
                     "'), marshal it or call it.", exception);
                 return IntPtr.Zero;
@@ -187,8 +183,8 @@ namespace SharpShell.NativeBridge
             }
             catch (Exception exception)
             {
-                //  DebugLog the exception and fail.
-                Logging.DebugError(
+                //  Log the exception and fail.
+                Logging.Error(
                     "NativeBridge: Failed to either load the proc (address is '" + procAddress.ToString("x8") +
                     "'), marshal it or call it.", exception);
             }
