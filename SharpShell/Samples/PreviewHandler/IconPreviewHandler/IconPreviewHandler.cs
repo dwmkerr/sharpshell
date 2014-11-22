@@ -16,7 +16,8 @@ namespace IconPreviewHandler
     [ComVisible(true)]
     [COMServerAssociation(AssociationType.ClassOfExtension, ".ico")]
     [DisplayName("Icon Preview Handler")]
-    [Guid("A643C50D-4206-4121-A895-9EA5C919557A")]
+    [Guid("B643C50D-4206-4121-A895-9EA5C919557A")]
+    [PreviewHandler(DisableLowILProcessIsolation = false)]
     public class IconPreviewHandler : SharpPreviewHandler 
     {
         /// <summary>

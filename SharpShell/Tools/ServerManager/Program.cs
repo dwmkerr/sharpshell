@@ -15,20 +15,7 @@ namespace ServerManager
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            try
-            {
-                var guid = new Guid("A643C50D-4206-4121-A895-9EA5C919557A");
-                var type = Type.GetTypeFromCLSID(guid);
-                var instance = Activator.CreateInstance(type);
-            }
-            catch (Exception e)
-            {
-                
-                //throw;
-            }
-            
+            Application.SetCompatibleTextRenderingDefault(false);       
             Application.Run(new ServerManagerForm());
         }
     }

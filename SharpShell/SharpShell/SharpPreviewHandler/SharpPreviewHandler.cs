@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Threading;
 using Microsoft.Win32;
+using SharpShell.Exceptions;
 using SharpShell.Extensions;
 using SharpShell.Interop;
 using SharpShell.Attributes;
@@ -517,6 +518,13 @@ namespace SharpShell.SharpPreviewHandler
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
+            //  Get the preview handler attribute. If it is missing, throw a registration exception.
+            var previewHandlerAttribute = PreviewHandlerAttribute.GetPreviewHandlerAttribute(serverType);
+            if (previewHandlerAttribute == null)
+            {
+                throw new ServerRegistrationException("The server does not have a [PreviewHandler] attribute set.");
+            }
+
             //  We will use the display name a few times.
             var displayName = DisplayNameAttribute.GetDisplayNameOrTypeName(serverType);
 
@@ -561,24 +569,25 @@ namespace SharpShell.SharpPreviewHandler
                     classKey.SetValue(null, serverType.Name);
 
                     //  Option 1: Use the surrogate.
-                    classKey.SetValue("AppID", "{6d2b5079-2f0b-48dd-ab7f-97cec514d30b}");
+                    // classKey.SetValue("AppID", "{6d2b5079-2f0b-48dd-ab7f-97cec514d30b}");
 
                     //  Option 2: Use a dedicated instance of the surrogate.
-                    //var appid = "{C3F9135C-14C5-4CF0-8571-6954FCD8ED5D}";
-                    //classKey.SetValue("AppID", appid);
+                    var appid = "{C3F9135C-14C5-4CF0-8571-6954FCD8ED5E}";
+                    classKey.SetValue("AppID", appid);
 
-                    //using (RegistryKey appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
-                    //using (RegistryKey appIdKey = appIdsKey.CreateSubKey(appid))
-                    //{
-                    //    appIdKey.SetValue("DllSurrogate", @"%SystemRoot%\system32\prevhost.exe", RegistryValueKind.ExpandString);
-                    //}
+                    using (RegistryKey appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
+                    using (RegistryKey appIdKey = appIdsKey.CreateSubKey(appid))
+                    {
+                        appIdKey.SetValue("DllSurrogate", @"%SystemRoot%\system32\prevhost.exe", RegistryValueKind.ExpandString);
+                    }
                     
                     //  Set the display name and TODO icon.
                     classKey.SetValue("DisplayName", displayName, RegistryValueKind.String);
                     classKey.SetValue("Icon", "%SystemRoot%\\system32\\fontext.dll,10", RegistryValueKind.ExpandString);
 
-                    //  Disable low integrity process isolation - TODO maybe this should be optional.
-                    classKey.SetValue("DisableLowILProcessIsolation", 1, RegistryValueKind.DWord);
+                    //  Disable low integrity process isolation if specified.
+                    if(previewHandlerAttribute.DisableLowILProcessIsolation)
+                        classKey.SetValue("DisableLowILProcessIsolation", 1, RegistryValueKind.DWord);
                 }
             }
         }

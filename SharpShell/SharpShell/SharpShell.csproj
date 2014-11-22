@@ -227,12 +227,14 @@
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolderIdListEnumerator.cs" />
     <Compile Include="SharpNamespaceExtension\StandardPropertyKey.cs" />
     <Compile Include="SharpNamespaceExtension\VirtualFolder.cs" />
+    <Compile Include="SharpPreviewHandler\PreviewHandlerAttribute.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SharpPreviewHandler\PreviewHandlerHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Exceptions\ServerRegistrationException.cs" />
     <Compile Include="SharpPreviewHandler\SharpPreviewHandler.cs" />
     <Compile Include="SharpPropertySheet\SharpPropertyPage.cs">
       <SubType>UserControl</SubType>

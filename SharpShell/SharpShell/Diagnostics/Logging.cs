@@ -35,7 +35,7 @@ namespace SharpShell.Diagnostics
             }
 
             //  Always log our host process.
-            logger.LogMessage(string.Format("SharpShell Diagnostics Initialised. Process {0}.", Process.GetCurrentProcess().ProcessName));
+            Log(string.Format("SharpShell Diagnostics Initialised. Process {0}.", Process.GetCurrentProcess().ProcessName));
 
             //  We will log unhandled exceptions.
             AppDomain.CurrentDomain.UnhandledException += (sender, args) => Error("SharpShell - Unhandled Exception in the AppDomain", args.ExceptionObject as Exception);
