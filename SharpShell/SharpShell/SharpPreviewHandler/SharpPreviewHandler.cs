@@ -87,6 +87,22 @@ namespace SharpShell.SharpPreviewHandler
                         }
                     });
         }
+
+        /// <summary>
+        /// Updates the size of the controls
+        /// </summary>
+        private void UpdateBounds()
+        {
+            OnPreviewHostThread(
+                () =>
+                    {
+                        //  Set the bounds of the host and control
+                        previewHandlerHost.Bounds = new Rectangle(previewArea.left, previewArea.top, previewArea.Width(), previewArea.Height());
+                        if(previewHandlerControl != null)
+                            previewHandlerControl.Bounds = new Rectangle(previewArea.left, previewArea.top, previewArea.Width(), previewArea.Height());
+                    }
+                );
+        }
     
         #region Implementation of IInitializeWithFile
 
@@ -251,8 +267,8 @@ namespace SharpShell.SharpPreviewHandler
             //  Set the preview area.
             previewArea = prc;
 
-            //  Update the host.
-            UpdateHost();
+            //  Update the boundaries.
+            UpdateBounds();
 
             //  Return success.
             return WinError.S_OK;
