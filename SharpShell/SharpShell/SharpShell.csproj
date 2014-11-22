@@ -235,6 +235,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Exceptions\ServerRegistrationException.cs" />
+    <Compile Include="SharpPreviewHandler\PreviewHandlerRegistrar.cs" />
     <Compile Include="SharpPreviewHandler\SharpPreviewHandler.cs" />
     <Compile Include="SharpPropertySheet\SharpPropertyPage.cs">
       <SubType>UserControl</SubType>

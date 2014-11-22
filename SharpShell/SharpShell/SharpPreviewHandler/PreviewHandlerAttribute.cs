@@ -11,7 +11,8 @@ namespace SharpShell.SharpPreviewHandler
         public PreviewHandlerAttribute()
         {
             //  Set up the defaults.
-            DisableLowILProcessIsolation = false; // as recommended on MSDN.
+            DisableLowILProcessIsolation = false;                       //  as recommended on MSDN.
+            SurrogateHostType = SurrogateHostType.DedicatedPrevhost;    //  safest option.
         }
 
         /// <summary>
@@ -38,5 +39,38 @@ namespace SharpShell.SharpPreviewHandler
         /// <c>true</c> if low IL process isolation should be disabled; otherwise, <c>false</c>.
         /// </value>
         public bool DisableLowILProcessIsolation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the surrogate host type. Changing this from
+        /// the default of SurrogateHostType.DedicatedPrevhost is not recommended.
+        /// </summary>
+        /// <value>
+        /// The surrogate host type.
+        /// </value>
+        public SurrogateHostType SurrogateHostType { get; set; }
+    }
+
+    /// <summary>
+    /// Defines what sort of Surrogate Host will be used to host a preview handler.
+    /// </summary>
+    public enum SurrogateHostType
+    {
+        /// <summary>
+        /// A dedicated Prevhost.exe process will be used for all instances of this preview
+        /// handler. This is the safest option as conflicts with .NET Framework versions
+        /// cannot happen.
+        /// </summary>
+        DedicatedPrevhost = 0,
+
+        /// <summary>
+        /// The standard Prevhost.exe surrogate will be used. Not recommended.
+        /// </summary>
+        Prevhost = 1,
+
+        /// <summary>
+        /// A dedicated Prevhost.exe surrogate suitable for hosting 32 bit preview
+        /// handlers on 64 systems will be used. Not recommended.
+        /// </summary>
+        Prevhost32On64 = 2
     }
 }

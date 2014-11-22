@@ -518,78 +518,8 @@ namespace SharpShell.SharpPreviewHandler
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
-            //  Get the preview handler attribute. If it is missing, throw a registration exception.
-            var previewHandlerAttribute = PreviewHandlerAttribute.GetPreviewHandlerAttribute(serverType);
-            if (previewHandlerAttribute == null)
-            {
-                throw new ServerRegistrationException("The server does not have a [PreviewHandler] attribute set.");
-            }
-
-            //  We will use the display name a few times.
-            var displayName = DisplayNameAttribute.GetDisplayNameOrTypeName(serverType);
-
-            //  Open the local machine.
-            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
-                ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
-                  RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-            {
-                //  Open the Preview Handlers.
-                using (var previewHandlersKey = localMachineBaseKey
-                    .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\PreviewHandlers",
-                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
-                {
-                    //  If we don't have the key, we've got a problem.
-                    if (previewHandlersKey == null)
-                        throw new InvalidOperationException("Cannot open the PreviewHandlers key.");
-
-                    //  Write the server guid as a name, and the display name as the value.
-                    //  The display name isn't needed, it's just helpful for debugging and checking the registry.
-                    previewHandlersKey.SetValue(serverType.GUID.ToRegistryString(), displayName);
-                }
-            }
-
-            //  Open the classes root.
-            using (var classesBaseKey = registrationType == RegistrationType.OS64Bit
-                ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
-                  RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32))
-            {
-                //  Our server guid.
-                var serverGuid = serverType.GUID.ToRegistryString();
-
-                //  Open the Class Key.
-                using (var classKey = classesBaseKey
-                    .OpenSubKey(string.Format(@"CLSID\{0}", serverGuid),
-                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
-                {
-                    //  If we don't have the key, we've got a problem.
-                    if (classKey == null)
-                        throw new InvalidOperationException("Cannot open the class key.");
-
-                    //  For informational purposes, set the server as the default value for the CLSID.
-                    classKey.SetValue(null, serverType.Name);
-
-                    //  Option 1: Use the surrogate.
-                    // classKey.SetValue("AppID", "{6d2b5079-2f0b-48dd-ab7f-97cec514d30b}");
-
-                    //  Option 2: Use a dedicated instance of the surrogate.
-                    var appid = "{C3F9135C-14C5-4CF0-8571-6954FCD8ED5E}";
-                    classKey.SetValue("AppID", appid);
-
-                    using (RegistryKey appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
-                    using (RegistryKey appIdKey = appIdsKey.CreateSubKey(appid))
-                    {
-                        appIdKey.SetValue("DllSurrogate", @"%SystemRoot%\system32\prevhost.exe", RegistryValueKind.ExpandString);
-                    }
-                    
-                    //  Set the display name and TODO icon.
-                    classKey.SetValue("DisplayName", displayName, RegistryValueKind.String);
-                    classKey.SetValue("Icon", "%SystemRoot%\\system32\\fontext.dll,10", RegistryValueKind.ExpandString);
-
-                    //  Disable low integrity process isolation if specified.
-                    if(previewHandlerAttribute.DisableLowILProcessIsolation)
-                        classKey.SetValue("DisableLowILProcessIsolation", 1, RegistryValueKind.DWord);
-                }
-            }
+            //  Register preview handlers via the registrar.
+            PreviewHandlerRegistrar.Register(serverType, registrationType);
         }
 
         /// <summary>

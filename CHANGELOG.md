@@ -1,7 +1,7 @@
 ## Version 2.2
 
  * Overhauled the logging mechanism.
- 
+ * Fixed preview handler bugs #58.
 
 ### Breaking Changes
 
