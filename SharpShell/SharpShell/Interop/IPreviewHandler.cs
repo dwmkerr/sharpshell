@@ -26,7 +26,7 @@ namespace SharpShell.Interop
         /// <param name="prc">A pointer to a RECT to be used for the preview.</param>
         /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
         [PreserveSig] 
-        int SetRect(RECT prc);
+        int SetRect(ref RECT prc);
 
         /// <summary>
         /// Directs the preview handler to load data from the source specified in an earlier Initialize method call, and to begin rendering to the previewer window.

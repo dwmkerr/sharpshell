@@ -243,7 +243,7 @@ namespace SharpShell.SharpPreviewHandler
         /// <returns>
         /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
         /// </returns>
-        int IPreviewHandler.SetRect(RECT prc)
+        int IPreviewHandler.SetRect(ref RECT prc)
         {
             //  DebugLog key events.
             Log("IPreviewHandler.SetRect called.");
