@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using SharpShell.Configuration;
 using SharpShell.Diagnostics.Loggers;
@@ -11,9 +12,9 @@ namespace SharpShell.Diagnostics
     public static class Logging
     {
         /// <summary>
-        /// The logger used.
+        /// The loggers used.
         /// </summary>
-        private static readonly ILogger logger;
+        private static readonly List<ILogger> loggers = new List<ILogger>();
 
         /// <summary>
         /// Initializes the <see cref="Logging"/> class.
@@ -22,16 +23,22 @@ namespace SharpShell.Diagnostics
         {
             //  Get the system config (if present).
             var config = SystemConfigurationProvider.Configuration;
-            
-            //  Create the appropriate logger.
-            switch (config.LoggingMode)
+
+            //  Add configured loggers.
+            try
             {
-                case LoggingMode.EventLog:
-                    logger = new EventLogLogger();
-                    break;
-                case LoggingMode.File:
-                    logger = new FileLogger(config.LogPath);
-                    break;
+                if(config.LoggingMode.HasFlag(LoggingMode.Debug))
+                    loggers.Add(new DebugLogger());
+                if(config.LoggingMode.HasFlag(LoggingMode.EventLog))
+                    loggers.Add(new EventLogLogger());
+                if(config.LoggingMode.HasFlag(LoggingMode.File))
+                    loggers.Add(new FileLogger(config.LogPath));
+            }
+            catch (Exception exception)
+            {
+                //  There's not much we can do here except fall back on the debug log.
+                Debug.WriteLine("An unhandled exception occured trying to initialise SharpShell logging.");
+                Debug.WriteLine(exception.ToString());
             }
 
             //  Always log our host process.
@@ -47,8 +54,7 @@ namespace SharpShell.Diagnostics
         /// <param name="message">The message.</param>
         public static void Log(string message)
         {
-            if(logger != null)
-                logger.LogMessage(message);
+            loggers.ForEach(l => l.LogMessage(message));
         }
 
         /// <summary>
@@ -58,11 +64,11 @@ namespace SharpShell.Diagnostics
         /// <param name="exception">The exception.</param>
         public static void Error(string message, Exception exception = null)
         {
-            if (logger == null) return;
-            
-            logger.LogError(message);
-            if (exception != null)
-                logger.LogError(exception.ToString());
+            loggers.ForEach(l =>
+                {
+                    l.LogError(message);
+                    if (exception != null) l.LogError(exception.ToString());
+                });
         }
     }
 }
