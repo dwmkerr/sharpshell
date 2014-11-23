@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace SharpShell.Diagnostics.Loggers
 {
@@ -8,13 +9,26 @@ namespace SharpShell.Diagnostics.Loggers
     internal class EventLogLogger : ILogger
     {
         /// <summary>
+        /// The source created flag. If true, we have a source.
+        /// </summary>
+        private readonly bool sourceCreated;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EventLogLogger" /> class.
         /// </summary>
         public  EventLogLogger()
         {
             //  Check whether the source exists.
-            if(EventLog.SourceExists(EventLog_Source) == false)
-                EventLog.CreateEventSource(EventLog_Source, EventLog_Log);
+            try
+            {
+                if (EventLog.SourceExists(EventLog_Source) == false)
+                    EventLog.CreateEventSource(EventLog_Source, EventLog_Log);
+                sourceCreated = true;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("Exception creating SharpShell event log source. Details: {0}", exception);
+            }
         }
 
         /// <summary>
@@ -23,6 +37,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <param name="error">The error.</param>
         public void LogError(string error)
         {
+            if (sourceCreated == false) return;
             EventLog.WriteEntry(EventLog_Source, error, EventLogEntryType.Error);
         }
 
@@ -32,6 +47,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <param name="warning">The warning.</param>
         public void LogWarning(string warning)
         {
+            if (sourceCreated == false) return;
             EventLog.WriteEntry(EventLog_Source, warning, EventLogEntryType.Warning);
         }
 
@@ -41,6 +57,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <param name="message">The message.</param>
         public void LogMessage(string message)
         {
+            if (sourceCreated == false) return;
             EventLog.WriteEntry(EventLog_Source, message, EventLogEntryType.Information);
         }
 

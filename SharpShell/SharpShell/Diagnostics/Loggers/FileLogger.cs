@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace SharpShell.Diagnostics.Loggers
@@ -42,6 +44,10 @@ namespace SharpShell.Diagnostics.Loggers
                 //  Write to the line to the file.
                 using (var w = File.AppendText(logPath))
                     w.WriteLine(line);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("An exception occured trying to write to the file log. Details: {0}", exception);
             }
             finally
             {

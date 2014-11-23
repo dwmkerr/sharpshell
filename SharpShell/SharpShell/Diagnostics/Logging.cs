@@ -54,7 +54,15 @@ namespace SharpShell.Diagnostics
         /// <param name="message">The message.</param>
         public static void Log(string message)
         {
-            loggers.ForEach(l => l.LogMessage(message));
+            try
+            {
+                loggers.ForEach(l => l.LogMessage(message));
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("An unhandled exception occured logging the message {0}. Exception details: {1}", 
+                    message, exception);
+            }
         }
 
         /// <summary>
@@ -64,11 +72,19 @@ namespace SharpShell.Diagnostics
         /// <param name="exception">The exception.</param>
         public static void Error(string message, Exception exception = null)
         {
-            loggers.ForEach(l =>
-                {
-                    l.LogError(message);
-                    if (exception != null) l.LogError(exception.ToString());
-                });
+            try
+            {
+                loggers.ForEach(l =>
+                    {
+                        l.LogError(message);
+                        if (exception != null) l.LogError(exception.ToString());
+                    });
+                }
+            catch (Exception e)
+            {
+                Debug.WriteLine("An unhandled exception occured logging the error {0}. Exception details: {1}",
+                    message, e);
+            }
         }
     }
 }
