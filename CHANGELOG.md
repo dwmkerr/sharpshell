@@ -1,7 +1,7 @@
 ## Version 2.2
 
  * Overhauled the logging mechanism.
- * Fixed preview handler bugs #58, #50, #52.
+ * Fixed preview handler bugs #33, #58, #50, #52.
  * Preview handlers no longer flicker.
 
 ### Breaking Changes
