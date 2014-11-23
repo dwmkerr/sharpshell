@@ -9,6 +9,7 @@ using SharpShell.Extensions;
 using SharpShell.Interop;
 using SharpShell.Attributes;
 using SharpShell.ServerRegistration;
+using System.Diagnostics;
 
 namespace SharpShell.SharpPreviewHandler
 {
@@ -160,6 +161,14 @@ namespace SharpShell.SharpPreviewHandler
         {
             //  DebugLog key events.
             Log("IObjectWithSite.GetSite called.");
+            Debugger.Break();
+
+            //  If we have no site, we should explicitly return failure.
+            if(site == null)
+            {
+                ppvSite = null;
+                return WinError.E_FAIL;
+            }
 
             //  Return the site.
             ppvSite = site;
