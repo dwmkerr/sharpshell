@@ -69,6 +69,17 @@ Icon Overlay Extensions
 17. Verify the aspect ratio.
     17a: When changing the size of explorer icons, the overlay should maintain a consistent aspect ratio.
 
+Preview Handler Extensions
+--------------------------
+
+18. Open the 'TestData\PreviewHandlers' folder.
+
+19. Select 'Icon.ico'.
+
+20. Open the preview pane.
+    20a: The preview pane should show an image for each icon.
+    20b: Resizing the preview pane should not cause flickering.
+
 Clean-up
 --------
 

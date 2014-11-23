@@ -2,4 +2,5 @@
 ..\build\tools\srm.exe install "..\build\samples\filetimespropertysheet.dll" -codebase
 ..\build\tools\srm.exe install "..\build\samples\ReadOnlyFileIconOverlayHandler.dll" -codebase
 ..\build\tools\srm.exe install "..\build\samples\TxtThumbnailHandler.dll" -codebase
+..\build\tools\srm.exe install "..\build\samples\IconPreviewHandler.dll" -codebase
 pause
