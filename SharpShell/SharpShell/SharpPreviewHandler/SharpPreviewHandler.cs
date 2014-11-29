@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
 using Microsoft.Win32;
@@ -140,7 +141,7 @@ namespace SharpShell.SharpPreviewHandler
         void IInitializeWithStream.Initialize(IStream pstream, uint grfMode)
         {
             //  DebugLog key events.
-            DebugLog("IObjectWithSite.GetSite called.");
+            DebugLog("IInitializeWithStream.Initialize called.");
 
             fileStream = new ShellStream(pstream);
         }
@@ -157,24 +158,18 @@ namespace SharpShell.SharpPreviewHandler
         /// <returns>
         /// This method returns S_OK on success.
         /// </returns>
-        int IObjectWithSite.GetSite(ref Guid riid, out object ppvSite)
+        int IObjectWithSite.GetSite(ref Guid riid, out IntPtr ppvSite)
         {
             //  DebugLog key events.
             Log("IObjectWithSite.GetSite called.");
             Debugger.Break();
 
-            //  If we have no site, we should explicitly return failure.
-            if(site == null)
-            {
-                ppvSite = null;
-                return WinError.E_FAIL;
-            }
-
-            //  Return the site.
-            ppvSite = site;
-
-            //  Return success.
-            return WinError.S_OK;
+            //  Get the IUnknown, query for the interface and return the result.
+            IntPtr pUnknown = Marshal.GetIUnknownForObject(site);
+            var result = Marshal.QueryInterface(pUnknown, ref riid, out ppvSite);
+            Marshal.Release(pUnknown);
+            
+            return result;
         }
 
         /// <summary>

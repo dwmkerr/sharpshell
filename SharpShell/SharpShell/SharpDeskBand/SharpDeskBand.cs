@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using SharpShell.Attributes;
 using SharpShell.Components;
 using SharpShell.Interop;
@@ -35,16 +36,18 @@ namespace SharpShell.SharpDeskBand
 
         #region Implmentation of the IObjectWithSite interface
 
-        int IObjectWithSite.GetSite(ref Guid riid, out object ppvSite)
+        int IObjectWithSite.GetSite(ref Guid riid, out IntPtr ppvSite)
         {
             //  Log key events.
             Log("IObjectWithSite.GetSite called.");
 
-            //  Provide the site.
-            ppvSite = inputObjectSite;
+            //  Get the IUnknown, query for the interface and return the result.
+            var pUnknown = Marshal.GetIUnknownForObject(inputObjectSite);
+            var result = Marshal.QueryInterface(pUnknown, ref riid, out ppvSite);
+            Marshal.Release(pUnknown);
 
             //  Got the site successfully.
-            return WinError.S_OK;
+            return result;
         }
 
         int IObjectWithSite.SetSite(object pUnkSite)
