@@ -34,7 +34,9 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         /// <param name="pfnAddPage">The PFN add page.</param>
         /// <param name="lParam">The l param.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// If successful, returns a one-based index to specify the page that should be initially displayed. See Remarks for more information.
+        /// </returns>
         int IShellPropSheetExt.AddPages(IntPtr pfnAddPage, IntPtr lParam)
         {
             //  DebugLog the event.
@@ -50,7 +52,7 @@ namespace SharpShell.SharpPropertySheet
             //  Initialise it.
             if(bridge.Initialise() == false)
             {
-                Logging.DebugError("Failed to initialise the NativeBridge.", null);
+                Logging.Error("Failed to initialise the NativeBridge.", null);
                 return 0;
             }
 

@@ -54,8 +54,17 @@ namespace ServerManager.TestShell
         private void ShellPreviewHost_Resize(object sender, EventArgs e)
         {
             //  Do we habe a preview handler?
-            if(previewHandler != null && previewHandler is IPreviewHandler)
-                ((IPreviewHandler) previewHandler).SetRect(new RECT {bottom = ClientRectangle.Bottom, left = ClientRectangle.Left, right = ClientRectangle.Right, top = ClientRectangle.Top});
+            if (previewHandler != null && previewHandler is IPreviewHandler)
+            {
+                var bounds = new RECT
+                {
+                    bottom = ClientRectangle.Bottom,
+                    left = ClientRectangle.Left,
+                    right = ClientRectangle.Right,
+                    top = ClientRectangle.Top
+                };
+                ((IPreviewHandler) previewHandler).SetRect(ref bounds);
+            }
         }
     }
 

@@ -1,27 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{80B7B105-FDEE-44D7-B2A3-5DD61A80C93B}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServerRegistrationManager</RootNamespace>
-    <AssemblyName>ServerRegistrationManager</AssemblyName>
+    <RootNamespace>AbcPreviewHandler</RootNamespace>
+    <AssemblyName>AbcPreviewHandler</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -31,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -45,16 +35,11 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,44 +47,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    <Compile Include="AbcPreviewHandler.cs" />
+    <Compile Include="AbcPreviewHandlerControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Actions\ConfigAction.cs" />
-    <Compile Include="Actions\EnableEventLogAction.cs" />
-    <Compile Include="Actions\ShowHelpAction.cs" />
-    <Compile Include="Application.cs" />
-    <Compile Include="OutputService\IOutputService.cs" />
-    <Compile Include="OutputService\ConsoleOutputService.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="AbcPreviewHandlerControl.Designer.cs">
+      <DependentUpon>AbcPreviewHandlerControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="app.manifest">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpShell\SharpShell.csproj">
-      <Project>{b5d5f670-bfba-4d09-91c6-74bb12b7edd4}</Project>
+    <EmbeddedResource Include="AbcPreviewHandlerControl.resx">
+      <DependentUpon>AbcPreviewHandlerControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\SharpShell\SharpShell.csproj">
+      <Project>{B5D5F670-BFBA-4D09-91C6-74BB12B7EDD4}</Project>
       <Name>SharpShell</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Actions\Help.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EmbeddedReferences\SharpShell.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\Build\Tools\srm.exe"</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)..\Build\Core\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\SharpShell.dll"</PreBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

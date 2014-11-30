@@ -23,6 +23,8 @@ namespace SharpShell
         /// <param name="hKeyProgID">The handle to the key prog id.</param>
         void IShellExtInit.Initialize(IntPtr pidlFolder, IntPtr pDataObj, IntPtr hKeyProgID)
         {
+            Log("Initializing shell extension...");
+
             //  If we have the folder PIDL, we can get the parent folder.
             if (pidlFolder != IntPtr.Zero)
             {
@@ -43,6 +45,9 @@ namespace SharpShell
                 //  Add the set of files to the selected file paths.
                 selectedItemPaths = dataObject.GetFileList();
             }
+
+            Log(string.Format("Shell extension initialised.{0}Parent folder: {1}{0}Items: {0}{2}",
+                Environment.NewLine, FolderPath ?? "<none>", string.Join(System.Environment.NewLine, selectedItemPaths)));
         }
 
         #endregion

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
 using Microsoft.Win32;
+using SharpShell.Exceptions;
 using SharpShell.Extensions;
 using SharpShell.Interop;
 using SharpShell.Attributes;
 using SharpShell.ServerRegistration;
+using System.Diagnostics;
 
 namespace SharpShell.SharpPreviewHandler
 {
@@ -36,6 +39,9 @@ namespace SharpShell.SharpPreviewHandler
         /// </summary>
         protected SharpPreviewHandler()
         {
+            //  DebugLog the event.
+            Log("Instantiating preview handler.");
+
             //  Create the preview handler host, we must do this in the constructor because the constructor
             //  is called on the VI thread which is STA, all subsequent calls will be on MTA threads.
             previewHandlerHost = new PreviewHandlerHost();
@@ -83,6 +89,22 @@ namespace SharpShell.SharpPreviewHandler
                         }
                     });
         }
+
+        /// <summary>
+        /// Updates the size of the controls
+        /// </summary>
+        private void UpdateBounds()
+        {
+            OnPreviewHostThread(
+                () =>
+                    {
+                        //  Set the bounds of the host and control
+                        previewHandlerHost.Bounds = new Rectangle(previewArea.left, previewArea.top, previewArea.Width(), previewArea.Height());
+                        if(previewHandlerControl != null)
+                            previewHandlerControl.Bounds = new Rectangle(previewArea.left, previewArea.top, previewArea.Width(), previewArea.Height());
+                    }
+                );
+        }
     
         #region Implementation of IInitializeWithFile
 
@@ -119,7 +141,7 @@ namespace SharpShell.SharpPreviewHandler
         void IInitializeWithStream.Initialize(IStream pstream, uint grfMode)
         {
             //  DebugLog key events.
-            DebugLog("IObjectWithSite.GetSite called.");
+            DebugLog("IInitializeWithStream.Initialize called.");
 
             fileStream = new ShellStream(pstream);
         }
@@ -136,16 +158,17 @@ namespace SharpShell.SharpPreviewHandler
         /// <returns>
         /// This method returns S_OK on success.
         /// </returns>
-        int IObjectWithSite.GetSite(ref Guid riid, out object ppvSite)
+        int IObjectWithSite.GetSite(ref Guid riid, out IntPtr ppvSite)
         {
             //  DebugLog key events.
             Log("IObjectWithSite.GetSite called.");
 
-            //  Return the site.
-            ppvSite = site;
-
-            //  Return success.
-            return WinError.S_OK;
+            //  Get the IUnknown, query for the interface and return the result.
+            IntPtr pUnknown = Marshal.GetIUnknownForObject(site);
+            var result = Marshal.QueryInterface(pUnknown, ref riid, out ppvSite);
+            Marshal.Release(pUnknown);
+            
+            return result;
         }
 
         /// <summary>
@@ -239,7 +262,7 @@ namespace SharpShell.SharpPreviewHandler
         /// <returns>
         /// If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.
         /// </returns>
-        int IPreviewHandler.SetRect(RECT prc)
+        int IPreviewHandler.SetRect(ref RECT prc)
         {
             //  DebugLog key events.
             Log("IPreviewHandler.SetRect called.");
@@ -247,8 +270,8 @@ namespace SharpShell.SharpPreviewHandler
             //  Set the preview area.
             previewArea = prc;
 
-            //  Update the host.
-            UpdateHost();
+            //  Update the boundaries.
+            UpdateBounds();
 
             //  Return success.
             return WinError.S_OK;
@@ -514,58 +537,8 @@ namespace SharpShell.SharpPreviewHandler
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
-            //  We will use the display name a few times.
-            var displayName = DisplayNameAttribute.GetDisplayNameOrTypeName(serverType);
-
-            //  Open the local machine.
-            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
-                ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
-                  RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-            {
-                //  Open the Preview Handlers.
-                using (var previewHandlersKey = localMachineBaseKey
-                    .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\PreviewHandlers",
-                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
-                {
-                    //  If we don't have the key, we've got a problem.
-                    if (previewHandlersKey == null)
-                        throw new InvalidOperationException("Cannot open the PreviewHandlers key.");
-
-                    //  Write the server guid as a name, and the display name as the value.
-                    //  The display name isn't needed, it's just helpful for debugging and checking the registry.
-                    previewHandlersKey.SetValue(serverType.GUID.ToRegistryString(), displayName);
-                }
-            }
-
-            //  Open the classes root.
-            using (var classesBaseKey = registrationType == RegistrationType.OS64Bit
-                ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
-                  RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32))
-            {
-                //  Our server guid.
-                var serverGuid = serverType.GUID.ToRegistryString();
-
-                //  Open the Class Key.
-                using (var classKey = classesBaseKey
-                    .OpenSubKey(string.Format(@"CLSID\{0}", serverGuid),
-                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.WriteKey))
-                {
-                    //  If we don't have the key, we've got a problem.
-                    if (classKey == null)
-                        throw new InvalidOperationException("Cannot open the class key.");
-
-                    //  Set the AppID as the preview host surrogate.
-                    classKey.SetValue(null, serverType.Name);
-                    classKey.SetValue("AppID", "{6d2b5079-2f0b-48dd-ab7f-97cec514d30b}");
-                    
-                    //  Set the display name and TODO icon.
-                    classKey.SetValue("DisplayName", displayName, RegistryValueKind.String);
-                    classKey.SetValue("Icon", "%SystemRoot%\\system32\\fontext.dll,10", RegistryValueKind.ExpandString);
-
-                    //  Disable low integrity process isolation - TODO maybe this should be optional.
-                    classKey.SetValue("DisableLowILProcessIsolation", 1, RegistryValueKind.DWord);
-                }
-            }
+            //  Register preview handlers via the registrar.
+            PreviewHandlerRegistrar.Register(serverType, registrationType);
         }
 
         /// <summary>

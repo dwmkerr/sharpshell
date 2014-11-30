@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.IconLib;
 using System.Linq;
 using System.Windows.Forms;
+using SharpShell.Diagnostics;
 using SharpShell.SharpPreviewHandler;
 
 namespace IconPreviewHandler

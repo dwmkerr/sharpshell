@@ -1,0 +1,10 @@
+﻿To get help:
+    srm help
+
+To install a server:
+    srm install <path to SharpShell server> <parameters>
+Parameters:
+    -codebase: Optional. Installs a server from a file location, not the GAC.
+
+To uninstall a server:
+    srm uninstall <path to SharpShell server>

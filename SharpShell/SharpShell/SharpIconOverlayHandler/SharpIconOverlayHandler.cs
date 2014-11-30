@@ -233,7 +233,7 @@ namespace SharpShell.SharpIconOverlayHandler
                     //  How many shell icon overlay identifiers do we have?
                     var overlayHandlersCount = overlayIdentifiers.GetSubKeyNames().Count();
                     if(overlayHandlersCount >= MaximumOverlayIdentifiers)
-                        Diagnostics.Logging.DebugError("There are already the maximum number of overlay " +
+                        Diagnostics.Logging.Error("There are already the maximum number of overlay " +
                             "handlers registered for the system. Although " + serverType.Name + " is " +
                                                   "being registered, it will not be used by Windows Explorer.");
 

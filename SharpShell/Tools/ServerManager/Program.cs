@@ -15,11 +15,7 @@ namespace ServerManager
         static void Main()
         {
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            if(EventLog.SourceExists("SharpShell") == false)
-                EventLog.CreateEventSource("SharpShell", "Application");
-
+            Application.SetCompatibleTextRenderingDefault(false);       
             Application.Run(new ServerManagerForm());
         }
     }

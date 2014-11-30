@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ServerRegistrationManager.Actions;
 using ServerRegistrationManager.OutputService;
 using SharpShell;
 using SharpShell.Diagnostics;
@@ -43,9 +44,9 @@ namespace ServerRegistrationManager
             ShowWelcome();
 
             //  If we have no verb or target or our verb is help, show the help.
-            if (args.Length < 2 || args.First() == VerbHelp)
+            if (args.Length == 0 || args.First() == VerbHelp)
             {
-                ShowHelp();
+                ShowHelpAction.Execute(outputService);
                 return;
             }
 
@@ -54,16 +55,20 @@ namespace ServerRegistrationManager
 
             //  Get the verb, target and parameters.
             var verb = args[0];
-            var target = args[1];
-            var parameters = args.Skip(2);
+            var target = args.Length > 1 ? args[1] : (string)null; // TODO tidy this up.
+            var parameters = args.Skip(1);
 
             //  Based on the verb, perform the action.
             if (verb == VerbInstall)
                 InstallServer(target, registrationType, parameters.Any(p => p == ParameterCodebase));
             else if (verb == VerbUninstall)
                 UninstallServer(target, registrationType);
+            else if (verb == VerbConfig)
+                ConfigAction.Execute(outputService, parameters);
+            else if (verb == VerbEnableEventLog)
+                EnableEventLogAction.Execute(outputService);
             else
-                ShowHelp();
+                ShowHelpAction.Execute(outputService);
         }
 
         /// <summary>
@@ -178,24 +183,6 @@ namespace ServerRegistrationManager
         }
 
         /// <summary>
-        /// Shows the help message.
-        /// </summary>
-        private void ShowHelp()
-        {
-            outputService.WriteMessage("To get help:");
-            outputService.WriteMessage("    ServerRegistrationManager help");
-            outputService.WriteMessage("");
-            outputService.WriteMessage("To install a server:");
-            outputService.WriteMessage("    ServerRegistrationManager install <path to SharpShell server> <parameters>");
-            outputService.WriteMessage("Parameters:");
-            outputService.WriteMessage("    -codebase: Optional. Installs a server from a file location, not the GAC.");
-            outputService.WriteMessage("");
-            outputService.WriteMessage("To uninstall a server:");
-            outputService.WriteMessage("    ServerRegistrationManager uninstall <path to SharpShell server>");
-            outputService.WriteMessage("");
-        }
-
-        /// <summary>
         /// Loads the server types from an assembly.
         /// </summary>
         /// <param name="assemblyPath">The assembly path.</param>
@@ -213,6 +200,8 @@ namespace ServerRegistrationManager
         private const string VerbHelp = @"help";
         private const string VerbInstall = @"install";
         private const string VerbUninstall = @"uninstall";
+        private const string VerbConfig = @"config";
+        private const string VerbEnableEventLog = @"enableeventlog";
 
         private const string ParameterCodebase = @"-codebase";
     }

@@ -80,6 +80,12 @@
     <Compile Include="Attributes\SpecialClassKeyAttribute.cs" />
     <Compile Include="Components\CategoryManager.cs" />
     <Compile Include="Components\ExtractIconImpl.cs" />
+    <Compile Include="Configuration\LoggingMode.cs" />
+    <Compile Include="Configuration\SystemConfiguration.cs" />
+    <Compile Include="Diagnostics\Loggers\DebugLogger.cs" />
+    <Compile Include="Diagnostics\Loggers\EventLogLogger.cs" />
+    <Compile Include="Diagnostics\Loggers\FileLogger.cs" />
+    <Compile Include="Diagnostics\Loggers\ILogger.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\GuidExtensions.cs" />
     <Compile Include="Extensions\IDataObjectExtensions.cs" />
@@ -222,12 +228,15 @@
     <Compile Include="SharpNamespaceExtension\ShellNamespaceFolderIdListEnumerator.cs" />
     <Compile Include="SharpNamespaceExtension\StandardPropertyKey.cs" />
     <Compile Include="SharpNamespaceExtension\VirtualFolder.cs" />
+    <Compile Include="SharpPreviewHandler\PreviewHandlerAttribute.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SharpPreviewHandler\PreviewHandlerHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Exceptions\ServerRegistrationException.cs" />
+    <Compile Include="SharpPreviewHandler\PreviewHandlerRegistrar.cs" />
     <Compile Include="SharpPreviewHandler\SharpPreviewHandler.cs" />
     <Compile Include="SharpPropertySheet\SharpPropertyPage.cs">
       <SubType>UserControl</SubType>
@@ -289,7 +298,7 @@
     <Compile Include="SharpPropertySheet\PropertyPageProxy.cs" />
     <Compile Include="SharpPropertySheet\SharpPropertySheet.cs" />
     <Compile Include="SharpShellServer.cs" />
-    <Compile Include="ShellStream.cs" />
+    <Compile Include="Configuration\SystemConfigurationProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

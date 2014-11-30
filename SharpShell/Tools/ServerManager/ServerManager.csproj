@@ -141,12 +141,6 @@
     <Compile Include="About\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogView\LogViewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LogView\LogViewForm.Designer.cs">
-      <DependentUpon>LogViewForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="ServerDetails\ServerDetailsView.cs">
       <SubType>UserControl</SubType>
@@ -194,9 +188,6 @@
     </Compile>
     <EmbeddedResource Include="About\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LogView\LogViewForm.resx">
-      <DependentUpon>LogViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

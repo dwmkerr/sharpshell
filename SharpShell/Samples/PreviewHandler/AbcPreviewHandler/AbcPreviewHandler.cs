@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Runtime.InteropServices;   
 using SharpShell.Attributes;
 using SharpShell.SharpPreviewHandler;
 
-namespace IconPreviewHandler
+namespace AbcPreviewHandler
 {
     /// <summary>
-    /// The IconPreviewHandler is a preview handler that shows the icons contained
-    /// in an ico file.
+    /// The Abc Preview Handler is a preview handler that shows a simple
+    /// coloured background for ABC files.
     /// </summary>
     [ComVisible(true)]
-    [COMServerAssociation(AssociationType.ClassOfExtension, ".ico")]
-    [DisplayName("Icon Preview Handler")]
-    [Guid("B643C50D-4206-4121-A895-9EA5C919557A")]
+    [COMServerAssociation(AssociationType.ClassOfExtension, ".abc")]
+    [DisplayName("Abc Preview Handler")]
+    [Guid("B86199F1-13D0-4711-AFE6-08C1E4C58905")]
     [PreviewHandler(DisableLowILProcessIsolation = false)]
-    public class IconPreviewHandler : SharpPreviewHandler 
+    public class AbcPreviewHandler : SharpPreviewHandler 
     {
         /// <summary>
         /// DoPreview must create the preview handler user interface and initialize it with data
@@ -30,7 +25,7 @@ namespace IconPreviewHandler
         protected override PreviewHandlerControl DoPreview()
         {
             //  Create the handler control.
-            var handler = new IconPreviewHandlerControl();
+            var handler = new AbcPreviewHandlerControl();
 
             //  Do we have a file path? If so, we can do a preview.
             if(!string.IsNullOrEmpty(SelectedFilePath))

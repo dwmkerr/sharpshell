@@ -65,9 +65,6 @@ namespace ServerManager
             this.alwaysUnloadDLLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.desktopProcessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restartExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagnosticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enableSharpShellLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearMostRecentlyUsedServersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,8 +79,8 @@ namespace ServerManager
             this.toolStripButtonTestServer = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonOpenShellDialog = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonShellDebugger = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonAttachDebugger = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonShellDebugger = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -233,7 +230,6 @@ namespace ServerManager
             this.fileToolStripMenuItem,
             this.serverToolStripMenuItem,
             this.explorerToolStripMenuItem,
-            this.diagnosticsToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -395,29 +391,6 @@ namespace ServerManager
             this.restartExplorerToolStripMenuItem.Text = "&Restart Explorer";
             this.restartExplorerToolStripMenuItem.Click += new System.EventHandler(this.restartExplorerToolStripMenuItem_Click);
             // 
-            // diagnosticsToolStripMenuItem
-            // 
-            this.diagnosticsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableSharpShellLogToolStripMenuItem,
-            this.showLogToolStripMenuItem});
-            this.diagnosticsToolStripMenuItem.Name = "diagnosticsToolStripMenuItem";
-            this.diagnosticsToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
-            this.diagnosticsToolStripMenuItem.Text = "&Diagnostics";
-            // 
-            // enableSharpShellLogToolStripMenuItem
-            // 
-            this.enableSharpShellLogToolStripMenuItem.Name = "enableSharpShellLogToolStripMenuItem";
-            this.enableSharpShellLogToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-            this.enableSharpShellLogToolStripMenuItem.Text = "&Enable SharpShell DebugLog";
-            this.enableSharpShellLogToolStripMenuItem.Click += new System.EventHandler(this.enableSharpShellLogToolStripMenuItem_Click);
-            // 
-            // showLogToolStripMenuItem
-            // 
-            this.showLogToolStripMenuItem.Name = "showLogToolStripMenuItem";
-            this.showLogToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-            this.showLogToolStripMenuItem.Text = "&Show DebugLog";
-            this.showLogToolStripMenuItem.Click += new System.EventHandler(this.showLogToolStripMenuItem_Click);
-            // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -496,7 +469,7 @@ namespace ServerManager
             this.toolStripButtonShellDebugger});
             this.toolStripMain.Location = new System.Drawing.Point(3, 24);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(590, 25);
+            this.toolStripMain.Size = new System.Drawing.Size(559, 25);
             this.toolStripMain.TabIndex = 3;
             // 
             // toolStripButtonOpenTestShell
@@ -530,15 +503,6 @@ namespace ServerManager
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButtonShellDebugger
-            // 
-            this.toolStripButtonShellDebugger.Image = global::ServerManager.Properties.Resources.Debug;
-            this.toolStripButtonShellDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonShellDebugger.Name = "toolStripButtonShellDebugger";
-            this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(186, 22);
-            this.toolStripButtonShellDebugger.Text = "Shell Debugger (Experimental)";
-            this.toolStripButtonShellDebugger.Click += new System.EventHandler(this.toolStripButtonShellDebugger_Click);
-            // 
             // toolStripButtonAttachDebugger
             // 
             this.toolStripButtonAttachDebugger.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -548,6 +512,15 @@ namespace ServerManager
             this.toolStripButtonAttachDebugger.Size = new System.Drawing.Size(23, 22);
             this.toolStripButtonAttachDebugger.Text = "Attach Debugger";
             this.toolStripButtonAttachDebugger.Click += new System.EventHandler(this.toolStripButtonAttachDebugger_Click);
+            // 
+            // toolStripButtonShellDebugger
+            // 
+            this.toolStripButtonShellDebugger.Image = global::ServerManager.Properties.Resources.Debug;
+            this.toolStripButtonShellDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonShellDebugger.Name = "toolStripButtonShellDebugger";
+            this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(186, 22);
+            this.toolStripButtonShellDebugger.Text = "Shell Debugger (Experimental)";
+            this.toolStripButtonShellDebugger.Click += new System.EventHandler(this.toolStripButtonShellDebugger_Click);
             // 
             // ServerManagerForm
             // 
@@ -625,9 +598,6 @@ namespace ServerManager
         private System.Windows.Forms.ToolStripMenuItem requestAFeatureToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagnosticsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem enableSharpShellLogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenTestShell;
         private System.Windows.Forms.ToolStripButton toolStripButtonOpenShellDialog;
         private System.Windows.Forms.ToolStripButton toolStripButtonShellDebugger;
