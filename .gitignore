@@ -24,3 +24,7 @@ SharpShell/ipch/
 *.sdf
 *.opensdf
 Build/Tools/ServerManager.vshost.exe.manifest
+!Release/
+Release/2.*
+Release/nuspec/SharpShell/lib
+Release/nuspec/SharpShellTools/lib
