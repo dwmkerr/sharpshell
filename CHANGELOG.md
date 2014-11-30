@@ -2,8 +2,9 @@
 
  * SharpShell is now built with Visual Studio 2013 Community Edition.
  * Overhauled the logging mechanism.
- * Fixed preview handler bugs #33, #58, #50, #52.
+ * Fixed preview handler bugs #33, #58, #50, #52, #56.
  * Preview handlers no longer flicker.
+
 
 ### Breaking Changes
 
@@ -11,6 +12,8 @@
    enabled based on configuration in the registry rather than debug mode. Use 
    `Logging.Log` or `Logging.Error` instead.
  * `Logging` class has no facility to enable/disable logging.
+ * Preview Handlers MUST be decorated with the `PreviewHandler` attribute. This
+   pattern will be implemented for other extensions in time.
 
 ### srm
 
