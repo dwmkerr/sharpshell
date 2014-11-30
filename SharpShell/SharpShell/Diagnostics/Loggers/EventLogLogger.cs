@@ -16,7 +16,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <summary>
         /// Initializes a new instance of the <see cref="EventLogLogger" /> class.
         /// </summary>
-        public  EventLogLogger()
+        public EventLogLogger()
         {
             //  Check whether the source exists.
             try

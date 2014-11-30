@@ -65,6 +65,8 @@ namespace ServerRegistrationManager
                 UninstallServer(target, registrationType);
             else if (verb == VerbConfig)
                 ConfigAction.Execute(outputService, parameters);
+            else if (verb == VerbEnableEventLog)
+                EnableEventLogAction.Execute(outputService);
             else
                 ShowHelpAction.Execute(outputService);
         }
@@ -199,6 +201,7 @@ namespace ServerRegistrationManager
         private const string VerbInstall = @"install";
         private const string VerbUninstall = @"uninstall";
         private const string VerbConfig = @"config";
+        private const string VerbEnableEventLog = @"enableeventlog";
 
         private const string ParameterCodebase = @"-codebase";
     }
