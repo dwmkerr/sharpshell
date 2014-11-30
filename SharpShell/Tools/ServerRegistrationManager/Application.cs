@@ -56,7 +56,7 @@ namespace ServerRegistrationManager
             //  Get the verb, target and parameters.
             var verb = args[0];
             var target = args.Length > 1 ? args[1] : (string)null; // TODO tidy this up.
-            var parameters = args.Skip(2);
+            var parameters = args.Skip(1);
 
             //  Based on the verb, perform the action.
             if (verb == VerbInstall)
@@ -64,7 +64,7 @@ namespace ServerRegistrationManager
             else if (verb == VerbUninstall)
                 UninstallServer(target, registrationType);
             else if (verb == VerbConfig)
-                ShowConfigAction.Execute(outputService);
+                ConfigAction.Execute(outputService, parameters);
             else
                 ShowHelpAction.Execute(outputService);
         }

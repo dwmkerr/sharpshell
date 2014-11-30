@@ -65,7 +65,7 @@
     <Compile Include="..\..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Actions\ShowConfigAction.cs" />
+    <Compile Include="Actions\ConfigAction.cs" />
     <Compile Include="Actions\ShowHelpAction.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="OutputService\IOutputService.cs" />

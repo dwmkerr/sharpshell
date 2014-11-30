@@ -45,8 +45,8 @@ namespace SharpShell.Configuration
             using (var localMachineBaseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32))
             {
                 //  Open the SharpShell Key.
-                using (var sharpShellKey = localMachineBaseKey.OpenSubKey(@"Software\SharpShell", 
-                    RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey))
+                using (var sharpShellKey = localMachineBaseKey.OpenSubKey(SharpShellKey, 
+                    RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey))
                 {
                     //  If we don't have the key, return the default config.
                     if (sharpShellKey == null)
@@ -54,13 +54,35 @@ namespace SharpShell.Configuration
 
                     //  Load the config.
                     config.IsConfigurationPresent = true;
-                    config.LoggingMode = (LoggingMode)sharpShellKey.GetValue("LoggingMode", LoggingMode.Disabled);
-                    config.LogPath = (string)sharpShellKey.GetValue("LogPath", null);
+                    config.LoggingMode = (LoggingMode)sharpShellKey.GetValue(LoggingModeValue, LoggingMode.Disabled);
+                    config.LogPath = (string)sharpShellKey.GetValue(LogPathValue, null);
                 }
             }
 
             //  Return the config.
             return config;
+        }
+
+        /// <summary>
+        /// Saves the configuration.
+        /// </summary>
+        public static void Save()
+        {
+            //  Open the local machine.
+            using (var localMachineBaseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32))
+            {
+                //  Open the SharpShell Key.
+                using (var sharpShellKey = localMachineBaseKey.CreateSubKey(SharpShellKey,
+                    RegistryKeyPermissionCheck.ReadWriteSubTree))
+                {
+                    if(sharpShellKey == null)
+                        throw new InvalidOperationException("Unable to create the SharpShell registry key.");
+
+                    //  Save the config.
+                    sharpShellKey.SetValue(LoggingModeValue, Configuration.LoggingMode, RegistryValueKind.DWord);
+                    sharpShellKey.SetValue(LogPathValue, Configuration.LogPath ?? string.Empty, RegistryValueKind.ExpandString);
+                }
+            }
         }
 
         /// <summary>
@@ -73,5 +95,10 @@ namespace SharpShell.Configuration
         {
             get { return systemConfiguration.Value; }
         }
+
+        //  Registry keys and values.
+        private const string SharpShellKey = @"Software\SharpShell";
+        private const string LoggingModeValue = "LoggingMode";
+        private const string LogPathValue = "LogPath";
     }
 }

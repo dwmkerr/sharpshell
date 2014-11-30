@@ -162,7 +162,6 @@ namespace SharpShell.SharpPreviewHandler
         {
             //  DebugLog key events.
             Log("IObjectWithSite.GetSite called.");
-            Debugger.Break();
 
             //  Get the IUnknown, query for the interface and return the result.
             IntPtr pUnknown = Marshal.GetIUnknownForObject(site);
