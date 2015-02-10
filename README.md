@@ -28,6 +28,7 @@ Send me a message to add a project to this list:
  - [REAL Shuffle Player 2.0](http://download.cnet.com/Real-Shuffle-Player/3000-2139_4-75992715.html)
  - [The CmisSync context menu](http://aegif-labo.blogspot.jp/2014/08/the-cmissync-context-menu-check-out.html)
  - [TenClips](http://www.paludour.net/TenClips.html)
+ - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
 
 Deploying SharpShell Servers
 ----------------------------
