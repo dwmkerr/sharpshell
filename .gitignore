@@ -15,6 +15,7 @@ Thumbs.db
 *.log
 [Bb]in
 [Dd]ebug*/
+!DebugContextMenuExtension
 *.sbr
 obj/
 [Rr]elease*/

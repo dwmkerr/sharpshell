@@ -429,6 +429,7 @@ namespace ServerManager
         {
             //  Show a shell dialog.
             var openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
             openFileDialog.ShowDialog(this);
         }
 
