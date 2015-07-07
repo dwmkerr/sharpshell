@@ -29,9 +29,23 @@ namespace SharpShell.SharpContextMenu
         /// <param name="hMenu">The handle to the menu.</param>
         /// <param name="firstItemId">The first item id.</param>
         /// <param name="toolStripItems">The tool strip menu items.</param>
+        /// <param name="verbQualifier">The unique qualifier to distingush verbs between extensions in the system.
+        /// The recommended value is the string form of the GUID of the extension. See 
+        /// https://msdn.microsoft.com/en-us/library/windows/desktop/ee453696 for details.</param>
         /// <returns>The index of the last item created.</returns>
-        public uint BuildNativeContextMenu(IntPtr hMenu, uint firstItemId, ToolStripItemCollection toolStripItems)
+        public uint BuildNativeContextMenu(IntPtr hMenu, uint firstItemId, ToolStripItemCollection toolStripItems, string verbQualifier)
         {
+            //  For more details on the verb qualifier see:
+            //
+            //  https://msdn.microsoft.com/en-us/library/windows/desktop/ee453696
+            //
+            //  Be aware that even a dynamic verb must be *consistent* between repeated calls to 
+            //  QueryContextMenu. This means if the same extension calls QueryContextMenu ten times,
+            //  it must return the same verbs. A random GUID is therefore not suitable, so
+            //  we build a verb of the form:
+            //
+            //  verbQualifier.commandIndex
+
             //  Create an ID counter and position counter.
             var idCounter = firstItemId;
             uint positionCounter = 0;
@@ -39,13 +53,12 @@ namespace SharpShell.SharpContextMenu
             //  Go through every tool strip item.
             foreach (ToolStripItem item in toolStripItems)
             {
-                //  If there's not a name, set one. 
-                //  This will be used as the verb.
-                if (string.IsNullOrEmpty(item.Name))
-                    item.Name = Guid.NewGuid().ToString();
+                //  Create a verb for the context menu item. Unique only if the qualifier is unique.
+                var verb = string.Format("{0}.{1}", verbQualifier, positionCounter);
+                item.Name = verb;
 
                 //  Map the command by verb and id.
-                verbsToCommands[item.Name] = item;
+                verbsToCommands[verb] = item;
                 idsToItems[idCounter] = item;
 
                 //  Create the native menu item info.
@@ -68,7 +81,7 @@ namespace SharpShell.SharpContextMenu
                 if (toolStripMenuItem != null && toolStripMenuItem.HasDropDownItems)
                 {
                     //  Create each drop down item.
-                    idCounter = BuildNativeContextMenu(menuItemInfo.hSubMenu, idCounter, toolStripMenuItem.DropDownItems);
+                    idCounter = BuildNativeContextMenu(menuItemInfo.hSubMenu, idCounter, toolStripMenuItem.DropDownItems, verb);
                 }
             }
 

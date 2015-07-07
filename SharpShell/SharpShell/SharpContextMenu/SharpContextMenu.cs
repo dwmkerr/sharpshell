@@ -73,7 +73,7 @@ namespace SharpShell.SharpContextMenu
             try
             {
                 nativeContextMenuWrapper.ResetNativeContextMenu();
-                lastItemId = nativeContextMenuWrapper.BuildNativeContextMenu(hMenu, firstItemId, contextMenuStrip.Value.Items);
+                lastItemId = nativeContextMenuWrapper.BuildNativeContextMenu(hMenu, firstItemId, contextMenuStrip.Value.Items, ServerClsid.ToString());
             }
             catch (Exception exception)
             {
@@ -148,7 +148,7 @@ namespace SharpShell.SharpContextMenu
             else if (isUnicode && User32.HighWord(iciex.verbW.ToInt32()) != 0)
             {
                 //  Get the verb.
-                var verb = Marshal.PtrToStringAnsi(ici.verb);
+                var verb = Marshal.PtrToStringUni(iciex.verbW);
 
                 //  DebugLog this key event.
                 Log(string.Format("Invoke Unicode verb {0}", verb));
