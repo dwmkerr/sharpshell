@@ -5,6 +5,8 @@ using System.Security.AccessControl;
 using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Extensions;
+using SharpShell.Diagnostics;
+using SharpShell.Interop;
 
 namespace SharpShell.ServerRegistration
 {
@@ -443,14 +445,21 @@ namespace SharpShell.ServerRegistration
                 {
                     //  Check we have the key.
                     if (defaultIconKey == null)
-                        throw new InvalidOperationException("Cannot open default icon key for class " + className);
+                    {
+                        // if not, we create the key.
+                        RegistryKey tempDefaultIconKey = classesKey.CreateSubKey(KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        tempDefaultIconKey.SetValue(null, "%1");
+                    } 
+                    else 
+                    {
 
-                    //  Get the default icon.
-                    var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
+                        //  Get the default icon.
+                        var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
 
-                    //  Save the default icon.
-                    defaultIconKey.SetValue(ValueName_DefaultIconBackup, defaultIcon);
-                    defaultIconKey.SetValue(null, "%1");
+                        //  Save the default icon.
+                        defaultIconKey.SetValue(ValueName_DefaultIconBackup, defaultIcon);
+                        defaultIconKey.SetValue(null, "%1");
+                    }
                 }
             }
         }
@@ -568,15 +577,28 @@ namespace SharpShell.ServerRegistration
                             //  Open the file type key.
                             using (var fileTypeKey = classesKey.OpenSubKey(association))
                             {
-                                //  If the file type key is null, we're done.
-                                if (fileTypeKey == null)
-                                    continue;
-
-                                //  Get the default value, this should be the file type class.
-                                var fileTypeClass = fileTypeKey.GetValue(null) as string;
-
-                                //  If the file type class is valid, we can return it.
-                                fileTypeClasses.Add(fileTypeClass);
+                                //  If the file type key is null, we create the key.
+                                if (fileTypeKey == null) 
+                                {
+                                    Logging.Log("creating key for " + association);
+                                    classesKey.CreateSubKey(association);
+                                    // use the file type key as the class
+                                    fileTypeClasses.Add(association);
+                                }
+                                else 
+                                {
+                                    //  Get the default value, this should be the file type class.
+                                    var fileTypeClass = fileTypeKey.GetValue(null) as string;
+                                    if (fileTypeClass == null || fileTypeClass== String.Empty) 
+                                    {
+                                        fileTypeClasses.Add(association);
+                                    }
+                                    else
+                                    {
+                                        //  If the file type class is valid, we can return it.
+                                        fileTypeClasses.Add(fileTypeClass);
+                                    } 
+                                }
                             }
                         }
 
@@ -739,7 +761,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="server">The server.</param>
         /// <param name="registrationType">Type of the registration.</param>
         /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
-        private static void ApproveExtension(ISharpShellServer server, RegistrationType registrationType)
+        public static void ApproveExtension(ISharpShellServer server, RegistrationType registrationType)
         {
             //  Open the approved extensions key.
             using(var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, 
@@ -752,6 +774,18 @@ namespace SharpShell.ServerRegistration
 
                 //  Create an entry for the server.
                 approvedKey.SetValue(server.ServerClsid.ToRegistryString(), server.DisplayName);
+            }
+        }
+
+        public static void ApproveExtension(Type type, RegistrationType registrationType) {
+            using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
+                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
+                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+                //  If we can't open the key, we're going to have problems.
+                if (approvedKey == null)
+                    throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+                Logging.Log("Approve " + approvedKey.ToString() + "\\" + type.GUID.ToRegistryString());
+                approvedKey.SetValue(type.GUID.ToRegistryString(), "");
             }
         }
 
