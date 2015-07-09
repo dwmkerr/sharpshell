@@ -447,7 +447,7 @@ namespace SharpShell.ServerRegistration
                     if (defaultIconKey == null)
                     {
                         // if not, we create the key.
-                        RegistryKey tempDefaultIconKey = classesKey.CreateSubKey(KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        RegistryKey tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
                         tempDefaultIconKey.SetValue(null, "%1");
                     } 
                     else 
@@ -577,10 +577,9 @@ namespace SharpShell.ServerRegistration
                             //  Open the file type key.
                             using (var fileTypeKey = classesKey.OpenSubKey(association))
                             {
-                                //  If the file type key is null, we create the key.
+                                //  If the file type key is null, create it.
                                 if (fileTypeKey == null) 
                                 {
-                                    Logging.Log("creating key for " + association);
                                     classesKey.CreateSubKey(association);
                                     // use the file type key as the class
                                     fileTypeClasses.Add(association);
