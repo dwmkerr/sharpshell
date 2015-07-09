@@ -5,8 +5,7 @@ using System.Security.AccessControl;
 using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Extensions;
-using SharpShell.Diagnostics;
-using SharpShell.Interop;
+
 
 namespace SharpShell.ServerRegistration
 {
@@ -452,7 +451,6 @@ namespace SharpShell.ServerRegistration
                     } 
                     else 
                     {
-
                         //  Get the default icon.
                         var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
 
@@ -760,7 +758,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="server">The server.</param>
         /// <param name="registrationType">Type of the registration.</param>
         /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
-        public static void ApproveExtension(ISharpShellServer server, RegistrationType registrationType)
+        private static void ApproveExtension(ISharpShellServer server, RegistrationType registrationType)
         {
             //  Open the approved extensions key.
             using(var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, 
@@ -773,18 +771,6 @@ namespace SharpShell.ServerRegistration
 
                 //  Create an entry for the server.
                 approvedKey.SetValue(server.ServerClsid.ToRegistryString(), server.DisplayName);
-            }
-        }
-
-        public static void ApproveExtension(Type type, RegistrationType registrationType) {
-            using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
-                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
-                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                //  If we can't open the key, we're going to have problems.
-                if (approvedKey == null)
-                    throw new InvalidOperationException("Failed to open the Approved Extensions key.");
-                Logging.Log("Approve " + approvedKey.ToString() + "\\" + type.GUID.ToRegistryString());
-                approvedKey.SetValue(type.GUID.ToRegistryString(), "");
             }
         }
 
