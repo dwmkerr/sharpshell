@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using SharpShell.Attributes;
 using SharpShell.Diagnostics;
 using SharpShell.ServerRegistration;
+using SharpShell.Interop;
 
 namespace SharpShell
 {
@@ -79,6 +80,8 @@ namespace SharpShell
 
             //  Execute the custom register function, if there is one.
             CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+
+            Shell32.SHChangeNotify(0x08000000, 0, IntPtr.Zero, IntPtr.Zero);
         }
 
         /// <summary>
@@ -106,6 +109,8 @@ namespace SharpShell
 
             //  Execute the custom unregister function, if there is one.
             CustomUnregisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+
+            Shell32.SHChangeNotify(0x08000000, 0, IntPtr.Zero, IntPtr.Zero);
         }
         
         /// <summary>
