@@ -238,7 +238,7 @@ namespace SharpShell.SharpIconOverlayHandler
                                                   "being registered, it will not be used by Windows Explorer.");
 
                     //  Create the overlay key.
-                    using(var overlayKey = overlayIdentifiers.CreateSubKey(serverType.Name))
+                    using(var overlayKey = overlayIdentifiers.CreateSubKey(" " + serverType.Name))
                     {
                         //  If we don't have the overlay key, we've got a problem.
                         if(overlayKey == null)
