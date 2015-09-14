@@ -84,7 +84,7 @@ Shell PreviewHandlers are dlls that can be registered in the system to allow you
 
 ### Icon Overlay Handlers
 
-Shell Icon Overlay Handlers can be really useful. They let you display an icon overlay over shell objects to provide extra information. Programs like Dropbox use these overlays to show whether icons are synchronised or not.
+Shell Icon Overlay Handlers can be really useful. They let you display an icon overlay over shell objects to provide extra information. Programs like Dropbox use these overlays to show whether files are synchronised or not.
 
 ![Shell Icon Overlay Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/overlayhandler.png)
 
