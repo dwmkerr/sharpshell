@@ -149,7 +149,7 @@ namespace SharpShell.NativeBridge
             //  Create the name of the bridge manifest.
             return string.Format("{0}.NativeBridge.SharpShellNativeBridge{1}.dll",
                                  Assembly.GetExecutingAssembly().GetName().Name,
-                                 Environment.Is64BitOperatingSystem ? "64" : "32");
+                                 Environment.Is64BitProcess ? "64" : "32");
         }
 
         /// <summary>
