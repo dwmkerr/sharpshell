@@ -274,8 +274,8 @@ namespace SharpShell.SharpIconOverlayHandler
                         throw new InvalidOperationException("Cannot open the ShellIconOverlayIdentifiers key.");
 
                     //  Delete the overlay key.
-                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == serverType.Name))
-                        overlayIdentifiers.DeleteSubKey(serverType.Name);
+                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == (" " + serverType.Name)))
+                        overlayIdentifiers.DeleteSubKey(" " + serverType.Name);
                 }
             }
         }
