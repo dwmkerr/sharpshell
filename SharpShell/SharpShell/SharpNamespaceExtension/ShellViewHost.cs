@@ -124,8 +124,8 @@ namespace SharpShell.SharpNamespaceExtension
 
         int IShellView.GetItemObject(_SVGIO uItem, ref Guid riid, ref IntPtr ppv)
         {
-            //  TODO
-            return WinError.S_OK;
+            // Returning S_OK will cause Explorer to crash when navigating away from namespace View
+            return WinError.E_NOTIMPL;
         }
 
         int IShellView.GetWindow(out IntPtr phwnd)
