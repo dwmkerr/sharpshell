@@ -29,6 +29,7 @@ Send me a message to add a project to this list:
  - [The CmisSync context menu](http://aegif-labo.blogspot.jp/2014/08/the-cmissync-context-menu-check-out.html)
  - [TenClips](http://www.paludour.net/TenClips.html)
  - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
+ - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
 
 Deploying SharpShell Servers
 ----------------------------
