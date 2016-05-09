@@ -69,6 +69,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\AssociationType.cs" />
+    <Compile Include="Attributes\RegistrationNameAttribute.cs" />
     <Compile Include="Attributes\COMServerAssociationAttribute.cs" />
     <Compile Include="Attributes\CustomUnregisterFunctionAttribute.cs" />
     <Compile Include="Attributes\CustomRegisterFunctionAttribute.cs" />

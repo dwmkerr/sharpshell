@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Security.AccessControl;
 using System.Text;
 using Microsoft.Win32;
@@ -156,7 +155,7 @@ namespace SharpShell.SharpIconOverlayHandler
         /// <returns>The icon file path.</returns>
         private string GetIconFilePath()
         {
-            //  If we're not in debug mode and we've already created the temporary icon file, 
+            //  If we're not in debug mode and we've already created the temporary icon file,
             //  we can return it. If we're in debug mode, we'll always create it.
 #if !DEBUG
             if(!string.IsNullOrEmpty(temporaryIconOverlayFilePath) && File.Exists(temporaryIconOverlayFilePath))
@@ -223,7 +222,7 @@ namespace SharpShell.SharpIconOverlayHandler
             {
                 //  Open the ShellIconOverlayIdentifiers.
                 using(var overlayIdentifiers = localMachineBaseKey
-                    .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers", 
+                    .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers",
                     RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.EnumerateSubKeys | RegistryRights.QueryValues | RegistryRights.CreateSubKey | RegistryRights.CreateSubKey))
                 {
                     //  If we don't have the key, we've got a problem.
@@ -238,7 +237,8 @@ namespace SharpShell.SharpIconOverlayHandler
                                                   "being registered, it will not be used by Windows Explorer.");
 
                     //  Create the overlay key.
-                    using(var overlayKey = overlayIdentifiers.CreateSubKey(serverType.Name))
+                    var keyName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(serverType);
+                    using (var overlayKey = overlayIdentifiers.CreateSubKey(keyName))
                     {
                         //  If we don't have the overlay key, we've got a problem.
                         if(overlayKey == null)
@@ -274,8 +274,9 @@ namespace SharpShell.SharpIconOverlayHandler
                         throw new InvalidOperationException("Cannot open the ShellIconOverlayIdentifiers key.");
 
                     //  Delete the overlay key.
-                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == serverType.Name))
-                        overlayIdentifiers.DeleteSubKey(serverType.Name);
+                    var keyName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(serverType);
+                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == keyName))
+                        overlayIdentifiers.DeleteSubKey(keyName);
                 }
             }
         }
@@ -304,7 +305,7 @@ namespace SharpShell.SharpIconOverlayHandler
         protected abstract int GetPriority();
 
         /// <summary>
-        /// Determines whether an overlay should be shown for the shell item with the path 'path' and 
+        /// Determines whether an overlay should be shown for the shell item with the path 'path' and
         /// the shell attributes 'attributes'.
         /// </summary>
         /// <param name="path">The path for the shell item. This is not necessarily the path

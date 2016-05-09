@@ -14,7 +14,7 @@ namespace SharpShell
     /// identity information (as required by ISharpShellServer), MEF contract inheritance
     /// and definitions of virtual functions that can be overriden by advanced users
     /// to hook into key points in Server Lifecycle.
-    /// 
+    ///
     /// Note that ALL derived classes will Export ISharpShellServer - this is a useful
     /// feature as it means that the ServerManager tool (and other tools) can interrogate
     /// assemblies via MEF to get information on servers they contain.
@@ -74,7 +74,7 @@ namespace SharpShell
             if (assocationAttributes.Any())
             {
                 ServerRegistrationManager.RegisterServerAssociations(
-                    type.GUID, serverType, type.Name, assocationAttributes, registrationType);
+                    type.GUID, serverType, RegistrationNameAttribute.GetRegistrationNameOrTypeName(type), assocationAttributes, registrationType);
             }
 
             //  Execute the custom register function, if there is one.
@@ -96,18 +96,18 @@ namespace SharpShell
 
             //  Get the server type.
             var serverType = ServerTypeAttribute.GetServerType(type);
-            
+
             //  Unregister the server associations, if there are any.
             if (assocationAttributes.Any())
             {
                 ServerRegistrationManager.UnregisterServerAssociations(
-                    type.GUID, serverType, type.Name, assocationAttributes, registrationType);
+                    type.GUID, serverType, RegistrationNameAttribute.GetRegistrationNameOrTypeName(type), assocationAttributes, registrationType);
             }
 
             //  Execute the custom unregister function, if there is one.
             CustomUnregisterFunctionAttribute.ExecuteIfExists(type, registrationType);
         }
-        
+
         /// <summary>
         /// Logs the specified message to the SharpShell log, with the name of the type.
         /// </summary>
@@ -139,7 +139,7 @@ namespace SharpShell
         /// </value>
         public string DisplayName
         {
-            get 
+            get
             {
                 //  Return the display name if set, otherwise the type name.
                 return DisplayNameAttribute.GetDisplayNameOrTypeName(GetType());
