@@ -73,8 +73,9 @@ namespace SharpShell.SharpIconOverlayHandler
 
             try
             {
+                int? iconIndex = null;
                 //  Get the icon file path.
-                var iconFilePath = GetIconFilePath();
+                var iconFilePath = GetIconFilePath(out iconIndex);
 
                 //  If we have no file, we must fail.
                 if (string.IsNullOrEmpty(iconFilePath))
@@ -98,6 +99,11 @@ namespace SharpShell.SharpIconOverlayHandler
 
                 //  Set the flags, specifying we'll provide a path.
                 pdwFlags = ISIOI.ISIOI_ICONFILE;
+                if (iconIndex != null)
+                {
+                    pdwFlags |= ISIOI.ISIOI_ICONINDEX;
+                    pIndex = iconIndex.Value;
+                }
 
                 return WinError.S_OK;
             }
@@ -153,9 +159,12 @@ namespace SharpShell.SharpIconOverlayHandler
         /// <summary>
         /// Gets the icon file path, creating the icon file if needed.
         /// </summary>
-        /// <returns>The icon file path.</returns>
-        private string GetIconFilePath()
+        /// <param name="index">Index value used to identify the icon in a file that contains multiple icons.</param>
+        /// <returns>The fully qualified path of the file containing the icon. The .dll, .exe, and .ico file types are all acceptable.</returns>
+        protected virtual string GetIconFilePath(out int? index)
         {
+            index = null;
+
             //  If we're not in debug mode and we've already created the temporary icon file, 
             //  we can return it. If we're in debug mode, we'll always create it.
 #if !DEBUG
