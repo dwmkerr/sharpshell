@@ -37,6 +37,16 @@
         Directory,
 
         /// <summary>
+        /// Create an association to the background of folders and the desktop
+        /// </summary>
+        DirectoryBackground,
+
+        /// <summary>
+        /// Create an association to the background of the desktop (Windows 7 and higher)
+        /// </summary>
+        DesktopBackground,
+        
+        /// <summary>
         /// Create an association to the drive class.
         /// </summary>
         Drive,
