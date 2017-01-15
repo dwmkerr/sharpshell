@@ -30,6 +30,7 @@ Send me a message to add a project to this list:
  - [TenClips](http://www.paludour.net/TenClips.html)
  - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
  - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
+ - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
 
 Deploying SharpShell Servers
 ----------------------------
