@@ -31,6 +31,7 @@ Send me a message to add a project to this list:
  - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
  - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
  - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
+ - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
 
 Deploying SharpShell Servers
 ----------------------------
