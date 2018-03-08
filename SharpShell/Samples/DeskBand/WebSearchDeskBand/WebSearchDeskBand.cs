@@ -1,17 +1,14 @@
 ﻿using SharpShell.Attributes;
 using SharpShell.SharpDeskBand;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebSearchDeskBand
 {
 
     [ComVisible(true)]
     [DisplayName("Web Search")]
+    [Guid("095CF383-6240-4524-B16D-B478577758FC")]
     public class WebSearchDeskBand : SharpDeskBand
     {
         protected override System.Windows.Forms.UserControl CreateDeskBand()
@@ -31,5 +28,11 @@ namespace WebSearchDeskBand
                        AlwaysShowGripper = true
                    };
         }
+
+        [ComRegisterFunction]
+        public static void RegisterClass(Type type) => ComUtilities.RegisterDeskBandClass(type);
+
+        [ComUnregisterFunction]
+        public static void UnregisterClass(Type type) => ComUtilities.UnregisterClass(type);
     }
 }
