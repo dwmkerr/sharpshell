@@ -12,6 +12,15 @@ namespace SharpShell.Interop
     public interface IObjectWithSite
     {
         /// <summary>
+        /// Enables a container to pass an object a pointer to the interface for its site.
+        /// </summary>
+        /// <param name="pUnkSite">A pointer to the IUnknown interface pointer of the site managing this object. If NULL, the object should call Release on any existing site at which point the object no longer knows its site.</param>
+        /// <returns>This method returns S_OK on success.</returns>
+        [PreserveSig]
+        int SetSite([MarshalAs(UnmanagedType.IUnknown)] object pUnkSite);
+
+
+        /// <summary>
         /// Retrieves the latest site passed using SetSite.
         /// </summary>
         /// <param name="riid">The IID of the interface pointer that should be returned in ppvSite.</param>
@@ -19,13 +28,5 @@ namespace SharpShell.Interop
         /// <returns>This method returns S_OK on success.</returns>
         [PreserveSig]
         int GetSite(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out IntPtr ppvSite);
-
-        /// <summary>
-        /// Enables a container to pass an object a pointer to the interface for its site.
-        /// </summary>
-        /// <param name="pUnkSite">A pointer to the IUnknown interface pointer of the site managing this object. If NULL, the object should call Release on any existing site at which point the object no longer knows its site.</param>
-        /// <returns>This method returns S_OK on success.</returns>
-        [PreserveSig]
-        int SetSite([MarshalAs(UnmanagedType.IUnknown)] object pUnkSite);
     }
 }
