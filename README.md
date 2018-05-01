@@ -1,5 +1,6 @@
-SharpShell
-==========
+# SharpShell
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
