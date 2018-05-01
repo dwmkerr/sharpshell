@@ -1,5 +1,6 @@
-SharpShell
-==========
+# SharpShell
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
@@ -147,3 +148,13 @@ If you've used SharpShell and would like to add a testimonial, just send me a me
 > Thanks SharpShell!
 
 Nicolas Raoul - [CmisSync.com](http://CmisSync.com)
+
+## Developer Guide
+
+### CI/CD
+
+CI/CD is currently handled by AppVeyor. This has just been added and still needs some work:
+
+- [ ] AppVeyor config should be in the yaml file, not the web UI.
+- [ ] Track all produced packages as artifacts.
+- [ ] Nuget deploy / git tag / versioning.
