@@ -1,0 +1,11 @@
+version: 1.0.{build}
+before_build:
+- ps: >-
+    # Force VS2015 build tools (seems to default to 12.0 regardless of config).
+    set PATH="C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%"
+
+    # Restore packages
+    nuget restore SharpShell\SharpShell.sln
+build:
+  project: SharpShell\SharpShell.sln
+  verbosity: minimal
