@@ -30,6 +30,18 @@ namespace SharpShell.Helpers
         {
             Marshal.FreeCoTaskMem(bufferPointer);
         }
+        /// <summary>
+        /// Releases all resources used by the Com Stream.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            //  Release the underlying stream.
+            if (comStream != null)
+            {
+                Marshal.ReleaseComObject(comStream);
+            }
+        }
 
         /// <summary>
         /// When overridden in a derived class, clears all buffers for this stream and causes 
