@@ -19,6 +19,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
  - Documentation
    - [Debugging & Diagnostics](https://github.com/dwmkerr/sharpshell/wiki/Debugging-&-Diagnostics)
    - [srm: Server Registration Manager](https://github.com/dwmkerr/sharpshell/wiki/srm:-Server-Registration-Manager)
+ - [Thanks](#thanks)
 
 Projects that use SharpShell
 ----------------------------
@@ -158,3 +159,9 @@ CI/CD is currently handled by AppVeyor. This has just been added and still needs
 - [ ] AppVeyor config should be in the yaml file, not the web UI.
 - [ ] Track all produced packages as artifacts.
 - [ ] Nuget deploy / git tag / versioning.
+
+# Thanks
+
+Many thanks to [JetBrains](https://www.jetbrains.com/) for providing an Open Source License for their products!
+
+![JetBrains](./docs/thanks/jetbrains.png)
