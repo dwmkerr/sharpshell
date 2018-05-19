@@ -167,6 +167,7 @@ Some work is still needed on the CI/CD side:
 - [ ] AppVeyor config should be in the yaml file, not the web UI.
 - [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
 - [ ] Look into automatic notifications for package publication.
+- [ ] There is stale release code in the [`Release`](/Release) folder.
 
 # Thanks
 
