@@ -36,9 +36,6 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpShell">
-      <HintPath>..\packages\SharpShell.2.2.0.0\lib\net40\SharpShell.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -60,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\file-icon.png" />
@@ -72,6 +68,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\SharpShell\SharpShell.csproj">
+      <Project>{b5d5f670-bfba-4d09-91c6-74bb12b7edd4}</Project>
+      <Name>SharpShell</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
