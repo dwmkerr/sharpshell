@@ -239,6 +239,11 @@ namespace SharpShell.Interop
         [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern void SHChangeNotify(Int32 wEventId, UInt32 uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
+        /// <summary>
+        /// A file type association has changed. SHCNF_IDLIST must be specified in the uFlags parameter. dwItem1 and dwItem2 are not used and must be NULL. This event should also be sent for registered protocols.
+        /// </summary>
+        public static Int32 SHCNE_ASSOCCHANGED = 0x08000000;
+
         public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
         public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
         public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");

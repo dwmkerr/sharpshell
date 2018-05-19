@@ -238,7 +238,8 @@ namespace SharpShell.SharpIconOverlayHandler
                                                   "being registered, it will not be used by Windows Explorer.");
 
                     //  Create the overlay key.
-                    using(var overlayKey = overlayIdentifiers.CreateSubKey(" " + serverType.Name))
+                    var identifierKeyName = GetIdentifierKeyName(serverType);
+                    using (var overlayKey = overlayIdentifiers.CreateSubKey(identifierKeyName))
                     {
                         //  If we don't have the overlay key, we've got a problem.
                         if(overlayKey == null)
@@ -274,10 +275,22 @@ namespace SharpShell.SharpIconOverlayHandler
                         throw new InvalidOperationException("Cannot open the ShellIconOverlayIdentifiers key.");
 
                     //  Delete the overlay key.
-                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == (" " + serverType.Name)))
-                        overlayIdentifiers.DeleteSubKey(" " + serverType.Name);
+                    var identifierKeyName = GetIdentifierKeyName(serverType);
+                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == identifierKeyName))
+                        overlayIdentifiers.DeleteSubKey(identifierKeyName);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the key name for the overlay handler. Deliberately uses a low ASCII code letter at the
+        /// beginning to ensure a high-priority key name.
+        /// </summary>
+        /// <param name="serverTypeName">The server type name.</param>
+        /// <returns>The identifier key name for the server type.</returns>
+        private static string GetIdentifierKeyName(Type serverTypeName)
+        {
+            return " " + serverTypeName.Name;
         }
 
         /// <summary>

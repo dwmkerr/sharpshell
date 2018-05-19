@@ -570,32 +570,28 @@ namespace SharpShell.ServerRegistration
                         var fileTypeClasses = new List<string>();
 
                         //  We've got extensions, but we need the classes for them.
-                        foreach (var association in associations)
+                        foreach (var fileExtension in associations)
                         {
                             //  Open the file type key.
-                            using (var fileTypeKey = classesKey.OpenSubKey(association))
+                            using (var fileTypeKey = classesKey.OpenSubKey(fileExtension))
                             {
-                                //  If the file type key is null, create it.
-                                if (fileTypeKey == null) 
+                                //  If the file type key is null, create it. There's no class, so just associate
+                                //  with the extension.
+                                if (fileTypeKey == null)
                                 {
-                                    classesKey.CreateSubKey(association);
-                                    // use the file type key as the class
-                                    fileTypeClasses.Add(association);
+                                    classesKey.CreateSubKey(fileExtension);
+                                    fileTypeClasses.Add(fileExtension);
+                                    continue;
                                 }
-                                else 
-                                {
-                                    //  Get the default value, this should be the file type class.
-                                    var fileTypeClass = fileTypeKey.GetValue(null) as string;
-                                    if (fileTypeClass == null || fileTypeClass== String.Empty) 
-                                    {
-                                        fileTypeClasses.Add(association);
-                                    }
-                                    else
-                                    {
-                                        //  If the file type class is valid, we can return it.
-                                        fileTypeClasses.Add(fileTypeClass);
-                                    } 
-                                }
+
+                                //  Get the default value, this should be the file type class.
+                                var fileTypeClass = fileTypeKey.GetValue(null) as string;
+
+                                //  If we have a file type class, use that for the association. Otherwise,
+                                //  just use the file extension.
+                                fileTypeClasses.Add(string.IsNullOrEmpty(fileTypeClass)
+                                    ? fileExtension
+                                    : fileTypeClass);
                             }
                         }
 
