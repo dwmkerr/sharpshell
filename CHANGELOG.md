@@ -1,3 +1,10 @@
+## Version 2.3
+
+ * When IconHandlers are registered, if the icon class doesn't exist it is
+   created.
+ * The shell is notified when extensions are registered, meaning the explorer
+   process does not need to be restarted. 
+
 ## Version 2.2
 
  * SharpShell is now built with Visual Studio 2013 Community Edition.
