@@ -154,11 +154,19 @@ Nicolas Raoul - [CmisSync.com](http://CmisSync.com)
 
 ### CI/CD
 
-CI/CD is currently handled by AppVeyor. This has just been added and still needs some work:
+CI/CD is currently handled by AppVeyor. AppVeyor will:
+
+1. Build the project
+2. Run the tests
+3. Create the core SharpShell Nuget Package
+4. Publish the package to nuget.org if a version tag is pushed
+5. Create a GitHub release with the package if a version tag is pushed
+
+Some work is still needed on the CI/CD side:
 
 - [ ] AppVeyor config should be in the yaml file, not the web UI.
-- [ ] Track all produced packages as artifacts.
-- [ ] Nuget deploy / git tag / versioning.
+- [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
+- [ ] Look into automatic notifications for package publication.
 
 # Thanks
 
