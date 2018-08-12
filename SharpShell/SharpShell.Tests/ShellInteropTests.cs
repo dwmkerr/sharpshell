@@ -17,7 +17,7 @@ namespace SharpShell.Tests
             //  We must be able to get the documents known path without throwing an exception.
             string path;
             Shell32.SHGetKnownFolderPath(KnownFolders.FOLDERID_Documents, KNOWN_FOLDER_FLAG.KF_NO_FLAGS, IntPtr.Zero, out path);
-            Assert.IsNotNullOrEmpty(path);
+            Assert.That(path, Is.Not.Null.Or.Empty);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace SharpShell.Tests
             Shell32.SHGetFolderLocation(IntPtr.Zero, CSIDL.CSIDL_DESKTOP, IntPtr.Zero, 0, out pidl);
             var sb = new StringBuilder(260);
             Assert.IsTrue(Shell32.SHGetPathFromIDList(pidl, sb));
-            Assert.IsNotNullOrEmpty(sb.ToString());
+            Assert.That(sb.ToString(), Is.Not.Null.Or.Empty);
             Assert.DoesNotThrow(() => Shell32.ILFree(pidl));
         }
 
@@ -66,7 +66,7 @@ namespace SharpShell.Tests
             {
                 STRRET name;
                 desktopFolder.GetDisplayNameOf(pidl, SHGDNF.SHGDN_NORMAL, out name);
-                Assert.IsNotNullOrEmpty(name.GetStringValue());
+                Assert.That(name.GetStringValue(), Is.Not.Null.Or.Empty);
                 Assert.DoesNotThrow(() => Marshal.FreeCoTaskMem(pidl));
             }
             

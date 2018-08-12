@@ -229,6 +229,21 @@ namespace SharpShell.Interop
         public static extern int SHCreateDataObject(IntPtr pidlFolder, uint cidl, IntPtr apidl, IDataObject pdtInner, Guid riid,
             out IntPtr ppv);
 
+        /// <summary>
+        /// Notifies the system of an event that an application has performed. An application should use this function if it performs an action that may affect the Shell.
+        /// </summary>
+        /// <param name="wEventId">Describes the event that has occurred. Typically, only one event is specified at a time. If more than one event is specified, the values contained in the dwItem1 and dwItem2 parameters must be the same, respectively, for all specified events. This parameter can be one or more of the following values:</param>
+        /// <param name="uFlags">Flags that, when combined bitwise with SHCNF_TYPE, indicate the meaning of the dwItem1 and dwItem2 parameters. The uFlags parameter must be one of the following values.</param>
+        /// <param name="dwItem1">Optional. First event-dependent value.</param>
+        /// <param name="dwItem2">Optional. Second event-dependent value.</param>
+        [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern void SHChangeNotify(Int32 wEventId, UInt32 uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
+        /// <summary>
+        /// A file type association has changed. SHCNF_IDLIST must be specified in the uFlags parameter. dwItem1 and dwItem2 are not used and must be NULL. This event should also be sent for registered protocols.
+        /// </summary>
+        public static Int32 SHCNE_ASSOCCHANGED = 0x08000000;
+
         public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
         public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
         public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
@@ -237,5 +252,6 @@ namespace SharpShell.Interop
         public static Guid IID_IContextMenu = new Guid("000214e4-0000-0000-c000-000000000046");
         public static Guid IID_IShellBrowser = new Guid("000214E2-0000-0000-C000-000000000046");
         public static Guid IID_IFolderView = new Guid("cde725b0-ccc9-4519-917e-325d72fab4ce");
+
     }
 }

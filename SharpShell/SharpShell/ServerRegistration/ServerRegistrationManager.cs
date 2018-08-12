@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Extensions;
 
+
 namespace SharpShell.ServerRegistration
 {
     /// <summary>
@@ -443,14 +444,20 @@ namespace SharpShell.ServerRegistration
                 {
                     //  Check we have the key.
                     if (defaultIconKey == null)
-                        throw new InvalidOperationException("Cannot open default icon key for class " + className);
+                    {
+                        // if not, we create the key.
+                        RegistryKey tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        tempDefaultIconKey.SetValue(null, "%1");
+                    } 
+                    else 
+                    {
+                        //  Get the default icon.
+                        var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
 
-                    //  Get the default icon.
-                    var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
-
-                    //  Save the default icon.
-                    defaultIconKey.SetValue(ValueName_DefaultIconBackup, defaultIcon);
-                    defaultIconKey.SetValue(null, "%1");
+                        //  Save the default icon.
+                        defaultIconKey.SetValue(ValueName_DefaultIconBackup, defaultIcon);
+                        defaultIconKey.SetValue(null, "%1");
+                    }
                 }
             }
         }
@@ -563,20 +570,28 @@ namespace SharpShell.ServerRegistration
                         var fileTypeClasses = new List<string>();
 
                         //  We've got extensions, but we need the classes for them.
-                        foreach (var association in associations)
+                        foreach (var fileExtension in associations)
                         {
                             //  Open the file type key.
-                            using (var fileTypeKey = classesKey.OpenSubKey(association))
+                            using (var fileTypeKey = classesKey.OpenSubKey(fileExtension))
                             {
-                                //  If the file type key is null, we're done.
+                                //  If the file type key is null, create it. There's no class, so just associate
+                                //  with the extension.
                                 if (fileTypeKey == null)
+                                {
+                                    classesKey.CreateSubKey(fileExtension);
+                                    fileTypeClasses.Add(fileExtension);
                                     continue;
+                                }
 
                                 //  Get the default value, this should be the file type class.
                                 var fileTypeClass = fileTypeKey.GetValue(null) as string;
 
-                                //  If the file type class is valid, we can return it.
-                                fileTypeClasses.Add(fileTypeClass);
+                                //  If we have a file type class, use that for the association. Otherwise,
+                                //  just use the file extension.
+                                fileTypeClasses.Add(string.IsNullOrEmpty(fileTypeClass)
+                                    ? fileExtension
+                                    : fileTypeClass);
                             }
                         }
 

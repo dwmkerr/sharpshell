@@ -1,5 +1,6 @@
-SharpShell
-==========
+# SharpShell
+
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
@@ -18,6 +19,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
  - Documentation
    - [Debugging & Diagnostics](https://github.com/dwmkerr/sharpshell/wiki/Debugging-&-Diagnostics)
    - [srm: Server Registration Manager](https://github.com/dwmkerr/sharpshell/wiki/srm:-Server-Registration-Manager)
+ - [Thanks](#thanks)
 
 Projects that use SharpShell
 ----------------------------
@@ -30,6 +32,8 @@ Send me a message to add a project to this list:
  - [TenClips](http://www.paludour.net/TenClips.html)
  - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
  - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
+ - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
+ - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
 
 Deploying SharpShell Servers
 ----------------------------
@@ -145,3 +149,28 @@ If you've used SharpShell and would like to add a testimonial, just send me a me
 > Thanks SharpShell!
 
 Nicolas Raoul - [CmisSync.com](http://CmisSync.com)
+
+## Developer Guide
+
+### CI/CD
+
+CI/CD is currently handled by AppVeyor. AppVeyor will:
+
+1. Build the project
+2. Run the tests
+3. Create the core SharpShell Nuget Package
+4. Publish the package to nuget.org if a version tag is pushed
+5. Create a GitHub release with the package if a version tag is pushed
+
+Some work is still needed on the CI/CD side:
+
+- [ ] AppVeyor config should be in the yaml file, not the web UI.
+- [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
+- [ ] Look into automatic notifications for package publication.
+- [ ] There is stale release code in the [`Release`](/Release) folder.
+
+# Thanks
+
+Many thanks to [JetBrains](https://www.jetbrains.com/) for providing an Open Source License for their products!
+
+![JetBrains](./docs/thanks/jetbrains.png)

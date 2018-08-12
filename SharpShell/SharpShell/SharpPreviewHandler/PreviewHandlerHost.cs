@@ -13,7 +13,7 @@ namespace SharpShell.SharpPreviewHandler
     /// The PreviewHandlerHost is the window created in the preview 
     /// pane which will hold the derived preview handlers UI.
     /// </summary>
-    internal class PreviewHandlerHost : UserControl
+    internal class PreviewHandlerHost : Form
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PreviewHandlerHost"/> class.
@@ -22,6 +22,8 @@ namespace SharpShell.SharpPreviewHandler
         {
             //  Initialize the component.
             InitializeComponent();
+
+            FormBorderStyle = FormBorderStyle.None;
 
             //  Invisible by default.
             Visible = false;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpShell", "SharpShell\SharpShell.csproj", "{B5D5F670-BFBA-4D09-91C6-74BB12B7EDD4}"
 EndProject
@@ -84,18 +84,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NamespaceExtension", "Names
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubNamespaceExtension", "Samples\NamespaceExtension\GitHubNamespaceExtension\GitHubNamespaceExtension.csproj", "{83062DA1-1841-46CD-A2F7-3F6469CE106D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{AEF49068-59F7-41CF-97A4-FF7F96882121}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistryNamespaceExtension", "Samples\NamespaceExtension\RegistryNamespaceExtension\RegistryNamespaceExtension.csproj", "{ACA406B5-4E8A-4AB2-A974-1E5C86880462}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentVariablesNamespaceExtension", "Samples\NamespaceExtension\EnvironmentVariablesNamespaceExtension\EnvironmentVariablesNamespaceExtension.csproj", "{4D55CA99-2045-4EF6-90AA-C4876AA3F202}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbcPreviewHandler", "Samples\PreviewHandler\AbcPreviewHandler\AbcPreviewHandler.csproj", "{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicSubMenus", "Samples\ContextMenu\DynamicSubMenu\DynamicSubMenus.csproj", "{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -481,6 +476,26 @@ Global
 		{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632}.Release|Win32.ActiveCfg = Release|Any CPU
 		{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632}.Release|x64.ActiveCfg = Release|Any CPU
 		{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|Win32.Build.0 = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|x64.Build.0 = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|Win32.ActiveCfg = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|Win32.Build.0 = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|x64.ActiveCfg = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|x64.Build.0 = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -520,5 +535,6 @@ Global
 		{ACA406B5-4E8A-4AB2-A974-1E5C86880462} = {915BB9DF-13F0-4E44-865F-4816C1FAB538}
 		{4D55CA99-2045-4EF6-90AA-C4876AA3F202} = {915BB9DF-13F0-4E44-865F-4816C1FAB538}
 		{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632} = {AADBCF91-B536-41B2-8054-5286699F91DC}
+		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3} = {1485D689-7B58-4926-A9A8-7192F47E417B}
 	EndGlobalSection
 EndGlobal
