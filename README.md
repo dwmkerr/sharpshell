@@ -34,6 +34,7 @@ Send me a message to add a project to this list:
  - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
  - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
  - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
+ - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
 
 Deploying SharpShell Servers
 ----------------------------
