@@ -6,25 +6,25 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 
 <!-- vim-markdown-toc GFM -->
 
-    * [Official NuGet Packages](#official-nuget-packages)
-    * [Documentation](#documentation)
-    * [Deploying SharpShell Servers](#deploying-sharpshell-servers)
-    * [Supported Shell Extensions](#supported-shell-extensions)
-        * [Shell Context Menus](#shell-context-menus)
-        * [Icon Handlers](#icon-handlers)
-        * [Info Tip Handlers](#info-tip-handlers)
-        * [Drop Handlers](#drop-handlers)
-        * [Preview Handlers](#preview-handlers)
-        * [Icon Overlay Handlers](#icon-overlay-handlers)
-        * [Thumbnail Handlers](#thumbnail-handlers)
-        * [Property Sheet Extensions](#property-sheet-extensions)
-        * [DeskBand Extensions](#deskband-extensions)
-    * [Useful Resources](#useful-resources)
-    * [License](#license)
-    * [Testimonials](#testimonials)
-    * [Projects that use SharpShell](#projects-that-use-sharpshell)
-    * [Developer Guide](#developer-guide)
-        * [CI/CD](#cicd)
+* [Official NuGet Packages](#official-nuget-packages)
+* [Documentation](#documentation)
+* [Deploying SharpShell Servers](#deploying-sharpshell-servers)
+* [Supported Shell Extensions](#supported-shell-extensions)
+    * [Shell Context Menus](#shell-context-menus)
+    * [Icon Handlers](#icon-handlers)
+    * [Info Tip Handlers](#info-tip-handlers)
+    * [Drop Handlers](#drop-handlers)
+    * [Preview Handlers](#preview-handlers)
+    * [Icon Overlay Handlers](#icon-overlay-handlers)
+    * [Thumbnail Handlers](#thumbnail-handlers)
+    * [Property Sheet Extensions](#property-sheet-extensions)
+    * [DeskBand Extensions](#deskband-extensions)
+* [Useful Resources](#useful-resources)
+* [License](#license)
+* [Testimonials](#testimonials)
+* [Projects that use SharpShell](#projects-that-use-sharpshell)
+* [Developer Guide](#developer-guide)
+    * [CI/CD](#cicd)
 * [Thanks](#thanks)
 
 <!-- vim-markdown-toc -->
@@ -186,7 +186,7 @@ Some work is still needed on the CI/CD side:
 - [ ] Look into automatic notifications for package publication.
 - [ ] There is stale release code in the [`Release`](/Release) folder.
 
-# Thanks
+## Thanks
 
 Many thanks to [JetBrains](https://www.jetbrains.com/) for providing an Open Source License for their products!
 
