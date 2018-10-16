@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -20,7 +19,7 @@ namespace SharpShell.Interop
         /// <param name="cch">The size, in characters, of the lpszFile buffer.</param>
         /// <returns>A nonzero value indicates a successful call.</returns>
         [DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern uint DragQueryFile(IntPtr hDrop, uint iFile, [Out] StringBuilder lpszFile, uint cch);
+        public static extern uint DragQueryFile(IntPtr hDrop, uint iFile, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpszFile, uint cch);
 
         /// <summary>
         /// Performs an operation on a specified file.
@@ -192,7 +191,7 @@ namespace SharpShell.Interop
         /// <returns>A combination of one or more file attribute flags (FILE_ATTRIBUTE_ values as defined in Winnt.h). If uFlags does not include the SHGFI_USEFILEATTRIBUTES flag, this parameter is ignored.</returns>
         [DllImport("shell32.dll")]
         public static extern IntPtr SHGetFileInfo(IntPtr pszPath, uint dwFileAttribs, out SHFILEINFO psfi, uint cbFileInfo, SHGFI uFlags);
-       
+
         /// <summary>
         /// Retrieves an image list.
         /// </summary>
