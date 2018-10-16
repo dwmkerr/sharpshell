@@ -4,6 +4,7 @@
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
+ - [Official NuGet Packages](#official-nuget-packages)
  - [Projects that use SharpShell](#projects-that-use-sharpshell)
  - [Deploying SharpShell Servers](#deploying-sharpshell-servers)
  - [Supported Shell Extensions](#supported-shell-extensions)
@@ -20,6 +21,12 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
    - [Debugging & Diagnostics](https://github.com/dwmkerr/sharpshell/wiki/Debugging-&-Diagnostics)
    - [srm: Server Registration Manager](https://github.com/dwmkerr/sharpshell/wiki/srm:-Server-Registration-Manager)
  - [Thanks](#thanks)
+
+Official NuGet Packages
+-----------------------
+
+- [![SharpShell Nuget Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell)
+- [![SharpShellTools NuGet Package](https://img.shields.io/nuget/v/SharpShellTools.svg)](https://www.nuget.org/packages/SharpShellTools)
 
 Projects that use SharpShell
 ----------------------------
