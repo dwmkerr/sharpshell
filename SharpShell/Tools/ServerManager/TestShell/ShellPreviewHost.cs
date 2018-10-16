@@ -36,7 +36,7 @@ namespace ServerManager.TestShell
             }
             else if (previewHandler is IInitializeWithStream)
             {
-                var managedStream = File.Open(path, FileMode.Open);
+                var managedStream = File.OpenRead(path);
                 var stream = new StreamWrapper(managedStream);
                 ((IInitializeWithStream)previewHandler).Initialize(stream, 0);
             }
