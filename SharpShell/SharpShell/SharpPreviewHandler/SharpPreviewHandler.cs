@@ -251,6 +251,9 @@ namespace SharpShell.SharpPreviewHandler
             previewArea = prc;
             previewHostHandle = hwnd;
 
+            //  Update host.
+            UpdateHost();
+
             //  Return success.
             return WinError.S_OK;
         }
@@ -294,7 +297,7 @@ namespace SharpShell.SharpPreviewHandler
                 //  Call the base.
                 OnPreviewHostThread(() => { previewHandlerControl = DoPreview(); });
 
-                //  Update bounds.
+                //  Update host.
                 UpdateHost();
             }
             catch (Exception exception)
@@ -327,7 +330,11 @@ namespace SharpShell.SharpPreviewHandler
                     OnPreviewHostThread(
                         () =>
                             {
-                                if (previewHandlerControl != null) previewHandlerControl.Dispose();
+                                if (previewHandlerControl != null)
+                                {
+                                    previewHandlerControl.Dispose();
+                                    previewHandlerControl = null;
+                                }
                             });
                     
                 }
