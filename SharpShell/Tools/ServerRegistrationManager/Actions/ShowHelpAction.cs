@@ -24,7 +24,7 @@ namespace ServerRegistrationManager.Actions
             //  Load the resource.
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
             {
-                if(stream == null)
+                if (stream == null)
                     throw new InvalidOperationException("Unable to access resource " + resourceName);
                 using (var reader = new StreamReader(stream))
                 {
@@ -39,6 +39,7 @@ namespace ServerRegistrationManager.Actions
             outputService.WriteMessage("    srm install <path to SharpShell server> <parameters>");
             outputService.WriteMessage("Parameters:");
             outputService.WriteMessage("    -codebase: Optional. Installs a server from a file location, not the GAC.");
+            outputService.WriteMessage("    -os[32|64]: Optional. Forces 32 bit or 64 bit installation (Ignores Environment.Is64BitOperatingSystem).");
             outputService.WriteMessage("");
             outputService.WriteMessage("To uninstall a server:");
             outputService.WriteMessage("    srm uninstall <path to SharpShell server>");

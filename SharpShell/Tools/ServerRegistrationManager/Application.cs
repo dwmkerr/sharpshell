@@ -58,6 +58,17 @@ namespace ServerRegistrationManager
             var target = args.Length > 1 ? args[1] : (string)null; // TODO tidy this up.
             var parameters = args.Skip(1);
 
+            //Allow user to override registrationType with -os32 or -os64
+            if (parameters.Any(p => p.Equals(ParameterOS32, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                registrationType = RegistrationType.OS32Bit;
+            }
+            else if (parameters.Any(p => p.Equals(ParameterOS64, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                registrationType = RegistrationType.OS64Bit;
+            }
+
+
             //  Based on the verb, perform the action.
             if (verb == VerbInstall)
                 InstallServer(target, registrationType, parameters.Any(p => p == ParameterCodebase));
@@ -85,7 +96,7 @@ namespace ServerRegistrationManager
                 outputService.WriteError("File '" + path + "' does not exist.", true);
                 return;
             }
-            
+
             //  Try and load the server types.
             IEnumerable<ISharpShellServer> serverTypes = null;
             try
@@ -204,5 +215,8 @@ namespace ServerRegistrationManager
         private const string VerbEnableEventLog = @"enableeventlog";
 
         private const string ParameterCodebase = @"-codebase";
+
+        private const String ParameterOS32 = @"-os32";
+        private const String ParameterOS64 = @"-os64";
     }
 }
