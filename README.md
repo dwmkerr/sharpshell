@@ -4,47 +4,45 @@
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
- - [Official NuGet Packages](#official-nuget-packages)
- - [Projects that use SharpShell](#projects-that-use-sharpshell)
- - [Deploying SharpShell Servers](#deploying-sharpshell-servers)
- - [Supported Shell Extensions](#supported-shell-extensions)
-   - [Shell Context Menus](#shell-context-menus)
-   - [Icon Handlers](#icon-handlers)
-   - [Info Tip Handlers](#info-tip-handlers)
-   - [Drop Handlers](#drop-handlers)
-   - [Preview Handlers](#preview-handlers)
-   - [Icon Overlay Handlers](#icon-overlay-handlers)
-   - [Thumbnail Hanlders](#thumnnail-handlers)
-   - [Property Sheet Extensions](#property-sheet-extensions)
-   - [Desk Band Extensions](#deskband-extensions)
- - Documentation
-   - [Debugging & Diagnostics](https://github.com/dwmkerr/sharpshell/wiki/Debugging-&-Diagnostics)
-   - [srm: Server Registration Manager](https://github.com/dwmkerr/sharpshell/wiki/srm:-Server-Registration-Manager)
- - [Thanks](#thanks)
+<!-- vim-markdown-toc GFM -->
 
-Official NuGet Packages
------------------------
+    * [Official NuGet Packages](#official-nuget-packages)
+    * [Documentation](#documentation)
+    * [Deploying SharpShell Servers](#deploying-sharpshell-servers)
+    * [Supported Shell Extensions](#supported-shell-extensions)
+        * [Shell Context Menus](#shell-context-menus)
+        * [Icon Handlers](#icon-handlers)
+        * [Info Tip Handlers](#info-tip-handlers)
+        * [Drop Handlers](#drop-handlers)
+        * [Preview Handlers](#preview-handlers)
+        * [Icon Overlay Handlers](#icon-overlay-handlers)
+        * [Thumbnail Handlers](#thumbnail-handlers)
+        * [Property Sheet Extensions](#property-sheet-extensions)
+        * [DeskBand Extensions](#deskband-extensions)
+    * [Useful Resources](#useful-resources)
+    * [License](#license)
+    * [Testimonials](#testimonials)
+    * [Projects that use SharpShell](#projects-that-use-sharpshell)
+    * [Developer Guide](#developer-guide)
+        * [CI/CD](#cicd)
+* [Thanks](#thanks)
+
+<!-- vim-markdown-toc -->
+
+## Official NuGet Packages
 
 - [![SharpShell Nuget Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell)
 - [![SharpShellTools NuGet Package](https://img.shields.io/nuget/v/SharpShellTools.svg)](https://www.nuget.org/packages/SharpShellTools)
 
-Projects that use SharpShell
-----------------------------
+## Documentation
 
-Send me a message to add a project to this list:
+Documentation is in the process of being moved to:
 
- - [Trello Context Menu](https://github.com/GeorgeHahn/TrelloContextMenu)
- - [REAL Shuffle Player 2.0](http://download.cnet.com/Real-Shuffle-Player/3000-2139_4-75992715.html)
- - [The CmisSync context menu](http://aegif-labo.blogspot.jp/2014/08/the-cmissync-context-menu-check-out.html)
- - [TenClips](http://www.paludour.net/TenClips.html)
- - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
- - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
- - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
- - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
- - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
+[`./docs`](./docs)
 
-Deploying SharpShell Servers
-----------------------------
+Please open an issue if there is missing documentation and I will try to prioritise it!
+
+## Deploying SharpShell Servers
 
 There is an article on the CodeProject that describes in detail how you can use the Server Registration Manager tool 
 to deploy SharpShell servers:
@@ -127,8 +125,7 @@ Useful notes:
 * The UserControl for deskband should specify a minimum size and maximum size - if they're
   not specified the actual size will be used.
 
-Useful Resources
-----------------
+## Useful Resources
 
 Below are some resources I've found useful during SharpShell development. Please get in touch if you have suggestions
 for more, or just make a pull request with changes to this file.
@@ -140,13 +137,11 @@ Namespace Extensions
 Desk Bands
 * [Shell Extensibility - Explorer Desk Band, Tray Notification Icon et al.](http://www.codeproject.com/Articles/39189/Shell-Extensibility-Explorer-Desk-Band-Tray-Notifi)
 
-License
--------
+## License
 
 SharpShell is licensed under the MIT License - the details are at [LICENSE.md](https://raw.github.com/dwmkerr/sharpshell/master/LICENSE.md)
 
-Testimonials
-------------
+## Testimonials
 
 If you've used SharpShell and would like to add a testimonial, just send me a message!
 
@@ -157,6 +152,20 @@ If you've used SharpShell and would like to add a testimonial, just send me a me
 > Thanks SharpShell!
 
 Nicolas Raoul - [CmisSync.com](http://CmisSync.com)
+
+## Projects that use SharpShell
+
+Send me a message to add a project to this list:
+
+ - [Trello Context Menu](https://github.com/GeorgeHahn/TrelloContextMenu)
+ - [REAL Shuffle Player 2.0](http://download.cnet.com/Real-Shuffle-Player/3000-2139_4-75992715.html)
+ - [The CmisSync context menu](http://aegif-labo.blogspot.jp/2014/08/the-cmissync-context-menu-check-out.html)
+ - [TenClips](http://www.paludour.net/TenClips.html)
+ - [Checksum Inspector](https://github.com/XxDeadLiiNexX/Checksum-Inspector/#checksum-inspector)
+ - [VSIX PowerToys](https://github.com/hmemcpy/VSIXPowerToys)
+ - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
+ - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
+ - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
 
 ## Developer Guide
 
