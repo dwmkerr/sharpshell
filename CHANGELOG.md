@@ -1,3 +1,13 @@
+## Version 2.4
+
+- Added `DesktopBackground` and `DirectoryBackground` association types.
+- Context Menu Handlers: Fixed a bug where Unicode characters would not be rendered correctly.
+- Server Registration Manager: Additional flag to force x86 or x64.
+- Custom Namespace Extension: Fixed crash on Windows 10 when navigating away from the extension.
+- Shell Preview Handler: Fixed file permission bug.
+- Shell Preview Handler: Fixed resize bug.
+- Shell Namespace Extension: Interop bugfixes.
+
 ## Version 2.3
 
  * When IconHandlers are registered, if the icon class doesn't exist it is
