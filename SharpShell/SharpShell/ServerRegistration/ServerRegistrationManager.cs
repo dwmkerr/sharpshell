@@ -614,6 +614,16 @@ namespace SharpShell.ServerRegistration
                     //  Return the directory class.
                     return new[] { SpecialClass_Directory };
 
+                case AssociationType.DirectoryBackground:
+
+                    //  Return the directory background class.
+                    return new[] { SpecialClass_DirectoryBackground };
+
+                case AssociationType.DesktopBackground:
+
+                    //  Return the desktop background class.
+                    return new[] {SpecialClass_DesktopBackground};
+
                 case AssociationType.Drive:
 
                     //  Return the directory class.
@@ -880,6 +890,16 @@ namespace SharpShell.ServerRegistration
         /// The 'directory' special class.
         /// </summary>
         private const string SpecialClass_Directory = @"Directory";
+
+        /// <summary>
+        /// The 'directory background' special class.
+        /// </summary>
+        private const string SpecialClass_DirectoryBackground = @"Directory\Background";
+
+        /// <summary>
+        /// The 'desktop background' special class.
+        /// </summary>
+        private const string SpecialClass_DesktopBackground = @"DesktopBackground";
 
         /// <summary>
         /// The 'unknown files' special class.
