@@ -25,6 +25,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 * [Projects that use SharpShell](#projects-that-use-sharpshell)
 * [Developer Guide](#developer-guide)
     * [CI/CD](#cicd)
+    * [Creating a Release](#creating-a-release)
 * [Thanks](#thanks)
 
 <!-- vim-markdown-toc -->
@@ -185,6 +186,16 @@ Some work is still needed on the CI/CD side:
 - [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
 - [ ] Look into automatic notifications for package publication.
 - [ ] There is stale release code in the [`Release`](/Release) folder.
+
+### Creating a Release
+
+To create a release:
+
+1. Update the version number in [`SharedAssemblyInfo.cs`](./SharpShell/SharedAssemblyInfo.cs)
+2. Update the [`CHANGELOG.md`](./CHANGELOG.md)
+3. Create a new version tag, then push
+
+The AppVeyor build will build a new NuGet package and as long as a new semver tag is pushed.
 
 ## Thanks
 
