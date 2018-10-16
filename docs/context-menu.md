@@ -18,7 +18,7 @@ Create a class that derives from `SharpContextMenu`. Ensure the class has the `C
 
 At this stage, you should have a class that looks like this:  
 
-```cs
+```csharp
 [ComVisible(true)]
 [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
 public class ExampleShellExtension : SharpContextMenu
@@ -32,7 +32,7 @@ Finally, there are two override that must be implemented.
 
 This function is called to determine whether the shell extension should be visible for a set of items. The items selected by the user are stored in the property `SelectedItemPaths`.  
 
-```cs
+```csharp
 protected override bool CanShowMenu()
 {
     //  Depending on the files in 'SelectedItemPaths' you might not show the menu.
@@ -44,7 +44,7 @@ protected override bool CanShowMenu()
 
 This function is called to actually create the context menu strip to add to the shell context menu. An example is below:  
 
-```cs
+```csharp
 protected override ContextMenuStrip CreateMenu()
 {
     //  Create the menu strip.

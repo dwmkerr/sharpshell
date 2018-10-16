@@ -2,7 +2,7 @@
 
 COM Server Associations are attributes that are applied to a SharpShell COM Server to specify what file types, classes or special objects the COM server should be associated with. A COM Server Association is specified on the COM Server class, just like the example below:
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.ClassOfExtension, ".dll")]
 public class DllIconHandler : SharpIconHandler
 ```
@@ -15,7 +15,7 @@ Each different association type is described below.
 
 You can associate a COM server with a specific file extension or set of file extensions only. Examples:
 
-```cs
+```csharp
 // Associate the CustomIconHandler server with batch files.
 [COMServerAssociation(AssociationType.FileExtension, ".bat")]
 public class CustomIconHanlder : SharpIconHandler
@@ -23,7 +23,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 and:
 
-```cs
+```csharp
 // Associate the CustomIconHandler server with jpeg files.
 [COMServerAssociation(AssociationType.FileExtension, ".jpg". ".jpeg")]
 public class CustomIconHanlder : SharpIconHandler
@@ -37,7 +37,7 @@ This is the most typical type of association that is made. In this case, we ask 
 
 Here are the examples:
 
-```cs
+```csharp
 // Associate the CustomIconHandler server with the class of jpg files.
 [COMServerAssociation(AssociationType.ClassOfExtension, ".jpg")]
 public class CustomIconHanlder : SharpIconHandler
@@ -45,7 +45,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 and:
 
-```cs
+```csharp
 // Associate the CustomIconHandler server with the class of jpg and png.
 [COMServerAssociation(AssociationType.ClassOfExtension, ".jpg". ".png")]
 public class CustomIconHanlder : SharpIconHandler
@@ -55,7 +55,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 If you know the class you want to associate with it, you can use the 'Class' association, as in the example below.
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.Class, "dllfile")]
 public class CustomIconHanlder : SharpIconHandler
 ```
@@ -64,7 +64,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 To associate a server with all files in the system, use the `AllFiles` association:
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.AllFiles)]
 public class CustomIconHanlder : SharpIconHandler
 ```
@@ -73,7 +73,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 To associate a server with all folders in the system, use the `Directory` association:
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.Directory)]
 public class CustomIconHanlder : SharpIconHandler
 ```
@@ -82,7 +82,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 To associate a server with the background of a folder, use the `DirectoryBackground` association:
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.DirectoryBackground)]
 public class CustomIconHanlder : SharpIconHandler
 ```
@@ -91,7 +91,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 To associate a server with the background of the desktop, use the `DesktopBackground` association:
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.DesktopBackground)]
 public class CustomIconHanlder : SharpIconHandler
 ```
@@ -100,7 +100,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 To associate a server with all drives in the system, use the `Drive` association:
 
-```cs
+```csharp
 [COMServerAssociation(AssociationType.Drive)](COMServerAssociation(AssociationType.Drive))
 public class CustomIconHanlder : SharpIconHandler
 ```
@@ -109,7 +109,7 @@ public class CustomIconHanlder : SharpIconHandler
 
 To associate a server with all unknown file types, use the `UnknownFiles` association:
 
-```cs
+```csharp
 // Associate the CustomIconHandler server with the all unknown file types.
 [COMServerAssociation(AssociationType.UnknownFiles)](COMServerAssociation(AssociationType.UnknownFiles))
 public class CustomIconHanlder : SharpIconHandler

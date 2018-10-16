@@ -1,3 +1,7 @@
+# Managed Shell Extensions
+
+This page gives some thoughts on whether Shell Extensions can be developed using the CLR, which has been debated.
+
 ## Can you use the CLR for Shell Extensions?
 
 'Guidance for Implementing In-Process Extensions' on MSDN [http://msdn.microsoft.com/en-us/library/dd758089.aspx](http://msdn.microsoft.com/en-us/library/dd758089.aspx) says **no**.
