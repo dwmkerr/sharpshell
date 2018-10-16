@@ -174,38 +174,38 @@ namespace SharpShell.ServerRegistration
                         if (handlerSubkey.AllowMultipleEntries)
                         {
                             //  Do we have the single subkey?
-                            var handlerKeyPath = string.Format("{0}\\shellex\\{1}", className, handlerSubkey.HandlerSubkey);
+                            var handlerKeyPath = $"{className}\\shellex\\{handlerSubkey.HandlerSubkey}";
                             using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
                             {
-                                if (handlerSubKey != null)
+                                //  Skip empty handlers.
+                                if (handlerSubKey == null) continue;
+
+                                //  Read entries.
+                                foreach (var entry in handlerSubKey.GetSubKeyNames())
                                 {
-                                    //  Read entries.
-                                    foreach (var entry in handlerSubKey.GetSubKeyNames())
+                                    using (var entryKey = handlerSubKey.OpenSubKey(entry, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.QueryValues | RegistryRights.ReadKey))
                                     {
-                                        using (var entryKey = handlerSubKey.OpenSubKey(entry, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.QueryValues | RegistryRights.ReadKey))
+                                        var guidVal = entryKey.GetValue(null, string.Empty).ToString();
+
+                                        Guid guid;
+                                        if (Guid.TryParse(guidVal, out guid) == false)
+                                            continue;
+                                        System.Diagnostics.Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
+                                            shellExtensionType.ToString(), guid, entry));
+
+                                        //  If we do not have a shell extension info for this extension, create one.
+                                        if (!shellExtensionsGuidMap.ContainsKey(guid))
                                         {
-                                            var guidVal = entryKey.GetValue(null, string.Empty).ToString();
-
-                                            Guid guid;
-                                            if (Guid.TryParse(guidVal, out guid) == false)
-                                                continue;
-                                            System.Diagnostics.Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
-                                                shellExtensionType.ToString(), guid, entry));
-
-                                            //  If we do not have a shell extension info for this extension, create one.
-                                            if (!shellExtensionsGuidMap.ContainsKey(guid))
+                                            shellExtensionsGuidMap[guid] = new ShellExtensionRegistrationInfo
                                             {
-                                                shellExtensionsGuidMap[guid] = new ShellExtensionRegistrationInfo
-                                                    {
-                                                        DisplayName = entry,
-                                                        ShellExtensionType = shellExtensionType,
-                                                        ServerCLSID = guid,
-                                                    };
-                                            }
-
-                                            //  Add the class association.
-                                            shellExtensionsGuidMap[guid].classRegistrations.Add(new ClassRegistration(className));
+                                                DisplayName = entry,
+                                                ShellExtensionType = shellExtensionType,
+                                                ServerCLSID = guid,
+                                            };
                                         }
+
+                                        //  Add the class association.
+                                        shellExtensionsGuidMap[guid].classRegistrations.Add(new ClassRegistration(className));
                                     }
                                 }
                             }
