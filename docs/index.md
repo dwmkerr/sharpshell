@@ -9,6 +9,7 @@ Visit the project homepage at [github.com/dwmkerr/sharpshell](https://github.com
 - [COM Server Associations](com-server-associations.md)
 - [Context Menus](context-menu.md)
 - [Managed Shell Extensions](managed-shell-extensions.md)
+- [Logging](./logging/logging.md)
 - [Troubleshooting](troubleshooting.md)
 
 ## Notes
