@@ -24,6 +24,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 * [Testimonials](#testimonials)
 * [Projects that use SharpShell](#projects-that-use-sharpshell)
 * [Developer Guide](#developer-guide)
+    * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
 * [Thanks](#thanks)
@@ -170,6 +171,12 @@ Send me a message to add a project to this list:
 
 ## Developer Guide
 
+### Enabling Logging
+
+A detailed guide explaining how to configure and use logging for SharpShell is at:
+
+[./docs/logging/logging.md](./docs/logging/logging.md)
+
 ### CI/CD
 
 CI/CD is currently handled by AppVeyor. AppVeyor will:
@@ -185,6 +192,7 @@ Some work is still needed on the CI/CD side:
 - [ ] AppVeyor config should be in the yaml file, not the web UI.
 - [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
 - [ ] Look into automatic notifications for package publication.
+- [ ] Deploy SRM as a NuGet package.
 - [ ] There is stale release code in the [`Release`](/Release) folder.
 
 ### Creating a Release
