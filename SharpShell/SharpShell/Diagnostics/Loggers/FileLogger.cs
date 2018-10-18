@@ -43,7 +43,7 @@ namespace SharpShell.Diagnostics.Loggers
 
                 //  Write to the line to the file.
                 using (var w = File.AppendText(logPath))
-                    w.WriteLine(line);
+                    w.WriteLine($"{DateTime.Now.ToString(@"yyyy-MM-dd HH:mm:ss.fffZ")} - {Process.GetCurrentProcess().ProcessName } - {line}");
             }
             catch (Exception exception)
             {
@@ -62,7 +62,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <param name="error">The error.</param>
         public void LogError(string error)
         {
-            Write("Error: " + error);
+            Write("error: " + error);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <param name="warning">The warning.</param>
         public void LogWarning(string warning)
         {
-            Write("Warning: " + warning);
+            Write("warning: " + warning);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace SharpShell.Diagnostics.Loggers
         /// <param name="message">The message.</param>
         public void LogMessage(string message)
         {
-            Write("Message: " + message);
+            Write(message);
         }
     }
 }

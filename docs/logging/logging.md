@@ -41,6 +41,8 @@ For example, the screenshot below shows the [`DebugView`](https://docs.microsoft
 
 Debug output is highly performant, and should probably be considered to be the safest way to monitor logs from SharpShell servers.
 
+Note: If you already have a trace listener running, such as the debugger in Visual Studio, it will likely capture the trace output and show it before DebugView can.
+
 ## Windows Event Log Output
 
 With this option enabled, SharpShell will write all log messages to an Application Event Log named `SharpShell`.
