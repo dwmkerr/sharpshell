@@ -1,20 +1,12 @@
-**Troubleshooting SharpShell Servers**
+# Troubleshooting SharpShell Servers
 
 Creating Shell Extension Servers can be extremely difficult, as diagnosing issues is very hard. The most common problem encountered is that a server seems to work with the ServerManager tool, but simply doesn't show up at all in Windows Explorer. This page pulls together a detailed guide of how to troubleshoot servers.
 
 **My Server Doesn't Show Up in Windows Explorer**
 
-Perhaps the most common issue. Here are the things to try, in order.
+First, check the troubleshooting guide in the [Installing](../installing/installing.md) documentation.
 
-1.  Make sure that your server class has the [ComVisbile(true)] attribute.
-2.  Make sure that your assembly is COM Visible (Project Properties > Application > Assembly Information... 'Make assembly COM-visible'.
-3.  If you are on Windows 32 bit, make sure you register the server with the x86 version of regasm:  
-    C:\Windows\Microsoft.NET\Framework\v4.0.30319\regasm 
-4.  If you are on Windows 64 bit, make sure you register the server with the x64 version of regasm:  
-    C:\Windows\Microsoft.NET\Framework64\v4.0.30319\regasm
-5.  If you are registering a server that is NOT installed in the GAC, make sure you use the '/codebase' flag for regasm.  
-    regasm MyServer.dll /register /codebase
-6.  **Important:** For most SharpShell servers to work on anything other than a development machine, they MUST be built in Release Mode against the Release Mode SharpShell binary. This binary uses an unmanaged C++ component that has a dependency to MSVCRTD100.dll in debug mode - this will NOT be present on none-development machines.
+**Important:** For most SharpShell servers to work on anything other than a development machine, they MUST be built in Release Mode against the Release Mode SharpShell binary. This binary uses an unmanaged C++ component that has a dependency to MSVCRTD100.dll in debug mode - this will NOT be present on none-development machines.
 
 **Shell Thumbnail Handlers**
 
