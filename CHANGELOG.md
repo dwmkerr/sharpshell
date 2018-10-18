@@ -1,3 +1,7 @@
+## Version 2.4.1
+
+- Fixed a bug where the Server Registration Manager could only register servers which were referencing the _same_ version of the SharpShell assembly as the manager itself (#194).
+
 ## Version 2.4
 
 - Added `DesktopBackground` and `DirectoryBackground` association types.
