@@ -168,6 +168,7 @@ Send me a message to add a project to this list:
  - [FileSystemScanner](https://github.com/sensboston/FileSystemScanner)
  - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
  - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
+ - [SharePoint Shell Extensions by Archon Gnosis](https://sse.technology/)
 
 ## Developer Guide
 
