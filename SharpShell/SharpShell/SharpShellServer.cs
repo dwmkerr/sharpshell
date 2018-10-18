@@ -64,6 +64,8 @@ namespace SharpShell
         /// <param name="registrationType">Type of the registration.</param>
         internal static void DoRegister(Type type, RegistrationType registrationType)
         {
+            Logging.Log($"Preparing to register SharpShell Server {type.Name} as {registrationType}");
+
             //  Get the assoication data.
             var assocationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
                 .OfType<COMServerAssociationAttribute>().ToList();
@@ -83,6 +85,7 @@ namespace SharpShell
 
             //  Notify the shell we've updated associations.
             Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
+            Logging.Log($"Registration of {type.Name} completed");
         }
 
         /// <summary>
@@ -94,6 +97,8 @@ namespace SharpShell
         /// <param name="registrationType">Type of the registration to unregister.</param>
         internal static void DoUnregister(Type type, RegistrationType registrationType)
         {
+            Logging.Log($"Preparing to unregister SharpShell Server {type.Name} as {registrationType}");
+
             //  Get the assoication data.
             var assocationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
                 .OfType<COMServerAssociationAttribute>().ToList();
@@ -113,6 +118,7 @@ namespace SharpShell
 
             //  Notify the shell we've updated associations.
             Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
+            Logging.Log($"Unregistration of {type.Name} completed");
         }
         
         /// <summary>
