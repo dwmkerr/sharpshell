@@ -9,7 +9,20 @@ namespace SharpShell.SharpContextMenu
     /// </summary>
     public class InvokeCommandInfo
     {
+        /// <summary>
+        /// Gets the window handle.
+        /// </summary>
+        /// <value>
+        /// The window handle.
+        /// </value>
         public IntPtr WindowHandle { get; internal set; }
+
+        /// <summary>
+        /// Gets the show command.
+        /// </summary>
+        /// <value>
+        /// The show command.
+        /// </value>
         public int ShowCommand { get; internal set; }
     }
 }

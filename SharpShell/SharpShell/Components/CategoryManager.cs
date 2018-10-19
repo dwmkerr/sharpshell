@@ -7,7 +7,7 @@ using SharpShell.ServerRegistration;
 
 namespace SharpShell.Components
 {
-    public static class CategoryManager
+    internal static class CategoryManager
     {
         public static void RegisterComCategory(Guid clsid, Guid categoryId)
         {

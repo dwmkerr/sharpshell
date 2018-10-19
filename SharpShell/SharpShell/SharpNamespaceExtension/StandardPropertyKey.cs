@@ -1,4 +1,5 @@
-﻿namespace SharpShell.SharpNamespaceExtension
+﻿#pragma warning disable 1591
+namespace SharpShell.SharpNamespaceExtension
 {
 // ReSharper disable InconsistentNaming
     public enum StandardPropertyKey

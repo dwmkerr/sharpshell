@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+#pragma warning disable 1591
 
 namespace SharpShell.SharpNamespaceExtension
 {
+    // todo document when api is locked down.
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class PropertyKeyAttribute : Attribute
     {

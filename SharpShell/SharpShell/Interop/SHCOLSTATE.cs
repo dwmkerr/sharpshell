@@ -10,6 +10,9 @@ namespace SharpShell.Interop
     [Flags]
     public enum SHCOLSTATEF
     {
+        /// <summary>
+        /// The default state.
+        /// </summary>
         SHCOLSTATE_DEFAULT = 0,
 
         /// <summary>

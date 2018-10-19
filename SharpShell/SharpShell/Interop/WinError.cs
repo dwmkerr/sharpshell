@@ -1,3 +1,4 @@
+#pragma warning disable 1591
 namespace SharpShell.Interop
 {
     public static class WinError
