@@ -18,16 +18,14 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Icon Overlay Handlers](#icon-overlay-handlers)
     * [Thumbnail Handlers](#thumbnail-handlers)
     * [Property Sheet Extensions](#property-sheet-extensions)
-    * [DeskBand Extensions](#deskband-extensions)
-* [Useful Resources](#useful-resources)
-* [License](#license)
-* [Testimonials](#testimonials)
-* [Projects that use SharpShell](#projects-that-use-sharpshell)
 * [Developer Guide](#developer-guide)
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
+* [Testimonials](#testimonials)
+* [Projects that use SharpShell](#projects-that-use-sharpshell)
 * [Thanks](#thanks)
+* [License](#license)
 
 <!-- vim-markdown-toc -->
 
@@ -119,29 +117,54 @@ These are extensions that add extra pages to the property sheets shown for shell
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
 
-### DeskBand Extensions
+## Developer Guide
 
-Useful notes:
+SharpShell is currently developed in Visual Studio 2017, and can be built using the [Community Edition](https://visualstudio.microsoft.com/vs/community/).
 
-* Always include a DisplayName for a deskband extension, otherwise it won't register.
-* The UserControl for deskband should specify a minimum size and maximum size - if they're
-  not specified the actual size will be used.
+In order to maximize compatibility, we do not use the latest version of each SDK. The following components are needed:
 
-## Useful Resources
+- Windows Universal CRT SDK
+- Windows 8.1 SDK
+- .NET Core runtime
+- Windows Universal C Runtime
+- Microsoft Visual Studio 2017 Installer Projects
 
-Below are some resources I've found useful during SharpShell development. Please get in touch if you have suggestions
-for more, or just make a pull request with changes to this file.
+Note: Not tested on VS2017 for Mac.
 
-Namespace Extensions
-* [Create Namespace Extensions for Windows Explorer with the .NET Framework](http://msdn.microsoft.com/en-us/magazine/cc188741.aspx)
-* [Virtual Junction Points](http://msdn.microsoft.com/en-us/library/windows/desktop/cc144096.aspx)
+### Enabling Logging
 
-Desk Bands
-* [Shell Extensibility - Explorer Desk Band, Tray Notification Icon et al.](http://www.codeproject.com/Articles/39189/Shell-Extensibility-Explorer-Desk-Band-Tray-Notifi)
+A detailed guide explaining how to configure and use logging for SharpShell is at:
 
-## License
+[./docs/logging/logging.md](./docs/logging/logging.md)
 
-SharpShell is licensed under the MIT License - the details are at [LICENSE.md](https://raw.github.com/dwmkerr/sharpshell/master/LICENSE.md)
+### CI/CD
+
+CI/CD is currently handled by AppVeyor. AppVeyor will:
+
+1. Build the project
+2. Run the tests
+3. Create the core SharpShell Nuget Package
+4. Publish the package to nuget.org if a version tag is pushed
+5. Create a GitHub release with the package if a version tag is pushed
+
+Some work is still needed on the CI/CD side:
+
+- [ ] AppVeyor config should be in the yaml file, not the web UI.
+- [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
+- [ ] Look into automatic notifications for package publication.
+- [ ] Deploy SRM as a NuGet package.
+- [ ] There is stale release code in the [`Release`](/Release) folder.
+- [ ] The embedded NativeBridge in SharpShell must be updated during the release, both for 32 and 64 bit. And it should not be checked in.
+
+### Creating a Release
+
+To create a release:
+
+1. Update the version number in [`SharedAssemblyInfo.cs`](./SharpShell/SharedAssemblyInfo.cs)
+2. Update the [`CHANGELOG.md`](./CHANGELOG.md)
+3. Create a new version tag, then push
+
+The AppVeyor build will build a new NuGet package and as long as a new semver tag is pushed.
 
 ## Testimonials
 
@@ -170,44 +193,12 @@ Send me a message to add a project to this list:
  - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
  - [SharePoint Shell Extensions by Archon Gnosis](https://sse.technology/)
 
-## Developer Guide
-
-### Enabling Logging
-
-A detailed guide explaining how to configure and use logging for SharpShell is at:
-
-[./docs/logging/logging.md](./docs/logging/logging.md)
-
-### CI/CD
-
-CI/CD is currently handled by AppVeyor. AppVeyor will:
-
-1. Build the project
-2. Run the tests
-3. Create the core SharpShell Nuget Package
-4. Publish the package to nuget.org if a version tag is pushed
-5. Create a GitHub release with the package if a version tag is pushed
-
-Some work is still needed on the CI/CD side:
-
-- [ ] AppVeyor config should be in the yaml file, not the web UI.
-- [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
-- [ ] Look into automatic notifications for package publication.
-- [ ] Deploy SRM as a NuGet package.
-- [ ] There is stale release code in the [`Release`](/Release) folder.
-
-### Creating a Release
-
-To create a release:
-
-1. Update the version number in [`SharedAssemblyInfo.cs`](./SharpShell/SharedAssemblyInfo.cs)
-2. Update the [`CHANGELOG.md`](./CHANGELOG.md)
-3. Create a new version tag, then push
-
-The AppVeyor build will build a new NuGet package and as long as a new semver tag is pushed.
-
 ## Thanks
 
 Many thanks to [JetBrains](https://www.jetbrains.com/) for providing an Open Source License for their products!
 
 ![JetBrains](./docs/thanks/jetbrains.png)
+
+## License
+
+SharpShell is licensed under the MIT License - the details are at [LICENSE.md](https://raw.github.com/dwmkerr/sharpshell/master/LICENSE.md)

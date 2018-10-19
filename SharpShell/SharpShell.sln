@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpShell", "SharpShell\SharpShell.csproj", "{B5D5F670-BFBA-4D09-91C6-74BB12B7EDD4}"
 EndProject
@@ -536,5 +536,8 @@ Global
 		{4D55CA99-2045-4EF6-90AA-C4876AA3F202} = {915BB9DF-13F0-4E44-865F-4816C1FAB538}
 		{1A56CE6E-68DF-42A3-A8C4-B28D6E5EF632} = {AADBCF91-B536-41B2-8054-5286699F91DC}
 		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3} = {1485D689-7B58-4926-A9A8-7192F47E417B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2187190F-D346-4601-AC5D-3D30CC326C54}
 	EndGlobalSection
 EndGlobal

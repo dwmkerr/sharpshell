@@ -1,5 +1,6 @@
 #ignore thumbnails created by windows
 Thumbs.db
+
 #Ignore files build by Visual Studio
 *.user
 *.aps
@@ -32,3 +33,9 @@ Release/nuspec/SharpShellTools/lib
 SharpShell/packages
 *.db
 *.opendb
+
+# SharpShellNativeBridge intermediates.
+SharpShell/Release
+SharpShell/x64
+SharpShell/SharpShellNativeBridge/Release
+SharpShell/SharpShellNativeBridge/x64
