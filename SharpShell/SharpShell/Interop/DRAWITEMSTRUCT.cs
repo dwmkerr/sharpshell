@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace SharpShell.Interop
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct DRAWITEMSTRUCT
+    internal struct DRAWITEMSTRUCT
     {
         public UInt32 CtlType;
         public UInt32 CtlID;

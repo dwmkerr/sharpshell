@@ -1,4 +1,5 @@
 ﻿using System;
+#pragma warning disable 1591
 
 namespace SharpShell.Interop
 {
@@ -12,7 +13,6 @@ namespace SharpShell.Interop
     /// </remarks>
     public static class KnownFolders
     {
-        // ReSharper disable InconsistentNaming
         public static readonly Guid FOLDERID_NetworkFolder = new Guid("{D20BEEC4-5CA8-4905-AE3B-BF251EA09B53}");
 
         public static readonly Guid FOLDERID_ComputerFolder = new Guid("{0AC0837C-BBF8-452A-850D-79D08E667CA7}");
@@ -232,6 +232,5 @@ namespace SharpShell.Interop
         public static readonly Guid FOLDERID_RoamedTileImages = new Guid("{AAA8D5A5-F1D6-4259-BAA8-78E7EF60835E}");
 
         public static readonly Guid FOLDERID_Screenshots = new Guid("{b7bede81-df94-4682-a7d8-57a52620b86f}");
-        // ReSharper restore InconsistentNaming
     }
 }

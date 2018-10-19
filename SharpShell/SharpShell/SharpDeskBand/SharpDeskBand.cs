@@ -9,9 +9,20 @@ using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpDeskBand
 {
+    /// <summary>
+    /// The SharpDeskBand class is the base class for any DeskBand shell extension.
+    /// </summary>
+    /// <seealso cref="SharpShell.SharpShellServer" />
+    /// <seealso cref="SharpShell.Interop.IDeskBand2" />
+    /// <seealso cref="SharpShell.Interop.IPersistStream" />
+    /// <seealso cref="SharpShell.Interop.IObjectWithSite" />
+    /// <seealso cref="SharpShell.Interop.IInputObject" />
     [ServerType(ServerType.ShellDeskBand)]
     public abstract class SharpDeskBand : SharpShellServer, IDeskBand2, IPersistStream, IObjectWithSite, IInputObject
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SharpDeskBand"/> class.
+        /// </summary>
         protected SharpDeskBand()
         {
             //  Log key events.

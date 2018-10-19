@@ -140,7 +140,7 @@ namespace SharpShell.Interop
         }
     }
 
-    public enum POPUPITEMSTATES
+    internal enum POPUPITEMSTATES
     {
         MPI_NORMAL = 1,
         MPI_HOT = 2,
@@ -148,7 +148,7 @@ namespace SharpShell.Interop
         MPI_DISABLEDHOT = 4,
     }
 
-    enum POPUPCHECKBACKGROUNDSTATES
+    internal enum POPUPCHECKBACKGROUNDSTATES
     {
         MCB_DISABLED = 1,
         MCB_NORMAL = 2,
@@ -156,7 +156,7 @@ namespace SharpShell.Interop
     }
 
 
-    enum POPUPCHECKSTATES
+    internal enum POPUPCHECKSTATES
     {
         MC_CHECKMARKNORMAL = 1,
         MC_CHECKMARKDISABLED = 2,
@@ -166,7 +166,7 @@ namespace SharpShell.Interop
 
     //todo tidy up and name properly.
     [StructLayout(LayoutKind.Sequential)]
-    public struct ICONINFO
+    internal struct ICONINFO
     {
         public bool IsIcon;
         public int xHotspot;
@@ -177,7 +177,7 @@ namespace SharpShell.Interop
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct BLENDFUNCTION
+    internal struct BLENDFUNCTION
     {
         public byte BlendOp;
         public byte BlendFlags;
@@ -186,7 +186,7 @@ namespace SharpShell.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct BP_PAINTPARAMS
+    internal struct BP_PAINTPARAMS
     {
         public uint cbSize;
         public uint dwFlags; // BPPF_ flags
@@ -194,7 +194,7 @@ namespace SharpShell.Interop
         public IntPtr pBlendFunction;
     }
 
-    public enum BP_BUFFERFORMAT
+    internal enum BP_BUFFERFORMAT
     {
         BPBF_COMPATIBLEBITMAP, // Compatible bitmap
         BPBF_DIB, // Device-independent bitmap

@@ -7,6 +7,9 @@
     /// </summary>
     public enum KNOWN_FOLDER_FLAG : uint
     {
+        /// <summary>
+        /// No flags.
+        /// </summary>
         KF_NO_FLAGS = 0,
 
         /// <summary>
