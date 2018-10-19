@@ -4,11 +4,18 @@ The Server Registration Manager tool (`srm.exe`) is a standalone console applica
 
 <!-- vim-markdown-toc GFM -->
 
+* [Installing the SRM](#installing-the-srm)
 * [Installing / Uninstalling Servers](#installing--uninstalling-servers)
 * [Showing SharpShell Config](#showing-sharpshell-config)
 * [Setting SharpShell Config](#setting-sharpshell-config)
 
 <!-- vim-markdown-toc -->
+
+## Installing the SRM
+
+You can get the tool from the [ServerRegistrationManager NuGet Package](https://www.nuget.org/packages/ServerRegistrationManager).
+
+It is also available in all [SharpShell Releases](https://github.com/dwmkerr/sharpshell/releases).
 
 ## Installing / Uninstalling Servers
 
