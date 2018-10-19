@@ -128,6 +128,10 @@ namespace SharpShell.Pidl
         /// </summary>
         private readonly byte[] id;
 
+        /// <summary>
+        /// Gets the ShellId as a UFT8 string.
+        /// </summary>
+        /// <returns>The ShellId as a UFT8 string.</returns>
         public string AsUTF8()
         {
             var utf8 = string.Empty;
@@ -141,6 +145,11 @@ namespace SharpShell.Pidl
             }
             return utf8;
         }
+
+        /// <summary>
+        /// Gets the IdList as an ASCII string.
+        /// </summary>
+        /// <returns>The IdList as an ASCII string.</returns>
         public string AsASCII()
         {
             var utf8 = string.Empty;

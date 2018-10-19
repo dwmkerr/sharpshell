@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace SharpShell.Interop
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct BITMAPINFOHEADER
+    internal struct BITMAPINFOHEADER
     {
         public uint biSize;
         public int biWidth;
@@ -20,7 +20,7 @@ namespace SharpShell.Interop
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    public struct BITMAPV5HEADER
+    internal struct BITMAPV5HEADER
     {
         [FieldOffset(0)]
         public uint bV5Size;
@@ -72,7 +72,7 @@ namespace SharpShell.Interop
         public uint bV5Reserved;
     }
     [StructLayout(LayoutKind.Sequential)]
-    public struct CIEXYZ
+    internal struct CIEXYZ
     {
         public uint ciexyzX; //FXPT2DOT30
         public uint ciexyzY; //FXPT2DOT30
@@ -80,7 +80,7 @@ namespace SharpShell.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct CIEXYZTRIPLE
+    internal struct CIEXYZTRIPLE
     {
         public CIEXYZ ciexyzRed;
         public CIEXYZ ciexyzGreen;
@@ -88,7 +88,7 @@ namespace SharpShell.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct BITFIELDS
+    internal struct BITFIELDS
     {
         public uint BlueMask;
         public uint GreenMask;
@@ -199,7 +199,7 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
     }
 
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    struct BITMAPINFO
+    internal struct BITMAPINFO
     {
         /// <summary>
         /// A BITMAPINFOHEADER structure that contains information about the dimensions of color format.
@@ -214,7 +214,7 @@ public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] IntPtr pbmi,
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct RGBQUAD
+    internal struct RGBQUAD
     {
         public byte rgbBlue;
         public byte rgbGreen;

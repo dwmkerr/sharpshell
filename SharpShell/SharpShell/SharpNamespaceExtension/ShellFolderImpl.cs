@@ -91,7 +91,7 @@ namespace SharpShell.SharpNamespaceExtension
 
         /// <summary>
         /// Retrieves an IShellFolder object for a subfolder.
-        //  Return value: error code, if any
+        /// Return value: error code, if any
         /// </summary>
         /// <param name="pidl">Address of an ITEMIDLIST structure (PIDL) that identifies the subfolder.</param>
         /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be used during this operation.</param>
@@ -369,7 +369,7 @@ namespace SharpShell.SharpNamespaceExtension
                 else
                 {
                     //  Create an icon provider.
-                    var provider = new Components.ExtractIconImpl() { DontCacheIcons = false, Icon = icon };
+                    var provider = new Components.ExtractIconImpl() { DoNotCacheIcons = false, Icon = icon };
                     ppv = Marshal.GetComInterfaceForObject(provider, typeof(IExtractIconW));
                     return WinError.S_OK;
                 }

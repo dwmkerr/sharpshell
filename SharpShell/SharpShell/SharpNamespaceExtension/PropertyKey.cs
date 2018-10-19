@@ -1,8 +1,10 @@
 ﻿using System;
 using SharpShell.Interop;
+#pragma warning disable 1591
 
 namespace SharpShell.SharpNamespaceExtension
 {
+    // TODO work in progress. document when API is fixed.
     public class PropertyKey
     {
         public PropertyKey(StandardPropertyKey standardPropertyKey)

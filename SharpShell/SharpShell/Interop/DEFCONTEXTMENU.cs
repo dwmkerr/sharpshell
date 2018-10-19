@@ -49,7 +49,7 @@ namespace SharpShell.Interop
 
         /// <summary>
         /// The count of items in member aKeys. This value can be zero. If the value is zero, the extensions are loaded based on the object that supports interface IQueryAssociations as specified by member punkAssociationInfo. If the value is non-NULL, the extensions are loaded based only on member aKeys and not member punkAssociationInfo.
-        //  Note  The maximum number of keys is 16. Callers must enforce this limit as the API does not. Failing to do so can result in memory corruption.
+        ///  Note: The maximum number of keys is 16. Callers must enforce this limit as the API does not. Failing to do so can result in memory corruption.
         /// </summary>
         public uint cKeys;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+#pragma warning disable 1591
 
 namespace SharpShell.Interop
 {
