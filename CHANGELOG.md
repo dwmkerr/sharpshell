@@ -1,3 +1,9 @@
+## Version 2.4.3
+
+- Update to Visual Studio 2017
+- ServerRegistrationManager deployed as part of CI/CD
+- SharpShell always built in Release mode for CI/CD
+
 ## Version 2.4.1
 
 - Fixed a bug where the Server Registration Manager could only register servers which were referencing the _same_ version of the SharpShell assembly as the manager itself (#194).
