@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>ServerRegistrationManager</title>
+        <authors>Dave Kerr</authors>
+        <owners>Dave Kerr</owners>
+        <projectUrl>https://github.com/dwmkerr/sharpshell</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>The ServerRegistrationManager tool is a tool which can be used to deploy SharpShell servers</description>
+        <summary>The ServerRegistrationManager tool is a tool which can be used to deploy SharpShell servers</summary>
+        <copyright>Copyright © Dave Kerr 2018</copyright>
+        <tags>SharpShell,ServerRegistrationManager,SRM,Shell,COM,Context Menu,Icon Handler</tags>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Windows.Forms" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Drawing" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+</package>
