@@ -17,7 +17,14 @@ Shell thumbnail handlers have some specific things to be aware of:
 
 **Shell Icon Overlay Handlers**
 
-If you are not seeing your Shell Icon Overlay handlers after registering, double check which other icon handlers are registered, if you have more than a few then yours may not show up - the system only supports about ten.
+If you are not seeing your Shell Icon Overlay handlers after registering, double check which other icon handlers are registered, if you have more than a few then yours may not show up - the system only supports about fifteen.
+
+Overlays are registered at:
+
+- `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers`
+- `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\explorer\ShellIconOverlayIdentifiers`
+
+Check these nodes to make sure you do not have too many overlays already registered.
 
 On 32 bit systems, it normally takes a restart if explorer.exe for the icon to be loaded. Apparently, this can actually be done programatically via SHChangeNotify.
 
