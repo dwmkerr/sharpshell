@@ -90,8 +90,8 @@ namespace SharpShell.Helpers
             StandardOutput = regasm.StandardOutput.ReadToEnd();
             StandardError = regasm.StandardError.ReadToEnd();
             Logging.Log($@"RegAsm: exited with code {regasm.ExitCode}");
-            Logging.Log($@"RegAsm: Output: {StandardOutput}");
-            Logging.Log($@"RegAsm: Error Output: {StandardError}");
+            if(!string.IsNullOrEmpty(StandardOutput)) Logging.Log($@"RegAsm: Output: {StandardOutput}");
+            if(!string.IsNullOrEmpty(StandardError)) Logging.Log($@"RegAsm: Error Output: {StandardError}");
             return regasm.ExitCode == 0;
         }
 
