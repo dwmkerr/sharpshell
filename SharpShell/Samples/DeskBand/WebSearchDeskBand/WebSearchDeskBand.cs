@@ -5,17 +5,30 @@ using System.Runtime.InteropServices;
 
 namespace WebSearchDeskBand
 {
-
+    /// <summary>
+    /// A simple DeskBank extension which shows a Web Search bar.
+    /// </summary>
+    /// <seealso cref="SharpShell.SharpDeskBand.SharpDeskBand" />
     [ComVisible(true)]
     [DisplayName("Web Search")]
-    [Guid("095CF383-6240-4524-B16D-B478577758FC")]
     public class WebSearchDeskBand : SharpDeskBand
     {
+        /// <summary>
+        /// This function should return a new instance of the desk band's user interface,
+        /// which will simply be a usercontrol.
+        /// </summary>
+        /// <returns></returns>
         protected override System.Windows.Forms.UserControl CreateDeskBand()
         {
             return new DeskBandUI();
         }
 
+        /// <summary>
+        /// Gets the band options.
+        /// </summary>
+        /// <returns>
+        /// The band options. See <see cref="T:SharpShell.SharpDeskBand.BandOptions" /> for more details.
+        /// </returns>
         protected override BandOptions GetBandOptions()
         {
             return new BandOptions
@@ -28,11 +41,5 @@ namespace WebSearchDeskBand
                        AlwaysShowGripper = true
                    };
         }
-
-        [ComRegisterFunction]
-        public static void RegisterClass(Type type) => ComUtilities.RegisterDeskBandClass(type);
-
-        [ComUnregisterFunction]
-        public static void UnregisterClass(Type type) => ComUtilities.UnregisterClass(type);
-    }
+   }
 }
