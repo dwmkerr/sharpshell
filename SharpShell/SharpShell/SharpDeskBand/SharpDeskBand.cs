@@ -5,6 +5,7 @@ using SharpShell.Attributes;
 using SharpShell.Components;
 using SharpShell.Interop;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpDeskBand
@@ -179,7 +180,7 @@ namespace SharpShell.SharpDeskBand
             pcbSize = 0;
             return WinError.S_OK;
         }
-        
+
         int IPersist.GetClassID(out Guid pClassID)
         {
             //  Log key events.
@@ -300,7 +301,7 @@ namespace SharpShell.SharpDeskBand
                 if (bandOptions.AlwaysShowGripper) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_ALWAYSGRIPPER;
                 if (bandOptions.HasNoMargins) pdbi.dwModeFlags |= DESKBANDINFO.DBIMF.DBIMF_NOMARGINS;
             }
-                        
+
             //  Return success.
             return WinError.S_OK;
         }
@@ -334,7 +335,7 @@ namespace SharpShell.SharpDeskBand
             //  If we've got a content window, show it or hide it.
             if(bShow)
                 lazyDeskBand.Value.Show();
-            else 
+            else
                 lazyDeskBand.Value.Hide();
 
             //  Return success.
@@ -492,8 +493,21 @@ namespace SharpShell.SharpDeskBand
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
+            var name = DisplayNameAttribute.GetDisplayNameOrTypeName(serverType);
+            var view = registrationType == RegistrationType.OS64Bit
+                ? RegistryView.Registry64
+                : RegistryView.Registry32;
+
+            using (var rootKey = RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, view))
+            using (var key = rootKey.CreateSubKey($@"CLSID\{serverType.GUID:B}") ?? throw new Exception("CLSID Key is null"))
+            using (key.CreateSubKey($@"Implemented Categories\{CategoryManager.CATID_DeskBand:B}") ?? throw new Exception("Category Key is null"))
+            {
+                key.SetValue(null, name);
+            }
+
+            // TODO: It may be worth exploring how this method works and replace the code above with it.
             //   Use the category manager to register this server as a Desk Band.
-            CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            //CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
         }
 
         /// <summary>
