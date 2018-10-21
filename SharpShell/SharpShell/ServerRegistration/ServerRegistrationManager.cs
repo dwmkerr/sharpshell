@@ -399,7 +399,7 @@ namespace SharpShell.ServerRegistration
             //  Go through each association.
             foreach (var associationAttribute in associationAttributes)
             {
-                //  Get the assocation classes.
+                //  Get the association classes.
                 var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType, 
                     associationAttribute.Associations, registrationType);
 

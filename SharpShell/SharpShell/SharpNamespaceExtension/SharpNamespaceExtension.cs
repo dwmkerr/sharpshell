@@ -239,7 +239,6 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder2.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
         {
             return ((IShellFolder2)shellFolderImpl).EnumObjects(hwnd, grfFlags, out ppenumIDList);
-
         }
 
         int IShellFolder2.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)

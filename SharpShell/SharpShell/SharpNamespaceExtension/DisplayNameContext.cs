@@ -10,6 +10,7 @@
         /// The normal display name. Shown in the context of a parent folder and in the address bar.
         /// </summary>
         Normal,
+
         /// <summary>
         /// The out of folder context, meaning that extra information can be shown if needed. For example,
         /// a printer might not just show the printer name, but something like "Printer1 on Computer3".
