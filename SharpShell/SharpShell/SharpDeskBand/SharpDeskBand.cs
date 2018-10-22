@@ -5,6 +5,7 @@ using SharpShell.Attributes;
 using SharpShell.Components;
 using SharpShell.Interop;
 using System.Windows.Forms;
+using SharpShell.Diagnostics;
 using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpDeskBand
@@ -492,8 +493,17 @@ namespace SharpShell.SharpDeskBand
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
+            Logging.Log($"DeskBand: Preparing to register {registrationType} COM categories for type {serverType.Name}");
+
             //   Use the category manager to register this server as a Desk Band.
-            CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            try
+            {
+                CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            }
+            catch (Exception exception)
+            {
+                Logging.Error($"An exception occurred to registering {registrationType} COM categories for type {serverType.Name}", exception);
+            }
         }
 
         /// <summary>
@@ -504,8 +514,17 @@ namespace SharpShell.SharpDeskBand
         [CustomUnregisterFunction]
         internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
         {
-            //   Use the category manager to unregister this server as a Desk Band.
-            CategoryManager.UnregisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            Logging.Log($"DeskBand: Preparing to unregister {registrationType} COM categories for type {serverType.Name}");
+
+            //   Use the category manager to register this server as a Desk Band.
+            try
+            {
+                CategoryManager.UnregisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            }
+            catch (Exception exception)
+            {
+                Logging.Error($"An exception occurred to registering {registrationType} COM categories for type {serverType.Name}", exception);
+            }
         }
 
         #endregion
