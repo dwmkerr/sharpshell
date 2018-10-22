@@ -66,18 +66,18 @@ namespace SharpShell
         {
             Logging.Log($"Preparing to register SharpShell Server {type.Name} as {registrationType}");
 
-            //  Get the assoication data.
-            var assocationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
+            //  Get the association data.
+            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
                 .OfType<COMServerAssociationAttribute>().ToList();
 
             //  Get the server type.
             var serverType = ServerTypeAttribute.GetServerType(type);
 
             //  Register the server associations, if there are any.
-            if (assocationAttributes.Any())
+            if (associationAttributes.Any())
             {
                 ServerRegistrationManager.RegisterServerAssociations(
-                    type.GUID, serverType, type.Name, assocationAttributes, registrationType);
+                    type.GUID, serverType, type.Name, associationAttributes, registrationType);
             }
 
             //  If a DisplayName attribute has been set, then set the display name of the COM server.
@@ -104,18 +104,18 @@ namespace SharpShell
         {
             Logging.Log($"Preparing to unregister SharpShell Server {type.Name} as {registrationType}");
 
-            //  Get the assoication data.
-            var assocationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
+            //  Get the association data.
+            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
                 .OfType<COMServerAssociationAttribute>().ToList();
 
             //  Get the server type.
             var serverType = ServerTypeAttribute.GetServerType(type);
             
             //  Unregister the server associations, if there are any.
-            if (assocationAttributes.Any())
+            if (associationAttributes.Any())
             {
                 ServerRegistrationManager.UnregisterServerAssociations(
-                    type.GUID, serverType, type.Name, assocationAttributes, registrationType);
+                    type.GUID, serverType, type.Name, associationAttributes, registrationType);
             }
 
             //  Execute the custom unregister function, if there is one.
@@ -155,14 +155,7 @@ namespace SharpShell
         /// <value>
         /// The name of the server.
         /// </value>
-        public string DisplayName
-        {
-            get 
-            {
-                //  Return the display name if set, otherwise the type name.
-                return DisplayNameAttribute.GetDisplayNameOrTypeName(GetType());
-            }
-        }
+        public string DisplayName => DisplayNameAttribute.GetDisplayNameOrTypeName(GetType());
 
         /// <summary>
         /// Gets the type of the server.
@@ -170,21 +163,11 @@ namespace SharpShell
         /// <value>
         /// The type of the server.
         /// </value>
-        public ServerType ServerType
-        {
-            get
-            {
-                //  Just return the ServerTypeAttribute on the class (we must always have one somewhere in the hierarchy).
-                return ServerTypeAttribute.GetServerType(GetType());
-            }
-        }
+        public ServerType ServerType => ServerTypeAttribute.GetServerType(GetType());
 
         /// <summary>
         /// Gets the server CLSID.
         /// </summary>
-        public Guid ServerClsid
-        {
-            get { return GetType().GUID; }
-        }
+        public Guid ServerClsid => GetType().GUID;
     }
 }
