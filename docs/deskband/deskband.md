@@ -6,6 +6,7 @@ Desk Band Extensions are extensions which can run in the Windows Task Bar.
 
 This document describes how to build a simple desk band extension.
 
+Note: Officially, Desk Band extensions are no longer supported as of Windows 7 (see [details here](https://docs.microsoft.com/en-gb/windows/desktop/api/shobjidl/nn-shobjidl-ideskband2)) and [Taskbar Extensions](https://docs.microsoft.com/en-gb/windows/desktop/shell/taskbar-extensions)).
 
 <!-- vim-markdown-toc GFM -->
 
