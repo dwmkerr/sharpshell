@@ -1,28 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using Microsoft.Win32;
 using SharpShell.SharpNamespaceExtension;
 
 namespace RegistryNamespaceExtension
 {
+    /// <inheritdoc />
     /// <summary>
-    /// The <see cref="RegistryNamespaceExtension"/> is an example shell namespace extension
+    /// The <see cref="T:RegistryNamespaceExtension.RegistryNamespaceExtension" /> is an example shell namespace extension
     /// which presents the contents of the registry in the Shell under My Computer.
     /// </summary>
+    [ComVisible(true)]
     [NamespaceExtensionJunctionPoint(NamespaceExtensionAvailability.Everyone, VirtualFolder.MyComputer, "Registry")]
-    public class RegistryNamespaceExtenson : SharpNamespaceExtension
+    public class RegistryNamespaceExtension : SharpNamespaceExtension
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RegistryNamespaceExtenson"/> class.
+        /// Initializes a new instance of the <see cref="RegistryNamespaceExtension"/> class.
         /// </summary>
-        public RegistryNamespaceExtenson()
+        public RegistryNamespaceExtension()
         {
             //  Create the hive folders.
             hives = new List<RegistryKeyItem>
             {
-                new RegistryKeyItem(Registry.LocalMachine, "Local Machine"),
-                new RegistryKeyItem(Registry.CurrentConfig, "Current Config")
+                new RegistryKeyItem(Registry.LocalMachine, "HKEY_LOCAL_MACHINE"),
+                new RegistryKeyItem(Registry.CurrentUser, "HKEY_CURRENT_USER"),
+                new RegistryKeyItem(Registry.ClassesRoot, "HKEY_CLASSES_ROOT"),
+                new RegistryKeyItem(Registry.Users, "HKEY_USERS_ROOT"),
+                new RegistryKeyItem(Registry.CurrentConfig, "HKEY_CURRENT_CONFIG"),
             };
         }
 
@@ -45,25 +51,20 @@ namespace RegistryNamespaceExtension
 
         protected override IEnumerable<IShellNamespaceItem> GetChildren(ShellNamespaceEnumerationFlags flags)
         {
-            if(flags.HasFlag(ShellNamespaceEnumerationFlags.Folders))
-                foreach (var hive in hives)
-                    yield return hive;
+            if (!flags.HasFlag(ShellNamespaceEnumerationFlags.Folders)) yield break;
+            foreach (var hive in hives)
+                yield return hive;
         }
 
         protected override ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new []
+            var columns = new[]
             {
                 new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay)),
-                new ShellDetailColumn("Value", new PropertyKey(KeyProperties.valueGuid, KeyProperties.valuePid)), 
-            },
-                (item, column) =>
-                    {
-                        return item.GetDisplayName(DisplayNameContext.Normal);
-                    });
+                new ShellDetailColumn("Value", new PropertyKey(KeyProperties.valueGuid, KeyProperties.valuePid)),
+            };
+            return new DefaultNamespaceFolderView(columns, (item, column) => item.GetDisplayName(DisplayNameContext.Normal));
         }
-
-
 
         private readonly List<RegistryKeyItem> hives;
     }
