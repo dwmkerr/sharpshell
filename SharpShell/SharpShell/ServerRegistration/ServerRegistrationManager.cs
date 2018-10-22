@@ -386,6 +386,30 @@ namespace SharpShell.ServerRegistration
         }
 
         /// <summary>
+        /// Sets the display name of the a COM server.
+        /// </summary>
+        /// <param name="classId">The class identifier.</param>
+        /// <param name="displayName">The display name.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static void SetServerDisplayName(Guid classId, string displayName, RegistrationType registrationType)
+        {
+            //  Open the classes.
+            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
+            {
+                //  Create the server key.
+                using (var serverKey = classesKey.OpenSubKey(classId.ToRegistryString(), RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue))
+                {
+                    if (serverKey == null)
+                        throw new InvalidOperationException($"Cannot open class id key {classId}");
+
+                    //  Set the display name.
+                    serverKey.SetValue(null, displayName, RegistryValueKind.String);
+                }
+            }
+        }
+
+        /// <summary>
         /// Registers the server associations.
         /// </summary>
         /// <param name="serverClsid">The server CLSID.</param>

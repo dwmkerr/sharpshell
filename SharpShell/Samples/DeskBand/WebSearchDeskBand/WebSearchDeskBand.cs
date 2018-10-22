@@ -1,6 +1,5 @@
 ﻿using SharpShell.Attributes;
 using SharpShell.SharpDeskBand;
-using System;
 using System.Runtime.InteropServices;
 
 namespace WebSearchDeskBand
