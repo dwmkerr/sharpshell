@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using Microsoft.Win32;
+using SharpShell.Diagnostics;
 using SharpShell.Pidl;
 using SharpShell.SharpNamespaceExtension;
 
@@ -34,8 +35,9 @@ namespace RegistryNamespaceExtension
                 {
                     childKeys.Add( new RegistryKeyItem(hiveKey.OpenSubKey(subkeyName), subkeyName));
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    Logging.Error($"An error occurred enumerating subkeys of {displayName}", exception);
                 }
             }
             return childKeys;
@@ -63,6 +65,7 @@ namespace RegistryNamespaceExtension
 
         IEnumerable<IShellNamespaceItem> IShellNamespaceFolder.GetChildren(ShellNamespaceEnumerationFlags flags)
         {
+            Logging.Log($"Enumerating children for {displayName}");
             //  If we've been asked for folders, return all subkeys.
             if (flags.HasFlag(ShellNamespaceEnumerationFlags.Folders))
             {
@@ -80,15 +83,12 @@ namespace RegistryNamespaceExtension
 
         public ShellNamespaceFolderView GetView()
         {
-            return new DefaultNamespaceFolderView(new[]
+            var columns = new[]
             {
                 new ShellDetailColumn("Name", new PropertyKey(StandardPropertyKey.PKEY_ItemNameDisplay)),
                 new ShellDetailColumn("Value", new PropertyKey(KeyProperties.valueGuid, KeyProperties.valuePid))
-            },
-                (item, column) =>
-                {
-                    return item.GetDisplayName(DisplayNameContext.Normal);
-                });
+            };
+            return new DefaultNamespaceFolderView(columns, (item, column) => item.GetDisplayName(DisplayNameContext.Normal));
         }
 
         private readonly Lazy<List<RegistryKeyItem>> lazyChildKeys;
