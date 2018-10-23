@@ -18,6 +18,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Icon Overlay Handlers](#icon-overlay-handlers)
     * [Thumbnail Handlers](#thumbnail-handlers)
     * [Property Sheet Extensions](#property-sheet-extensions)
+    * [Desk Band Extensions](#desk-band-extensions)
 * [Developer Guide](#developer-guide)
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
@@ -118,6 +119,14 @@ These are extensions that add extra pages to the property sheets shown for shell
 ![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/propertysheetextensions.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
+
+### Desk Band Extensions
+
+These are extensions which add custom functionality to the Windows Desktop or Task Bar.
+
+![Shell Desk Band Screenshot](./docs/deskband/deskband-screenshot.png)
+
+[Step by Step Tutorial](./docs/deskband/deskband.md)
 
 ## Developer Guide
 
