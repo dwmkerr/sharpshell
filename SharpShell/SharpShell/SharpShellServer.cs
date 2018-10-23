@@ -80,6 +80,11 @@ namespace SharpShell
                     type.GUID, serverType, type.Name, associationAttributes, registrationType);
             }
 
+            //  If a DisplayName attribute has been set, then set the display name of the COM server.
+            var displayName = DisplayNameAttribute.GetDisplayName(type);
+            if (!string.IsNullOrEmpty(displayName))
+                ServerRegistrationManager.SetServerDisplayName(type.GUID, displayName, registrationType);
+
             //  Execute the custom register function, if there is one.
             CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
 
