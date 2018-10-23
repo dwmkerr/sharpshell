@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using SharpShell.Attributes;
 using SharpShell.Interop;
 using SharpShell.SharpIconOverlayHandler;
 
@@ -14,6 +15,7 @@ namespace ReadOnlyFileIconOverlayHandler
     /// a padlock icon over files that are read only.
     /// </summary>
     [ComVisible(true)]
+    [RegistrationName("  ReadOnlyFileIconOverlayHandler")] // push our way up the list by putting spaces in the name...
     public class ReadOnlyFileIconOverlayHandler : SharpIconOverlayHandler
     {
         /// <summary>

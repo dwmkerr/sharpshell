@@ -26,6 +26,13 @@ Overlays are registered at:
 
 Check these nodes to make sure you do not have too many overlays already registered.
 
+You can also use the `RegistrationName` attribute on a server to force a name to be used for the registration which will move the server to a high position in the list. For example:
+
+```csharp
+ [RegistrationName("  ReadOnlyFileIconOverlayHandler")] // push our way up the list by putting spaces in the name...
+public class ReadOnlyFileIconOverlayHandler : SharpIconOverlayHandler
+```
+
 On 32 bit systems, it normally takes a restart if explorer.exe for the icon to be loaded. Apparently, this can actually be done programatically via SHChangeNotify.
 
 If you see a cross icon instead of your icon, make sure the build action for the icon is set to "Resource". If this doesn't work, try copying it to the resource folder manually. (See [http://www.codeproject.com/Articles/545781/NET-Shell-Extensions-Shell-Icon-Overlay-Handlers?msg=4972010#xx4972010xx](http://www.codeproject.com/Articles/545781/NET-Shell-Extensions-Shell-Icon-Overlay-Handlers?msg=4972010#xx4972010xx)).

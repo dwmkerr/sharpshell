@@ -69,6 +69,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\AssociationType.cs" />
+    <Compile Include="Attributes\RegistrationNameAttribute.cs" />
     <Compile Include="Attributes\COMServerAssociationAttribute.cs" />
     <Compile Include="Attributes\CustomUnregisterFunctionAttribute.cs" />
     <Compile Include="Attributes\CustomRegisterFunctionAttribute.cs" />
@@ -234,7 +235,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SharpPreviewHandler\PreviewHandlerHost.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Exceptions\ServerRegistrationException.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerRegistrar.cs" />
