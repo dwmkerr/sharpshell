@@ -1,6 +1,6 @@
 # SharpShell
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/)
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
@@ -20,6 +20,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Property Sheet Extensions](#property-sheet-extensions)
     * [Desk Band Extensions](#desk-band-extensions)
 * [Developer Guide](#developer-guide)
+    * [Testing](#testing)
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
@@ -141,6 +142,16 @@ In order to maximize compatibility, we do not use the latest version of each SDK
 - Microsoft Visual Studio 2017 Installer Projects
 
 Note: Not tested on VS2017 for Mac.
+
+### Testing
+
+To create a coverage report, run:
+
+```
+./coverage.ps1
+```
+
+From the `SharpShell` folder. A coverage report will be written to `./artifacts/coverage`.
 
 ### Enabling Logging
 

@@ -39,3 +39,6 @@ SharpShell/Release
 SharpShell/x64
 SharpShell/SharpShellNativeBridge/Release
 SharpShell/SharpShellNativeBridge/x64
+
+# Artifacts
+SharpShell/artifacts
