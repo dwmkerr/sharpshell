@@ -1,7 +1,7 @@
-# Please ensure you have run:
-choco install -y opencover.portable codecov
+# Install dependencies.
+choco install -y --no-progress opencover.portable codecov
 
-# Eun OpenCover to generate a report.
+# Create an artifacts directory and build the report.
 New-Item -ItemType Directory -Force -Path .\artifacts\coverage
 OpenCover.Console.exe "-target:packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-console.exe" "-targetargs:SharpShell.Tests\bin\Release\SharpShell.Tests.dll"  "-filter:+[SharpShell*]* -[SharpShell.Tests   *]*" "-register:user" "-output:artifacts/coverage/coverage.xml"
 
