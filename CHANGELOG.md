@@ -1,3 +1,14 @@
+## Version 2.6.0
+
+Note that release 2.4.3 was incorrectly released as 2.5.3. This release jumps to 2.6.0 to attempt to minimise disruption.
+
+- Updated samples, documentation and code for Desk Band Extensions.
+- Better logging for server registration activities.
+- Bug fixes for the Desk Band Extensions.
+- Better support for Context Menus in the Test Shell.
+- The Native Bridge uses the static C Runtime Library, which should eliminate certain runtime issues for property sheets.
+
+
 ## Version 2.4.3
 
 - Update to Visual Studio 2017
