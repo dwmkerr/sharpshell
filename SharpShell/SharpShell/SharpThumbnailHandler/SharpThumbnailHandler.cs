@@ -29,7 +29,7 @@ namespace SharpShell.SharpThumbnailHandler
         int IThumbnailProvider.GetThumbnail(uint cx, out IntPtr phbmp, out WTS_ALPHATYPE pdwAlpha)
         {
             //  DebugLog this key event.
-            Log(string.Format("GetThumbnail for item stream, width {0}.", cx));
+            Log($"GetThumbnail for item stream, width {cx}.");
 
             //  Set the out variables to default values.
             phbmp = IntPtr.Zero;
