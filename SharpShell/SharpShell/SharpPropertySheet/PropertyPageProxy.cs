@@ -163,8 +163,24 @@ namespace SharpShell.SharpPropertySheet
 
         private void Cleanup()
         {
-            //  Destory the target.
-            Target.Dispose();
+            // Temporal workaround to prevent Explorer.exe from crashing after a property page "disappears".
+            // This occur in a undetermined scenario when opening multiple property pages, 
+            // which, on these circumstances, a call to 'Target.Dispose()' will throw a NullReferenceException.
+            //
+            // See related issues for more info: 
+            //  - https://github.com/dwmkerr/sharpshell/issues/177
+            //  - https://github.com/dwmkerr/sharpshell/issues/88
+            try {
+                //  Destroy the target.
+                Target?.Dispose();
+
+            } catch (NullReferenceException ex) {
+                Logging.Log("Failed to dispose 'Target' instance due it is already disposed.");
+
+            } catch (Exception ex) {
+                Logging.Log("Failed to dispose 'Target' instance due undetermined reasons.");
+                // MessageBox.Show(ex.Message);
+            }
 
             //  Destroy the host.
             User32.DestroyWindow(HostWindowHandle);
