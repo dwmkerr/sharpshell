@@ -101,7 +101,7 @@ public class CustomIconHanlder : SharpIconHandler
 To associate a server with all drives in the system, use the `Drive` association:
 
 ```csharp
-[COMServerAssociation(AssociationType.Drive)](COMServerAssociation(AssociationType.Drive))
+[COMServerAssociation(AssociationType.Drive)]
 public class CustomIconHanlder : SharpIconHandler
 ```
 
@@ -111,6 +111,6 @@ To associate a server with all unknown file types, use the `UnknownFiles` associ
 
 ```csharp
 // Associate the CustomIconHandler server with the all unknown file types.
-[COMServerAssociation(AssociationType.UnknownFiles)](COMServerAssociation(AssociationType.UnknownFiles))
+[COMServerAssociation(AssociationType.UnknownFiles)]
 public class CustomIconHanlder : SharpIconHandler
 ```
