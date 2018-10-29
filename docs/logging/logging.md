@@ -31,6 +31,8 @@ The screenshot below shows how logging to a file in the `%TEMP%` can be enabled:
 
 ![Screenshot: Registry Configured for File Logging](registry-configuration.png)
 
+Note that log settings are read on server startup. In practice this means that if you are changing these settings for an installed server which is already running, you will normally need to restart the `explorer.exe` process.
+
 ## Debug Output
 
 With this option enabled, SharpShell will write all log messages via the Win32 [`OutputDebugString`](https://msdn.microsoft.com/en-us/library/windows/desktop/aa363362(v=vs.85).aspx) API. This means that any trace listener can be used to view log output.
