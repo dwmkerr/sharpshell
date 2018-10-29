@@ -25,10 +25,17 @@ Install:
 srm install <path.dll>
 ```
 
-Install (without using the GAC)
+Install (without using the GAC):
 
 ```
 srm install <path.dll> -codebase
+```
+
+Install (with specific bitness, see [Installing and Uninstalling SharpShell Servers](https://github.com/dwmkerr/sharpshell/blob/master/docs/installing/installing.md)):
+
+```
+srm install <path.dll> [-codebase] -os32
+srm install <path.dll> [-codebase] -os64
 ```
 
 Uninstall:
