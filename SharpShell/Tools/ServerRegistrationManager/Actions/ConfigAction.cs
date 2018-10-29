@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SqlServer.Server;
 using ServerRegistrationManager.OutputService;
 using SharpShell.Configuration;
 
@@ -46,8 +42,8 @@ namespace ServerRegistrationManager.Actions
             }
 
             //  Show the config.
-            outputService.WriteMessage(string.Format("Logging Mode: {0}", config.LoggingMode));
-            outputService.WriteMessage(string.Format("Log Path: {0}", config.LogPath));
+            outputService.WriteMessage($"Logging Mode: {config.LoggingMode}");
+            outputService.WriteMessage($"Log Path: {config.LogPath}");
         }
 
         private static void SetConfig(IOutputService outputService, List<string> parameters)
@@ -55,7 +51,7 @@ namespace ServerRegistrationManager.Actions
             //  We must have a key and value.
             if (parameters.Count != 2)
             {
-                outputService.WriteError(string.Format("Incorrect syntax. Use: srm config <setting> <value>"));
+                outputService.WriteError("Incorrect syntax. Use: srm config <setting> <value>");
                 return;
             }
 
@@ -70,11 +66,10 @@ namespace ServerRegistrationManager.Actions
             if (string.Compare("LoggingMode", setting, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 //  Try and parse the setting. If we fail, show an error.
-                LoggingMode mode;
-                if (Enum.TryParse(value, true, out mode) == false)
+                if (Enum.TryParse(value, true, out LoggingMode mode) == false)
                 {
                     const LoggingMode allFlags = LoggingMode.Disabled | LoggingMode.Debug | LoggingMode.EventLog | LoggingMode.File;
-                    outputService.WriteError(string.Format("Invalid value '{0}'. Acceptible values are: {1}", value, allFlags));
+                    outputService.WriteError($"Invalid value '{value}'. Acceptable values are: {allFlags}");
                     return;
                 }
 
@@ -85,7 +80,7 @@ namespace ServerRegistrationManager.Actions
                 SystemConfigurationProvider.Save();
 
                 //  Update the user.
-                outputService.WriteSuccess(string.Format("Set LoggingMode to {0}", mode));
+                outputService.WriteSuccess($"Set LoggingMode to {mode}");
             }
             else if (string.Compare("LogPath", setting, StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -96,12 +91,12 @@ namespace ServerRegistrationManager.Actions
                 SystemConfigurationProvider.Save();
 
                 //  Update the user.
-                outputService.WriteSuccess(string.Format("Set LogPath to {0}", value));
+                outputService.WriteSuccess($"Set LogPath to {value}");
             }
             else
             {
                 //  Show an error.
-                outputService.WriteError(string.Format("{0} is not a valid config setting. Valid settings are LoggingMode and LogPath.", value));
+                outputService.WriteError($"{value} is not a valid config setting. Valid settings are LoggingMode and LogPath.");
             }
         }
     }
