@@ -67,5 +67,5 @@ The following settings are supported:
 | `LoggingMode`        | Disabled, Debug, EventLog, File      |
 | `LogPath`            | *Any file path*                      |
 
-These configuration settings are described in more detail in the [Logging Documentation](../logging/logging.md).
+These configuration settings are described in more detail in the [Logging Documentation](../logging/logging.md). Note that logging options will normally require a restart of the `explorer.exe` process to take effect.
 
