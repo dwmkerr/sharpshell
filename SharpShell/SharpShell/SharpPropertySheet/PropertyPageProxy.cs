@@ -175,10 +175,10 @@ namespace SharpShell.SharpPropertySheet
                 Target?.Dispose();
 
             } catch (NullReferenceException ex) {
-                Logging.Log("Failed to dispose 'Target' instance due it is already disposed.");
+                Logging.Error(string.Format("Failed to dispose '{0}' because it is already disposed.", nameof(Target)));
 
             } catch (Exception ex) {
-                Logging.Log("Failed to dispose 'Target' instance due undetermined reasons.");
+                Logging.Error(string.Format("Failed to dispose '{0}' due undetermined reasons.", nameof(Target)));
                 // MessageBox.Show(ex.Message);
             }
 
