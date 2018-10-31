@@ -82,7 +82,7 @@ Some classes have helper functions which allow write to the log, but provide the
 | `SharpPropertyPage.Log`      | Logs a message, automatically including the server display name and property page display name. |
 | `SharpPropertyPage.LogError` | Logs an error, automatically including the server display name and property page display name.  |
 
-When available, the functions above (or equivalents) should be preferred as they will add more context to the log messages.
+When available, the functions above (or equivalents) should be preferred as they will add more context to the log messages. A number of the lower level classes used internally (such as the `NativeBridge` and `PropertyPageProxy`) also have these logging helper functions.
 
 ## Appendix: Why Not log4net?
 

@@ -2,6 +2,7 @@
 
 - Property Pages: Are resized automatically, which fixes some scaling issues.
 - Property Pages: Improved logging for Property Pages.
+- Native Bridge: Improved Native Bridge logging.
 
 ## Version 2.6.0
 
