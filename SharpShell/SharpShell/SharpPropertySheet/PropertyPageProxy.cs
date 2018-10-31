@@ -30,7 +30,7 @@ namespace SharpShell.SharpPropertySheet
         {
             var level1 = Parent != null ? Parent.DisplayName : "Unknown";
             var level2 = Target != null ? Target.PageTitle : "Unknown";
-            Logging.Log($"{level1} (Proxy for '{level2}' Page): {message}");
+            Logging.Log($"{level1} (Proxy {HostWindowHandle.ToString("x8")} for '{level2}' Page): {message}");
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace SharpShell.SharpPropertySheet
         {
             var level1 = Parent != null ? Parent.DisplayName : "Unknown";
             var level2 = Target != null ? Target.PageTitle : "Unknown";
-            Logging.Error($"{level1} (Proxy for {level2}): {message}", exception);
+            Logging.Error($"{level1} (Proxy {HostWindowHandle.ToString("x8")} for {level2}): {message}", exception);
         }
 
         #endregion
@@ -91,6 +91,13 @@ namespace SharpShell.SharpPropertySheet
                     Target?.SetBounds(0, 0, width, height);
 
                     break;
+
+                //  The proxy window is really just a container for the user control which holds the user defined
+                //  property sheet content. So make it transparent (otherwise we'll get a grey dialog background).
+                case WindowsMessages.WM_ERASEBKGND:
+                    
+                    //  Return true - i.e. we handled erasing the background (by doing nothing).
+                    return new IntPtr(1);
 
                 case WindowsMessages.WM_INITDIALOG:
                     
