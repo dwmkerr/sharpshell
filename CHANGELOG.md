@@ -1,3 +1,8 @@
+## Version X
+
+- Property Pages: Are resized automatically, which fixes some scaling issues.
+- Property Pages: Improved logging for Property Pages.
+
 ## Version 2.6.0
 
 Note that release 2.4.3 was incorrectly released as 2.5.3. This release jumps to 2.6.0 to attempt to minimise disruption.
