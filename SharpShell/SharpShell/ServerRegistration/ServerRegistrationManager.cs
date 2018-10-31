@@ -596,6 +596,7 @@ namespace SharpShell.ServerRegistration
                         //  We've got extensions, but we need the classes for them.
                         foreach (var fileExtension in associations)
                         {
+                            //  TODO: the extension might have a star (like *.dll), if so we should skip it.
                             //  Open the file type key.
                             using (var fileTypeKey = classesKey.OpenSubKey(fileExtension))
                             {
