@@ -48,7 +48,7 @@ Please open an issue if there is missing documentation and I will try to priorit
 
 ## Deploying SharpShell Servers
 
-There is an article on the CodeProject that describes in detail how you can use the Server Registration Manager tool 
+There is an article on the CodeProject that describes in detail how you can use the Server Registration Manager tool
 to deploy SharpShell servers:
 
 [Deploying SharpShell Servers](http://www.codeproject.com/Articles/653780/NET-Shell-Extensions-Deploying-SharpShell-Servers)
@@ -61,7 +61,7 @@ The following extensions are supported by SharpShell.
 
 Shell Context Menus allow the context menus used in Windows Explorer to be customised.
 
-![Shell Context Menu Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/contextmenu.png)
+![Shell Context Menu Screenshot](./docs/extensions/contextmenuhandler/contextmenu-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/512956/NET-Shell-Extensions-Shell-Context-Menus).
 
@@ -69,7 +69,7 @@ Shell Context Menus allow the context menus used in Windows Explorer to be custo
 
 Shell Icon Handlers are DLLs that are registered in the system to customise the appearance of icons.
 
-![Shell Icon Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/iconhandler.png)
+![Shell Icon Handler Screenshot](./docs/extensions/iconhandler/iconhandler-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/522665/NET-Shell-Extensions-Shell-Icon-Handlers).
 
@@ -77,23 +77,23 @@ Shell Icon Handlers are DLLs that are registered in the system to customise the 
 
 Shell Info Tip Handlers are DLLs that are registered in the system to customise tooltips for items in the shell.
 
-![Shell Info Tip Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/infotiphandler.png)
+![Shell Info Tip Handler Screenshot](./docs/extensions/infotiphandler/infotiphandler-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/527058/NET-Shell-Extensions-Shell-Info-Tip-Handlers).
 
 ### Drop Handlers
 
-Shell Drop  Handlers are DLLs that are registered in the system to extend the drag and drop functionality in the Shell. 
+Shell Drop  Handlers are DLLs that are registered in the system to extend the drag and drop functionality in the Shell.
 
-![Shell Drop Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/dorphandler.png)
+![Shell Drop Handler Screenshot](./docs/extensions/drophandler/drophandler-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/529515/NET-Shell-Extensions-Shell-Drop-Handlers).
 
 ### Preview Handlers
 
-Shell PreviewHandlers are dlls that can be registered in the system to allow you to create visually rich previews for items that are displayed directly in Windows Explorer. 
+Shell PreviewHandlers are dlls that can be registered in the system to allow you to create visually rich previews for items that are displayed directly in Windows Explorer.
 
-![Shell Preview Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/previewhandler.png)
+![Shell Preview Handler Screenshot](./docs/extensions/previewhandler/previewhandler-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/533948/NET-Shell-Extensions-Shell-Preview-Handlers).
 
@@ -101,23 +101,23 @@ Shell PreviewHandlers are dlls that can be registered in the system to allow you
 
 Shell Icon Overlay Handlers can be really useful. They let you display an icon overlay over shell objects to provide extra information. Programs like Dropbox use these overlays to show whether files are synchronised or not.
 
-![Shell Icon Overlay Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/overlayhandler.png)
+![Shell Icon Overlay Handler Screenshot](./docs/extensions/overlayhandler/overlayhandler-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/545781/NET-Shell-Extensions-Shell-Icon-Overlay-Handlers).
 
 ### Thumbnail Handlers
 
-Shell Thumbnail Handlers (or as they're sometimes known, Shell Thumbnail Providers) are COM servers that you can write to customise the appearance of the thumbnail icons in the Windows Shell. 
+Shell Thumbnail Handlers (or as they're sometimes known, Shell Thumbnail Providers) are COM servers that you can write to customise the appearance of the thumbnail icons in the Windows Shell.
 
-![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/thumbnailhandler.jpg)
+![Shell Thumbnail Handler Screenshot](./docs/extensions/thumbnailhandler/thumbnailhandler-screenshot.jpg)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/563114/NET-Shell-Extensions-Shell-Thumbnail-Handlers).
 
 ### Property Sheet Extensions
 
 These are extensions that add extra pages to the property sheets shown for shell items such as files, network shares, folders and so on.
- 
-![Shell Thumbnail Handler Screenshot](https://raw.github.com/dwmkerr/sharpshell/master/Assets/Screenshots/propertysheetextensions.png)
+
+![Shell Thumbnail Handler Screenshot](./docs/extensions/propertysheetextension/propertysheetextensions-screenshot.png)
 
 [Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
 
@@ -192,10 +192,10 @@ The AppVeyor build will build a new NuGet package and as long as a new semver ta
 
 If you've used SharpShell and would like to add a testimonial, just send me a message!
 
-> CmisSync, our Dropbox-like client for Enterprise Content Management servers, just switched to SharpShell, 
-> and we are extremely pleased with this library. Our previous custom-built Windows Explorer integration 
-> was buggy, unreliable and hard to maintain, and SharpShell is really rock-solid in comparison. The best 
-> part: It only took 2 days to integrate SharpShell into our software, testing and installer included. 
+> CmisSync, our Dropbox-like client for Enterprise Content Management servers, just switched to SharpShell,
+> and we are extremely pleased with this library. Our previous custom-built Windows Explorer integration
+> was buggy, unreliable and hard to maintain, and SharpShell is really rock-solid in comparison. The best
+> part: It only took 2 days to integrate SharpShell into our software, testing and installer included.
 > Thanks SharpShell!
 
 Nicolas Raoul - [CmisSync.com](http://CmisSync.com)
