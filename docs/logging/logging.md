@@ -65,10 +65,24 @@ Note: If the extension host does not have permissions to access the file, this c
 
 Logging Configuration is loaded via the `SystemConfigurationProvider` class. Logging functionality is provided via the `Logging` class.
 
-All classes which dervive from `SharpShellServer` can use the following fuctions to write to the log, automatically including the extension name:
+You can call logging methods explicitly, as below:
 
-- `Log`
-- `LogError`
+```csharp
+Logging.Log("Message from SharpShell");
+Logging.Error("Uh-oh", new Exception());
+```
+
+Some classes have helper functions which allow write to the log, but provide the Server Name or other useful information. Always check for a 
+`Log` or `LogError` method before using the generic methods above. The following functions are available:
+
+| Function                     | Notes                                                                                           |
+|------------------------------|-------------------------------------------------------------------------------------------------|
+| `SharpShellServer.Log`       | Logs a message, automatically including the server display name.                                |
+| `SharpShellServer.LogError`  | Logs an error, automatically including the server display name.                                 |
+| `SharpPropertyPage.Log`      | Logs a message, automatically including the server display name and property page display name. |
+| `SharpPropertyPage.LogError` | Logs an error, automatically including the server display name and property page display name.  |
+
+When available, the functions above (or equivalents) should be preferred as they will add more context to the log messages.
 
 ## Appendix: Why Not log4net?
 

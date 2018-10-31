@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
 using SharpShell.Diagnostics;
-using SharpShell.Extensions;
+using SharpShell.Helpers;
 using SharpShell.Interop;
 
 namespace SharpShell.SharpPropertySheet
@@ -23,6 +19,33 @@ namespace SharpShell.SharpPropertySheet
         {
             
         }
+
+        #region Logging Helper Functions
+
+        /// <summary>
+        /// Logs the specified message. Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        protected void Log(string message)
+        {
+            var level1 = Parent != null ? Parent.DisplayName : "Unknown";
+            var level2 = Target != null ? Target.PageTitle : "Unknown";
+            Logging.Log($"{level1} (Proxy for '{level2}' Page): {message}");
+        }
+
+        /// <summary>
+        /// Logs the specified message as an error.  Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="exception">Optional exception details.</param>
+        protected void LogError(string message, Exception exception = null)
+        {
+            var level1 = Parent != null ? Parent.DisplayName : "Unknown";
+            var level2 = Target != null ? Target.PageTitle : "Unknown";
+            Logging.Error($"{level1} (Proxy for {level2}): {message}", exception);
+        }
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyPageProxy"/> class.
@@ -55,6 +78,20 @@ namespace SharpShell.SharpPropertySheet
         {
             switch (uMessage)
             {
+                //  WM_SIZE will normally be sent once, early in the lifecycle. This is great as it allows us
+                //  to explicitly set the size of the page. This means that the page can be of any size in the
+                //  designer. As long as controls are anchored properly it will then be laid out correctly.
+                case WindowsMessages.WM_SIZE:
+
+                    //  Grab the new client size.
+                    var width = Win32Helper.LoWord(lParam);
+                    var height = Win32Helper.HiWord(lParam);
+
+                    //  Pass the size onto the target window if we can.
+                    Target?.SetBounds(0, 0, width, height);
+
+                    break;
+
                 case WindowsMessages.WM_INITDIALOG:
                     
                     try
@@ -73,7 +110,7 @@ namespace SharpShell.SharpPropertySheet
                     }
                     catch (Exception exception)
                     {
-                        Logging.Error("Failed to set the parent to the host.", exception);
+                        LogError("Failed to set the parent to the host.", exception);
                     }
 
                     break;
@@ -138,11 +175,14 @@ namespace SharpShell.SharpPropertySheet
                 case PSPCB.PSPCB_ADDREF:
 
                     //  Increment the reference count.
+                    Log($"Add Ref {referenceCount} -> {referenceCount+1}");
                     referenceCount++;
 
                     break;
 
                 case PSPCB.PSPCB_RELEASE:
+
+                    Log($"Release Ref {referenceCount} -> {referenceCount - 1}");
 
                     //  Decrement the reference count.
                     referenceCount--;
@@ -155,6 +195,8 @@ namespace SharpShell.SharpPropertySheet
 
                 case PSPCB.PSPCB_CREATE:
 
+                    Log($"Create Callback");
+
                     //  Allow the sheet to be created.
                     return 1;
             }
@@ -163,7 +205,9 @@ namespace SharpShell.SharpPropertySheet
 
         private void Cleanup()
         {
-            //  Destory the target.
+            Log($"Cleanup");
+
+            //  Destroy the target.
             Target.Dispose();
 
             //  Destroy the host.
@@ -179,7 +223,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         public void CreatePropertyPageHandle(NativeBridge.NativeBridge nativeBridge)
         {
-            Logging.Log("Creating property page handle via bridge.");
+            Log("Creating property page handle via bridge.");
 
             //  Create a prop sheet page structure.
             var psp = new PROPSHEETPAGE();
@@ -212,8 +256,6 @@ namespace SharpShell.SharpPropertySheet
 
             //  Create a the property sheet page.
             HostWindowHandle = Comctl32.CreatePropertySheetPage(ref psp);
-
-
         }
 
         /// <summary>
