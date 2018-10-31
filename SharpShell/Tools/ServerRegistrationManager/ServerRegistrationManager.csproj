@@ -94,10 +94,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)..\Build\Tools\srm.exe"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)..\Build\Core\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\SharpShell.dll"</PreBuildEvent>
+    <PreBuildEvent>copy "$(SolutionDir)SharpShell\bin\$(ConfigurationName)\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\SharpShell.dll"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
