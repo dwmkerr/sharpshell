@@ -173,7 +173,6 @@ namespace SharpShell.SharpPropertySheet
                     }
 
                     break;
-
             }
 
             return IntPtr.Zero;
@@ -188,23 +187,39 @@ namespace SharpShell.SharpPropertySheet
         /// <returns></returns>
         private uint CallbackProc(IntPtr hWnd, PSPCB uMsg, ref PROPSHEETPAGE ppsp)
         {
+            //  Important: The docs at: https://docs.microsoft.com/en-us/windows/desktop/shell/how-to-register-and-implement-a-property-sheet-handler-for-a-file-type
+            //  Imply we *must* set PSP_USEPARENTREF and give access to the parent reference count, to avoid the server being
+            //  unloaded while the property sheet is still visible. It is damn near impossible to do this as
+            //  the IUnknown of the IShellPropSheetExt is managed by the runtime. Instead, when the internal
+            //  reference count increases, we will manually increment the COM server ref count, then release
+            //  it when our property sheet tells us we are done. This *appears* to have resolved the lifetime
+            //  issues. The theory is that we are using the lifecycle hooks below to manage our IShellPropSheetExt
+            //  server ref count and ensure that the shell will not unload it while the property sheet is in use.
+
             switch (uMsg)
             {
                 case PSPCB.PSPCB_ADDREF:
-
-                    //  Increment the reference count.
-                    Log($"Add Ref {referenceCount} -> {referenceCount+1}");
+                {
+                    //  Increment the internal reference count.
+                    Log($"Add Internal Ref {referenceCount} -> {referenceCount + 1}");
                     referenceCount++;
 
+                    //  At this point, increment the IPropSheetShellExt interface reference count, so that the
+                    //  shell doesn't try and release the server before we are done.
+                    var pUnk = Marshal.GetIUnknownForObject(Parent); // i.e. IShellPropSheetExt
+                    var newCount = Marshal.AddRef(pUnk);
+                    Log($"IShellPropSheetExt: Add Ref {newCount - 1} -> {newCount}");
+
                     break;
+                }
 
                 case PSPCB.PSPCB_RELEASE:
+                {
+                    Log($"Release Internal Ref {referenceCount} -> {referenceCount - 1}");
 
-                    Log($"Release Ref {referenceCount} -> {referenceCount - 1}");
-
-                    //  Decrement the reference count.
+                    //  Decrement the internal reference count.
                     referenceCount--;
-
+                    
                     //  If we're down to zero references, cleanup.
                     if (referenceCount == 0)
                     {
@@ -222,7 +237,13 @@ namespace SharpShell.SharpPropertySheet
                         }
                     }
 
+                    //  Balance out the AddRef all from PSPCB_ADDREF by releasing now.
+                    var pUnk = Marshal.GetIUnknownForObject(Parent); // i.e. IShellPropSheetExt
+                    var newCount = Marshal.Release(pUnk);
+                    Log($"IShellPropSheetExt: Release {newCount + 1} -> {newCount}");
+
                     break;
+                }
 
                 case PSPCB.PSPCB_CREATE:
 
