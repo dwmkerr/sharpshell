@@ -78,6 +78,17 @@ namespace SharpShell.SharpPropertySheet
         {
             switch (uMessage)
             {
+                //  The shell creates our property pages from a template, then adds them as a child of the sheet.
+                //  This means when it closes the sheet it will destroy the pages for us. This event handler
+                //  primarily exists for diagnostics, to allow us to see where in the lifecycle the actual destroy
+                //  event happens. Note that from this point onwards it would not be safe to use any part of the
+                //  form - it is destroyed.
+                case WindowsMessages.WM_DESTROY:
+
+                    Log("Proxy is being destroyed...");
+
+                    break;
+
                 //  WM_SIZE will normally be sent once, early in the lifecycle. This is great as it allows us
                 //  to explicitly set the size of the page. This means that the page can be of any size in the
                 //  designer. As long as controls are anchored properly it will then be laid out correctly.
@@ -117,7 +128,7 @@ namespace SharpShell.SharpPropertySheet
                     }
                     catch (Exception exception)
                     {
-                        LogError("Failed to set the parent to the host.", exception);
+                        LogError("Failed to initialise the property page.", exception);
                     }
 
                     break;
@@ -196,7 +207,20 @@ namespace SharpShell.SharpPropertySheet
 
                     //  If we're down to zero references, cleanup.
                     if (referenceCount == 0)
-                        Cleanup();
+                    {
+                        //  The Target is a child of the host window handle, and that is child of the sheet.
+                        //  So these windows will be destroyed as part of the normal lifecycle. It's important
+                        //  we *don't* destroy them here or they could be destroyed twice. This is the place
+                        //  however to free up other resources which might be used by the page.
+                        try
+                        {
+                            Target?.OnRelease();
+                        }
+                        catch (Exception exception)
+                        {
+                            LogError("An exception occured releasing the property page", exception);
+                        }
+                    }
 
                     break;
 
@@ -208,21 +232,6 @@ namespace SharpShell.SharpPropertySheet
                     return 1;
             }
             return 0;
-        }
-
-        private void Cleanup()
-        {
-            Log($"Cleanup");
-
-            //  Destroy the target.
-            Target.Dispose();
-
-            //  Destroy the host.
-            User32.DestroyWindow(HostWindowHandle);
-
-            //  Clear the lot.
-            Target = null;
-            HostWindowHandle = IntPtr.Zero;
         }
 
         /// <summary>
