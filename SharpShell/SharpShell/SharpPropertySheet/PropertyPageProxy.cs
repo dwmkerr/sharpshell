@@ -233,7 +233,7 @@ namespace SharpShell.SharpPropertySheet
             }
             return 0;
         }
-
+        
         /// <summary>
         /// Creates the property page handle.
         /// </summary>
