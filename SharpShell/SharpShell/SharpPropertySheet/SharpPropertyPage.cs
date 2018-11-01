@@ -113,6 +113,15 @@ namespace SharpShell.SharpPropertySheet
         }
 
         /// <summary>
+        /// Called when the property page is being released. Use this to clean up managed and unmanaged resources.
+        /// Do *not* use it to close window handles - the window will be closed automatically as the sheet closes.
+        /// </summary>
+        protected internal virtual void OnRelease()
+        {
+            Log("Page Release");
+        }
+
+        /// <summary>
         /// Sets the page data changed.
         /// </summary>
         /// <param name="changed">if set to <c>true</c> the data has changed and the property sheet should enable the 'Apply' button.</param>
