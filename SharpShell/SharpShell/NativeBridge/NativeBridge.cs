@@ -78,6 +78,7 @@ namespace SharpShell.NativeBridge
             {
                 //  Log the exception.
                 LogError("Exception during loading of the bridge library", exception);
+                return false;
             }
 
             //  If the library hasn't been loaded, log the last windows error.
