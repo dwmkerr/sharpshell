@@ -43,7 +43,12 @@ namespace SharpShell.Diagnostics.Loggers
 
                 //  Write to the line to the file.
                 using (var w = File.AppendText(logPath))
-                    w.WriteLine($"{DateTime.Now.ToString(@"yyyy-MM-dd HH:mm:ss.fffZ")} - {Process.GetCurrentProcess().ProcessName } - {line}");
+                {
+                    var t = DateTime.Now.ToString(@"yyyy-MM-dd HH:mm:ss.fffZ");
+                    w.WriteLine(
+                        $"{t} - {Process.GetCurrentProcess().ProcessName} - {line}");
+                    w.Flush();
+                }
             }
             catch (Exception exception)
             {
