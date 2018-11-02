@@ -1,5 +1,6 @@
-## Version X
+## Version 2.6.1
 
+- Property Pages: Fix issue which led to intermittent explorer.exe crashes (shell was unloading servers too early it seemed)
 - Property Pages: Fix issue with incorrect background colour and controls which disappear.
 - Property Pages: Are resized automatically, which fixes some scaling issues.
 - Property Pages: Improved logging for Property Pages.
