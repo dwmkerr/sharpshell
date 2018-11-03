@@ -321,12 +321,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent># Copy over the built assembly to the artifacts folder.
-xcopy "$(TargetPath)" "$(SolutionDir)artifacts\build\SharpShell\" /F /R /Y /I</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)artifacts\build\SharpShell\" /F /R /Y /I</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent># Bring over the native bridge binaries.
-copy "$(SolutionDir)artifacts\build\SharpShellNativeBridge\*.*" "$(ProjectDir)NativeBridge</PreBuildEvent>
+    <PreBuildEvent>copy "$(SolutionDir)artifacts\build\SharpShellNativeBridge\*.*" "$(ProjectDir)NativeBridge</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
