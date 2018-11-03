@@ -13,7 +13,7 @@ namespace SharpShell.Attributes
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistrationNameAttribute"/> class.
         /// </summary>
-        /// <param name="name">The registry key name under which the SharpShell server should be registered. Cannot be null or whitespace.</param>
+        /// <param name="registrationName">The registry key name under which the SharpShell server should be registered. Cannot be null or whitespace.</param>
         public RegistrationNameAttribute(string registrationName)
         {
             if (string.IsNullOrWhiteSpace(registrationName))
