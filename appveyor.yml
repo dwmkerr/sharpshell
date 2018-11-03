@@ -21,6 +21,10 @@ before_package:
     7z a ServerManager.zip C:\projects\sharpshell\SharpShell\Tools\ServerManager\bin\Release\*
     7z a ServerRegistrationManager.zip C:\projects\sharpshell\SharpShell\Tools\ServerRegistrationManager\bin\Release\*
 
+# On build success, create and upload a coverage report.
+on_success:
+- ps: ./SharpShell/coverage.ps1
+
 # Track our artifacts.
 artifacts:
 - path: ServerManager.zip
@@ -43,7 +47,3 @@ deploy:
   artifact: SharpShell.*.nupkg, ServerRegistrationManager.*.nupkg, ServerManager.zip, ServerRegistrationManager.zip
   on:
     APPVEYOR_REPO_TAG: true
-
-# After the build as completed, analyse coverage and upload.
-on_success:
-- ps: ./SharpShell/coverage.ps1
