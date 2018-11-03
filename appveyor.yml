@@ -6,7 +6,7 @@ environment:
 
 # Before building, restore Nuget packages and install dependencies.
 before_build:
-- ps: >-
+- ps: |
     nuget restore SharpShell\SharpShell.sln
     .\SharpShell\config.ps1
 
@@ -17,7 +17,7 @@ build:
 
 # Before packaging, zip up the tools.
 before_package:
-- cmd: >-
+- ps: |
     7z a ServerManager.zip C:\projects\sharpshell\SharpShell\Tools\ServerManager\bin\Release\*
     7z a ServerRegistrationManager.zip C:\projects\sharpshell\SharpShell\Tools\ServerRegistrationManager\bin\Release\*
 
