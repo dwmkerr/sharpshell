@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 
 namespace SharpShell.Interop
 {
+    /// <summary>
+    /// Imports from the win32 kernel32.dll library.
+    /// </summary>
     public static class Kernel32
     {
         /// <summary>
@@ -48,6 +51,18 @@ namespace SharpShell.Interop
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool EnumResourceNames(IntPtr hModule, IntPtr type, EnumResNameProc lpEnumFunc, IntPtr lParam);
 
+        /// <summary>
+        /// Loads the specified module into the address space of the calling process. The specified module may cause other modules to be loaded.
+        /// For additional load options, use the LoadLibraryEx function.
+        /// </summary>
+        /// <param name="lpFileName">The name of the module. This can be either a library module (a .dll file) or an executable module (an .exe file). The name specified is the file name of the module and is not related to the name stored in the library module itself, as specified by the LIBRARY keyword in the module-definition (.def) file.
+        /// If the string specifies a full path, the function searches only that path for the module.
+        /// If the string specifies a relative path or a module name without a path, the function uses a standard search strategy to find the module; for more information, see the Remarks.
+        /// If the function cannot find the module, the function fails.When specifying a path, be sure to use backslashes (), not forward slashes (/). For more information about paths, see Naming a File or Directory.
+        /// If the string specifies a module name without a path and the file name extension is omitted, the function appends the default library extension .dll to the module name.To prevent the function from appending .dll to the module name, include a trailing point character (.) in the module name string.
+        /// </param>
+        /// <returns>If the function succeeds, the return value is a handle to the module.
+        /// If the function fails, the return value is NULL.To get extended error information, call GetLastError.</returns>
         [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr LoadLibrary(string lpFileName);
 
@@ -61,54 +76,86 @@ namespace SharpShell.Interop
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
 
+        /// <summary>
+        /// Loads the specified module into the address space of the calling process. The specified module may cause other modules to be loaded.
+        /// </summary>
+        /// <param name="hModule">A handle to the DLL module that contains the function or variable. The LoadLibrary, LoadLibraryEx, LoadPackagedLibrary, or GetModuleHandle function returns this handle.
+        /// The GetProcAddress function does not retrieve addresses from modules that were loaded using the LOAD_LIBRARY_AS_DATAFILE flag.For more information, see LoadLibraryEx.</param>
+        /// <param name="procedureName">The function or variable name, or the function's ordinal value. If this parameter is an ordinal value, it must be in the low-order word; the high-order word must be zero.</param>
+        /// <returns>If the function succeeds, the return value is the address of the exported function or variable
+        /// If the function fails, the return value is NULL.To get extended error information, call GetLastError.</returns>
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-        
+
+        /// <summary>
+        /// Copies a block of memory from one location to another
+        /// </summary>
+        /// <param name="dest">A pointer to the starting address of the copied block's destination.</param>
+        /// <param name="src">A pointer to the starting address of the block of memory to copy.</param>
+        /// <param name="count">The size of the block of memory to copy, in bytes.</param>
         [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
         public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
 
+        /// <summary>
+        /// Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count. When the reference count reaches zero, the module is unloaded from the address space of the calling process and the handle is no longer valid.
+        /// </summary>
+        /// <param name="hModule">A handle to the loaded library module. The LoadLibrary, LoadLibraryEx, GetModuleHandle, or GetModuleHandleEx function returns this handle.</param>
+        /// <returns>If the function succeeds, the return value is nonzero.
+        ///     If the function fails, the return value is zero.To get extended error information, call the GetLastError function.</returns>
         [DllImport("kernel32.dll")]
         public static extern bool FreeLibrary(IntPtr hModule);
 
-        [DllImport("kernel32.dll")]
+        /// <summary>
+        /// Determines the location of a resource with the specified type and name in the specified module.
+        /// To specify a language, use the FindResourceEx function.
+        /// </summary>
+        /// <param name="hModule">A handle to the module whose portable executable file or an accompanying MUI file contains the resource. If this parameter is NULL, the function searches the module used to create the current process.</param>
+        /// <param name="lpName">The name of the resource. Alternately, rather than a pointer, this parameter can be MAKEINTRESOURCE(ID), where ID is the integer identifier of the resource. For more information, see the Remarks section below.</param>
+        /// <param name="lpType">The resource type. Alternately, rather than a pointer, this parameter can be MAKEINTRESOURCE(ID), where ID is the integer identifier of the given resource type. For standard resource types, see Resource Types.For more information, see the Remarks section below.</param>
+        /// <returns>If the function succeeds, the return value is a handle to the specified resource's information block. To obtain a handle to the resource, pass this handle to the LoadResource function.
+        /// If the function fails, the return value is NULL.To get extended error information, call GetLastError.</returns>
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr FindResource(IntPtr hModule, IntPtr lpName, IntPtr lpType);
 
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr FindResource(IntPtr hModule, int lpName, int lpType);
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr FindResource(IntPtr hModule, int lpName, string lpType);
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr FindResource(IntPtr hModule, string lpName, int lpType);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr FindResource(IntPtr hModule, string lpName, string lpType);
-
+        /// <summary>
+        /// Retrieves a handle that can be used to obtain a pointer to the first byte of the specified resource in memory.
+        /// </summary>
+        /// <param name="hModule">A handle to the module whose executable file contains the resource.If hModule is NULL, the system loads the resource from the module that was used to create the current process.</param>
+        /// <param name="hResInfo">A handle to the resource to be loaded. This handle is returned by the FindResource or FindResourceEx function.</param>
+        /// <returns>If the function succeeds, the return value is a handle to the data associated with the resource. If the function fails, the return value is NULL.To get extended error information, call GetLastError.</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr LoadResource(IntPtr hModule, IntPtr hResInfo);
 
-
+        /// <summary>
+        /// Retrieves a handle to the default heap of the calling process. This handle can then be used in subsequent calls to the heap functions.
+        /// </summary>
+        /// <returns>If the function succeeds, the return value is a handle to the calling process's heap.
+        /// If the function fails, the return value is NULL.To get extended error information, call GetLastError.</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetProcessHeap();
 
+        /// <summary>
+        /// Allocates a block of memory from a heap. The allocated memory is not movable.
+        /// </summary>
+        /// <param name="hHeap">A handle to the heap from which the memory will be allocated. This handle is returned by the HeapCreate or GetProcessHeap function.</param>
+        /// <param name="dwFlags">The heap allocation options. Specifying any of these values will override the corresponding value specified when the heap was created with HeapCreate.</param>
+        /// <param name="dwBytes">The number of bytes to be allocated.
+        /// If the heap specified by the hHeap parameter is a "non-growable" heap, dwBytes must be less than 0x7FFF8. You create a non-growable heap by calling the HeapCreate function with a nonzero value.</param>
+        /// <returns>If the function succeeds, the return value is a pointer to the allocated memory block.
+        /// If the function fails and you have not specified HEAP_GENERATE_EXCEPTIONS, the return value is NULL.</returns>
         [DllImport("kernel32.dll", SetLastError = false)]
         public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, UIntPtr dwBytes);
 
+        /// <summary>
+        /// Frees a memory block allocated from a heap by the HeapAlloc or HeapReAlloc function.
+        /// </summary>
+        /// <param name="hHeap">A handle to the heap whose memory block is to be freed. This handle is returned by either the HeapCreate or GetProcessHeap function.</param>
+        /// <param name="dwFlags">The heap free options. Specifying the following value overrides the corresponding value specified in the flOptions parameter when the heap was created by using the HeapCreate function.</param>
+        /// <param name="lpMem">A pointer to the memory block to be freed. This pointer is returned by the HeapAlloc or HeapReAlloc function. If this pointer is NULL, the behavior is undefined.</param>
+        /// <returns>If the function succeeds, the return value is nonzero.
+        /// If the function fails, the return value is zero.An application can call GetLastError for extended error information.</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
-
-        public const uint RT_CURSOR = 0x00000001;
-        public const uint RT_BITMAP = 0x00000002;
-        public const uint RT_ICON = 0x00000003;
-        public const uint RT_MENU = 0x00000004;
-        public const uint RT_DIALOG = 0x00000005;
-        public const uint RT_STRING = 0x00000006;
-        public const uint RT_FONTDIR = 0x00000007;
-        public const uint RT_FONT = 0x00000008;
-        public const uint RT_ACCELERATOR = 0x00000009;
-        public const uint RT_RCDATA = 0x0000000a;
-        public const uint RT_MESSAGETABLE = 0x0000000b;
     }
 
     /// <summary>
@@ -117,7 +164,11 @@ namespace SharpShell.Interop
     [Flags]
     public enum LoadLibraryFlags : uint
     {
+        /// <summary>
+        /// No values.
+        /// </summary>
         None = 0,
+
         /// <summary>
         /// If this value is used, and the executable module is a DLL, the system does not call DllMain for process and thread initialization and termination. Also, the system does not load additional executable modules that are referenced by the specified module.
         /// Note  Do not use this value; it is provided only for backward compatibility. If you are planning to access only data or resources in the DLL, use LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE or LOAD_LIBRARY_AS_IMAGE_RESOURCE or both. Otherwise, load the library as a DLL or executable module using the LoadLibrary function.
