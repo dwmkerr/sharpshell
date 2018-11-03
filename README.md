@@ -20,7 +20,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Property Sheet Extensions](#property-sheet-extensions)
     * [Desk Band Extensions](#desk-band-extensions)
 * [Developer Guide](#developer-guide)
-    * [Testing](#testing)
+* [Building & Testing](#building--testing)
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
@@ -143,15 +143,39 @@ In order to maximize compatibility, we do not use the latest version of each SDK
 
 Note: Not tested on VS2017 for Mac.
 
-### Testing
+## Building & Testing
 
-To create a coverage report, run:
+As long as the correct components have be installed for Visual Studio, you should be able to just open the main `./SharpShell/SharpShell.sln` solution to build, test and run any of the code or samples.
+
+You can also use the following scripts to run the processes:
+
+| Script         | Notes                                                                                                                   |
+|----------------|-------------------------------------------------------------------------------------------------------------------------|
+| `config.ps1`   | Ensure your machine can run builds by installing necessary components such as `nunit`. Should only need to be run once. |
+| `build.ps1`    | Build all solutions. Ensures that we build both 32/64 bit versions of native components.                                |
+| `test.ps1`     | Run all tests, including those in samples.                                                                              |
+| `coverage.ps1` | Create a coverage report for the main `SharpShell` project (samples are not included).                                  |
+
+These scripts will generate various artifacts which may be useful to review:
 
 ```
-./coverage.ps1
+artifacts\
+  \build
+    \SharpNativeBridge    # 32/64 bit native binaries for the bridge.
+    \SharpShell           # The SharpShell assembly.
+  \tests                  # NUnit Test Reportsd
+  \coverage               # Coverage Reports
 ```
 
-From the `SharpShell` folder. A coverage report will be written to `./artifacts/coverage`.
+Only assemblies and binaries which need to be copied into other projects are added to the `artifacts/build` folder. This makes chaining more complex dependencies manageable. The solution is fairly standard, but be aware that:
+
+1. `SharpShell` depends on `SharpNativeBridge`
+2. `SharpNativeBridge` should be built in `x64` mode. When successful, the `x64` build will trigger a `x32` build, and both 32/64 bit binaries are copied to the `artifacts/build/SharpNativeBridge` folder.
+3. `SharpShell` copies the latest native bridge binaries to its own `NativeBridge` folder - these are then embedded in the `SharpShell` assembly.
+4. The `SharpShell` assembly is copied to `artifacts/build/SharpShell` folder after a successful build.
+5. The `SharpShell` assembly is embedded in the `ServerRegistrationManager` binary. The assembly is copied from `artifacts/build/SharpShell` prior to the server registration manager build.
+
+All of the above steps are automated, and will run whether a build is trigger from Visual Studio, the `build.ps1` script or `msbuild`.
 
 ### Enabling Logging
 

@@ -98,7 +98,8 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)SharpShell\bin\$(ConfigurationName)\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\SharpShell.dll"</PreBuildEvent>
+    <PreBuildEvent># Bring over the SharpShell binary.
+copy "$(SolutionDir)artifacts\build\SharpShell\SharpShell.dll" "$(ProjectDir)EmbeddedReferences"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

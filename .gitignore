@@ -42,3 +42,9 @@ SharpShell/SharpShellNativeBridge/x64
 
 # Artifacts
 SharpShell/artifacts
+
+
+# Artifacts which are automatically copied into other asseblies.
+SharpShell/SharpShell/NativeBridge/SharpShellNativeBridge32.dll
+SharpShell/SharpShell/NativeBridge/SharpShellNativeBridge64.dll
+SharpShell/Tools/ServerRegistrationManager/EmbeddedReferences/SharpShell.dll

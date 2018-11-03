@@ -77,7 +77,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>SharpShellNativeBridge32</TargetName>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -105,7 +105,8 @@
       <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)SharpShell\NativeBridge"</Command>
+      <Command>echo "Copying x32 binary to artifacts..."
+xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" /F /R /Y /I</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Writing project to NativeBridge Manifest Location</Message>
@@ -125,7 +126,11 @@
       <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)SharpShell\NativeBridge"</Command>
+      <Command>echo "Copying x64 binary to artifacts..."
+xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" /F /R /Y /I
+
+echo "Running x86 build..."
+msbuild "$(ProjectPath)" /p:PlatformTarget=Win32 /p:Configuration=$(ConfigurationName)</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Writing project to NativeBridge Manifest Location</Message>
@@ -148,7 +153,8 @@
       <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)SharpShell\NativeBridge"</Command>
+      <Command>echo "Copying x32 binary to artifacts..."
+xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" /F /R /Y /I</Command>
       <Message>Writing project to NativeBridge Manifest Location</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -170,7 +176,11 @@
       <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "$(SolutionDir)SharpShell\NativeBridge"</Command>
+      <Command>echo "Copying x64 binary to artifacts..."
+xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" /F /R /Y /I
+
+echo "Running x86 build..."
+msbuild "$(ProjectPath)" /p:PlatformTarget=Win32 /p:Configuration=$(ConfigurationName)</Command>
       <Message>Writing project to NativeBridge Manifest Location</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
