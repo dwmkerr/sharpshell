@@ -1,0 +1,49 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+configuration: Release
+environment:
+  CODECOV_TOKEN: 875a7530-b25b-49e9-a2ba-fe8b7a80cc6b
+
+# Before building, restore Nuget packages and install dependencies.
+before_build:
+- ps: |
+    nuget restore SharpShell\SharpShell.sln
+    .\SharpShell\config.ps1
+
+build:
+  project: SharpShell\SharpShell.sln
+  publish_nuget: true
+  verbosity: minimal
+
+# Before packaging, zip up the tools.
+before_package:
+- ps: |
+    7z a ServerManager.zip C:\projects\sharpshell\SharpShell\Tools\ServerManager\bin\Release\*
+    7z a ServerRegistrationManager.zip C:\projects\sharpshell\SharpShell\Tools\ServerRegistrationManager\bin\Release\*
+
+# Track our artifacts.
+artifacts:
+- path: ServerManager.zip
+  name: ServerManager
+- path: ServerRegistrationManager.zip
+  name: ServerRegistrationManager
+- path: SharpShell\artifacts
+  name: artifacts
+
+# Deploy to Nuget and GitHub Releases.
+deploy:
+- provider: NuGet
+  api_key:
+    secure: TWio+nDN8Ew7+OH7J3tLcEoM6DmxrIwfAr+2Ag8ROWJUEnXyoSAZ/I1GxBgB0qMd
+  on:
+    APPVEYOR_REPO_TAG: true
+- provider: GitHub
+  auth_token:
+    secure: KTWUORrnJKPKLSf/3ROLY50T9UfgTMnKHf3OjBOv8tlY/DAxtlglRU3eM+j45fMt
+  artifact: SharpShell.*.nupkg, ServerRegistrationManager.*.nupkg, ServerManager.zip, ServerRegistrationManager.zip
+  on:
+    APPVEYOR_REPO_TAG: true
+
+# After the build as completed, analyse coverage and upload.
+on_success:
+- ps: ./SharpShell/coverage.ps1

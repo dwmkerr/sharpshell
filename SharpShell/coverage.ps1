@@ -1,6 +1,3 @@
-# Install dependencies.
-choco install -y --no-progress opencover.portable codecov nunit-console-runner
-
 # Create an artifacts directory and build the report.
 New-Item -ItemType Directory -Force -Path "$PSScriptRoot\artifacts\coverage"
 OpenCover.Console.exe "-target:nunit3-console.exe" `
