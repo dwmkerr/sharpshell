@@ -481,6 +481,7 @@ namespace ServerManager.ShellDebugger
             //  Get the dekstop PDIL.
             var desktopPIDL = IntPtr.Zero;
             result = Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, CSIDL.CSIDL_DESKTOP, ref desktopPIDL);
+            result = Shell32.SHGetFolderLocation(IntPtr.Zero, CSIDL.CSIDL_DESKTOP, IntPtr.Zero, 0, out desktopPIDL);
 
             //  Validate the result.
             if (result != 0)
