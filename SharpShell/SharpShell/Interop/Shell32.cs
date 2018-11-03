@@ -85,7 +85,7 @@ namespace SharpShell.Interop
         public static extern int SHGetDesktopFolder(out IShellFolder ppshf);
 
         /// <summary>
-        /// Shes the get folder location.
+        /// Deprecated. Retrieves the path of a folder as an ITEMIDLIST structure
         /// </summary>
         /// <param name="hwndOwner">Reserved.</param>
         /// <param name="nFolder">A CSIDL value that identifies the folder to be located. The folders associated with the CSIDLs might not exist on a particular system.</param>
