@@ -20,34 +20,33 @@ namespace ResourcesPropertySheet.Tests
         [Test]
         public void CanLoadResourceTypes()
         {
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"TestFiles\Dbgview.exe");
-            var resourceTypes = ResourceLoader.LoadResources(path);
-            var resourceTypeStrings = resourceTypes.Select(rt => rt.ResourceType.ToString()).ToArray();
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"TestFiles\DllWithResources.dll");
+            var resources = ResourceLoader.LoadResources(path);
+            var resourceTypeStrings = resources.Select(rt => rt.ResourceType.ToString()).ToArray();
 
             //  Assert we have the expected set of resource types.
-            Assert.Contains("Accelerator", resourceTypeStrings);
-            Assert.Contains("\"BINRES\"", resourceTypeStrings);
             Assert.Contains("Bitmap", resourceTypeStrings);
             Assert.Contains("Cursor", resourceTypeStrings);
             Assert.Contains("Dialog", resourceTypeStrings);
+            Assert.Contains("HTML", resourceTypeStrings);
+            Assert.Contains("Group Cursor", resourceTypeStrings);
+            Assert.Contains("Group Icon", resourceTypeStrings);
             Assert.Contains("Icon", resourceTypeStrings);
             Assert.Contains("Menu", resourceTypeStrings);
+            Assert.Contains("\"PNG\"", resourceTypeStrings);
             Assert.Contains("RT_MANIFEST", resourceTypeStrings);
-            Assert.Contains("String Table", resourceTypeStrings);
+            Assert.Contains("\"RT_RIBBON_XML\"", resourceTypeStrings);
+            Assert.Contains("241", resourceTypeStrings); // toolbars
             Assert.Contains("Version", resourceTypeStrings);
 
-            //  Spot check the accelerator resources.
-            var accelerators = resourceTypes.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_ACCELERATOR)).Resouces.Select(rn => rn.ResourceName.ToString()).ToArray();
-            Assert.Contains("\"ACCELERATORS\"", accelerators);
-
-            //  Spot check the bitmap resources.
-            var bitmaps = resourceTypes.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_BITMAP)).Resouces.Select(rn => rn.ResourceName.ToString()).ToArray();
-            Assert.Contains("400", bitmaps);
-            Assert.Contains("\"IDB_DISCONN\"", bitmaps);
-            Assert.Contains("\"IDB_SELOFF\"", bitmaps);
-            Assert.Contains("\"IDB_SELON\"", bitmaps);
-            Assert.Contains("\"IDB_UNSELOFF\"", bitmaps);
-            Assert.Contains("\"IDB_UNSELON\"", bitmaps);
+            //  Check we have loaded a bitmap property.
+            var bitmaps = resources.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_BITMAP));
+            var bitmap103 = bitmaps.Resouces.Single(b => b.ResourceName.IsInt && b.ResourceName.IntValue == 103);
+            Assert.AreEqual(bitmap103.ResourceName.IsInt, true);
+            Assert.AreEqual(bitmap103.ResourceName.IntValue, 103);
+            Assert.AreEqual(bitmap103.ResourceName.ToString(), "103");
+            Assert.AreEqual(bitmap103.BitmapData.Width, 48);
+            Assert.AreEqual(bitmap103.BitmapData.Height, 48);
         }
     }
 }
