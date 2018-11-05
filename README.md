@@ -119,7 +119,7 @@ These are extensions that add extra pages to the property sheets shown for shell
 
 ![Shell Thumbnail Handler Screenshot](./docs/extensions/propertysheetextension/propertysheetextensions-screenshot.png)
 
-[Step by Step Tutorial on the CodeProject](http://www.codeproject.com/Articles/573392/NET-Shell-Extensions-Shell-Property-Sheets).
+[Documentation](./docs/extensions/propertysheetextension/propertysheetextensions.md).
 
 ### Desk Band Extensions
 
@@ -127,7 +127,7 @@ These are extensions which add custom functionality to the Windows Desktop or Ta
 
 ![Shell Desk Band Screenshot](./docs/extensions/deskband/deskband-screenshot.png)
 
-[Step by Step Tutorial](./docs/extensions/deskband/deskband.md)
+[Documentation](./docs/extensions/deskband/deskband.md)
 
 ## Developer Guide
 
