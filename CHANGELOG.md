@@ -1,3 +1,7 @@
+## Version X
+
+- Property Pages: Added a new 'Resources' property sheet sample.
+
 ## Version 2.6.1
 
 - Property Pages: Fix issue which led to intermittent explorer.exe crashes (shell was unloading servers too early it seemed)
