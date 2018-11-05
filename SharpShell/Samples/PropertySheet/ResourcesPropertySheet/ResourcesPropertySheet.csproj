@@ -55,7 +55,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ResourceLoader.cs" />
+    <Compile Include="Loader\ResourceLoader.cs" />
     <Compile Include="ResourcesPropertySheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcesView.cs">
@@ -64,6 +64,10 @@
     <Compile Include="ResourcesView.Designer.cs">
       <DependentUpon>ResourcesView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Loader\ResType.cs" />
+    <Compile Include="Loader\Win32Resource.cs" />
+    <Compile Include="Loader\Win32Resources.cs" />
+    <Compile Include="Loader\Win32ResourceType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

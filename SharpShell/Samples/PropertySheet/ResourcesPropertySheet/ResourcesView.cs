@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ResourcesPropertySheet.Loader;
 using ResourcesPropertySheet.Properties;
 using SharpShell.Diagnostics;
 using SharpShell.Interop;
