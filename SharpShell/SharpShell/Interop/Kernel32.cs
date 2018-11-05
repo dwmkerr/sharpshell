@@ -127,6 +127,14 @@ namespace SharpShell.Interop
         public static extern IntPtr LoadResource(IntPtr hModule, IntPtr hResInfo);
 
         /// <summary>
+        /// Retrieves a pointer to the specified resource in memory.
+        /// </summary>
+        /// <param name="hResData">A handle to the resource to be accessed. The LoadResource function returns this handle. Note that this parameter is listed as an HGLOBAL variable only for backward compatibility. Do not pass any value as a parameter other than a successful return value from the LoadResource function.</param>
+        /// <returns>If the loaded resource is available, the return value is a pointer to the first byte of the resource; otherwise, it is NULL.</returns>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr LockResource(IntPtr hResData);
+
+        /// <summary>
         /// Retrieves a handle to the default heap of the calling process. This handle can then be used in subsequent calls to the heap functions.
         /// </summary>
         /// <returns>If the function succeeds, the return value is a handle to the calling process's heap.
@@ -156,6 +164,16 @@ namespace SharpShell.Interop
         /// If the function fails, the return value is zero.An application can call GetLastError for extended error information.</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
+
+        /// <summary>
+        /// Retrieves the size, in bytes, of the specified resource
+        /// </summary>
+        /// <param name="hModule">A handle to the module whose executable file contains the resource.</param>
+        /// <param name="hResInfo">A handle to the resource. This handle must be created by using the FindResource or FindResourceEx function.</param>
+        /// <returns>If the function succeeds, the return value is the number of bytes in the resource.
+        /// If the function fails, the return value is zero.To get extended error information, call GetLastError.</returns>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern uint SizeofResource(IntPtr hModule, IntPtr hResInfo);
     }
 
     /// <summary>
