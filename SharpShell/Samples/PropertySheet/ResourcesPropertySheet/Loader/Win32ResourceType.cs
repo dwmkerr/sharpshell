@@ -4,7 +4,7 @@ using SharpShell.Extensions;
 
 namespace ResourcesPropertySheet.Loader
 {
-    class Win32ResourceType : Win32Resource
+    class Win32ResourceType : Win32ResourceName
     {
 
         public Win32ResourceType(IntPtr resource) : base(resource)

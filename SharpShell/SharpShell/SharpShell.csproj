@@ -102,6 +102,7 @@
     <Compile Include="Interop\DEFCONTEXTMENU.cs" />
     <Compile Include="Interop\DESKBANDINFO.cs" />
     <Compile Include="Interop\DRAWITEMSTRUCT.cs" />
+    <Compile Include="Interop\Gdi32.cs" />
     <Compile Include="Interop\GILInFlags.cs" />
     <Compile Include="Interop\ICatRegister.cs" />
     <Compile Include="Interop\ICommDlgBrowser.cs" />

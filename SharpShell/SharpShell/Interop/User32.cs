@@ -47,6 +47,26 @@ namespace SharpShell.Interop
         internal static extern bool GetIconInfo(IntPtr hIcon, out ICONINFO piconinfo);
 
         /// <summary>
+        /// The LoadBitmap function loads the specified bitmap resource from a module's executable file.
+        /// </summary>
+        /// <param name="hInstance">A handle to the instance of the module whose executable file contains the bitmap to be loaded.</param>
+        /// <param name="lpBitmapName">A pointer to a null-terminated string that contains the name of the bitmap resource to be loaded. Alternatively, this parameter can consist of the resource identifier in the low-order word and zero in the high-order word. The MAKEINTRESOURCE macro can be used to create this value.</param>
+        /// <returns>If the function succeeds, the return value is the handle to the specified bitmap
+        /// If the function fails, the return value is NULL.</returns>
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr LoadBitmap(IntPtr hInstance, IntPtr lpBitmapName);
+
+        /// <summary>
+        /// Loads the bitmap.
+        /// </summary>
+        /// <param name="hInstance">The h instance.</param>
+        /// <param name="lpIconName">Name of the lp bitmap.</param>
+        /// <returns>If the function succeeds, the return value is a handle to the newly loaded icon.
+        /// If the function fails, the return value is NULL.To get extended error information, call GetLastError.</returns>
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr LoadIcon(IntPtr hInstance, IntPtr lpIconName);
+
+        /// <summary>
         /// Converts an item identifier list to a file system path. (Note: SHGetPathFromIDList calls the ANSI version, must call SHGetPathFromIDListW for .NET)
         /// </summary>
         /// <param name="pidl">Address of an item identifier list that specifies a file or directory location relative to the root of the namespace (the desktop).</param>

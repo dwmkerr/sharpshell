@@ -50,12 +50,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Loader\Win32Resource.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Loader\ResourceLoader.cs" />
+    <Compile Include="ResourceEditors\IconEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResourceEditors\IconEditor.Designer.cs">
+      <DependentUpon>IconEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceEditors\BitmapEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ResourceEditors\BitmapEditor.Designer.cs">
+      <DependentUpon>BitmapEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceEditors\IResourceEditor.cs" />
     <Compile Include="ResourcesPropertySheet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourcesView.cs">
@@ -65,7 +79,7 @@
       <DependentUpon>ResourcesView.cs</DependentUpon>
     </Compile>
     <Compile Include="Loader\ResType.cs" />
-    <Compile Include="Loader\Win32Resource.cs" />
+    <Compile Include="Loader\Win32ResourceName.cs" />
     <Compile Include="Loader\Win32Resources.cs" />
     <Compile Include="Loader\Win32ResourceType.cs" />
   </ItemGroup>
@@ -83,6 +97,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceEditors\IconEditor.resx">
+      <DependentUpon>IconEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceEditors\BitmapEditor.resx">
+      <DependentUpon>BitmapEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ResourcesView.resx">
       <DependentUpon>ResourcesView.cs</DependentUpon>

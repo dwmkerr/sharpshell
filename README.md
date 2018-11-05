@@ -125,9 +125,9 @@ These are extensions that add extra pages to the property sheets shown for shell
 
 These are extensions which add custom functionality to the Windows Desktop or Task Bar.
 
-![Shell Desk Band Screenshot](./docs/deskband/deskband-screenshot.png)
+![Shell Desk Band Screenshot](./docs/extensions/deskband/deskband-screenshot.png)
 
-[Step by Step Tutorial](./docs/deskband/deskband.md)
+[Step by Step Tutorial](./docs/extensions/deskband/deskband.md)
 
 ## Developer Guide
 

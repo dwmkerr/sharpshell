@@ -36,10 +36,24 @@ namespace ResourcesPropertySheet.Loader
             foreach (var resourceType in resourceTypes)
             {
                 var resourceNames = new List<Win32Resource>();
+
                 //  Enumerate the resource names for the given type.
                 bool EnumResourceNamesProc(IntPtr _, IntPtr type, IntPtr name, IntPtr lParam)
                 {
-                    resourceNames.Add(new Win32Resource(name));
+                    //  Create a managed resource name.
+                    var resourceName = new Win32ResourceName(name);
+
+                    //  Get the resource handle.
+                    var hResourceInfo = Kernel32.FindResource(hModule, name, resourceType.Resource);
+                    var resourceSize = Kernel32.SizeofResource(hModule, hResourceInfo);
+                    var hResourceData = Kernel32.LoadResource(hModule, hResourceInfo);
+                    var resourceData = Kernel32.LockResource(hResourceData);
+
+                    //  Load resource data.
+                    var resource = new Win32Resource(resourceName, resourceType);
+                    resource.Load(hModule, resourceSize, resourceData);
+                
+                    resourceNames.Add(resource);
                     return true;
                 }
 

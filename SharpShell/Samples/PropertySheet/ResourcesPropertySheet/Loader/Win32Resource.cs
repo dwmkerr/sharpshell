@@ -1,50 +1,41 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using SharpShell.Helpers;
+using SharpShell.Interop;
 
 namespace ResourcesPropertySheet.Loader
 {
     internal class Win32Resource
     {
-        private readonly bool _isInt;
-        private readonly string _stringValue;
-        private readonly uint? _intValue;
-
-        public Win32Resource(IntPtr resource)
+        public Win32Resource(Win32ResourceName resourceName, Win32ResourceType resourceType)
         {
-            Resource = resource;
-            _isInt = Win32Helper.IS_INTRESOURCE(resource);
-            if (_isInt) _intValue = (uint) resource;
-            else _stringValue = Marshal.PtrToStringUni(Resource);
+            ResourceName = resourceName;
+            ResourceType = resourceType;
         }
-    
-        public bool IsInt => _isInt;
 
-        public IntPtr Resource { get; }
-
-        public uint IntValue
+        public void Load(IntPtr hModule, uint resourceSize, IntPtr resourceData)
         {
-            get
+            if (ResourceType.IsKnownResourceType(ResType.RT_BITMAP))
             {
-                if (!_isInt) throw new NotSupportedException($"Resource with value {Resource} cannot be safely converted into an ID");
-                return _intValue.GetValueOrDefault();
+                //  Bitmap.FromResource only loads string named resources, so we must use LoadBitmap.
+                var handle = User32.LoadBitmap(hModule, ResourceName.Resource);
+                BitmapData = Image.FromHbitmap(handle);
+                Gdi32.DeleteObject(handle);
+            }
+            else if (ResourceType.IsKnownResourceType(ResType.RT_ICON))
+            {
+
+                //  Icon.FromResource only loads string named resources, so we must use LoadIcon.
+                var handle = User32.LoadIcon(hModule, ResourceName.Resource);
+                IconData = Icon.FromHandle(handle);
+                Gdi32.DeleteObject(handle);
             }
         }
 
-        public string StringValue
-        {
-            get
-            {
-                if (_isInt) throw new NotSupportedException($"Resource with value {Resource} cannot be safely converted into a string");
-                return _stringValue;
-            }
-        }
-
-
-        public override string ToString()
-        {
-            //  Resources are written as an int value, or a quoted string.
-            return IsInt ? $"{IntValue}" : $"\"{StringValue}\"";
-        }
+        public Icon IconData { get; private set; }
+        public Bitmap BitmapData { get; private set; }
+        public Win32ResourceName ResourceName { get; }
+        public Win32ResourceType ResourceType { get; }
     }
 }

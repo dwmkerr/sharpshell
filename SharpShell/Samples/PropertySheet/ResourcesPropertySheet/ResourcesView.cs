@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ResourcesPropertySheet.Loader;
 using ResourcesPropertySheet.Properties;
+using ResourcesPropertySheet.ResourceEditors;
 using SharpShell.Diagnostics;
 using SharpShell.Interop;
 using SharpShell.SharpPropertySheet;
@@ -18,6 +19,8 @@ namespace ResourcesPropertySheet
 {
     public partial class ResourcesView : SharpPropertyPage
     {
+        private IResourceEditor currentEditor;
+
         public ResourcesView()
         {
             InitializeComponent();
@@ -50,12 +53,50 @@ namespace ResourcesPropertySheet
                 foreach (var resourceType in resources)
                 {
                     var nodes = treeViewResources.Nodes.Add(resourceType.ResourceType.ToString());
-                    foreach(var name in resourceType.ResourceNames) nodes.Nodes.Add(name.ToString());
+                    foreach (var resource in resourceType.Resouces)
+                    {
+                        var node = nodes.Nodes.Add(resource.ResourceName.ToString());
+                        node.Tag = resource;
+                    }
                 }
             }
             catch (Exception e)
             {
                 Logging.Error("An error occured loading resources", e);
+            }
+        }
+
+        private void treeViewResources_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            //  Get the editor host.
+            var editorHost = tableLayoutPanel1.GetControlFromPosition(1, 1);
+
+            //  Release any existing editor.
+            if (currentEditor != null)
+            {
+                editorHost.Controls.Remove((Control)currentEditor);
+                currentEditor.Release();
+            }
+
+            //  Create the appropriate control.
+            var resource = e.Node?.Tag as Win32Resource;
+            if (resource == null) return;
+
+            if (resource.ResourceType.IsKnownResourceType(ResType.RT_BITMAP))
+            {
+                var bitmapEditor = new BitmapEditor {Dock = DockStyle.Fill};
+                currentEditor = bitmapEditor;
+                var parent = tableLayoutPanel1.GetControlFromPosition(1, 1);
+                parent.Controls.Add(bitmapEditor);
+                bitmapEditor.Initialise(resource);
+            }
+            else if (resource.ResourceType.IsKnownResourceType(ResType.RT_ICON))
+            {
+                var iconEditor = new IconEditor { Dock = DockStyle.Fill };
+                currentEditor = iconEditor;
+                var parent = tableLayoutPanel1.GetControlFromPosition(1, 1);
+                parent.Controls.Add(iconEditor);
+                iconEditor.Initialise(resource);
             }
         }
     }

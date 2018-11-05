@@ -37,11 +37,11 @@ namespace ResourcesPropertySheet.Tests
             Assert.Contains("Version", resourceTypeStrings);
 
             //  Spot check the accelerator resources.
-            var accelerators = resourceTypes.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_ACCELERATOR)).ResourceNames.Select(rn => rn.ToString()).ToArray();
+            var accelerators = resourceTypes.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_ACCELERATOR)).Resouces.Select(rn => rn.ResourceName.ToString()).ToArray();
             Assert.Contains("\"ACCELERATORS\"", accelerators);
 
             //  Spot check the bitmap resources.
-            var bitmaps = resourceTypes.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_BITMAP)).ResourceNames.Select(rn => rn.ToString()).ToArray();
+            var bitmaps = resourceTypes.Single(rt => rt.ResourceType.IsKnownResourceType(ResType.RT_BITMAP)).Resouces.Select(rn => rn.ResourceName.ToString()).ToArray();
             Assert.Contains("400", bitmaps);
             Assert.Contains("\"IDB_DISCONN\"", bitmaps);
             Assert.Contains("\"IDB_SELOFF\"", bitmaps);
