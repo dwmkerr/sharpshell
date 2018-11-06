@@ -183,6 +183,12 @@ A detailed guide explaining how to configure and use logging for SharpShell is a
 
 [./docs/logging/logging.md](./docs/logging/logging.md)
 
+You can also use the [SharpShell-Easy-Log](https://github.com/ElektroStudios/SharpShell-Easy-Log) tool to quickly enable/disable logging options and view the logs realtime:
+
+[![SharpShell Easy Log](./docs/logging/sharpshell-easy-log.png)](https://github.com/ElektroStudios/SharpShell-Easy-Log)
+
+The tool is available at: [github.com/ElektroStudios/SharpShell-Easy-Log](https://github.com/ElektroStudios/SharpShell-Easy-Log)
+
 ### CI/CD
 
 CI/CD is currently handled by AppVeyor. AppVeyor will:
