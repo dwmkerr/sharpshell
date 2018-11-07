@@ -197,11 +197,9 @@
     <Compile Include="Pidl\IdList.cs" />
     <Compile Include="Pidl\PidlManager.cs" />
     <Compile Include="Pidl\ShellId.cs" />
-    <Compile Include="Registry\InMemoryRegistry.cs" />
     <Compile Include="Registry\IRegistry.cs" />
     <Compile Include="Registry\IRegistryKey.cs" />
     <Compile Include="Registry\WindowsRegistry.cs" />
-    <Compile Include="Registry\InMemoryRegistryKey.cs" />
     <Compile Include="Registry\WindowsRegistryKey.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
