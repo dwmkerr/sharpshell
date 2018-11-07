@@ -64,7 +64,7 @@ namespace SharpShell.Tests.Registry
 
                 //  If we delete a value which is missing, we should be able to choose whether to throw or now.
                 Assert.DoesNotThrow(() => subkey.DeleteValue("TestString", false));
-                Assert.Throws<Exception>(() => subkey.DeleteValue("TestString", true));
+                Assert.Throws<ArgumentException>(() => subkey.DeleteValue("TestString", true));
             }
         }
 
