@@ -533,9 +533,6 @@ namespace SharpShell.ServerRegistration
         internal static void UnregisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName,
             IEnumerable<COMServerAssociationAttribute> associationAttributes, RegistrationType registrationType)
         {
-            //  Get the registry service.
-            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
-            
             //  Go through each association attribute.
             foreach (var associationAttribute in associationAttributes)
             {
@@ -543,24 +540,17 @@ namespace SharpShell.ServerRegistration
                 var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType,
                     associationAttribute.Associations, registrationType);
 
-                //  Open the classes key.
+                //  Open the classes key...
                 using (var classesKey = OpenClassesRoot(registrationType))
                 {
-                    //  For each one, create the server type key.
+                    //  ...then go through each association class.
                     foreach (var associationClassName in associationClassNames)
                     {
                         //  Get the key for the association.
                         var associationKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
 
-                        //  Does it exist?
-                        bool exists;
-                        using (var associationKey = classesKey.OpenSubKey(associationKeyPath))
-                            exists = associationKey != null;
-
-                        //  If it does, delete it.
-                        //  TODO: why are we not using the classes key which is already open? git blame and debug check other usages
-                        if (exists)
-                            registry.ClassesRoot.DeleteSubKeyTree(associationKeyPath);
+                        //  Delete it if it exists.
+                        classesKey.DeleteSubKeyTree(associationKeyPath, false);
 
                         //  If we're a shell icon handler, we must also unset the defaulticon.
                         if (serverType == ServerType.ShellIconHandler)
