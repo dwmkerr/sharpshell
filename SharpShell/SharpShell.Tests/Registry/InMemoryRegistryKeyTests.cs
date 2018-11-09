@@ -37,7 +37,7 @@ namespace SharpShell.Tests.Registry
             var registry = new InMemoryRegistry();
             using (var key = registry.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64))
             {
-                var subkey = key.CreateSubKey(@"Deep\Subkey");
+                var subkey = key.OpenSubKey(@"Deep\Subkey");
                 Assert.That(subkey, Is.Null);
             }
         }
