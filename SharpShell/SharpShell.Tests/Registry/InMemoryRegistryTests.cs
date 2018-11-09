@@ -51,7 +51,7 @@ namespace SharpShell.Tests.Registry
             ThreadingModel = Apartment
    MyProgram.1
       (Default) = MyProgram Application
-      Shellex
+      ShellEx
          ContextMenuHandler
             MyCommand
                (Default) = {00000000-1111-2222-3333-444444444444}
@@ -75,7 +75,7 @@ namespace SharpShell.Tests.Registry
             ThreadingModel = Apartment
    MyProgram.1
       (Default) = MyProgram Application
-      Shellex
+      ShellEx
          ContextMenuHandler
             MyCommand
                (Default) = {00000000-1111-2222-3333-444444444444}

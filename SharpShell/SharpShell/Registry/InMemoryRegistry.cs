@@ -102,7 +102,9 @@ namespace SharpShell.Registry
                     {
                         var name = match.Groups[1].Value;
                         var value = match.Groups[2].Value;
-                        keyStack.Peek().SetValue(name, value);
+
+                        //  Don't forget - '(Default)' is a magic string for empty (i.e. the default value)...
+                        keyStack.Peek().SetValue(name == "(Default)" ? string.Empty : name, value);
                     }
                     else
                     {
@@ -129,7 +131,7 @@ namespace SharpShell.Registry
             var indent = new string(' ', depth*3);
 
             //  Get the value strings.
-            var values = key.GetValueNames().Select(v => $"{indent}{v} = {key.GetValue(v)}");
+            var values = key.GetValueNames().Select(v => $"{indent}{(string.IsNullOrEmpty(v) ? "(Default)" : v)} = {key.GetValue(v)}");
 
             //  Get the subkey strings.
             var subKeys = key.GetSubKeyNames().Select(sk =>
@@ -138,6 +140,11 @@ namespace SharpShell.Registry
             return string.Join(Environment.NewLine, values.Concat(subKeys));
         }
 
+        /// <summary>
+        /// Prints the specified registry view. Used for functional testing.
+        /// </summary>
+        /// <param name="registryView">The registry view.</param>
+        /// <returns>The registry view as a string.</returns>
         public string Print(RegistryView registryView)
         {
             string v = string.Empty;

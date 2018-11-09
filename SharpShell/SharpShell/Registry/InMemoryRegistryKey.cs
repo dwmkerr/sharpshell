@@ -11,6 +11,7 @@ namespace SharpShell.Registry
     /// <seealso cref="SharpShell.Registry.IRegistryKey" />
     public class InMemoryRegistryKey : IRegistryKey
     {
+        private const char Separator = '\\';
         private readonly string _name;
         private readonly RegistryView _view;
         private readonly Dictionary<string, InMemoryRegistryKey> _subkeys = new Dictionary<string, InMemoryRegistryKey>();
@@ -41,113 +42,106 @@ namespace SharpShell.Registry
         /// <inheritdoc />
         public IRegistryKey OpenSubKey(string name)
         {
-            return _subkeys[name.ToLowerInvariant()];
+            return OpenSubKey(name, RegistryKeyPermissionCheck.ReadSubTree);
         }
 
         /// <inheritdoc />
         public IRegistryKey OpenSubKey(string name, bool writable)
         {
-            return _subkeys[name.ToLowerInvariant()];
+            return OpenSubKey(name,
+                writable ? RegistryKeyPermissionCheck.ReadWriteSubTree : RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.FullControl);
         }
 
         /// <inheritdoc />
         public IRegistryKey OpenSubKey(string name, RegistryKeyPermissionCheck permissionCheck)
         {
-            return _subkeys[name.ToLowerInvariant()];
+            return OpenSubKey(name, permissionCheck, RegistryRights.FullControl);
         }
 
         /// <inheritdoc />
         public IRegistryKey OpenSubKey(string name, RegistryKeyPermissionCheck permissionCheck, RegistryRights rights)
         {
-            return _subkeys[name.ToLowerInvariant()];
+            var currentKey = this;
+            var subkeyNames = name.Split(Separator);
+            foreach (var subkeyName in subkeyNames)
+            {
+                var subkeyNameLower = subkeyName.ToLower();
+                if (currentKey._subkeys.ContainsKey(subkeyNameLower) == false)
+                    return null;
+                currentKey = currentKey._subkeys[subkeyNameLower];
+            }
+
+            return currentKey;
         }
 
         /// <inheritdoc />
         public object GetValue(string name)
         {
-            _values.TryGetValue(name, out var value);
-            return value;
+            return GetValue(name, null, RegistryValueOptions.None);
         }
 
         /// <inheritdoc />
         public object GetValue(string name, object defaultValue)
         {
-            return _values.TryGetValue(name, out var value) ? value : defaultValue;
+            return GetValue(name, defaultValue, RegistryValueOptions.None);
         }
 
         /// <inheritdoc />
         public object GetValue(string name, object defaultValue, RegistryValueOptions options)
         {
-            return _values.TryGetValue(name, out var value) ? value : defaultValue;
+            //  Coerce null into the empty string (i.e. '(Default)' value in the registry).
+            var valueName = name ?? string.Empty;
+            return _values.TryGetValue(valueName, out var value) ? value : defaultValue;
         }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey)
         {
-            var subkeyName = subkey.ToLower();
-            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
-            return _subkeys[subkeyName];
+            return CreateSubKey(subkey, RegistryKeyPermissionCheck.Default, new RegistrySecurity());
         }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck)
         {
-            var subkeyName = subkey.ToLower();
-            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
-            return _subkeys[subkeyName];
+            return CreateSubKey(subkey, permissionCheck, new RegistrySecurity());
         }
-
-        /// <inheritdoc />
-        public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions options)
-        {
-            var subkeyName = subkey.ToLower();
-            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
-            return _subkeys[subkeyName];
-        }
-
-        //        public RegistryKey CreateSubKey(string subkey, bool writable)
-        //        {
-        //            return _registryKey.CreateSubKey(subkey, writable);
-        //        }
-        //
-        //        public RegistryKey CreateSubKey(string subkey, bool writable, RegistryOptions options)
-        //        {
-        //            return _registryKey.CreateSubKey(subkey, writable, options);
-        //        }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistrySecurity registrySecurity)
         {
-            var subkeyName = subkey.ToLower();
-            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
-            return _subkeys[subkeyName];
-        }
+            var currentKey = this;
+            var subkeyNames = subkey.Split(Separator);
+            foreach (var subkeyName in subkeyNames)
+            {
+                var subkeyNameLower = subkeyName.ToLower();
+                if (currentKey._subkeys.ContainsKey(subkeyNameLower) == false)
+                    currentKey._subkeys[subkeyNameLower] = new InMemoryRegistryKey(_view, subkeyName);
+                currentKey = currentKey._subkeys[subkeyNameLower];
+            }
 
-        /// <inheritdoc />
-        public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions registryOptions,
-            RegistrySecurity registrySecurity)
-        {
-            var subkeyName = subkey.ToLower();
-            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
-            return _subkeys[subkeyName];
+            return currentKey;
         }
 
         /// <inheritdoc />
         public void SetValue(string name, object value)
         {
-            _values[name] = value;
+            //  Coerce null into the empty string (i.e. '(Default)' value in the registry).
+            var valueName = name ?? string.Empty;
+            _values[valueName] = value;
         }
 
         /// <inheritdoc />
         public void SetValue(string name, object value, RegistryValueKind valueKind)
         {
-            _values[name] = value;
+            //  Coerce null into the empty string (i.e. '(Default)' value in the registry).
+            var valueName = name ?? string.Empty;
+            _values[valueName] = value;
         }
 
         /// <inheritdoc />
         public void DeleteSubKeyTree(string subkey)
         {
-            _subkeys.Remove(subkey);
+            DeleteSubKeyTree(subkey, true);
         }
 
         /// <inheritdoc />
@@ -165,7 +159,7 @@ namespace SharpShell.Registry
         /// <inheritdoc />
         public void DeleteValue(string name)
         {
-            _values.Remove(name);
+            DeleteValue(name, true);
         }
 
         /// <inheritdoc />
@@ -177,7 +171,7 @@ namespace SharpShell.Registry
         /// <inheritdoc />
         public void DeleteSubKey(string subkey)
         {
-            _subkeys.Remove(subkey);
+            DeleteSubKey(subkey, true);
         }
 
         /// <inheritdoc />
@@ -189,6 +183,9 @@ namespace SharpShell.Registry
         /// <inheritdoc />
         public string Name => _name;
 
+        /// <summary>
+        /// Gets the view for the key.
+        /// </summary>
         public RegistryView View => _view;
     }
 }

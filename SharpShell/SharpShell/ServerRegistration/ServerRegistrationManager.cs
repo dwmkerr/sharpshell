@@ -175,7 +175,7 @@ namespace SharpShell.ServerRegistration
                         if (handlerSubkey.AllowMultipleEntries)
                         {
                             //  Do we have the single subkey?
-                            var handlerKeyPath = $"{className}\\shellex\\{handlerSubkey.HandlerSubkey}";
+                            var handlerKeyPath = $"{className}\\ShellEx\\{handlerSubkey.HandlerSubkey}";
                             using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
                             {
                                 //  Skip empty handlers.
@@ -214,7 +214,7 @@ namespace SharpShell.ServerRegistration
                         else
                         {
                             //  Do we have the single subkey?
-                            var handlerKeyPath = string.Format("{0}\\shellex\\{1}", className, handlerSubkey.HandlerSubkey);
+                            var handlerKeyPath = string.Format("{0}\\ShellEx\\{1}", className, handlerSubkey.HandlerSubkey);
                             using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
                             {
                                 if (handlerSubKey != null)
@@ -676,48 +676,48 @@ namespace SharpShell.ServerRegistration
                 case ServerType.ShellContextMenu:
                     
                     //  Create the key name for a context menu.
-                    return string.Format(@"{0}\shellex\ContextMenuHandlers\{1}", className, serverName);
+                    return string.Format(@"{0}\ShellEx\ContextMenuHandlers\{1}", className, serverName);
 
                 case ServerType.ShellPropertySheet:
 
                     //  Create the key name for a property sheet.
-                    return string.Format(@"{0}\shellex\PropertySheetHandlers\{1}", className, serverName);
+                    return string.Format(@"{0}\ShellEx\PropertySheetHandlers\{1}", className, serverName);
 
                 case ServerType.ShellIconHandler:
 
                     //  Create the key name for an icon handler. This has no server name, 
                     //  as there cannot be multiple icon handlers.
-                    return string.Format(@"{0}\shellex\IconHandler", className);
+                    return string.Format(@"{0}\ShellEx\IconHandler", className);
 
                 case ServerType.ShellInfoTipHandler:
 
                     //  Create the key name for an info tip handler. This has no server name, 
                     //  as there cannot be multiple info tip handlers.
-                    return string.Format(@"{0}\shellex\{{00021500-0000-0000-C000-000000000046}}", className);
+                    return string.Format(@"{0}\ShellEx\{{00021500-0000-0000-C000-000000000046}}", className);
 
                 case ServerType.ShellDropHandler:
 
                     //  Create the key name for a drop handler. This has no server name, 
                     //  as there cannot be multiple drop handlers.
-                    return string.Format(@"{0}\shellex\DropHandler", className);
+                    return string.Format(@"{0}\ShellEx\DropHandler", className);
 
                 case ServerType.ShellPreviewHander:
                     
                     //  Create the key name for a preview handler. This has no server name, 
                     //  as there cannot be multiple preview handlers.
-                    return string.Format(@"{0}\shellex\{{8895b1c6-b41f-4c1c-a562-0d564250836f}}", className);
+                    return string.Format(@"{0}\ShellEx\{{8895b1c6-b41f-4c1c-a562-0d564250836f}}", className);
 
                 case ServerType.ShellDataHandler:
                     
                     //  Create the key name for a data handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
-                    return string.Format(@"{0}\shellex\DataHandler", className);
+                    return string.Format(@"{0}\ShellEx\DataHandler", className);
 
                 case ServerType.ShellThumbnailHandler:
 
                     //  Create the key name for a thumbnail handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
-                    return string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
+                    return string.Format(@"{0}\ShellEx\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
 
                 case ServerType.ShellNamespaceExtension:
 
@@ -725,7 +725,7 @@ namespace SharpShell.ServerRegistration
                     return null;
                     
                 default:
-                    throw new ArgumentOutOfRangeException("serverType");
+                    throw new ArgumentOutOfRangeException(nameof(serverType));
             }
         }
 
