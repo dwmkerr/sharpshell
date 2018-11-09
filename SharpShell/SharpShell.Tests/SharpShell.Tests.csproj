@@ -56,7 +56,12 @@
   <ItemGroup>
     <Compile Include="Diagnostics\Loggers\FileLogger.cs" />
     <Compile Include="Helpers\Win32HelperTests.cs" />
+    <Compile Include="InMemoryRegistry.cs" />
+    <Compile Include="InMemoryRegistryKey.cs" />
     <Compile Include="PidlManagerTests.cs" />
+    <Compile Include="Registry\WindowsRegistryKeyTests.cs" />
+    <Compile Include="Registry\WindowsRegistryTests.cs" />
+    <Compile Include="ServiceRegistry\ServiceRegistryTests.cs" />
     <Compile Include="ShellInteropTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

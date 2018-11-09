@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Win32;
+using SharpShell.Registry;
 
 namespace SharpShell.Diagnostics
 {
@@ -14,7 +15,7 @@ namespace SharpShell.Diagnostics
         public ExplorerConfigurationManager()
         {
             //  Read the configuration.
-            ReadConfiguration();    
+            ReadConfiguration();
         }
 
         /// <summary>
@@ -23,7 +24,10 @@ namespace SharpShell.Diagnostics
         /// <returns>True if always unload dll is set.</returns>
         private static bool CheckAlwaysUnloadDll()
         {
-            using (var alwaysUnloadDLLKey = Registry.LocalMachine.OpenSubKey(KeyName_AlwaysUnloadDll))
+            //  Get the registry service.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
+            using (var alwaysUnloadDLLKey = registry.LocalMachine.OpenSubKey(KeyName_AlwaysUnloadDll))
             {
                 return alwaysUnloadDLLKey != null;
             }   
@@ -35,7 +39,10 @@ namespace SharpShell.Diagnostics
         /// <returns>True if check desktop process is set.</returns>
         private static bool CheckDesktopProcess()
         {
-            using (var explorerKey = OpenExporerSubkey(Registry.CurrentUser, RegistryKeyPermissionCheck.ReadSubTree))
+            //  Get the registry service.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
+            using (var explorerKey = OpenExporerSubkey(registry.CurrentUser, RegistryKeyPermissionCheck.ReadSubTree))
             {
                 //  Do we have the value?
                 var value = explorerKey.GetValue(ValueName_DesktopProcess, null);
@@ -64,6 +71,9 @@ namespace SharpShell.Diagnostics
         /// </summary>
         private void SetAlwaysUnloadDll()
         {
+            //  Get the registry service.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
             //  Is the key there?
             bool valueSet = CheckAlwaysUnloadDll();
 
@@ -74,13 +84,13 @@ namespace SharpShell.Diagnostics
             if (alwaysUnloadDll)
             {
                 //  Open the explorer key and create the always unload key.
-                using (var explorerKey = OpenExporerSubkey(Registry.LocalMachine, RegistryKeyPermissionCheck.ReadWriteSubTree))
+                using (var explorerKey = OpenExporerSubkey(registry.LocalMachine, RegistryKeyPermissionCheck.ReadWriteSubTree))
                     explorerKey.CreateSubKey(SubKeyName_AlwaysUnloadDLL);
             }
             else
             {
                 //  Open the explorer key and delete the always unload key.
-                using (var explorerKey = OpenExporerSubkey(Registry.LocalMachine, RegistryKeyPermissionCheck.ReadWriteSubTree))
+                using (var explorerKey = OpenExporerSubkey(registry.LocalMachine, RegistryKeyPermissionCheck.ReadWriteSubTree))
                     explorerKey.DeleteSubKeyTree(SubKeyName_AlwaysUnloadDLL);
             }
         }
@@ -90,6 +100,9 @@ namespace SharpShell.Diagnostics
         /// </summary>
         private void SetDesktopProcess()
         {
+            //  Get the registry service.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
             //  Is the key there?
             bool valueSet = CheckDesktopProcess();
 
@@ -100,13 +113,13 @@ namespace SharpShell.Diagnostics
             if (desktopProcess)
             {
                 //  Open the explorer key and create the value.
-                using (var explorerKey = OpenExporerSubkey(Registry.CurrentUser, RegistryKeyPermissionCheck.ReadWriteSubTree))
+                using (var explorerKey = OpenExporerSubkey(registry.CurrentUser, RegistryKeyPermissionCheck.ReadWriteSubTree))
                     explorerKey.SetValue(ValueName_DesktopProcess, 1, RegistryValueKind.DWord);
             }
             else
             {
                 //  Delete the key value.
-                using (var explorerKey = OpenExporerSubkey(Registry.CurrentUser, RegistryKeyPermissionCheck.ReadWriteSubTree))
+                using (var explorerKey = OpenExporerSubkey(registry.CurrentUser, RegistryKeyPermissionCheck.ReadWriteSubTree))
                     explorerKey.DeleteValue(ValueName_DesktopProcess);
             }
         }
@@ -119,7 +132,7 @@ namespace SharpShell.Diagnostics
         /// <returns>
         /// The explorer subkey.
         /// </returns>
-        private static RegistryKey OpenExporerSubkey(RegistryKey hiveKey, RegistryKeyPermissionCheck permissionCheck)
+        private static IRegistryKey OpenExporerSubkey(IRegistryKey hiveKey, RegistryKeyPermissionCheck permissionCheck)
         {
             //  Open the explorer key with the desired permissions.
             var explorerKey = hiveKey.OpenSubKey(KeyName_Explorer, permissionCheck);

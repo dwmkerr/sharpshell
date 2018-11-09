@@ -149,12 +149,12 @@ As long as the correct components have be installed for Visual Studio, you shoul
 
 You can also use the following scripts to run the processes:
 
-| Script         | Notes                                                                                                                   |
-|----------------|-------------------------------------------------------------------------------------------------------------------------|
-| `config.ps1`   | Ensure your machine can run builds by installing necessary components such as `nunit`. Should only need to be run once. |
-| `build.ps1`    | Build all solutions. Ensures that we build both 32/64 bit versions of native components.                                |
-| `test.ps1`     | Run all tests, including those in samples.                                                                              |
-| `coverage.ps1` | Create a coverage report for the main `SharpShell` project (samples are not included).                                  |
+| Script         | Notes                                                                                                                                |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `config.ps1`   | Ensure your machine can run builds by installing necessary components such as `nunit`. Should only need to be run once.              |
+| `build.ps1`    | Build all solutions. Ensures that we build both 32/64 bit versions of native components.                                             |
+| `test.ps1`     | Run all tests, including those in samples.                                                                                           |
+| `coverage.ps1` | Create a coverage report for the main `SharpShell` project (samples are not included). Reports are written to `./artifacts/coverage` |
 
 These scripts will generate various artifacts which may be useful to review:
 

@@ -5,6 +5,7 @@ using System.Security.AccessControl;
 using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Extensions;
+using SharpShell.Registry;
 
 
 namespace SharpShell.ServerRegistration
@@ -454,7 +455,7 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="classesKey">The classes key.</param>
         /// <param name="className">Name of the class.</param>
-        private static void SetIconHandlerDefaultIcon(RegistryKey classesKey, string className)
+        private static void SetIconHandlerDefaultIcon(IRegistryKey classesKey, string className)
         {
             //  Open the class.
             using (var classKey = classesKey.OpenSubKey(className))
@@ -470,7 +471,7 @@ namespace SharpShell.ServerRegistration
                     if (defaultIconKey == null)
                     {
                         // if not, we create the key.
-                        RegistryKey tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        var tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
                         tempDefaultIconKey.SetValue(null, "%1");
                     } 
                     else 
@@ -491,7 +492,7 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="classesKey">The classes key.</param>
         /// <param name="className">Name of the class.</param>
-        private static void UnsetIconHandlerDefaultIcon(RegistryKey classesKey, string className)
+        private static void UnsetIconHandlerDefaultIcon(IRegistryKey classesKey, string className)
         {
             //  Open the class.
             using (var classKey = classesKey.OpenSubKey(className))
@@ -539,23 +540,17 @@ namespace SharpShell.ServerRegistration
                 var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType,
                     associationAttribute.Associations, registrationType);
 
-                //  Open the classes key.
+                //  Open the classes key...
                 using (var classesKey = OpenClassesRoot(registrationType))
                 {
-                    //  For each one, create the server type key.
+                    //  ...then go through each association class.
                     foreach (var associationClassName in associationClassNames)
                     {
                         //  Get the key for the association.
                         var associationKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
 
-                        //  Does it exist?
-                        bool exists;
-                        using (var associationKey = classesKey.OpenSubKey(associationKeyPath))
-                            exists = associationKey != null;
-
-                        //  If it does, delete it.
-                        if (exists)
-                            Registry.ClassesRoot.DeleteSubKeyTree(associationKeyPath);
+                        //  Delete it if it exists.
+                        classesKey.DeleteSubKeyTree(associationKeyPath, false);
 
                         //  If we're a shell icon handler, we must also unset the defaulticon.
                         if (serverType == ServerType.ShellIconHandler)
@@ -740,7 +735,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="registrationType">Type of the registration.</param>
         /// <param name="permissions">The permissions.</param>
         /// <returns></returns>
-        private static RegistryKey OpenClassesKey(RegistrationType registrationType, RegistryKeyPermissionCheck permissions)
+        private static IRegistryKey OpenClassesKey(RegistrationType registrationType, RegistryKeyPermissionCheck permissions)
         {
             //  Get the classes base key.
             var classesBaseKey = OpenClassesRoot(registrationType);
@@ -758,12 +753,15 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="registrationType">Type of the registration.</param>
         /// <returns>The classes root key.</returns>
-        private static RegistryKey OpenClassesRoot(RegistrationType registrationType)
+        private static IRegistryKey OpenClassesRoot(RegistrationType registrationType)
         {
+            //  Get the registry.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
             //  Get the classes base key.
             var classesBaseKey = registrationType == RegistrationType.OS64Bit
-                ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
-                  RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
+                ? registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
+                registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
 
             //  Return the classes key.
             return classesBaseKey;
@@ -775,7 +773,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="key">The key.</param>
         /// <param name="valueName">Name of the value.</param>
         /// <returns></returns>
-        private static string GetValueOrEmpty(RegistryKey key, string valueName)
+        private static string GetValueOrEmpty(IRegistryKey key, string valueName)
         {
             object value = key.GetValue(valueName);
             if (value == null)
