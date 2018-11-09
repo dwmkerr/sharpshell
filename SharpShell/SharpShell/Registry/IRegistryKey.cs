@@ -142,45 +142,6 @@ namespace SharpShell.Registry
         /// <exception cref="T:System.IO.IOException">The nesting level exceeds 510.-or-A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
         IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck);
 
-        /// <summary>Creates a subkey or opens a subkey for write access, using the specified permission check and registry options. </summary>
-        /// <returns>The newly created subkey, or null if the operation failed.</returns>
-        /// <param name="subkey">The name or path of the subkey to create or open. </param>
-        /// <param name="permissionCheck">One of the enumeration values that specifies whether the key is opened for read or read/write access.</param>
-        /// <param name="options">The registry option to use; for example, that creates a volatile key. </param>
-        /// <exception cref="T:System.ArgumentNullException">
-        /// <paramref name="subkey " />is null.</exception>
-        /// <exception cref="T:System.ObjectDisposedException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object is closed (closed keys cannot be accessed). </exception>
-        /// <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object cannot be written to; for example, it was not opened as a writable key, or the user does not have the required access rights.</exception>
-        /// <exception cref="T:System.IO.IOException">The nesting level exceeds 510.-or-A system error occurred, such as deletion of the key or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root. </exception>
-        /// <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
-        IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck,
-            RegistryOptions options);
-
-//        /// <summary>Creates a new subkey or opens an existing subkey with the specified access. Available starting in .NET Framework 2015</summary>
-//        /// <returns>The newly created subkey, or null if the operation failed. If a zero-length string is specified for <paramref name="subkey" />, the current <see cref="T:Microsoft.Win32.RegistryKey" /> object is returned.</returns>
-//        /// <param name="subkey">The name or path of the subkey to create or open. This string is not case-sensitive.</param>
-//        /// <param name="writable">true to indicate the new subkey is writable; otherwise, false.</param>
-//        /// <exception cref="T:System.ArgumentNullException">
-//        /// <paramref name="subkey" /> is null. </exception>
-//        /// <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key. </exception>
-//        /// <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key, or the user does not have the necessary access rights.</exception>
-//        /// <exception cref="T:System.IO.IOException">The nesting level exceeds 510.-or-A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
-//        RegistryKey CreateSubKey(string subkey, bool writable);
-
-//        /// <summary>Creates a new subkey or opens an existing subkey with the specified access. Available starting in .NET Framework 2015</summary>
-//        /// <returns>The newly created subkey, or null if the operation failed. If a zero-length string is specified for <paramref name="subkey" />, the current <see cref="T:Microsoft.Win32.RegistryKey" /> object is returned.</returns>
-//        /// <param name="subkey">The name or path of the subkey to create or open. This string is not case-sensitive.</param>
-//        /// <param name="writable">true to indicate the new subkey is writable; otherwise, false.</param>
-//        /// <param name="options">The registry option to use.</param>
-//        /// <exception cref="T:System.ArgumentNullException">
-//        /// <paramref name="subkey" /> is null. </exception>
-//        /// <exception cref="T:System.ArgumentException">
-//        /// <paramref name="options" /> does not specify a valid Option</exception>
-//        /// <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key. </exception>
-//        /// <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> cannot be written to; for example, it was not opened as a writable key, or the user does not have the necessary access rights.</exception>
-//        /// <exception cref="T:System.IO.IOException">The nesting level exceeds 510.-or-A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
-//        RegistryKey CreateSubKey(string subkey, bool writable, RegistryOptions options);
-
         /// <summary>Creates a new subkey or opens an existing subkey for write access, using the specified permission check option and registry security. </summary>
         /// <returns>The newly created subkey, or null if the operation failed. If a zero-length string is specified for <paramref name="subkey" />, the current <see cref="T:Microsoft.Win32.RegistryKey" /> object is returned.</returns>
         /// <param name="subkey">The name or path of the subkey to create or open. This string is not case-sensitive.</param>
@@ -196,21 +157,6 @@ namespace SharpShell.Registry
         /// <exception cref="T:System.IO.IOException">The nesting level exceeds 510.-or-A system error occurred, such as deletion of the key, or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root.</exception>
         IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck,
             RegistrySecurity registrySecurity);
-
-        /// <summary>Creates a subkey or opens a subkey for write access, using the specified permission check option, registry option, and registry security.</summary>
-        /// <returns>The newly created subkey, or null if the operation failed.  </returns>
-        /// <param name="subkey">The name or path of the subkey to create or open.</param>
-        /// <param name="permissionCheck">One of the enumeration values that specifies whether the key is opened for read or read/write access.</param>
-        /// <param name="registryOptions">The registry option to use.</param>
-        /// <param name="registrySecurity">The access control security for the new subkey. </param>
-        /// <exception cref="T:System.ArgumentNullException">
-        /// <paramref name="subkey " />is null.</exception>
-        /// <exception cref="T:System.ObjectDisposedException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object is closed. Closed keys cannot be accessed. </exception>
-        /// <exception cref="T:System.UnauthorizedAccessException">The current <see cref="T:Microsoft.Win32.RegistryKey" /> object cannot be written to; for example, it was not opened as a writable key, or the user does not have the required access rights.</exception>
-        /// <exception cref="T:System.IO.IOException">The nesting level exceeds 510.-or-A system error occurred, such as deletion of the key or an attempt to create a key in the <see cref="F:Microsoft.Win32.Registry.LocalMachine" /> root. </exception>
-        /// <exception cref="T:System.Security.SecurityException">The user does not have the permissions required to create or open the registry key.</exception>
-        IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck,
-            RegistryOptions registryOptions, RegistrySecurity registrySecurity);
 
         /// <summary>Sets the specified name/value pair.</summary>
         /// <param name="name">The name of the value to store. </param>

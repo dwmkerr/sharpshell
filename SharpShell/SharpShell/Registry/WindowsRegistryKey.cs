@@ -91,34 +91,11 @@ namespace SharpShell.Registry
         {
             return new WindowsRegistryKey(_registryKey.CreateSubKey(subkey, permissionCheck));
         }
-
-        /// <inheritdoc />
-        public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions options)
-        {
-            return new WindowsRegistryKey(_registryKey.CreateSubKey(subkey, permissionCheck, options));
-        }
-
-        //        public RegistryKey CreateSubKey(string subkey, bool writable)
-        //        {
-        //            return _registryKey.CreateSubKey(subkey, writable);
-        //        }
-        //
-        //        public RegistryKey CreateSubKey(string subkey, bool writable, RegistryOptions options)
-        //        {
-        //            return _registryKey.CreateSubKey(subkey, writable, options);
-        //        }
-
+        
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistrySecurity registrySecurity)
         {
             return new WindowsRegistryKey(_registryKey.CreateSubKey(subkey, permissionCheck, registrySecurity));
-        }
-
-        /// <inheritdoc />
-        public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions registryOptions,
-            RegistrySecurity registrySecurity)
-        {
-            return new WindowsRegistryKey(_registryKey.CreateSubKey(subkey, permissionCheck, registryOptions, registrySecurity));
         }
 
         /// <inheritdoc />

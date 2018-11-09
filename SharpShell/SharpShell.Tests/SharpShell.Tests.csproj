@@ -57,6 +57,7 @@
     <Compile Include="Diagnostics\Loggers\FileLogger.cs" />
     <Compile Include="Helpers\Win32HelperTests.cs" />
     <Compile Include="PidlManagerTests.cs" />
+    <Compile Include="Registry\InMemoryRegistryKeyTests.cs" />
     <Compile Include="Registry\WindowsRegistryKeyTests.cs" />
     <Compile Include="Registry\InMemoryRegistryTests.cs" />
     <Compile Include="Registry\WindowsRegistryTests.cs" />
