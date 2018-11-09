@@ -2,10 +2,14 @@
 $coverageDir = "$PSScriptRoot\artifacts\coverage" 
 $coverageReport = "$coverageDir\coverage.xml"
 
+# Quote arguments for the commandline.
+$testAssemblyArgs = "`"$PSScriptRoot\SharpShell.Tests\bin\Release\SharpShell.Tests.dll`""
+$workArgs = "`"$PSScriptRoot\artifacts\tests`""
+
 # Create an artifacts directory and build the report.
 New-Item -ItemType Directory -Force -Path "$PSScriptRoot\artifacts\coverage"
 OpenCover.Console.exe "-target:nunit3-console.exe" `
-    "-targetargs:$PSScriptRoot\SharpShell.Tests\bin\Release\SharpShell.Tests.dll" `
+    -targetargs:"$testAssemblyArgs --work=$workArgs" `
     "-filter:+[SharpShell*]* -[SharpShell.Tests*]*" `
     "-register:user" `
     "-output:$coverageReport"
