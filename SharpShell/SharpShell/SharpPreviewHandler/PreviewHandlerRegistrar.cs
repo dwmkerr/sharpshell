@@ -147,7 +147,8 @@ namespace SharpShell.SharpPreviewHandler
             //  Get the registry service.
             var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
 
-            using (var appIdsKey = registry.ClassesRoot.OpenSubKey("AppID", true))
+            using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+            using (var appIdsKey = classesRoot.OpenSubKey("AppID", true))
             {
                 if (appIdsKey == null)
                     throw new InvalidOperationException("An exception occured trying to open the App IDs.");
@@ -170,7 +171,8 @@ namespace SharpShell.SharpPreviewHandler
             //  Get the registry service.
             var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
 
-            using (var appIdsKey = registry.ClassesRoot.OpenSubKey("AppID", true))
+            using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+            using (var appIdsKey = classesRoot.OpenSubKey("AppID", true))
             {
                 if (appIdsKey == null)
                     throw new InvalidOperationException("An exception occured trying to open the App IDs.");

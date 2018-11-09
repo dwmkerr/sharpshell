@@ -9,15 +9,22 @@ namespace SharpShell.ServiceRegistry
     /// </summary>
     public static class ServiceRegistry
     {
-        private static readonly Dictionary<Type, Func<object>> ServiceProviders;
+        private static readonly Dictionary<Type, Func<object>> ServiceProviders = new Dictionary<Type, Func<object>>();
 
         static ServiceRegistry()
         {
-            ServiceProviders = new Dictionary<Type, Func<object>>
-            {
-                //  By default, IRegistry is provided by WindowsRegistry.
-                {typeof(IRegistry), () => new WindowsRegistry()}
-            };
+            Reset();
+        }
+
+        /// <summary>
+        /// Resets all providers. Typically used only for testing.
+        /// </summary>
+        internal static void Reset()
+        {
+            ServiceProviders.Clear();
+
+            //  The default registry provider is a new instance of the WindowsRegitry.
+            ServiceProviders.Add(typeof(IRegistry), () => new WindowsRegistry());
         }
 
         /// <summary>
@@ -29,10 +36,7 @@ namespace SharpShell.ServiceRegistry
         public static T GetService<T>() where T:class
         {
             //  Find the provider.
-            if (!ServiceProviders.TryGetValue(typeof(T), out var provider))
-            {
-                throw new InvalidOperationException($"No provider has been registered for service type '{typeof(T).FullName}'");
-            }
+            if (!ServiceProviders.TryGetValue(typeof(T), out var provider)) throw new InvalidOperationException($"No provider has been registered for service type '{typeof(T).FullName}'");
 
             //  Use the provider to return the service instance.
             return provider() as T;
