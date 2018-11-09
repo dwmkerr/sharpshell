@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Security.AccessControl;
 using Microsoft.Win32;
-using SharpShell.Registry;
 
-namespace SharpShell.Tests
+namespace SharpShell.Registry
 {
     /// <summary>
     /// An In-Memory registry key. Primarily used for testing scenarios.
@@ -13,15 +12,18 @@ namespace SharpShell.Tests
     public class InMemoryRegistryKey : IRegistryKey
     {
         private readonly string _name;
+        private readonly RegistryView _view;
         private readonly Dictionary<string, InMemoryRegistryKey> _subkeys = new Dictionary<string, InMemoryRegistryKey>();
         private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InMemoryRegistryKey"/> class.
         /// </summary>
+        /// <param name="view">The registry view.</param>
         /// <param name="name">The name.</param>
-        public InMemoryRegistryKey(string name)
+        public InMemoryRegistryKey(RegistryView view, string name)
         {
+            _view = view;
             _name = name;
         }
 
@@ -33,7 +35,7 @@ namespace SharpShell.Tests
         /// <inheritdoc />
         public string[] GetSubKeyNames()
         {
-            return _subkeys.Keys.ToArray();
+            return _subkeys.Values.Select(v => v.Name).ToArray();
         }
 
         /// <inheritdoc />
@@ -63,44 +65,44 @@ namespace SharpShell.Tests
         /// <inheritdoc />
         public object GetValue(string name)
         {
-            _values.TryGetValue(name.ToLowerInvariant(), out object value);
+            _values.TryGetValue(name, out var value);
             return value;
         }
 
         /// <inheritdoc />
         public object GetValue(string name, object defaultValue)
         {
-            return _values.TryGetValue(name.ToLowerInvariant(), out object value) ? value : defaultValue;
+            return _values.TryGetValue(name, out var value) ? value : defaultValue;
         }
 
         /// <inheritdoc />
         public object GetValue(string name, object defaultValue, RegistryValueOptions options)
         {
-            return _values.TryGetValue(name.ToLowerInvariant(), out object value) ? value : defaultValue;
+            return _values.TryGetValue(name, out var value) ? value : defaultValue;
         }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey)
         {
-            var key = new InMemoryRegistryKey(subkey);
-            _subkeys[subkey] = key;
-            return key;
+            var subkeyName = subkey.ToLower();
+            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
+            return _subkeys[subkeyName];
         }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck)
         {
-            var key = new InMemoryRegistryKey(subkey);
-            _subkeys[subkey] = key;
-            return key;
+            var subkeyName = subkey.ToLower();
+            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
+            return _subkeys[subkeyName];
         }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions options)
         {
-            var key = new InMemoryRegistryKey(subkey);
-            _subkeys[subkey] = key;
-            return key;
+            var subkeyName = subkey.ToLower();
+            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
+            return _subkeys[subkeyName];
         }
 
         //        public RegistryKey CreateSubKey(string subkey, bool writable)
@@ -116,18 +118,18 @@ namespace SharpShell.Tests
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistrySecurity registrySecurity)
         {
-            var key = new InMemoryRegistryKey(subkey);
-            _subkeys[subkey] = key;
-            return key;
+            var subkeyName = subkey.ToLower();
+            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
+            return _subkeys[subkeyName];
         }
 
         /// <inheritdoc />
         public IRegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions registryOptions,
             RegistrySecurity registrySecurity)
         {
-            var key = new InMemoryRegistryKey(subkey);
-            _subkeys[subkey] = key;
-            return key;
+            var subkeyName = subkey.ToLower();
+            if (_subkeys.ContainsKey(subkeyName) == false) _subkeys[subkeyName] = new InMemoryRegistryKey(_view, subkey);
+            return _subkeys[subkeyName];
         }
 
         /// <inheritdoc />
@@ -186,5 +188,7 @@ namespace SharpShell.Tests
 
         /// <inheritdoc />
         public string Name => _name;
+
+        public RegistryView View => _view;
     }
 }
