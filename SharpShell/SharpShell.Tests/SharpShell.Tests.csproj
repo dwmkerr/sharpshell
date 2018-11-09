@@ -60,7 +60,6 @@
     <Compile Include="Registry\WindowsRegistryKeyTests.cs" />
     <Compile Include="Registry\InMemoryRegistryTests.cs" />
     <Compile Include="Registry\WindowsRegistryTests.cs" />
-    <Compile Include="ServerRegistration\ServerRegistrationManager.cs" />
     <Compile Include="ServiceRegistry\ServiceRegistryTests.cs" />
     <Compile Include="ShellInteropTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
