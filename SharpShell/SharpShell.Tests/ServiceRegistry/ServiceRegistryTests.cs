@@ -6,12 +6,6 @@ namespace SharpShell.Tests.ServiceRegistry
 {
     public class ServiceRegistryTests
     {
-        [SetUp]
-        public void SetUp()
-        {
-            SharpShell.ServiceRegistry.ServiceRegistry.Reset();
-        }
-
         [Test]
         public void Default_IRegistry_Is_A_WindowsRegistry()
         {
