@@ -24,11 +24,11 @@ namespace SharpShell.Tests.Registry
             var print = registry.Print(RegistryView.Registry64);
             Assert.That(print, Is.EqualTo(
 @"HKEY_CURRENT_USER
+   Address
+      City = Singapore
    User
       Name = Dave
-      Number = 34
-   Address
-      City = Singapore"));
+      Number = 34"));
         }
 
         [Test]

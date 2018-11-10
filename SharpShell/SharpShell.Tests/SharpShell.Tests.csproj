@@ -61,6 +61,7 @@
     <Compile Include="Registry\WindowsRegistryKeyTests.cs" />
     <Compile Include="Registry\InMemoryRegistryTests.cs" />
     <Compile Include="Registry\WindowsRegistryTests.cs" />
+    <Compile Include="ServerRegistration\FileExtensionClassTests.cs" />
     <Compile Include="ServerRegistration\ServerRegistrationManagerTests.cs" />
     <Compile Include="ServiceRegistry\ServiceRegistryTests.cs" />
     <Compile Include="ShellInteropTests.cs" />

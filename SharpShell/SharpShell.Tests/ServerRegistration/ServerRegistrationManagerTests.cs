@@ -162,7 +162,6 @@ namespace SharpShell.Tests.ServerRegistration
                 @"HKEY_CLASSES_ROOT",
                 @"   .myfile",
                 @"      (Default) = myfile.1",
-                @"      Content Type = application/x-msdownload",
                 @"   myfile.1",
                 @"      (Default) = myfile Application",
                 @"      ShellEx",

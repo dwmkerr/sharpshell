@@ -131,10 +131,14 @@ namespace SharpShell.Registry
             var indent = new string(' ', depth*3);
 
             //  Get the value strings.
-            var values = key.GetValueNames().Select(v => $"{indent}{(string.IsNullOrEmpty(v) ? "(Default)" : v)} = {key.GetValue(v)}");
+            var values = key.GetValueNames()
+                .Select(v => $"{indent}{(string.IsNullOrEmpty(v) ? "(Default)" : v)} = {key.GetValue(v)}")
+                .OrderBy(s => s);
 
             //  Get the subkey strings.
-            var subKeys = key.GetSubKeyNames().Select(sk =>
+            var subKeys = key.GetSubKeyNames()
+                .OrderBy(sk => sk)
+                .Select(sk =>
                 $"{indent}{sk}{Environment.NewLine}{PrintKey(key.OpenSubKey(sk), depth + 1)}");
 
             return string.Join(Environment.NewLine, values.Concat(subKeys));
@@ -149,7 +153,7 @@ namespace SharpShell.Registry
         {
             string v = string.Empty;
             //  Go through the hives. We'll only print them if they have keys.
-            foreach (var rootKey in _rootKeys.Where(rk => rk.Key.Item1 == registryView))
+            foreach (var rootKey in _rootKeys.Where(rk => rk.Key.Item1 == registryView).OrderBy(k => k.Value.Name))
             {
                 string print = rootKey.Value.Name;
                 string val = PrintKey(rootKey.Value, 1);
