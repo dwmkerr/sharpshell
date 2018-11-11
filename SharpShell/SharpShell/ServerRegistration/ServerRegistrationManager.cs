@@ -361,32 +361,6 @@ namespace SharpShell.ServerRegistration
         }
 
         /// <summary>
-        /// Gets the class for an extension.
-        /// </summary>
-        /// <param name="extension">The extension.</param>
-        /// <returns>The class for the extension.</returns>
-        public static string GetClassForExtension(string extension)
-        {
-            //  Make sure the extension starts with a dot.
-            if(extension.StartsWith(".") == false)
-                extension = "." + extension;
-
-            using (var classesKey = OpenClassesRoot(Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit))
-            {
-                //  Try and get the extension key.
-                using (var extensionKey = classesKey.OpenSubKey(extension))
-                {
-                    //  If we don't have it, we have no server.
-                    if (extensionKey == null)
-                        return null;
-
-                    //  Otherwise, we need the default value to get the class.
-                    return extensionKey.GetValue(null, string.Empty).ToString();
-                }
-            }
-        }
-
-        /// <summary>
         /// Sets the display name of the a COM server.
         /// </summary>
         /// <param name="classId">The class identifier.</param>
@@ -575,48 +549,20 @@ namespace SharpShell.ServerRegistration
             //  Switch on the association type.
             switch (associationType)
             {
+                //  We are handling the obsolete file extension type for backwards compatiblity.
+#pragma warning disable 618
                 case AssociationType.FileExtension:
+#pragma warning restore 618
 
                     //  We're dealing with file extensions only, so we can return them directly.
                     return associations;
 
                 case AssociationType.ClassOfExtension:
-                    
-                    //  Open the classes sub key.
+
+                    //  Open the classes sub key and get or create each file extension classes.
                     using (var classesKey = OpenClassesRoot(registrationType))
                     {
-                        //  The file type classes.
-                        var fileTypeClasses = new List<string>();
-
-                        //  We've got extensions, but we need the classes for them.
-                        foreach (var fileExtension in associations)
-                        {
-                            //  TODO: the extension might have a star (like *.dll), if so we should skip it.
-                            //  Open the file type key.
-                            using (var fileTypeKey = classesKey.OpenSubKey(fileExtension))
-                            {
-                                //  If the file type key is null, create it. There's no class, so just associate
-                                //  with the extension.
-                                if (fileTypeKey == null)
-                                {
-                                    classesKey.CreateSubKey(fileExtension);
-                                    fileTypeClasses.Add(fileExtension);
-                                    continue;
-                                }
-
-                                //  Get the default value, this should be the file type class.
-                                var fileTypeClass = fileTypeKey.GetValue(null) as string;
-
-                                //  If we have a file type class, use that for the association. Otherwise,
-                                //  just use the file extension.
-                                fileTypeClasses.Add(string.IsNullOrEmpty(fileTypeClass)
-                                    ? fileExtension
-                                    : fileTypeClass);
-                            }
-                        }
-
-                        //  Return the file type classes.
-                        return fileTypeClasses;
+                        return associations.Select(extension => FileExtensionClass.Get(classesKey, extension, true)).ToArray();
                     }
 
                 case AssociationType.Class:
@@ -624,40 +570,14 @@ namespace SharpShell.ServerRegistration
                     //  We're dealing with classes only, so we can return them directly.
                     return associations;
 
-                case AssociationType.AllFiles:
-
-                    //  Return the all files class.
-                    return new [] { SpecialClass_AllFiles };
-
-                case AssociationType.Directory:
-
-                    //  Return the directory class.
-                    return new[] { SpecialClass_Directory };
-
-                case AssociationType.DirectoryBackground:
-
-                    //  Return the directory background class.
-                    return new[] { SpecialClass_DirectoryBackground };
-
-                case AssociationType.DesktopBackground:
-
-                    //  Return the desktop background class.
-                    return new[] {SpecialClass_DesktopBackground};
-
-                case AssociationType.Drive:
-
-                    //  Return the directory class.
-                    return new[] { SpecialClass_Drive };
-
-                case AssociationType.UnknownFiles:
-
-                    //  Return the directory class.
-                    return new[] { SpecialClass_UnknownFiles };
-
                 default:
 
-                    //  Take a best guess, return the associations.
-                    return associations;
+                    //  If this is a predefined shell object, return the class for it.
+                    var className = PredefinedShellObjectAttribute.GetClassName(associationType);
+                    if (className != null) return new[] {className};
+                    
+                    //  It's not a type we know how to deal with, so bail.
+                    throw new InvalidOperationException($@"Unable to determine associations for AssociationType '{associationType}'");
             }
         }
 
@@ -898,36 +818,5 @@ namespace SharpShell.ServerRegistration
         /// The default icon backup value name.
         /// </summary>
         private const string ValueName_DefaultIconBackup = @"SharpShell_Backup_DefaultIcon";
-
-        /// <summary>
-        /// The 'all files' special class.
-        /// </summary>
-        private const string SpecialClass_AllFiles = @"*";
-
-        /// <summary>
-        /// The 'drive' special class.
-        /// </summary>
-        private const string SpecialClass_Drive = @"Drive";
-
-        /// <summary>
-        /// The 'directory' special class.
-        /// </summary>
-        private const string SpecialClass_Directory = @"Directory";
-
-        /// <summary>
-        /// The 'directory background' special class.
-        /// </summary>
-        private const string SpecialClass_DirectoryBackground = @"Directory\Background";
-
-        /// <summary>
-        /// The 'desktop background' special class.
-        /// </summary>
-        private const string SpecialClass_DesktopBackground = @"DesktopBackground";
-
-        /// <summary>
-        /// The 'unknown files' special class.
-        /// </summary>
-        private const string SpecialClass_UnknownFiles = @"Unknown";
-
     }
 }

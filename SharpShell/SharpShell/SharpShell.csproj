@@ -69,6 +69,7 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\AssociationType.cs" />
+    <Compile Include="Attributes\PredefinedShellObjectAttribute.cs" />
     <Compile Include="Attributes\RegistrationNameAttribute.cs" />
     <Compile Include="Attributes\COMServerAssociationAttribute.cs" />
     <Compile Include="Attributes\CustomUnregisterFunctionAttribute.cs" />
@@ -204,6 +205,7 @@
     <Compile Include="Registry\WindowsRegistry.cs" />
     <Compile Include="Registry\WindowsRegistryKey.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
+    <Compile Include="ServerRegistration\FileExtensionClass.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
     <Compile Include="ServiceRegistry\ServiceRegistry.cs" />

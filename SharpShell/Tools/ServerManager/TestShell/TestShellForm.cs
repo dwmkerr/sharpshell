@@ -10,10 +10,13 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 using Apex.WinForms.Interop;
 using Apex.WinForms.Shell;
+using Microsoft.Win32;
 using SharpShell;
 using SharpShell.Attributes;
 using SharpShell.Interop;
+using SharpShell.Registry;
 using SharpShell.ServerRegistration;
+using SharpShell.ServiceRegistry;
 using SharpShell.SharpContextMenu;
 using SharpShell.SharpDropHandler;
 using SharpShell.SharpIconHandler;
@@ -395,7 +398,10 @@ namespace ServerManager.TestShell
             //  Based on the assocation type, we can check the shell item.
             switch (associationType)
             {
+                //  This is checked for backwards compatibility.
+#pragma warning disable 618
                 case AssociationType.FileExtension:
+#pragma warning restore 618
 
                     //  File extensions are easy to check.
                     if (shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
@@ -415,10 +421,16 @@ namespace ServerManager.TestShell
                     if (shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
                     {
                         //  Get our class.
-                        var fileClass = ServerRegistrationManager.GetClassForExtension(Path.GetExtension(shellItem.DisplayName));
+                        var registry = ServiceRegistry.GetService<IRegistry>();
+                        using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+                        {
+                            var fileClass = FileExtensionClass.Get(classesRoot, Path.GetExtension(shellItem.DisplayName), false);
 
-                        //  Do we match it?
-                        return associations.Any(a => string.Compare(fileClass, ServerRegistrationManager.GetClassForExtension(a), StringComparison.InvariantCultureIgnoreCase) == 0);
+                            //  Do we match it?
+                            return associations.Any(a => string.Compare(fileClass, FileExtensionClass.Get(classesRoot, a, false), StringComparison.InvariantCultureIgnoreCase) == 0);
+                        }
+
+                        
                     }
 
                     break;

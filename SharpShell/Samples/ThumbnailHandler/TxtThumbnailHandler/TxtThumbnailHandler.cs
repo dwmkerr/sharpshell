@@ -16,7 +16,7 @@ namespace TxtThumbnailHandler
     /// The TxtThumbnailHandler is a ThumbnailHandler for text files.
     /// </summary>
     [ComVisible(true)]
-    [COMServerAssociation(AssociationType.FileExtension, ".txt")]
+    [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
     public class TxtThumbnailHandler : SharpThumbnailHandler
     {
         /// <summary>
