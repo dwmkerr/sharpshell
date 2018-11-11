@@ -1,6 +1,7 @@
-## Version X
+## Version 2.7.0
 
 - Property Pages: Added a new 'Resources' property sheet sample.
+- Server Registration: If file extension classes are not present in the registry, then SharpShell will create them. If you discover *new* issues with registration, it may be worth quickly checking with the prior version, as there is small risk that new issues will occur due to these changes.
 
 ## Version 2.6.1
 
