@@ -3,4 +3,4 @@ root: ./docs/
 
 # Ensure that we use the README.md file from the project root.
 structure:
-readme: ../README.md
+  readme: ../README.md
