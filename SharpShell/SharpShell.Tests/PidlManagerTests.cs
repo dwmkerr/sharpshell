@@ -9,6 +9,11 @@ namespace SharpShell.Tests
 {
     public class PidlManagerTests
     {
+        /// <summary>
+        /// Name of installed UI Culture, ISO 639-2T.
+        /// </summary>
+        private readonly string InstalledUICultureISOName = System.Globalization.CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
+
         [Test]
         public void CanDecodePidl()
         {
@@ -36,7 +41,8 @@ namespace SharpShell.Tests
                 out pidl);
             var displayName = PidlManager.GetPidlDisplayName(pidl);
             Shell32.ILFree(pidl);
-            Assert.AreEqual(displayName, "Documents");
+            string expectedName = GetTestKnownFolderDisplayNameForMyCulture();
+            Assert.AreEqual(expectedName, displayName);
         }
 
         [Test]
@@ -50,7 +56,8 @@ namespace SharpShell.Tests
             pidl = PidlManager.IdListToPidl(idList);
             var pszPath = new StringBuilder();
             var displayName = PidlManager.GetPidlDisplayName(pidl);
-            Assert.AreEqual(displayName, "Documents");
+            string expectedName = GetTestKnownFolderDisplayNameForMyCulture();
+            Assert.AreEqual(expectedName, displayName);
         }
 
         [Test]
@@ -75,5 +82,27 @@ namespace SharpShell.Tests
             
             Assert.IsTrue(idList.Matches(idList2));
         }
+
+        #region Private Helper Methods 
+
+        /// <summary>
+        /// Returns the expected DisplayName of the common test Known-Folder.
+        /// Supports different installed UI Cultures.
+        /// </summary>
+        /// <returns>Expected DisplayName of the common test Known-Folder.</returns>
+        private string GetTestKnownFolderDisplayNameForMyCulture()
+        {
+            switch (InstalledUICultureISOName)
+            {
+                case "de":
+                    return "Dokumente";
+                case "en":
+                    return "Documents";
+                default:
+                    throw new Exception($"Unknwon ISO UI Culture, new case needed for '{InstalledUICultureISOName}'.");
+            }
+        }
+
+        #endregion
     }
 }
