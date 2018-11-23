@@ -244,7 +244,7 @@ Send me a message to add a project to this list:
  - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
  - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
  - [SharePoint Shell Extensions by Archon Gnosis](https://sse.technology/)
- - [.NET Assembly Info Shell Extensin by ElektroStudios](https://github.com/ElektroStudios/.NET-Assembly-Info-ShellEx)
+ - [.NET Assembly Info Shell Extension by ElektroStudios](https://github.com/ElektroStudios/.NET-Assembly-Info-ShellEx)
 
 ## Thanks
 
