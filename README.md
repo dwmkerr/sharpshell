@@ -201,12 +201,9 @@ CI/CD is currently handled by AppVeyor. AppVeyor will:
 
 Some work is still needed on the CI/CD side:
 
-- [ ] AppVeyor config should be in the yaml file, not the web UI.
 - [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
 - [ ] Look into automatic notifications for package publication.
 - [ ] Deploy SRM as a NuGet package.
-- [ ] There is stale release code in the [`Release`](/Release) folder.
-- [ ] The embedded NativeBridge in SharpShell must be updated during the release, both for 32 and 64 bit. And it should not be checked in.
 
 ### Creating a Release
 
@@ -216,7 +213,7 @@ To create a release:
 2. Update the [`CHANGELOG.md`](./CHANGELOG.md)
 3. Create a new version tag, then push
 
-The AppVeyor build will build a new NuGet package and as long as a new semver tag is pushed.
+AppVeyor will build and publish a new NuGet package and as long as a new semver tag is pushed.
 
 ## Testimonials
 
