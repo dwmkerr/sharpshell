@@ -1,3 +1,7 @@
+## Version 2.7.1
+
+- Property Pages: Fix potential crash when using Tab Controls in property pages.
+
 ## Version 2.7.0
 
 - Property Pages: Added a new 'Resources' property sheet sample.
