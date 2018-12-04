@@ -48,10 +48,9 @@ Please open an issue if there is missing documentation and I will try to priorit
 
 ## Deploying SharpShell Servers
 
-There is an article on the CodeProject that describes in detail how you can use the Server Registration Manager tool
-to deploy SharpShell servers:
+A guide on deploying SharpShell servers is available at:
 
-[Deploying SharpShell Servers](http://www.codeproject.com/Articles/653780/NET-Shell-Extensions-Deploying-SharpShell-Servers)
+[Deploying SharpShell Servers](./docs/installing/installing.md)
 
 ## Supported Shell Extensions
 
