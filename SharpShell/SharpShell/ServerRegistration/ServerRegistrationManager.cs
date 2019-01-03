@@ -248,6 +248,55 @@ namespace SharpShell.ServerRegistration
         }
         
         /// <summary>
+        /// Loads all SharpShell servers from an assembly.
+        /// </summary>
+        /// <param name="path">The path to the assembly.</param>
+        /// <returns>A ISharpShellServer for each SharpShell server in the assembly.</returns>
+        public static IEnumerable<ISharpShellServer> EnumerateFromFile(string path)
+        {
+            //  Storage for the servers.
+            Lazy<ISharpShellServer>[] serverTypes;
+
+            try
+            {
+                //  Create an assembly catalog for the assembly and a container from it.
+                var catalog = new AssemblyCatalog(Path.GetFullPath(path));
+                var container = new CompositionContainer(catalog);
+
+                //  Get all exports of type ISharpShellServer.
+                serverTypes = container.GetExports<ISharpShellServer>().ToArray();
+            }
+            catch (Exception exception)
+            {
+                //  It's almost certainly not a COM server.
+                Logging.Error("ServerManager: Failed to load SharpShell server", exception);
+
+                throw new BadImageFormatException("The file '" + Path.GetFileName(path) + "' is not a SharpShell Server.", exception);
+            }
+
+            //  Go through each servertype (creating the instance from the lazy).
+            foreach (var serverType in serverTypes)
+            {
+                ISharpShellServer server = null;
+
+                try
+                {
+                    server = serverType.Value;
+                }
+                catch (Exception exception)
+                {
+                    Trace.TraceError($"An exception occurred loading a server: ${exception}");
+                }
+
+                if (server != null)
+                {
+                    //  Yield a server entry for the server type.
+                    yield return server;
+                }
+            }
+        }
+
+        /// <summary>
         /// Enumerates Shell extensions.
         /// </summary>
         /// <param name="registrationType">Type of the registration.</param>
