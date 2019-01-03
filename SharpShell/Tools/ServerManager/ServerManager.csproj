@@ -149,7 +149,6 @@
       <DependentUpon>ServerDetailsView.cs</DependentUpon>
     </Compile>
     <Compile Include="ServerEntry.cs" />
-    <Compile Include="ServerManagerApi.cs" />
     <Compile Include="ServerManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>

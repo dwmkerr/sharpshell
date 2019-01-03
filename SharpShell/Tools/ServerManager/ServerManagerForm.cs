@@ -51,12 +51,44 @@ namespace ServerManager
         {
             if (ServerEntries.Any(se => se.ServerPath == path))
                 return;
-
-            //  Load any servers from the assembly.
-            var serverEntries = ServerManagerApi.LoadServers(path);
-            foreach(var serverEntry in serverEntries)
+            
+            try
             {
-                AddServerEntryToList(serverEntry);
+                //  Load any servers from the assembly.
+                var serverEntries = ServerRegistrationManager.EnumerateFromFile(path);
+
+                foreach (var serverEntry in serverEntries)
+                {
+                    try
+                    {
+                        AddServerEntryToList(new ServerEntry
+                        {
+                            ClassId = serverEntry.ServerClsid,
+                            Server = serverEntry,
+                            ServerName = serverEntry.DisplayName,
+                            ServerPath = path,
+                            ServerType = serverEntry.ServerType,
+                            IsInvalid = false
+                        });
+                    }
+                    catch
+                    {
+                        AddServerEntryToList(new ServerEntry
+                        {
+                            ServerName = "Invalid",
+                            ServerPath = path,
+                            ServerType = ServerType.None,
+                            ClassId = new Guid(),
+                            Server = null,
+                            IsInvalid = true
+                        });
+                    }
+                }
+            }
+            catch
+            {
+                addToMostRecentlyUsedFiles = false;
+                MessageBox.Show("The file '" + Path.GetFileName(path) + "' is not a SharpShell Server.", "Warning");
             }
 
             if (addToMostRecentlyUsedFiles && Properties.Settings.Default.RecentlyUsedFiles.Contains(path) == false)
