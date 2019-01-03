@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using Microsoft.Win32;
 using SharpShell.Attributes;
+using SharpShell.Diagnostics;
 using SharpShell.Extensions;
+using SharpShell.Interop;
 using SharpShell.Registry;
 
 
@@ -99,10 +104,34 @@ namespace SharpShell.ServerRegistration
         /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
         public static bool UninstallServer(ISharpShellServer server, RegistrationType registrationType)
         {
+            return UninstallServer(server.ServerClsid, registrationType);
+        }
+
+        /// <summary>
+        /// Uninstalls the server.
+        /// </summary>
+        /// <param name="registrationInfo">The server's registration information.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
+        public static bool UninstallServer(
+            ShellExtensionRegistrationInfo registrationInfo,
+            RegistrationType registrationType)
+        {
+            return UninstallServer(registrationInfo.ServerCLSID, registrationType);
+        }
+
+        /// <summary>
+        /// Uninstalls the server.
+        /// </summary>
+        /// <param name="classId">The server's class id.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
+        private static bool UninstallServer(Guid classId, RegistrationType registrationType)
+        {
             //  Open classes.
             using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
-                var subKeyTreeName = server.ServerClsid.ToRegistryString();
+                var subKeyTreeName = classId.ToRegistryString();
 
                 //  If the subkey doesn't exist, we can return false - we're already uninstalled.
                 if (classesKey.GetSubKeyNames().Any(skn => skn.Equals(subKeyTreeName, StringComparison.OrdinalIgnoreCase)) == false)
@@ -124,10 +153,49 @@ namespace SharpShell.ServerRegistration
         {
             //  Pass the server type to the SharpShellServer internal registration function and let it 
             //  take over from there.
-            SharpShellServer.DoRegister(server.GetType(), registrationType);
+            RegisterServerType(server.GetType(), registrationType);
 
             //  Approve the extension.
             ApproveExtension(server, registrationType);
+        }
+
+        /// <summary>
+        /// Actually performs registration. The ComRegisterFunction decorated method will call this function
+        /// internally with the flag appropriate for the operating system processor architecture.
+        /// However, this function can also be called manually if needed.
+        /// </summary>
+        /// <param name="type">The type of object to register, this must be a SharpShellServer derived class.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        internal static void RegisterServerType(Type type, RegistrationType registrationType)
+        {
+            Logging.Log($"Preparing to register SharpShell Server {type.Name} as {registrationType}");
+
+            //  Get the association data.
+            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
+                .OfType<COMServerAssociationAttribute>().ToList();
+
+            //  Get the server type and the registration name.
+            var serverType = ServerTypeAttribute.GetServerType(type);
+            var registrationName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
+
+            //  Register the server associations, if there are any.
+            if (associationAttributes.Any())
+            {
+                RegisterServerAssociations(
+                    type.GUID, serverType, registrationName, associationAttributes, registrationType);
+            }
+
+            //  If a DisplayName attribute has been set, then set the display name of the COM server.
+            var displayName = DisplayNameAttribute.GetDisplayName(type);
+            if (!string.IsNullOrEmpty(displayName))
+                SetServerDisplayName(type.GUID, displayName, registrationType);
+
+            //  Execute the custom register function, if there is one.
+            CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+
+            //  Notify the shell we've updated associations.
+            Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
+            Logging.Log($"Registration of {type.Name} completed");
         }
 
         /// <summary>
@@ -139,20 +207,53 @@ namespace SharpShell.ServerRegistration
         public static void UnregisterServer(ISharpShellServer server, RegistrationType registrationType)
         {
             //  Unapprove the extension.
-            UnapproveExtension(server, registrationType);
+            UnapproveExtension(server.ServerClsid, registrationType);
 
             //  Pass the server type to the SharpShellServer internal unregistration function and let it 
             //  take over from there.
-            SharpShellServer.DoUnregister(server.GetType(), registrationType);
+            UnregisterServerType(server.GetType(), registrationType);
         }
 
+        /// <summary>
+        /// Actually performs unregistration. The ComUnregisterFunction decorated method will call this function
+        /// internally with the flag appropriate for the operating system processor architecture.
+        /// However, this function can also be called manually if needed.
+        /// </summary>
+        /// <param name="type">The type of object to unregister, this must be a SharpShellServer derived class.</param>
+        /// <param name="registrationType">Type of the registration to unregister.</param>
+        internal static void UnregisterServerType(Type type, RegistrationType registrationType)
+        {
+            Logging.Log($"Preparing to unregister SharpShell Server {type.Name} as {registrationType}");
+
+            //  Get the association data.
+            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
+                .OfType<COMServerAssociationAttribute>().ToList();
+
+            //  Get the server type and the registration name.
+            var serverType = ServerTypeAttribute.GetServerType(type);
+            var serverName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
+
+            //  Unregister the server associations, if there are any.
+            if (associationAttributes.Any())
+            {
+                UnregisterServerAssociations(serverType, serverName, associationAttributes, registrationType);
+            }
+
+            //  Execute the custom unregister function, if there is one.
+            CustomUnregisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+
+            //  Notify the shell we've updated associations.
+            Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
+            Logging.Log($"Unregistration of {type.Name} completed");
+        }
+        
         /// <summary>
         /// Enumerates Shell extensions.
         /// </summary>
         /// <param name="registrationType">Type of the registration.</param>
         /// <param name="shellExtensionTypes">The shell extension types.</param>
         /// <returns></returns>
-        public static IEnumerable<ShellExtensionRegistrationInfo> EnumerateExtensions(RegistrationType registrationType, ShellExtensionType shellExtensionTypes)
+        public static IEnumerable<ShellExtensionRegistrationInfo> EnumerateExtensions(RegistrationType registrationType)
         {
             var shellExtensionsGuidMap = new Dictionary<Guid, ShellExtensionRegistrationInfo>();
 
@@ -191,7 +292,7 @@ namespace SharpShell.ServerRegistration
                                         Guid guid;
                                         if (Guid.TryParse(guidVal, out guid) == false)
                                             continue;
-                                        System.Diagnostics.Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
+                                        Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
                                             shellExtensionType.ToString(), guid, entry));
 
                                         //  If we do not have a shell extension info for this extension, create one.
@@ -224,7 +325,7 @@ namespace SharpShell.ServerRegistration
                                     Guid guid;
                                     if (Guid.TryParse(guidVal, out guid) == false)
                                         continue;
-                                    System.Diagnostics.Trace.WriteLine(string.Format("{0} has {1} guid {2}", className, 
+                                    Trace.WriteLine(string.Format("{0} has {1} guid {2}", className, 
                                         shellExtensionType.ToString(), guid));
                                     
                                     //  If we do not have a shell extension info for this extension, create one.
@@ -499,12 +600,11 @@ namespace SharpShell.ServerRegistration
         /// <summary>
         /// Unregisters the server associations.
         /// </summary>
-        /// <param name="serverClsid">The server CLSID.</param>
         /// <param name="serverType">Type of the server.</param>
         /// <param name="serverName">Name of the server.</param>
         /// <param name="associationAttributes">The association attributes.</param>
         /// <param name="registrationType">Type of the registration.</param>
-        internal static void UnregisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName,
+        private static void UnregisterServerAssociations(ServerType serverType, string serverName,
             IEnumerable<COMServerAssociationAttribute> associationAttributes, RegistrationType registrationType)
         {
             //  Go through each association attribute.
@@ -514,22 +614,38 @@ namespace SharpShell.ServerRegistration
                 var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType,
                     associationAttribute.Associations, registrationType);
 
-                //  Open the classes key...
-                using (var classesKey = OpenClassesRoot(registrationType))
+                UnregisterServerAssociations(serverType, serverName, associationClassNames, registrationType);
+            }
+        }
+
+        /// <summary>
+        /// Unregisters the server associations.
+        /// </summary>
+        /// <param name="serverType">Type of the server.</param>
+        /// <param name="serverName">Name of the server.</param>
+        /// <param name="associationClassNames">The association class names.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        private static void UnregisterServerAssociations(
+            ServerType serverType,
+            string serverName,
+            IEnumerable<string> associationClassNames,
+            RegistrationType registrationType)
+        {
+            //  Open the classes key...
+            using (var classesKey = OpenClassesRoot(registrationType))
+            {
+                //  ...then go through each association class.
+                foreach (var associationClassName in associationClassNames)
                 {
-                    //  ...then go through each association class.
-                    foreach (var associationClassName in associationClassNames)
-                    {
-                        //  Get the key for the association.
-                        var associationKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
+                    //  Get the key for the association.
+                    var associationKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
 
-                        //  Delete it if it exists.
-                        classesKey.DeleteSubKeyTree(associationKeyPath, false);
+                    //  Delete it if it exists.
+                    classesKey.DeleteSubKeyTree(associationKeyPath, false);
 
-                        //  If we're a shell icon handler, we must also unset the defaulticon.
-                        if (serverType == ServerType.ShellIconHandler)
-                            UnsetIconHandlerDefaultIcon(classesKey, associationClassName);
-                    }
+                    //  If we're a shell icon handler, we must also unset the defaulticon.
+                    if (serverType == ServerType.ShellIconHandler)
+                        UnsetIconHandlerDefaultIcon(classesKey, associationClassName);
                 }
             }
         }
@@ -750,10 +866,10 @@ namespace SharpShell.ServerRegistration
         /// <summary>
         /// Unapproves an extension.
         /// </summary>
-        /// <param name="server">The server.</param>
+        /// <param name="serverClassId">The server's class id.</param>
         /// <param name="registrationType">Type of the registration.</param>
         /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
-        private static void UnapproveExtension(ISharpShellServer server, RegistrationType registrationType)
+        private static void UnapproveExtension(Guid serverClassId, RegistrationType registrationType)
         {
             //  Open the approved extensions key.
             using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -765,7 +881,7 @@ namespace SharpShell.ServerRegistration
                     throw new InvalidOperationException("Failed to open the Approved Extensions key.");
 
                 //  Delete the value if it's there.
-                approvedKey.DeleteValue(server.ServerClsid.ToRegistryString(), false);
+                approvedKey.DeleteValue(serverClassId.ToRegistryString(), false);
             }
         }
 
