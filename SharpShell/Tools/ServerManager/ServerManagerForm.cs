@@ -387,6 +387,8 @@ namespace ServerManager
             unregisterServerx64ToolStripMenuItem.Enabled = SelectedServerEntry != null;
             uninstallServerx86ToolStripMenuItem.Enabled = SelectedServerEntry != null;
             uninstallServerx64ToolStripMenuItem.Enabled = SelectedServerEntry != null;
+            uninstallToolStripMenuItem.Enabled = SelectedServerEntry != null;
+            installToolStripMenuItem.Enabled = SelectedServerEntry != null;
 
             //  Test functions only available for specific servers.
             testServerToolStripMenuItem.Enabled =
