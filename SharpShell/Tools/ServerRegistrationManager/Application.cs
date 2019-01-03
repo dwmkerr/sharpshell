@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using ServerRegistrationManager.Actions;
 using ServerRegistrationManager.OutputService;
+using SharpShell;
 using SharpShell.Diagnostics;
 using SharpShell.Helpers;
 using SharpShell.ServerRegistration;
@@ -64,11 +65,20 @@ namespace ServerRegistrationManager
                 registrationType = RegistrationType.OS64Bit;
             }
 
+            var viaRegAsm = parameters.Any(p => p.Equals(ParameterRegAsm, StringComparison.InvariantCultureIgnoreCase));
+            var codebase = parameters.Any(p => p.Equals(ParameterCodebase, StringComparison.InvariantCultureIgnoreCase));
+
             //  Based on the verb, perform the action.
             if (verb == VerbInstall)
-                InstallServer(target, registrationType, parameters.Any(p => p == ParameterCodebase));
+                if (viaRegAsm)
+                    InstallServerViaRegAsm(target, registrationType, codebase);
+                else
+                    InstallServer(target, registrationType, codebase);
             else if (verb == VerbUninstall)
-                UninstallServer(target, registrationType);
+                if (viaRegAsm)
+                    UninstallServerViaRegAsm(target, registrationType);
+                else
+                    UninstallServer(target, registrationType);
             else if (verb == VerbConfig)
                 ConfigAction.Execute(outputService, parameters);
             else if (verb == VerbEnableEventLog)
@@ -86,24 +96,82 @@ namespace ServerRegistrationManager
         private void InstallServer(string path, RegistrationType registrationType, bool codeBase)
         {
             //  Validate the path.
-            if (File.Exists(path) == false)
+            if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
             {
                 outputService.WriteError("File '" + path + "' does not exist.", true);
                 return;
             }
 
-            var regasm = new RegAsm();
-            var success = registrationType == RegistrationType.OS32Bit ? regasm.Register32(path, codeBase) : regasm.Register64(path, codeBase);
+            bool success = true;
+            try
+            {
+                //  Load any servers from the assembly.
+                var servers = SharpShell.ServerRegistration.ServerRegistrationManager.EnumerateFromFile(path);
 
+                foreach (var server in servers)
+                {
+                    var name = server.GetType().Name;
+                    try
+                    {
+                        name = server.DisplayName;
+                        SharpShell.ServerRegistration.ServerRegistrationManager.InstallServer(server, registrationType, codeBase);
+                        SharpShell.ServerRegistration.ServerRegistrationManager.RegisterServer(server, registrationType);
+                    }
+                    catch (Exception e)
+                    {
+                        success = false;
+                        outputService.WriteError(e.ToString());
+                        outputService.WriteError($"Failed to install and register a server. [{name}]", true);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                success = false;
+                outputService.WriteError(e.ToString());
+            }
+            
             if (success)
             {
                 outputService.WriteSuccess($"    {path} installed and registered.", true);
-                outputService.WriteMessage(regasm.StandardOutput);
             }
             else
             {
                 outputService.WriteError($"    {path} failed to register.", true);
-                outputService.WriteError(regasm.StandardError);
+            }
+        }
+
+        /// <summary>
+        /// Installs a SharpShell server at the specified path via RegAsm.
+        /// </summary>
+        /// <param name="path">The path to the SharpShell server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="codeBase">if set to <c>true</c> install from codebase rather than GAC.</param>
+        private void InstallServerViaRegAsm(string path, RegistrationType registrationType, bool codeBase)
+        {
+            //  Validate the path.
+            if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
+            {
+                outputService.WriteError("File '" + path + "' does not exist.", true);
+                return;
+            }
+
+            var regAsm = new RegAsm();
+
+            var success =
+                registrationType == RegistrationType.OS32Bit
+                    ? regAsm.Register32(path, codeBase)
+                    : regAsm.Register64(path, codeBase);
+            
+            if (success)
+            {
+                outputService.WriteSuccess($"    {path} installed and registered.", true);
+                outputService.WriteMessage(regAsm.StandardOutput);
+            }
+            else
+            {
+                outputService.WriteError($"    {path} failed to register.", true);
+                outputService.WriteError(regAsm.StandardError);
             }
         }
 
@@ -114,18 +182,82 @@ namespace ServerRegistrationManager
         /// <param name="registrationType">Type of the registration.</param>
         private void UninstallServer(string path, RegistrationType registrationType)
         {
-            var regasm = new RegAsm();
-            var success = registrationType == RegistrationType.OS32Bit ? regasm.Unregister32(path) : regasm.Unregister64(path);
+            //  Validate the path.
+            if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
+            {
+                outputService.WriteError("File '" + path + "' does not exist.", true);
+                return;
+            }
+
+            bool success = true;
+            try
+            {
+                //  Load any servers from the assembly.
+                var servers = SharpShell.ServerRegistration.ServerRegistrationManager.EnumerateFromFile(path);
+
+                foreach (var server in servers)
+                {
+                    var name = server.GetType().Name;
+                    try
+                    {
+                        name = server.DisplayName;
+                        SharpShell.ServerRegistration.ServerRegistrationManager.UninstallServer(server, registrationType);
+                        SharpShell.ServerRegistration.ServerRegistrationManager.UnregisterServer(server, registrationType);
+                    }
+                    catch (Exception e)
+                    {
+                        success = false;
+                        outputService.WriteError(e.ToString());
+                        outputService.WriteError($"Failed to uninstall and unregister a server. [{name}]", true);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                success = false;
+                outputService.WriteError(e.ToString());
+            }
 
             if (success)
             {
                 outputService.WriteSuccess($"    {path} uninstalled.", true);
-                outputService.WriteMessage(regasm.StandardOutput);
             }
             else
             {
                 outputService.WriteError($"    {path} failed to uninstall.", true);
-                outputService.WriteError(regasm.StandardError);
+            }
+        }
+
+        /// <summary>
+        /// Uninstalls a SharpShell server located at 'path' vis RegAsm.
+        /// </summary>
+        /// <param name="path">The path to the SharpShell server.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        private void UninstallServerViaRegAsm(string path, RegistrationType registrationType)
+        {
+            //  Validate the path.
+            if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
+            {
+                outputService.WriteError("File '" + path + "' does not exist.", true);
+                return;
+            }
+
+            var regAsm = new RegAsm();
+
+            var success =
+                registrationType == RegistrationType.OS32Bit
+                    ? regAsm.Unregister32(path)
+                    : regAsm.Unregister64(path);
+            
+            if (success)
+            {
+                outputService.WriteSuccess($"    {path} uninstalled.", true);
+                outputService.WriteMessage(regAsm.StandardOutput);
+            }
+            else
+            {
+                outputService.WriteError($"    {path} failed to uninstall.", true);
+                outputService.WriteError(regAsm.StandardError);
             }
         }
 
@@ -151,5 +283,7 @@ namespace ServerRegistrationManager
 
         private const string ParameterOS32 = @"-os32";
         private const string ParameterOS64 = @"-os64";
+
+        private const string ParameterRegAsm = @"-regasm";
     }
 }
