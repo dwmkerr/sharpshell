@@ -6,12 +6,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Apex.WinForms.Interop;
-using Apex.WinForms.Shell;
 using ServerManager.ShellDebugger;
 using ServerManager.TestShell;
 using SharpShell;
-using SharpShell.Attributes;
 using SharpShell.Diagnostics;
 using SharpShell.Helpers;
 using SharpShell.ServerRegistration;
@@ -21,7 +18,6 @@ using SharpShell.SharpIconHandler;
 using SharpShell.SharpIconOverlayHandler;
 using SharpShell.SharpInfoTipHandler;
 using SharpShell.SharpPreviewHandler;
-using SharpShell.SharpPropertySheet;
 using SharpShell.SharpThumbnailHandler;
 
 namespace ServerManager
@@ -141,6 +137,17 @@ namespace ServerManager
         public ServerEntry SelectedServerEntry
         {
             get { return listViewServers.SelectedItems.Count > 0 ? (ServerEntry)listViewServers.SelectedItems[0].Tag : null; }
+        }
+
+        public ServerEntry[] AllServerEntries
+        {
+            get
+            {
+                return listViewServers.Items
+                    .Cast<ListViewItem>()
+                    .Select(item => item.Tag as ServerEntry)
+                    .Where(entry => entry != null).ToArray();
+            }
         }
 
         private void ServerManagerForm_Load(object sender, EventArgs e)
@@ -323,6 +330,19 @@ namespace ServerManager
             }
         }
 
+        private void CheckIfRegisterOrUnregisterRequiresExplorerRestart(ISharpShellServer[] servers)
+        {
+            if (servers.Any(server => server.ServerType == ServerType.ShellIconOverlayHandler))
+            {
+                if (MessageBox.Show(this, "This change will not take effect until Windows Explorer is restarted. Would you " +
+                                          "like to restart Windows Explorer now?", "Restart Explorer?", MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    ExplorerManager.RestartExplorer();
+                }
+            }
+        }
+
         private void registerServerx86ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //  Bail if we have no server selected.
@@ -482,13 +502,41 @@ namespace ServerManager
         private void installToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //  Bail if we have no server selected.
-            if (SelectedServerEntry == null)
+            if (string.IsNullOrWhiteSpace(SelectedServerEntry?.ServerPath))
                 return;
 
-            //  Create a regasm instance and register the server.
-            var regasm = new RegAsm();
-            var success = Environment.Is64BitOperatingSystem ? regasm.Register64(SelectedServerEntry.ServerPath, true) : regasm.Register32(SelectedServerEntry.ServerPath, true);
-            
+            // Get all server types
+            var serverEntries = AllServerEntries.Where(entry =>
+                !string.IsNullOrWhiteSpace(entry.ServerPath) &&
+                Path.GetFullPath(entry.ServerPath).Equals(
+                    Path.GetFullPath(SelectedServerEntry.ServerPath),
+                    StringComparison.InvariantCultureIgnoreCase
+                )
+            ).ToArray();
+
+            var registrationType =
+                Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit;
+
+            var success = true;
+
+            foreach (var serverEntry in serverEntries)
+            {
+                try
+                {
+                    ServerRegistrationManager.InstallServer(serverEntry.Server, registrationType, true);
+                    ServerRegistrationManager.RegisterServer(serverEntry.Server, registrationType);
+                }
+                catch (Exception exception)
+                {
+                    Logging.Error($"Failed to install and register a server. [{serverEntry.ServerName}]", exception);
+                    success = false;
+                }
+
+                serverDetailsView1.Initialise(serverEntry);
+            }
+
+            CheckIfRegisterOrUnregisterRequiresExplorerRestart(serverEntries.Select(entry => entry.Server).ToArray());
+
             //  Inform the user of the result.
             if (success)
             {
@@ -505,12 +553,40 @@ namespace ServerManager
         private void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //  Bail if we have no server selected.
-            if (SelectedServerEntry == null)
+            if (string.IsNullOrWhiteSpace(SelectedServerEntry?.ServerPath))
                 return;
 
-            //  Create a regasm instance and register the server.
-            var regasm = new RegAsm();
-            var success = Environment.Is64BitOperatingSystem ? regasm.Unregister64(SelectedServerEntry.ServerPath) : regasm.Unregister32(SelectedServerEntry.ServerPath);
+            // Get all server types
+            var serverEntries = AllServerEntries.Where(entry =>
+                !string.IsNullOrWhiteSpace(entry.ServerPath) &&
+                Path.GetFullPath(entry.ServerPath).Equals(
+                    Path.GetFullPath(SelectedServerEntry.ServerPath),
+                    StringComparison.InvariantCultureIgnoreCase
+                )
+            ).ToArray();
+
+            var registrationType =
+                Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit;
+
+            var success = true;
+
+            foreach (var serverEntry in serverEntries)
+            {
+                try
+                {
+                    ServerRegistrationManager.UnregisterServer(serverEntry.Server, registrationType);
+                    ServerRegistrationManager.UninstallServer(serverEntry.Server, registrationType);
+                }
+                catch (Exception exception)
+                {
+                    Logging.Error($"Failed to uninstall and unregister a server. [{serverEntry.ServerName}]", exception);
+                    success = false;
+                }
+
+                serverDetailsView1.Initialise(serverEntry);
+            }
+            
+            CheckIfRegisterOrUnregisterRequiresExplorerRestart(serverEntries.Select(entry => entry.Server).ToArray());
 
             //  Inform the user of the result.
             if (success)
