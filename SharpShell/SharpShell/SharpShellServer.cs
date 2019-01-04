@@ -34,7 +34,7 @@ namespace SharpShell
 
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
-            ServerRegistrationManager.UnregisterServerType(
+            ServerRegistrationManager.RegisterServerType(
                 type,
                 Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit
             );
@@ -53,7 +53,7 @@ namespace SharpShell
 
             //  Unregister the type, use the operating system architecture to determine
             //  what registration type to unregister.
-            ServerRegistrationManager.RegisterServerType(
+            ServerRegistrationManager.UnregisterServerType(
                 type,
                 Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit
             );
