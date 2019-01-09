@@ -65,20 +65,20 @@ namespace ServerRegistrationManager
                 registrationType = RegistrationScope.OS64Bit;
             }
 
-            var viaRegAsm = parameters.Any(p => p.Equals(ParameterRegAsm, StringComparison.InvariantCultureIgnoreCase));
+            var isExperimental = parameters.Any(p => p.Equals(ParameterExperimental, StringComparison.InvariantCultureIgnoreCase));
             var codebase = parameters.Any(p => p.Equals(ParameterCodebase, StringComparison.InvariantCultureIgnoreCase));
 
             //  Based on the verb, perform the action.
             if (verb == VerbInstall)
-                if (viaRegAsm)
-                    InstallServerViaRegAsm(target, registrationType, codebase);
-                else
+                if (isExperimental)
                     InstallServer(target, registrationType, codebase);
-            else if (verb == VerbUninstall)
-                if (viaRegAsm)
-                    UninstallServerViaRegAsm(target, registrationType);
                 else
+                    InstallServerViaRegAsm(target, registrationType, codebase);
+            else if (verb == VerbUninstall)
+                if (isExperimental)
                     UninstallServer(target, registrationType);
+                else
+                    UninstallServerViaRegAsm(target, registrationType);
             else if (verb == VerbConfig)
                 ConfigAction.Execute(outputService, parameters);
             else if (verb == VerbEnableEventLog)
@@ -280,6 +280,6 @@ namespace ServerRegistrationManager
         private const string ParameterOS32 = @"-os32";
         private const string ParameterOS64 = @"-os64";
 
-        private const string ParameterRegAsm = @"-regasm";
+        private const string ParameterExperimental = @"-experimental";
     }
 }
