@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using Microsoft.Win32;
@@ -12,84 +10,307 @@ using SharpShell.Extensions;
 using SharpShell.Interop;
 using SharpShell.Registry;
 
-
 namespace SharpShell.ServerRegistration
 {
     /// <summary>
-    /// THe Server Registration Manager is an object that can be used to
-    /// help with Server Registration tasks, such as registering, unregistering
-    /// and checking servers. It will work with SharpShell Server objects or
-    /// other servers.
+    ///     THe Server Registration Manager is an object that can be used to
+    ///     help with Server Registration tasks, such as registering, un-registering
+    ///     and checking servers. It will work with SharpShell Server objects or
+    ///     other servers.
     /// </summary>
     public static class ServerRegistrationManager
     {
         /// <summary>
-        /// Installs a SharpShell COM server.
+        ///     Opens the classes root.
         /// </summary>
-        /// <param name="server">The server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <param name="codeBase">if set to <c>true</c> use code base registration (i.e full assembly path, not the GAC).</param>
-        public static void InstallServer(ISharpShellServer server, RegistrationType registrationType, bool codeBase)
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns>The classes root key.</returns>
+        private static IRegistryKey OpenClassesRootKey(RegistrationScope registrationScope)
         {
-            //  Get the server registration information.
-            var serverRegistrationInformation = GetServerRegistrationInfo(server, registrationType);
+            //  Get the registry.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
 
-            //  If it is registered, unregister first.
-            if (serverRegistrationInformation != null)
-                UninstallServer(server, registrationType);
-            
+            //  Get the classes base key.
+            var classesBaseKey = registrationScope == RegistrationScope.OS64Bit
+                ? registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64)
+                : registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
+
+            //  Return the classes key.
+            return classesBaseKey;
+        }
+
+        #region Installation
+
+        /// <summary>
+        ///     The classes key name.
+        /// </summary>
+        private const string RegistryClassesKeyName = @"CLSID";
+
+        /// <summary>
+        ///     The InProc32 key name.
+        /// </summary>
+        private const string RegistryInProcess32KeyName = @"InprocServer32";
+
+        /// <summary>
+        ///     The value for the net framework servers.
+        /// </summary>
+        private const string RegistryNetFrameworkServerKeyValue = @"mscoree.dll";
+
+        /// <summary>
+        ///     The threading model key name.
+        /// </summary>
+        private const string RegistryThreadingModelValueName = @"ThreadingModel";
+
+        /// <summary>
+        ///     THe assembly key name.
+        /// </summary>
+        private const string RegistryAssemblyValueName = @"Assembly";
+
+        /// <summary>
+        ///     The class key name.
+        /// </summary>
+        private const string RegistryClassValueName = @"Class";
+
+        /// <summary>
+        ///     The runtime version key name.
+        /// </summary>
+        private const string RegistryRuntimeVersionValueName = @"RuntimeVersion";
+
+        /// <summary>
+        ///     The codebase key name.
+        /// </summary>
+        private const string RegistryCodeBaseValueName = @"CodeBase";
+
+        /// <summary>
+        ///     Gets the server registration info.
+        /// </summary>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns>
+        ///     The ServerRegistrationInfo if the server is registered, otherwise false.
+        /// </returns>
+        public static ServerInstallationInfo GetExtensionInstallationInfo<T>(RegistrationScope registrationScope)
+            where T : SharpShellServer
+        {
+            //  Call the main function.
+            return GetExtensionInstallationInfo(SharpShellServerInfo.GetServerClassId<T>(), registrationScope);
+        }
+
+        /// <summary>
+        ///     Gets the server registration info.
+        /// </summary>
+        /// <param name="serverInfo">The managed server information.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns>
+        ///     The ServerRegistrationInfo if the server is registered, otherwise false.
+        /// </returns>
+        public static ServerInstallationInfo GetExtensionInstallationInfo(
+            SharpShellServerInfo serverInfo,
+            RegistrationScope registrationScope)
+        {
+            //  Call the main function.
+            return GetExtensionInstallationInfo(serverInfo.ClassId, registrationScope);
+        }
+
+        /// <summary>
+        ///     Gets the server registration info.
+        /// </summary>
+        /// <param name="serverClassId">The server class id.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns>
+        ///     The ServerRegistrationInfo if the server is registered, otherwise false.
+        /// </returns>
+        public static ServerInstallationInfo GetExtensionInstallationInfo(
+            Guid serverClassId,
+            RegistrationScope registrationScope)
+        {
             //  Open the classes.
-            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
+            using (var classesKey = OpenInstalledClassesRoot(registrationScope, RegistryKeyPermissionCheck.ReadSubTree))
+            {
+                //  Do we have a sub-key for the server?
+                using (var serverClassKey = classesKey.OpenSubKey(serverClassId.ToRegistryString()))
+                {
+                    //  If there's no sub-key, the server isn't registered.
+                    if (serverClassKey == null)
+                    {
+                        return null;
+                    }
+
+                    //  Do we have an InProc32 server?
+                    using (var inProcess32ServerKey = serverClassKey.OpenSubKey(RegistryInProcess32KeyName))
+                    {
+                        //  If we do, we can return the server info for an inProcess32 server.
+                        if (inProcess32ServerKey != null)
+                        {
+                            //  Get the default value.
+                            var inProcessLibraryName = inProcess32ServerKey.GetValue(null).ToString();
+
+                            //  If we default value is null or empty, we've got a partially registered server.
+                            if (string.IsNullOrEmpty(inProcessLibraryName))
+                            {
+                                return new ServerInstallationInfo(serverClassId);
+                            }
+
+                            //  Get the threading model.
+                            var threadingModel = inProcess32ServerKey.GetValue(RegistryThreadingModelValueName)
+                                .ToString();
+
+                            //  Is it a .NET server?
+                            if (inProcessLibraryName == RegistryNetFrameworkServerKeyValue)
+                            {
+                                //  We've got a .NET server. We should have one sub-key, with the assembly version.
+                                var assemblyVersionSubKeyPath = inProcess32ServerKey.GetSubKeyNames().FirstOrDefault();
+
+                                //  If we have no sub-key name, we've got a partially registered server.
+                                if (assemblyVersionSubKeyPath == null)
+                                {
+                                    return new ServerInstallationInfo(serverClassId);
+                                }
+
+                                //  Open the assembly sub-key.
+                                using (var assemblyVersionSubKey =
+                                    inProcess32ServerKey.OpenSubKey(assemblyVersionSubKeyPath))
+                                {
+                                    //  If we can't open the key, we've got a problem.
+                                    if (assemblyVersionSubKey == null)
+                                    {
+                                        throw new InvalidOperationException("Can't open the details of the server.");
+                                    }
+
+                                    //  Read the managed server details.
+                                    var assemblyName = assemblyVersionSubKey.GetValue(RegistryAssemblyValueName)
+                                        .ToString();
+                                    var runtimeVersion = assemblyVersionSubKey.GetValue(RegistryRuntimeVersionValueName)
+                                        .ToString();
+                                    var codeBase = assemblyVersionSubKey.GetValue(RegistryCodeBaseValueName).ToString();
+
+                                    var assembly = new ManagedAssemblyInfo(
+                                        assemblyName,
+                                        assemblyVersionSubKeyPath,
+                                        runtimeVersion,
+                                        codeBase
+                                    );
+
+                                    var managedClass = assemblyVersionSubKey.GetValue(RegistryClassValueName)
+                                        .ToString();
+
+                                    //  Return the managed server info.
+                                    return new ServerInstallationInfo(
+                                        serverClassId,
+                                        inProcessLibraryName,
+                                        threadingModel,
+                                        assembly,
+                                        managedClass
+                                    );
+                                }
+                            }
+
+                            //  We've got a native COM server.
+                            return new ServerInstallationInfo(
+                                serverClassId,
+                                inProcessLibraryName,
+                                threadingModel
+                            );
+                        }
+                    }
+
+                    //  If by this point we haven't return server info, we've got a partially registered server.
+                    return new ServerInstallationInfo(serverClassId);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Installs a SharpShell COM server.
+        /// </summary>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="codeBase">if set to <c>true</c> use code base registration (i.e full assembly path, not the GAC).</param>
+        public static void InstallServer<T>(RegistrationScope registrationScope, bool codeBase)
+            where T : SharpShellServer
+        {
+            InstallServer(SharpShellServerInfo.FromServer<T>(), registrationScope, codeBase);
+        }
+
+        /// <summary>
+        ///     Installs a SharpShell COM server.
+        /// </summary>
+        /// <param name="serverInfo">The managed server info.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="codeBase">if set to <c>true</c> use code base registration (i.e full assembly path, not the GAC).</param>
+        public static void InstallServer(
+            SharpShellServerInfo serverInfo,
+            RegistrationScope registrationScope,
+            bool codeBase)
+        {
+            //  Get the server installation information.
+            var serverInstallationInfo = GetExtensionInstallationInfo(serverInfo.ClassId, registrationScope);
+
+            //  If it is installed, uninstall first.
+            if (serverInstallationInfo != null)
+            {
+                UninstallServer(serverInfo.ClassId, registrationScope);
+            }
+
+            //  Open the classes.
+            using (var classesKey =
+                OpenInstalledClassesRoot(registrationScope, RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
                 //  Create the server key.
-                using (var serverKey = classesKey.CreateSubKey(server.ServerClsid.ToRegistryString()))
+                using (var serverKey = classesKey.CreateSubKey(serverInfo.ClassId.ToRegistryString()))
                 {
-                    if(serverKey == null)
+                    if (serverKey == null)
+                    {
                         throw new InvalidOperationException("Cannot create server key.");
+                    }
 
                     //  We always set the server key default value to the display name if we can.
-                    if(!string.IsNullOrEmpty(server.DisplayName))
-                        serverKey.SetValue(null, server.DisplayName, RegistryValueKind.String);
+                    if (serverInfo.IsDisplayNameDefined)
+                    {
+                        serverKey.SetValue(null, serverInfo.DisplayName, RegistryValueKind.String);
+                    }
 
-                    //  Create the inproc key.
-                    using (var inproc32Key = serverKey.CreateSubKey(KeyName_InProc32))
+                    //  Create the process key.
+                    using (var inProcess32Key = serverKey.CreateSubKey(RegistryInProcess32KeyName))
                     {
                         //  Check the key.
-                        if(inproc32Key == null)
+                        if (inProcess32Key == null)
+                        {
                             throw new InvalidOperationException("Cannot create InProc32 key.");
+                        }
 
                         //  Set the .NET value.
-                        inproc32Key.SetValue(null, KeyValue_NetFrameworkServer);
+                        inProcess32Key.SetValue(null, RegistryNetFrameworkServerKeyValue);
 
-                        //  Create the values.
-                        var assemblyVersion = server.GetType().Assembly.GetName().Version.ToString();
-                        var assemblyFullName = server.GetType().Assembly.FullName;
-                        var className = server.GetType().FullName;
-                        var runtimeVersion = server.GetType().Assembly.ImageRuntimeVersion;
-                        var codeBaseValue = server.GetType().Assembly.CodeBase;
-                        const string threadingModel = "Both";
+                        //  Install all details at server level.
+                        inProcess32Key.SetValue(RegistryClassValueName, serverInfo.ClassFullName);
+                        inProcess32Key.SetValue(RegistryAssemblyValueName, serverInfo.AssemblyInfo.FullName);
+                        inProcess32Key.SetValue(RegistryRuntimeVersionValueName,
+                            serverInfo.AssemblyInfo.RuntimeVersion);
+                        inProcess32Key.SetValue(RegistryThreadingModelValueName, "Both");
 
-                        //  Register all details at server level.
-                        inproc32Key.SetValue(KeyName_Assembly, assemblyFullName);
-                        inproc32Key.SetValue(KeyName_Class, className);
-                        inproc32Key.SetValue(KeyName_RuntimeVersion, runtimeVersion);
-                        inproc32Key.SetValue(KeyName_ThreadingModel, threadingModel);
                         if (codeBase)
-                            inproc32Key.SetValue(KeyName_CodeBase, codeBaseValue);
+                        {
+                            inProcess32Key.SetValue(RegistryCodeBaseValueName, serverInfo.AssemblyInfo.CodeBase);
+                        }
 
                         //  Create the version key.
-                        using (var versionKey = inproc32Key.CreateSubKey(assemblyVersion))
+                        using (var versionKey = inProcess32Key.CreateSubKey(serverInfo.AssemblyInfo.Version))
                         {
                             //  Check the key.
-                            if(versionKey == null)
+                            if (versionKey == null)
+                            {
                                 throw new InvalidOperationException("Cannot create assembly version key.");
+                            }
 
                             //  Set the values.
-                            versionKey.SetValue(KeyName_Assembly, assemblyFullName);
-                            versionKey.SetValue(KeyName_Class, className);
-                            versionKey.SetValue(KeyName_RuntimeVersion, runtimeVersion);
+                            versionKey.SetValue(RegistryClassValueName, serverInfo.ClassFullName);
+                            versionKey.SetValue(RegistryAssemblyValueName, serverInfo.AssemblyInfo.FullName);
+                            versionKey.SetValue(RegistryRuntimeVersionValueName,
+                                serverInfo.AssemblyInfo.RuntimeVersion);
+
                             if (codeBase)
-                                versionKey.SetValue(KeyName_CodeBase, codeBaseValue);
+                            {
+                                versionKey.SetValue(RegistryCodeBaseValueName, serverInfo.AssemblyInfo.CodeBase);
+                            }
                         }
                     }
                 }
@@ -97,624 +318,712 @@ namespace SharpShell.ServerRegistration
         }
 
         /// <summary>
-        /// Uninstalls the server.
+        ///     Uninstalls the server.
         /// </summary>
-        /// <param name="server">The server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
-        public static bool UninstallServer(ISharpShellServer server, RegistrationType registrationType)
+        public static bool UninstallServer<T>(RegistrationScope registrationScope) where T : SharpShellServer
         {
-            return UninstallServer(server.ServerClsid, registrationType);
+            return UninstallServer(SharpShellServerInfo.FromServer<T>(), registrationScope);
         }
 
         /// <summary>
-        /// Uninstalls the server.
+        ///     Uninstalls the server.
         /// </summary>
-        /// <param name="registrationInfo">The server's registration information.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="serverInfo">The managed server info.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
-        public static bool UninstallServer(
-            ShellExtensionRegistrationInfo registrationInfo,
-            RegistrationType registrationType)
+        public static bool UninstallServer(SharpShellServerInfo serverInfo, RegistrationScope registrationScope)
         {
-            return UninstallServer(registrationInfo.ServerCLSID, registrationType);
+            // Check passed type
+            return UninstallServer(serverInfo.ClassId, registrationScope);
         }
 
         /// <summary>
-        /// Uninstalls the server.
+        ///     Uninstalls the server.
         /// </summary>
-        /// <param name="classId">The server's class id.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="serverClassId">The server's class id.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <returns>True if the server WAS installed and has been uninstalled, false if the server was not found.</returns>
-        private static bool UninstallServer(Guid classId, RegistrationType registrationType)
+        public static bool UninstallServer(Guid serverClassId, RegistrationScope registrationScope)
         {
             //  Open classes.
-            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
+            using (var classesKey =
+                OpenInstalledClassesRoot(registrationScope, RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
-                var subKeyTreeName = classId.ToRegistryString();
+                var serverSubKeyPath = serverClassId.ToRegistryString();
 
-                //  If the subkey doesn't exist, we can return false - we're already uninstalled.
-                if (classesKey.GetSubKeyNames().Any(skn => skn.Equals(subKeyTreeName, StringComparison.OrdinalIgnoreCase)) == false)
-                    return false;
+                //  If the sub-key doesn't exist, we can return false - we're already uninstalled.
+                using (var serverSubKey = classesKey.OpenSubKey(serverSubKeyPath, false))
+                {
+                    if (serverSubKey == null)
+                    {
+                        return false;
+                    }
+                }
 
-                //  Delete the subkey tree.
-                classesKey.DeleteSubKeyTree(subKeyTreeName);
+                //  Delete the sub-key tree.
+                classesKey.DeleteSubKeyTree(serverSubKeyPath);
+
                 return true;
             }
         }
 
         /// <summary>
-        /// Registers a SharpShell server. This will create the associations defined by the
-        /// server's COMServerAssociation attribute.
+        ///     Opens the classes key.
         /// </summary>
-        /// <param name="server">The server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        public static void RegisterServer(ISharpShellServer server, RegistrationType registrationType)
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="permissions">The permissions.</param>
+        /// <returns></returns>
+        private static IRegistryKey OpenInstalledClassesRoot(
+            RegistrationScope registrationScope,
+            RegistryKeyPermissionCheck permissions)
+        {
+            //  Open classes.
+            return OpenClassesRootKey(registrationScope)?
+                       .OpenSubKey(
+                           RegistryClassesKeyName,
+                           permissions,
+                           RegistryRights.QueryValues | RegistryRights.ReadPermissions | RegistryRights.EnumerateSubKeys
+                       ) ??
+                   throw new InvalidOperationException("Cannot open classes.");
+        }
+
+        #endregion
+
+        #region Registration
+
+        /// <summary>
+        ///     The default icon key name.
+        /// </summary>
+        private const string RegistryDefaultIconKeyName = @"DefaultIcon";
+
+        /// <summary>
+        ///     The default icon backup value name.
+        /// </summary>
+        private const string RegistryDefaultIconBackupValueName = @"SharpShell_Backup_DefaultIcon";
+
+        /// <summary>
+        ///     Registers a SharpShell server. This will create the associations defined by the
+        ///     server's COMServerAssociation attribute.
+        /// </summary>
+        /// <param name="registrationScope">Type of the registration.</param>
+        public static void RegisterAndApproveServer<T>(RegistrationScope registrationScope) where T : SharpShellServer
+        {
+            RegisterAndApproveServer(SharpShellServerInfo.FromServer<T>(), registrationScope);
+        }
+
+        /// <summary>
+        ///     Registers a SharpShell server. This will create the associations defined by the
+        ///     server's COMServerAssociation attribute.
+        /// </summary>
+        /// <param name="serverInfo">The managed server info.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        public static void RegisterAndApproveServer(
+            SharpShellServerInfo serverInfo,
+            RegistrationScope registrationScope)
         {
             //  Pass the server type to the SharpShellServer internal registration function and let it 
             //  take over from there.
-            RegisterServerType(server.GetType(), registrationType);
+            InternalRegisterServer(serverInfo, registrationScope);
 
             //  Approve the extension.
-            ApproveExtension(server, registrationType);
+            ApproveExtension(serverInfo, registrationScope);
         }
 
         /// <summary>
-        /// Actually performs registration. The ComRegisterFunction decorated method will call this function
-        /// internally with the flag appropriate for the operating system processor architecture.
-        /// However, this function can also be called manually if needed.
+        ///     Actually performs registration. The ComRegisterFunction decorated method will call this function
+        ///     internally with the flag appropriate for the operating system processor architecture.
+        ///     However, this function can also be called manually if needed.
         /// </summary>
-        /// <param name="type">The type of object to register, this must be a SharpShellServer derived class.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        internal static void RegisterServerType(Type type, RegistrationType registrationType)
+        /// <param name="serverInfo">The managed server info.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        private static void InternalRegisterServer(SharpShellServerInfo serverInfo, RegistrationScope registrationScope)
         {
-            Logging.Log($"Preparing to register SharpShell Server {type.Name} as {registrationType}");
+            Logging.Log(
+                $"Preparing to register SharpShell Server {serverInfo.DisplayName} in scope {registrationScope}.");
 
-            //  Get the association data.
-            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
-                .OfType<COMServerAssociationAttribute>().ToList();
 
-            //  Get the server type and the registration name.
-            var serverType = ServerTypeAttribute.GetServerType(type);
-            var registrationName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
-
-            //  Register the server associations, if there are any.
-            if (associationAttributes.Any())
+            //  Register the server associations
+            if (serverInfo.ShellExtensionType != ShellExtensionType.None)
             {
-                RegisterServerAssociations(
-                    type.GUID, serverType, registrationName, associationAttributes, registrationType);
+                //  Get the association data.
+                var associationClassNames =
+                    registrationScope == RegistrationScope.OS64Bit
+                        ? serverInfo.AssociationClassNamesX64
+                        : serverInfo.AssociationClassNamesX32;
+
+                if (associationClassNames?.Any() == true)
+                {
+                    foreach (var associationClassName in associationClassNames)
+                    {
+                        RegisterShellExtensionAssociation(
+                            serverInfo.ClassId,
+                            serverInfo.ShellExtensionType,
+                            serverInfo.RegistrationName,
+                            associationClassName,
+                            registrationScope
+                        );
+                    }
+                }
             }
 
-            //  If a DisplayName attribute has been set, then set the display name of the COM server.
-            var displayName = DisplayNameAttribute.GetDisplayName(type);
-            if (!string.IsNullOrEmpty(displayName))
-                SetServerDisplayName(type.GUID, displayName, registrationType);
-
             //  Execute the custom register function, if there is one.
-            CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+            try
+            {
+                serverInfo.InvokeCustomRegisterMethodIfExists(registrationScope);
+            }
+            catch (Exception e)
+            {
+                Logging.Error("Custom register function failed.", e);
+            }
 
             //  Notify the shell we've updated associations.
             Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
-            Logging.Log($"Registration of {type.Name} completed");
+            Logging.Log($"Registration of {serverInfo.DisplayName} completed.");
         }
 
         /// <summary>
-        /// Unregisters a SharpShell server. This will remove the associations defined by the
-        /// server's COMServerAssociation attribute.
+        ///     Un-registers a SharpShell server. This will remove the associations defined by the
+        ///     server's COMServerAssociation attribute.
         /// </summary>
-        /// <param name="server">The server.</param>
-        /// <param name="registrationType">Type of the registration to undo.</param>
-        public static void UnregisterServer(ISharpShellServer server, RegistrationType registrationType)
+        /// <param name="registrationScope">Type of the registration to undo.</param>
+        public static void UnregisterAndUnApproveServer<T>(RegistrationScope registrationScope)
+            where T : SharpShellServer
         {
-            //  Unapprove the extension.
-            UnapproveExtension(server.ServerClsid, registrationType);
+            UnregisterAndUnApproveServer(SharpShellServerInfo.FromServer<T>(), registrationScope);
+        }
 
-            //  Pass the server type to the SharpShellServer internal unregistration function and let it 
+        /// <summary>
+        ///     Un-registers a SharpShell server. This will remove the associations defined by the
+        ///     server's COMServerAssociation attribute.
+        /// </summary>
+        /// <param name="serverInfo">The server type.</param>
+        /// <param name="registrationScope">Type of the registration to undo.</param>
+        public static void UnregisterAndUnApproveServer(
+            SharpShellServerInfo serverInfo,
+            RegistrationScope registrationScope)
+        {
+            //  Un-approve the extension.
+            UnApproveExtension(serverInfo.ClassId, registrationScope);
+
+            //  Pass the server type to the SharpShellServer internal un-registration function and let it 
             //  take over from there.
-            UnregisterServerType(server.GetType(), registrationType);
+            InternalUnregisterServer(serverInfo, registrationScope);
         }
 
         /// <summary>
-        /// Actually performs unregistration. The ComUnregisterFunction decorated method will call this function
-        /// internally with the flag appropriate for the operating system processor architecture.
-        /// However, this function can also be called manually if needed.
+        ///     Un-registers a SharpShell server. This will remove the associations defined by the
+        ///     server's COMServerAssociation attribute.
         /// </summary>
-        /// <param name="type">The type of object to unregister, this must be a SharpShellServer derived class.</param>
-        /// <param name="registrationType">Type of the registration to unregister.</param>
-        internal static void UnregisterServerType(Type type, RegistrationType registrationType)
+        /// <param name="serverClassId">The server class id.</param>
+        /// <param name="registrationScope">Type of the registration to undo.</param>
+        public static void UnregisterAndUnApproveServer(Guid serverClassId, RegistrationScope registrationScope)
         {
-            Logging.Log($"Preparing to unregister SharpShell Server {type.Name} as {registrationType}");
+            //  Un-approve the extension.
+            UnApproveExtension(serverClassId, registrationScope);
 
-            //  Get the association data.
-            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
-                .OfType<COMServerAssociationAttribute>().ToList();
+            var associations = GetExtensionRegistrationInfo(serverClassId, registrationScope);
 
-            //  Get the server type and the registration name.
-            var serverType = ServerTypeAttribute.GetServerType(type);
-            var serverName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
-
-            //  Unregister the server associations, if there are any.
-            if (associationAttributes.Any())
+            if (associations == null)
             {
-                UnregisterServerAssociations(serverType, serverName, associationAttributes, registrationType);
+                return;
+            }
+
+            foreach (var association in associations.Associations)
+            {
+                UnregisterShellExtensionAssociation(
+                    association.ShellExtensionType,
+                    association.RegistrationName,
+                    association.AssociationClassName,
+                    registrationScope
+                );
+            }
+        }
+
+        /// <summary>
+        ///     Actually performs un-registration. The ComUnregisterFunction decorated method will call this function
+        ///     internally with the flag appropriate for the operating system processor architecture.
+        ///     However, this function can also be called manually if needed.
+        /// </summary>
+        /// <param name="serverInfo">The server type.</param>
+        /// <param name="registrationScope">Type of the registration to unregister.</param>
+        private static void InternalUnregisterServer(
+            SharpShellServerInfo serverInfo,
+            RegistrationScope registrationScope)
+        {
+            Logging.Log(
+                $"Preparing to unregister SharpShell Server {serverInfo.DisplayName} in scope {registrationScope}");
+
+            //  Unregister the server associations
+            if (serverInfo.ShellExtensionType != ShellExtensionType.None)
+            {
+                //  Get the association data.
+                var associationClassNames =
+                    registrationScope == RegistrationScope.OS64Bit
+                        ? serverInfo.AssociationClassNamesX64
+                        : serverInfo.AssociationClassNamesX32;
+
+                if (associationClassNames?.Any() == true)
+                {
+                    foreach (var associationClassName in associationClassNames)
+                    {
+                        UnregisterShellExtensionAssociation(
+                            serverInfo.ShellExtensionType,
+                            serverInfo.RegistrationName,
+                            associationClassName,
+                            registrationScope
+                        );
+                    }
+                }
             }
 
             //  Execute the custom unregister function, if there is one.
-            CustomUnregisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+            try
+            {
+                serverInfo.InvokeCustomUnRegisterMethodIfExists(registrationScope);
+            }
+            catch (Exception e)
+            {
+                Logging.Error("Custom unregister function failed.", e);
+            }
 
             //  Notify the shell we've updated associations.
             Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
-            Logging.Log($"Unregistration of {type.Name} completed");
-        }
-        
-        /// <summary>
-        /// Loads all SharpShell servers from an assembly.
-        /// </summary>
-        /// <param name="path">The path to the assembly.</param>
-        /// <returns>A ISharpShellServer for each SharpShell server in the assembly.</returns>
-        public static IEnumerable<ISharpShellServer> EnumerateFromFile(string path)
-        {
-            //  Storage for the servers.
-            Lazy<ISharpShellServer>[] serverTypes;
-
-            try
-            {
-                //  Create an assembly catalog for the assembly and a container from it.
-                var catalog = new AssemblyCatalog(Path.GetFullPath(path));
-                var container = new CompositionContainer(catalog);
-
-                //  Get all exports of type ISharpShellServer.
-                serverTypes = container.GetExports<ISharpShellServer>().ToArray();
-            }
-            catch (Exception exception)
-            {
-                //  It's almost certainly not a COM server.
-                Logging.Error("ServerManager: Failed to load SharpShell server", exception);
-
-                throw new BadImageFormatException("The file '" + Path.GetFileName(path) + "' is not a SharpShell Server.", exception);
-            }
-
-            //  Go through each servertype (creating the instance from the lazy).
-            foreach (var serverType in serverTypes)
-            {
-                ISharpShellServer server = null;
-
-                try
-                {
-                    server = serverType.Value;
-                }
-                catch (Exception exception)
-                {
-                    Trace.TraceError($"An exception occurred loading a server: ${exception}");
-                }
-
-                if (server != null)
-                {
-                    //  Yield a server entry for the server type.
-                    yield return server;
-                }
-            }
+            Logging.Log($"Un-registration of {serverInfo.DisplayName} completed.");
         }
 
         /// <summary>
-        /// Enumerates Shell extensions.
+        ///     Enumerates shell extensions registered for a class.
         /// </summary>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <param name="shellExtensionTypes">The shell extension types.</param>
+        /// <param name="associationClassName">The class name to return registered shell extensions</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <returns></returns>
-        public static IEnumerable<ShellExtensionRegistrationInfo> EnumerateExtensions(RegistrationType registrationType)
+        public static IEnumerable<ShellExtensionRegisteredAssociationInfo> EnumerateRegisteredAssociations(
+            string associationClassName,
+            RegistrationScope registrationScope)
         {
-            var shellExtensionsGuidMap = new Dictionary<Guid, ShellExtensionRegistrationInfo>();
+            //  Go through every shell extension type.
 
-            //  Go through all classes.
-            using (var classes = OpenClassesRoot(registrationType))
+            return EnumerateRegisteredAssociations(
+                associationClassName,
+                registrationScope,
+                Enum.GetValues(typeof(ShellExtensionType)).OfType<ShellExtensionType>()
+            );
+        }
+
+        /// <summary>
+        ///     Enumerates shell extensions registered for a class.
+        /// </summary>
+        /// <param name="associationClassName">The class name to return registered shell extensions</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="extensionTypes">Shell extension types to filter with.</param>
+        /// <returns></returns>
+        public static IEnumerable<ShellExtensionRegisteredAssociationInfo> EnumerateRegisteredAssociations(
+            string associationClassName,
+            RegistrationScope registrationScope,
+            IEnumerable<ShellExtensionType> extensionTypes)
+        {
+            using (var classesKey = OpenClassesRootKey(registrationScope))
             {
-                //  Read each subkey.
-                foreach (var className in classes.GetSubKeyNames().Where(cn => !cn.StartsWith("{")))
+                foreach (var extensionType in extensionTypes)
                 {
-                    //  Go through every shell extension type.
-                    foreach (ShellExtensionType shellExtensionType in Enum.GetValues(typeof (ShellExtensionType)))
+                    // Get handler attribute
+                    var handlerAttribute = HandlerSubKeyAttribute.GetHandlerSubKeyAttribute(extensionType);
+
+                    // Ignore invalid or null handlers
+                    if (string.IsNullOrEmpty(handlerAttribute?.HandlerSubKey))
                     {
-                        //  Get the handler subkey.
-                        var handlerSubkey = shellExtensionType.GetAttribute<HandlerSubkeyAttribute>();
+                        continue;
+                    }
 
-                        if(handlerSubkey == null)
-                            continue;
+                    //  Get the handler sub-key.
+                    var handlerSubKeyRoot = $"{associationClassName}\\ShellEx\\{handlerAttribute.HandlerSubKey}";
 
-                        //  Check for the subkey.
-                        if (handlerSubkey.AllowMultipleEntries)
+                    using (var handlerSubKey = classesKey.OpenSubKey(
+                        handlerSubKeyRoot,
+                        RegistryKeyPermissionCheck.ReadSubTree,
+                        RegistryRights.ReadKey | RegistryRights.QueryValues
+                    ))
+                    {
+                        //  Skip empty handlers.
+                        if (handlerSubKey == null)
                         {
-                            //  Do we have the single subkey?
-                            var handlerKeyPath = $"{className}\\ShellEx\\{handlerSubkey.HandlerSubkey}";
-                            using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
+                            yield break;
+                        }
+
+                        if (handlerAttribute.AllowMultipleEntries) // We should check for multiple sub-keys
+                        {
+                            //  Read sub-keys.
+                            foreach (var entrySubKeyName in handlerSubKey.GetSubKeyNames())
                             {
-                                //  Skip empty handlers.
-                                if (handlerSubKey == null) continue;
-
-                                //  Read entries.
-                                foreach (var entry in handlerSubKey.GetSubKeyNames())
+                                using (var entrySubKey = handlerSubKey.OpenSubKey(
+                                    entrySubKeyName,
+                                    RegistryKeyPermissionCheck.ReadSubTree,
+                                    RegistryRights.QueryValues | RegistryRights.ReadKey
+                                ))
                                 {
-                                    using (var entryKey = handlerSubKey.OpenSubKey(entry, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.QueryValues | RegistryRights.ReadKey))
+                                    var serverClassIdValue = entrySubKey.GetValue(null, string.Empty).ToString();
+
+                                    if (Guid.TryParse(serverClassIdValue, out var serverClassId) == false)
                                     {
-                                        var guidVal = entryKey.GetValue(null, string.Empty).ToString();
-
-                                        Guid guid;
-                                        if (Guid.TryParse(guidVal, out guid) == false)
-                                            continue;
-                                        Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
-                                            shellExtensionType.ToString(), guid, entry));
-
-                                        //  If we do not have a shell extension info for this extension, create one.
-                                        if (!shellExtensionsGuidMap.ContainsKey(guid))
-                                        {
-                                            shellExtensionsGuidMap[guid] = new ShellExtensionRegistrationInfo
-                                            {
-                                                DisplayName = entry,
-                                                ShellExtensionType = shellExtensionType,
-                                                ServerCLSID = guid,
-                                            };
-                                        }
-
-                                        //  Add the class association.
-                                        shellExtensionsGuidMap[guid].classRegistrations.Add(new ClassRegistration(className));
+                                        continue;
                                     }
+
+                                    Trace.WriteLine(string.Format(
+                                        "Class {0} has {1} with id {2} ({3})",
+                                        associationClassName,
+                                        extensionType.ToString(),
+                                        serverClassId,
+                                        entrySubKeyName
+                                    ));
+
+                                    yield return new ShellExtensionRegisteredAssociationInfo(
+                                        extensionType, serverClassId, associationClassName, entrySubKeyName
+                                    );
                                 }
                             }
+                        }
+                        else // We should check the root handler sub-key
+                        {
+                            var serverClassIdValue = handlerSubKey.GetValue(null, string.Empty).ToString();
+
+                            if (Guid.TryParse(serverClassIdValue, out var serverClassId) == false)
+                            {
+                                yield break;
+                            }
+
+                            Trace.WriteLine(string.Format(
+                                "Class {0} has {1} with id {2}",
+                                associationClassName,
+                                extensionType.ToString(),
+                                serverClassId
+                            ));
+
+                            yield return new ShellExtensionRegisteredAssociationInfo(
+                                extensionType, serverClassId, associationClassName
+                            );
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Enumerates Shell extensions.
+        /// </summary>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns></returns>
+        public static IEnumerable<ShellExtensionRegistrationInfo> EnumerateRegisteredExtensions(
+            RegistrationScope registrationScope)
+        {
+            //  Go through all classes.
+            using (var classesKey = OpenClassesRootKey(registrationScope))
+            {
+                return classesKey.GetSubKeyNames()
+                    .Where(cn => !cn.StartsWith("{"))
+                    .SelectMany(className => EnumerateRegisteredAssociations(className, registrationScope))
+                    .GroupBy(info => info.ServerClassId)
+                    .Select(group =>
+                    {
+                        var isApproved = IsExtensionApproved(group.Key, registrationScope);
+
+                        return new ShellExtensionRegistrationInfo(group.Key, isApproved, group);
+                    });
+            }
+        }
+
+        /// <summary>
+        ///     Get shell extension registration information.
+        /// </summary>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns></returns>
+        public static ShellExtensionRegistrationInfo GetExtensionRegistrationInfo<T>(
+            RegistrationScope registrationScope) where T : SharpShellServer
+        {
+            return GetExtensionRegistrationInfo(SharpShellServerInfo.FromServer<T>(), registrationScope);
+        }
+
+        /// <summary>
+        ///     Get shell extension registration information.
+        /// </summary>
+        /// <param name="serverInfo">The managed server info</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns></returns>
+        public static ShellExtensionRegistrationInfo GetExtensionRegistrationInfo(
+            SharpShellServerInfo serverInfo,
+            RegistrationScope registrationScope)
+        {
+            IEnumerable<ShellExtensionRegisteredAssociationInfo> associations =
+                new ShellExtensionRegisteredAssociationInfo[0];
+
+            if (serverInfo.ShellExtensionType != ShellExtensionType.None)
+            {
+                //  Get the association data.
+                var associationClassNames =
+                    registrationScope == RegistrationScope.OS64Bit
+                        ? serverInfo.AssociationClassNamesX64
+                        : serverInfo.AssociationClassNamesX32;
+
+                if (associationClassNames.Any())
+                {
+                    associations = associationClassNames.SelectMany(className =>
+                        EnumerateRegisteredAssociations(className, registrationScope,
+                                new[] {serverInfo.ShellExtensionType})
+                            .Where(info => info.ServerClassId == serverInfo.ClassId)
+                    );
+                }
+            }
+
+            var isApproved = IsExtensionApproved(serverInfo.ClassId, registrationScope);
+
+            return new ShellExtensionRegistrationInfo(serverInfo.ClassId, isApproved, associations);
+        }
+
+        /// <summary>
+        ///     Get shell extension registration information.
+        /// </summary>
+        /// <param name="serverClassId">The server class id</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <returns></returns>
+        public static ShellExtensionRegistrationInfo GetExtensionRegistrationInfo(
+            Guid serverClassId,
+            RegistrationScope registrationScope)
+        {
+            //  Go through all classes.
+            using (var classesKey = OpenClassesRootKey(registrationScope))
+            {
+                var associations = classesKey.GetSubKeyNames()
+                    .Where(cn => !cn.StartsWith("{"))
+                    .SelectMany(className => EnumerateRegisteredAssociations(className, registrationScope))
+                    .Where(info => info.ServerClassId == serverClassId);
+
+                var isApproved = IsExtensionApproved(serverClassId, registrationScope);
+
+                return new ShellExtensionRegistrationInfo(serverClassId, isApproved, associations);
+            }
+        }
+
+        /// <summary>
+        ///     Registers the server associations.
+        /// </summary>
+        /// <param name="serverClassId">The server's class id.</param>
+        /// <param name="extensionType">Type of the server.</param>
+        /// <param name="registrationName">Name of the server.</param>
+        /// <param name="associationClassName">The association class name.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        internal static void RegisterShellExtensionAssociation(
+            Guid serverClassId,
+            ShellExtensionType extensionType,
+            string registrationName,
+            string associationClassName,
+            RegistrationScope registrationScope)
+        {
+            using (var classesKey = OpenClassesRootKey(registrationScope))
+            {
+                var attribute = HandlerSubKeyAttribute.GetHandlerSubKeyAttribute(extensionType);
+
+                if (attribute == null)
+                {
+                    throw new ArgumentException("This server type does not have a handler sub key.",
+                        nameof(extensionType));
+                }
+
+                var subKeyName = attribute.HandlerSubKey;
+
+                if (string.IsNullOrEmpty(subKeyName))
+                {
+                    return;
+                }
+
+                var associationKeyPath = $"{associationClassName}\\ShellEx\\{subKeyName}";
+
+                if (attribute.AllowMultipleEntries)
+                {
+                    associationKeyPath += $"\\{registrationName}";
+                }
+
+                //  Create the server key.
+                using (var serverKey = classesKey.CreateSubKey(associationKeyPath))
+                {
+                    //  Set the server class id.
+                    serverKey?.SetValue(null, serverClassId.ToRegistryString());
+                }
+
+                //  If we're a shell icon handler, we must also set the default icon.
+                if (extensionType == ShellExtensionType.ShellIconHandler)
+                {
+                    SetIconHandlerDefaultIcon(registrationScope, associationClassName);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Sets the icon handler default icon, enabling an icon handler extension.
+        /// </summary>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="associationClassName">Association class name.</param>
+        private static void SetIconHandlerDefaultIcon(RegistrationScope registrationScope, string associationClassName)
+        {
+            using (var classesKey = OpenClassesRootKey(registrationScope))
+            {
+                //  Open the class.
+                using (var classKey = classesKey.OpenSubKey(associationClassName))
+                {
+                    //  Check we have the class.
+                    if (classKey == null)
+                    {
+                        throw new InvalidOperationException("Cannot open class " + associationClassName);
+                    }
+
+                    //  Open the default icon.
+                    using (var defaultIconKey = classKey.OpenSubKey(
+                        RegistryDefaultIconKeyName,
+                        RegistryKeyPermissionCheck.ReadWriteSubTree,
+                        RegistryRights.ReadKey | RegistryRights.WriteKey
+                    ))
+                    {
+                        //  Check we have the key.
+                        if (defaultIconKey == null)
+                        {
+                            // if not, we create the key.
+                            var tempDefaultIconKey = classesKey.CreateSubKey(
+                                associationClassName + @"\" + RegistryDefaultIconKeyName,
+                                RegistryKeyPermissionCheck.ReadWriteSubTree
+                            );
+                            tempDefaultIconKey.SetValue(null, "%1");
                         }
                         else
                         {
-                            //  Do we have the single subkey?
-                            var handlerKeyPath = string.Format("{0}\\ShellEx\\{1}", className, handlerSubkey.HandlerSubkey);
-                            using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
-                            {
-                                if (handlerSubKey != null)
-                                {
-                                    var guidVal = handlerSubKey.GetValue(null, string.Empty).ToString();
+                            //  Get the default icon.
+                            var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
 
-                                    Guid guid;
-                                    if (Guid.TryParse(guidVal, out guid) == false)
-                                        continue;
-                                    Trace.WriteLine(string.Format("{0} has {1} guid {2}", className, 
-                                        shellExtensionType.ToString(), guid));
-                                    
-                                    //  If we do not have a shell extension info for this extension, create one.
-                                    if (!shellExtensionsGuidMap.ContainsKey(guid))
-                                    {
-                                        shellExtensionsGuidMap[guid] = new ShellExtensionRegistrationInfo
-                                        {
-                                            ShellExtensionType = shellExtensionType,
-                                            ServerCLSID = guid,
-                                        };
-                                    }
-
-                                    //  Add the class association.
-                                    shellExtensionsGuidMap[guid].classRegistrations.Add(new ClassRegistration(className));
-                                }
-                            }
+                            //  Save the default icon.
+                            defaultIconKey.SetValue(RegistryDefaultIconBackupValueName, defaultIcon);
+                            defaultIconKey.SetValue(null, "%1");
                         }
                     }
                 }
             }
-
-            return shellExtensionsGuidMap.Values;
         }
 
         /// <summary>
-        /// Gets the server registration info.
+        ///     Un-sets the icon handler default icon sharp shell value, restoring the backed up value.
         /// </summary>
-        /// <param name="server">The server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <returns>
-        /// The ServerRegistrationInfo if the server is registered, otherwise false.
-        /// </returns>
-        public static ShellExtensionRegistrationInfo GetServerRegistrationInfo(ISharpShellServer server, RegistrationType registrationType)
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="associationClassName">Name of the class.</param>
+        private static void UnsetIconHandlerDefaultIcon(
+            RegistrationScope registrationScope,
+            string associationClassName)
         {
-            //  Call the main function.
-            return GetServerRegistrationInfo(server.ServerClsid, registrationType);
-        }
-
-        /// <summary>
-        /// Gets the server registration info.
-        /// </summary>
-        /// <param name="serverCLSID">The server CLSID.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <returns>
-        /// The ServerRegistrationInfo if the server is registered, otherwise false.
-        /// </returns>
-        public static ShellExtensionRegistrationInfo GetServerRegistrationInfo(Guid serverCLSID, RegistrationType registrationType)
-        {
-            //  We can very quickly check to see if the server is approved.
-            bool serverApproved = IsExtensionApproved(serverCLSID, registrationType);
-
-            //  Open the classes.
-            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadSubTree))
+            using (var classesKey = OpenClassesRootKey(registrationScope))
             {
-                //  Do we have a subkey for the server?
-                using (var serverClassKey = classesKey.OpenSubKey(serverCLSID.ToRegistryString()))
+                //  Open the class.
+                using (var classKey = classesKey.OpenSubKey(associationClassName))
                 {
-                    //  If there's no subkey, the server isn't registered.
-                    if (serverClassKey == null)
-                        return null;
-
-                    //  Do we have an InProc32 server?
-                    using(var inproc32ServerKey = serverClassKey.OpenSubKey(KeyName_InProc32))
+                    //  Check we have the class.
+                    if (classKey == null)
                     {
-                        //  If we do, we can return the server info for an inproc 32 server.
-                        if (inproc32ServerKey != null)
+                        throw new InvalidOperationException("Cannot open class " + associationClassName);
+                    }
+
+                    //  Open the default icon.
+                    using (var defaultIconKey = classKey.OpenSubKey(
+                        RegistryDefaultIconKeyName,
+                        RegistryKeyPermissionCheck.ReadWriteSubTree,
+                        RegistryRights.ReadKey | RegistryRights.WriteKey
+                    ))
+                    {
+                        //  Check we have the key.
+                        if (defaultIconKey == null)
                         {
-                            //  Get the default value.
-                            var defaultValue = GetValueOrEmpty(inproc32ServerKey, null);
-
-                            //  If we default value is null or empty, we've got a partially registered server.
-                            if (string.IsNullOrEmpty(defaultValue))
-                                return new ShellExtensionRegistrationInfo(ServerRegistationType.PartiallyRegistered, serverCLSID);
-
-                            //  Get the threading model.
-                            var threadingModel = GetValueOrEmpty(inproc32ServerKey, KeyName_ThreadingModel);
-
-                            //  Is it a .NET server?
-                            if (defaultValue == KeyValue_NetFrameworkServer)
-                            {
-                                //  We've got a .NET server. We should have one subkey, with the assembly version.
-                                var subkeyName = inproc32ServerKey.GetSubKeyNames().FirstOrDefault();
-
-                                //  If we have no subkey name, we've got a partially registered server.
-                                if (subkeyName == null)
-                                    return new ShellExtensionRegistrationInfo(ServerRegistationType.PartiallyRegistered, serverCLSID);
-
-                                //  Otherwise we now have the assembly version.
-                                var assemblyVersion = subkeyName;
-
-                                //  Open the assembly subkey.
-                                using (var assemblySubkey = inproc32ServerKey.OpenSubKey(assemblyVersion))
-                                {
-                                    //  If we can't open the key, we've got a problem.
-                                    if (assemblySubkey == null)
-                                        throw new InvalidOperationException("Can't open the details of the server.");
-
-                                    //  Read the managed server details.
-                                    var assembly = GetValueOrEmpty(assemblySubkey, KeyName_Assembly);
-                                    var @class = GetValueOrEmpty(assemblySubkey, KeyName_Class);
-                                    var runtimeVersion = GetValueOrEmpty(assemblySubkey, KeyName_RuntimeVersion);
-                                    var codeBase = assemblySubkey.GetValue(KeyName_CodeBase, null);
-
-                                    //  Return the server info.
-                                    return new ShellExtensionRegistrationInfo(ServerRegistationType.ManagedInProc32, serverCLSID)
-                                               {
-                                                   ThreadingModel = threadingModel,
-                                                   Assembly = assembly,
-                                                   AssemblyVersion = assemblyVersion,
-                                                   Class = @class,
-                                                   RuntimeVersion = runtimeVersion,
-                                                   CodeBase = codeBase != null ? codeBase.ToString() : null,
-                                                   IsApproved = serverApproved
-                                               };
-                                }
-                            }
-
-                            //  We've got a native COM server.
-
-                            //  Return the server info.
-                            return new ShellExtensionRegistrationInfo(ServerRegistationType.NativeInProc32, serverCLSID)
-                                       {
-                                           ThreadingModel = threadingModel,
-                                           ServerPath = defaultValue,
-                                           IsApproved = serverApproved
-                                       };
-                        }
-                    }
-
-                    //  If by this point we haven't return server info, we've got a partially registered server.
-                    return new ShellExtensionRegistrationInfo(ServerRegistationType.PartiallyRegistered, serverCLSID);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the display name of the a COM server.
-        /// </summary>
-        /// <param name="classId">The class identifier.</param>
-        /// <param name="displayName">The display name.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static void SetServerDisplayName(Guid classId, string displayName, RegistrationType registrationType)
-        {
-            //  Open the classes.
-            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
-            {
-                //  Create the server key.
-                using (var serverKey = classesKey.OpenSubKey(classId.ToRegistryString(), RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue))
-                {
-                    if (serverKey == null)
-                        throw new InvalidOperationException($"Cannot open class id key {classId}");
-
-                    //  Set the display name.
-                    serverKey.SetValue(null, displayName, RegistryValueKind.String);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Registers the server associations.
-        /// </summary>
-        /// <param name="serverClsid">The server CLSID.</param>
-        /// <param name="serverType">Type of the server.</param>
-        /// <param name="serverName">Name of the server.</param>
-        /// <param name="associationAttributes">The association attributes.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        internal static void RegisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName, 
-            IEnumerable<COMServerAssociationAttribute> associationAttributes, RegistrationType registrationType)
-        {
-            //  Go through each association.
-            foreach (var associationAttribute in associationAttributes)
-            {
-                //  Get the association classes.
-                var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType, 
-                    associationAttribute.Associations, registrationType);
-
-                //  Open the classes key.
-                using (var classesKey = OpenClassesRoot(registrationType))
-                {
-                    //  For each one, create the server type key.
-                    foreach (var associationClassName in associationClassNames)
-                    {
-                        //  Create the server key.
-                        using (var serverKey = classesKey.CreateSubKey(GetKeyForServerType(associationClassName, serverType, serverName)))
-                        {
-                            //  Set the server class id.
-                            if (serverKey != null)
-                                serverKey.SetValue(null, serverClsid.ToRegistryString());
+                            throw new InvalidOperationException(
+                                "Cannot open default icon key for class " + associationClassName);
                         }
 
-                        //  If we're a shell icon handler, we must also set the defaulticon.
-                        if (serverType == ServerType.ShellIconHandler)
-                            SetIconHandlerDefaultIcon(classesKey, associationClassName);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Sets the icon handler default icon, enabling an icon handler extension.
-        /// </summary>
-        /// <param name="classesKey">The classes key.</param>
-        /// <param name="className">Name of the class.</param>
-        private static void SetIconHandlerDefaultIcon(IRegistryKey classesKey, string className)
-        {
-            //  Open the class.
-            using (var classKey = classesKey.OpenSubKey(className))
-            {
-                //  Check we have the class.
-                if(classKey == null)
-                    throw new InvalidOperationException("Cannot open class " + className);
-
-                //  Open the default icon.
-                using (var defaultIconKey = classKey.OpenSubKey(KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey | RegistryRights.WriteKey))
-                {
-                    //  Check we have the key.
-                    if (defaultIconKey == null)
-                    {
-                        // if not, we create the key.
-                        var tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
-                        tempDefaultIconKey.SetValue(null, "%1");
-                    } 
-                    else 
-                    {
-                        //  Get the default icon.
-                        var defaultIcon = defaultIconKey.GetValue(null, string.Empty).ToString();
-
-                        //  Save the default icon.
-                        defaultIconKey.SetValue(ValueName_DefaultIconBackup, defaultIcon);
-                        defaultIconKey.SetValue(null, "%1");
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Unsets the icon handler default icon sharp shell value, restoring the backed up value.
-        /// </summary>
-        /// <param name="classesKey">The classes key.</param>
-        /// <param name="className">Name of the class.</param>
-        private static void UnsetIconHandlerDefaultIcon(IRegistryKey classesKey, string className)
-        {
-            //  Open the class.
-            using (var classKey = classesKey.OpenSubKey(className))
-            {
-                //  Check we have the class.
-                if (classKey == null)
-                    throw new InvalidOperationException("Cannot open class " + className);
-
-                //  Open the default icon.
-                using (var defaultIconKey = classKey.OpenSubKey(KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.ReadKey | RegistryRights.WriteKey))
-                {
-                    //  Check we have the key.
-                    if (defaultIconKey == null)
-                        throw new InvalidOperationException("Cannot open default icon key for class " + className);
-
-                    //  Do we have a backup default icon to restore?
-                    if (defaultIconKey.GetValueNames().Any(vm => vm == ValueName_DefaultIconBackup))
-                    {
                         //  Get the backup default icon.
-                        var backupDefaultIcon = defaultIconKey.GetValue(ValueName_DefaultIconBackup, string.Empty).ToString();
+                        var backupDefaultIcon = defaultIconKey.GetValue(RegistryDefaultIconBackupValueName)?.ToString();
 
-                        //  Save the default icon, delete the backup.
-                        defaultIconKey.SetValue(null, backupDefaultIcon);
-                        defaultIconKey.DeleteValue(ValueName_DefaultIconBackup);
+                        if (backupDefaultIcon != null)
+                        {
+                            //  Save the default icon, delete the backup.
+                            defaultIconKey.SetValue(null, backupDefaultIcon);
+                            defaultIconKey.DeleteValue(RegistryDefaultIconBackupValueName);
+                        }
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Unregisters the server associations.
+        ///     Un-registers the server associations.
         /// </summary>
-        /// <param name="serverType">Type of the server.</param>
-        /// <param name="serverName">Name of the server.</param>
-        /// <param name="associationAttributes">The association attributes.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        private static void UnregisterServerAssociations(ServerType serverType, string serverName,
-            IEnumerable<COMServerAssociationAttribute> associationAttributes, RegistrationType registrationType)
-        {
-            //  Go through each association attribute.
-            foreach (var associationAttribute in associationAttributes)
-            {
-                //  Get the assocation classes.
-                var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType,
-                    associationAttribute.Associations, registrationType);
-
-                UnregisterServerAssociations(serverType, serverName, associationClassNames, registrationType);
-            }
-        }
-
-        /// <summary>
-        /// Unregisters the server associations.
-        /// </summary>
-        /// <param name="serverType">Type of the server.</param>
-        /// <param name="serverName">Name of the server.</param>
-        /// <param name="associationClassNames">The association class names.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        private static void UnregisterServerAssociations(
-            ServerType serverType,
-            string serverName,
-            IEnumerable<string> associationClassNames,
-            RegistrationType registrationType)
+        /// <param name="extensionType">Type of the shell extension type.</param>
+        /// <param name="registrationName">Name of the server.</param>
+        /// <param name="associationClassName">The association class name.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        private static void UnregisterShellExtensionAssociation(
+            ShellExtensionType extensionType,
+            string registrationName,
+            string associationClassName,
+            RegistrationScope registrationScope)
         {
             //  Open the classes key...
-            using (var classesKey = OpenClassesRoot(registrationType))
+            using (var classesKey = OpenClassesRootKey(registrationScope))
             {
-                //  ...then go through each association class.
-                foreach (var associationClassName in associationClassNames)
+                var attribute = HandlerSubKeyAttribute.GetHandlerSubKeyAttribute(extensionType);
+
+                if (attribute == null)
                 {
-                    //  Get the key for the association.
-                    var associationKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
+                    throw new ArgumentException("This server type does not have a handler sub key.",
+                        nameof(extensionType));
+                }
 
-                    //  Delete it if it exists.
-                    classesKey.DeleteSubKeyTree(associationKeyPath, false);
+                var subKeyName = attribute.HandlerSubKey;
 
-                    //  If we're a shell icon handler, we must also unset the defaulticon.
-                    if (serverType == ServerType.ShellIconHandler)
-                        UnsetIconHandlerDefaultIcon(classesKey, associationClassName);
+                if (string.IsNullOrEmpty(subKeyName))
+                {
+                    return;
+                }
+
+                //  Get the key for the association.
+                var associationKeyPath = $"{associationClassName}\\ShellEx\\{subKeyName}";
+
+                if (attribute.AllowMultipleEntries)
+                {
+                    associationKeyPath += $"\\{registrationName}";
+                }
+
+
+                //  Delete it if it exists.
+                classesKey.DeleteSubKeyTree(associationKeyPath, false);
+
+                //  If we're a shell icon handler, we must also unset the default icon.
+                if (extensionType == ShellExtensionType.ShellIconHandler)
+                {
+                    UnsetIconHandlerDefaultIcon(registrationScope, associationClassName);
                 }
             }
         }
 
         /// <summary>
-        /// Creates the class names for associations.
+        ///     Creates the class names for associations.
         /// </summary>
         /// <param name="associationType">Type of the association.</param>
         /// <param name="associations">The associations.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <returns>
-        /// The class names for the associations.
+        ///     The class names for the associations.
         /// </returns>
-        private static IEnumerable<string> CreateClassNamesForAssociations(AssociationType associationType, 
-            IEnumerable<string> associations, RegistrationType registrationType)
+        internal static IEnumerable<string> GetAssociationClassNames(
+            AssociationType associationType,
+            IEnumerable<string> associations,
+            RegistrationScope registrationScope)
         {
             //  Switch on the association type.
             switch (associationType)
             {
-                //  We are handling the obsolete file extension type for backwards compatiblity.
+                //  We are handling the obsolete file extension type for backwards compatibility.
 #pragma warning disable 618
                 case AssociationType.FileExtension:
 #pragma warning restore 618
@@ -725,9 +1034,11 @@ namespace SharpShell.ServerRegistration
                 case AssociationType.ClassOfExtension:
 
                     //  Open the classes sub key and get or create each file extension classes.
-                    using (var classesKey = OpenClassesRoot(registrationType))
+                    using (var classesKey = OpenClassesRootKey(registrationScope))
                     {
-                        return associations.Select(extension => FileExtensionClass.Get(classesKey, extension, true)).ToArray();
+                        return associations
+                            .Select(extension => FileExtensionClass.Get(classesKey, extension, true))
+                            .ToArray();
                     }
 
                 case AssociationType.Class:
@@ -738,250 +1049,108 @@ namespace SharpShell.ServerRegistration
                 default:
 
                     //  If this is a predefined shell object, return the class for it.
-                    var className = PredefinedShellObjectAttribute.GetClassName(associationType);
-                    if (className != null) return new[] {className};
-                    
+                    var className = PredefinedShellObjectAttribute.GetPredefinedShellObjectAttribute(associationType)
+                        ?.ClassName;
+
+                    if (className != null)
+                    {
+                        return new[] {className};
+                    }
+
                     //  It's not a type we know how to deal with, so bail.
-                    throw new InvalidOperationException($@"Unable to determine associations for AssociationType '{associationType}'");
+                    throw new InvalidOperationException(
+                        $@"Unable to determine associations for AssociationType '{associationType}'");
             }
         }
 
         /// <summary>
-        /// Gets the type of the key for server.
+        ///     Approves an extension.
         /// </summary>
-        /// <param name="className">Name of the class.</param>
-        /// <param name="serverType">Type of the server.</param>
-        /// <param name="serverName">Name of the server.</param>
-        /// <returns></returns>
-        private static string GetKeyForServerType(string className, ServerType serverType, string serverName)
-        {
-            //  Create the server type name.
-            switch (serverType)
-            {
-                case ServerType.ShellContextMenu:
-                    
-                    //  Create the key name for a context menu.
-                    return string.Format(@"{0}\ShellEx\ContextMenuHandlers\{1}", className, serverName);
-
-                case ServerType.ShellPropertySheet:
-
-                    //  Create the key name for a property sheet.
-                    return string.Format(@"{0}\ShellEx\PropertySheetHandlers\{1}", className, serverName);
-
-                case ServerType.ShellIconHandler:
-
-                    //  Create the key name for an icon handler. This has no server name, 
-                    //  as there cannot be multiple icon handlers.
-                    return string.Format(@"{0}\ShellEx\IconHandler", className);
-
-                case ServerType.ShellInfoTipHandler:
-
-                    //  Create the key name for an info tip handler. This has no server name, 
-                    //  as there cannot be multiple info tip handlers.
-                    return string.Format(@"{0}\ShellEx\{{00021500-0000-0000-C000-000000000046}}", className);
-
-                case ServerType.ShellDropHandler:
-
-                    //  Create the key name for a drop handler. This has no server name, 
-                    //  as there cannot be multiple drop handlers.
-                    return string.Format(@"{0}\ShellEx\DropHandler", className);
-
-                case ServerType.ShellPreviewHander:
-                    
-                    //  Create the key name for a preview handler. This has no server name, 
-                    //  as there cannot be multiple preview handlers.
-                    return string.Format(@"{0}\ShellEx\{{8895b1c6-b41f-4c1c-a562-0d564250836f}}", className);
-
-                case ServerType.ShellDataHandler:
-                    
-                    //  Create the key name for a data handler. This has no server name, 
-                    //  as there cannot be multiple data handlers.
-                    return string.Format(@"{0}\ShellEx\DataHandler", className);
-
-                case ServerType.ShellThumbnailHandler:
-
-                    //  Create the key name for a thumbnail handler. This has no server name, 
-                    //  as there cannot be multiple data handlers.
-                    return string.Format(@"{0}\ShellEx\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
-
-                case ServerType.ShellNamespaceExtension:
-
-                    //  We don't have a key for shell namespace extensions.
-                    return null;
-                    
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(serverType));
-            }
-        }
-
-        /// <summary>
-        /// Opens the classes key.
-        /// </summary>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <param name="permissions">The permissions.</param>
-        /// <returns></returns>
-        private static IRegistryKey OpenClassesKey(RegistrationType registrationType, RegistryKeyPermissionCheck permissions)
-        {
-            //  Get the classes base key.
-            var classesBaseKey = OpenClassesRoot(registrationType);
-            
-            //  Open classes.
-            var classesKey = classesBaseKey.OpenSubKey(KeyName_Classes, permissions, RegistryRights.QueryValues | RegistryRights.ReadPermissions | RegistryRights.EnumerateSubKeys);
-            if (classesKey == null)
-                throw new InvalidOperationException("Cannot open classes.");
-
-            return classesKey;
-        }
-
-        /// <summary>
-        /// Opens the classes root.
-        /// </summary>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <returns>The classes root key.</returns>
-        private static IRegistryKey OpenClassesRoot(RegistrationType registrationType)
-        {
-            //  Get the registry.
-            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
-
-            //  Get the classes base key.
-            var classesBaseKey = registrationType == RegistrationType.OS64Bit
-                ? registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
-                registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
-
-            //  Return the classes key.
-            return classesBaseKey;
-        }
-
-        /// <summary>
-        /// Gets the value or empty.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="valueName">Name of the value.</param>
-        /// <returns></returns>
-        private static string GetValueOrEmpty(IRegistryKey key, string valueName)
-        {
-            object value = key.GetValue(valueName);
-            if (value == null)
-                return string.Empty;
-            return value.ToString();
-        }
-
-        /// <summary>
-        /// Approves an extension.
-        /// </summary>
-        /// <param name="server">The server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
-        private static void ApproveExtension(ISharpShellServer server, RegistrationType registrationType)
+        /// <param name="serverInfo">The server info.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <exception cref="InvalidOperationException">Failed to open the Approved Extensions key.</exception>
+        private static void ApproveExtension(SharpShellServerInfo serverInfo, RegistrationScope registrationScope)
         {
             //  Open the approved extensions key.
-            using(var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, 
-                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
-                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree))
+            using (var approvedKey = RegistryKey.OpenBaseKey(
+                RegistryHive.LocalMachine,
+                registrationScope == RegistrationScope.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32
+            ).OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",
+                RegistryKeyPermissionCheck.ReadWriteSubTree
+            ))
             {
                 //  If we can't open the key, we're going to have problems.
-                if(approvedKey == null)
+                if (approvedKey == null)
+                {
                     throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+                }
 
                 //  Create an entry for the server.
-                approvedKey.SetValue(server.ServerClsid.ToRegistryString(), server.DisplayName);
+                approvedKey.SetValue(serverInfo.ClassId.ToRegistryString(), serverInfo.DisplayName);
             }
         }
 
         /// <summary>
-        /// Determines whether an extension is approved.
+        ///     Determines whether an extension is approved.
         /// </summary>
-        /// <param name="serverClsid">The server CLSID.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="serverClassId">The server class id.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <returns>
-        ///   <c>true</c> if the extension is approved; otherwise, <c>false</c>.
+        ///     <c>true</c> if the extension is approved; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
-        private static bool IsExtensionApproved(Guid serverClsid, RegistrationType registrationType)
+        /// <exception cref="InvalidOperationException">Failed to open the Approved Extensions key.</exception>
+        private static bool IsExtensionApproved(Guid serverClassId, RegistrationScope registrationScope)
         {
             //  Open the approved extensions key.
-            using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
-                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
-                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadSubTree))
+            using (var approvedKey = RegistryKey.OpenBaseKey(
+                RegistryHive.LocalMachine,
+                registrationScope == RegistrationScope.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32
+            ).OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",
+                RegistryKeyPermissionCheck.ReadSubTree
+            ))
             {
                 //  If we can't open the key, we're going to have problems.
                 if (approvedKey == null)
+                {
                     throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+                }
 
-                return approvedKey.GetValueNames().Any(vn => vn.Equals(serverClsid.ToRegistryString(), StringComparison.OrdinalIgnoreCase));
+                return approvedKey.GetValueNames().Any(valueName =>
+                    valueName.Equals(serverClassId.ToRegistryString(), StringComparison.OrdinalIgnoreCase)
+                );
             }
         }
 
         /// <summary>
-        /// Unapproves an extension.
+        ///     UnApproves an extension.
         /// </summary>
         /// <param name="serverClassId">The server's class id.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        /// <exception cref="System.InvalidOperationException">Failed to open the Approved Extensions key.</exception>
-        private static void UnapproveExtension(Guid serverClassId, RegistrationType registrationType)
+        /// <param name="registrationScope">Type of the registration.</param>
+        /// <exception cref="InvalidOperationException">Failed to open the Approved Extensions key.</exception>
+        private static void UnApproveExtension(Guid serverClassId, RegistrationScope registrationScope)
         {
             //  Open the approved extensions key.
-            using (var approvedKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
-                registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32)
-                .OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", RegistryKeyPermissionCheck.ReadWriteSubTree))
+            using (var approvedKey = RegistryKey.OpenBaseKey(
+                RegistryHive.LocalMachine,
+                registrationScope == RegistrationScope.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32
+            ).OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved",
+                RegistryKeyPermissionCheck.ReadWriteSubTree
+            ))
             {
                 //  If we can't open the key, we're going to have problems.
                 if (approvedKey == null)
+                {
                     throw new InvalidOperationException("Failed to open the Approved Extensions key.");
+                }
 
                 //  Delete the value if it's there.
                 approvedKey.DeleteValue(serverClassId.ToRegistryString(), false);
             }
         }
 
-        /// <summary>
-        /// The classes key name.
-        /// </summary>
-        private const string KeyName_Classes = @"CLSID";
-
-        /// <summary>
-        /// The InProc32 key name.
-        /// </summary>
-        private const string KeyName_InProc32 = @"InprocServer32";
-
-        /// <summary>
-        /// The value for the net framework servers.
-        /// </summary>
-        private const string KeyValue_NetFrameworkServer = @"mscoree.dll";
-
-        /// <summary>
-        /// The threading model key name.
-        /// </summary>
-        private const string KeyName_ThreadingModel = @"ThreadingModel";
-
-        /// <summary>
-        /// THe assembly key name.
-        /// </summary>
-        private const string KeyName_Assembly = @"Assembly";
-
-        /// <summary>
-        /// The class key name.
-        /// </summary>
-        private const string KeyName_Class = @"Class";
-
-        /// <summary>
-        /// The runtime version key name.
-        /// </summary>
-        private const string KeyName_RuntimeVersion = @"RuntimeVersion";
-
-        /// <summary>
-        /// The codebase keyname.
-        /// </summary>
-        private const string KeyName_CodeBase = @"CodeBase";
-
-        /// <summary>
-        /// The default icon keyname.
-        /// </summary>
-        private const string KeyName_DefaultIcon = @"DefaultIcon";
-
-        /// <summary>
-        /// The default icon backup value name.
-        /// </summary>
-        private const string ValueName_DefaultIconBackup = @"SharpShell_Backup_DefaultIcon";
+        #endregion
     }
 }

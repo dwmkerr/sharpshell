@@ -212,15 +212,15 @@ namespace SharpShell.SharpIconOverlayHandler
         /// The custom registration function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         [CustomRegisterFunction]
-        internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
+        internal static void CustomRegisterFunction(Type serverType, RegistrationScope registrationScope)
         {
-            var keyName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(serverType);
-            Logging.Log($"IconOverlayHandler: Preparing to register {registrationType} Icon Overlay Handler for type '{serverType.Name}' with key name '{keyName}'");
+            var keyName = RegistrationNameAttribute.GetRegistrationNameAttribute(serverType);
+            Logging.Log($"IconOverlayHandler: Preparing to register {registrationScope} Icon Overlay Handler for type '{serverType.Name}' with key name '{keyName}'");
 
             //  Open the local machine.
-            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
+            using (var localMachineBaseKey = registrationScope == RegistrationScope.OS64Bit
                 ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
                   RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             {
@@ -241,7 +241,7 @@ namespace SharpShell.SharpIconOverlayHandler
                                                   "being registered, it will not be used by Windows Explorer.");
 
                     //  Create the overlay key.
-                    using (var overlayKey = overlayIdentifiers.CreateSubKey(keyName))
+                    using (var overlayKey = overlayIdentifiers.CreateSubKey(keyName.RegistrationName))
                     {
                         //  If we don't have the overlay key, we've got a problem.
                         if(overlayKey == null)
@@ -258,15 +258,15 @@ namespace SharpShell.SharpIconOverlayHandler
         /// Customs the unregister function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         [CustomUnregisterFunction]
-        internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
+        internal static void CustomUnregisterFunction(Type serverType, RegistrationScope registrationScope)
         {
-            var keyName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(serverType);
-            Logging.Log($"IconOverlayHandler: Preparing to unregister {registrationType} Icon Overlay Handler for type '{serverType.Name}' with key name '{keyName}'");
+            var keyName = RegistrationNameAttribute.GetRegistrationNameAttribute(serverType);
+            Logging.Log($"IconOverlayHandler: Preparing to unregister {registrationScope} Icon Overlay Handler for type '{serverType.Name}' with key name '{keyName}'");
 
             //  Open the local machine.
-            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
+            using (var localMachineBaseKey = registrationScope == RegistrationScope.OS64Bit
                 ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
                   RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             {
@@ -280,8 +280,8 @@ namespace SharpShell.SharpIconOverlayHandler
                         throw new InvalidOperationException("Cannot open the ShellIconOverlayIdentifiers key.");
 
                     //  Delete the overlay key.
-                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == keyName))
-                        overlayIdentifiers.DeleteSubKey(keyName);
+                    if (overlayIdentifiers.GetSubKeyNames().Any(skn => skn == keyName.RegistrationName))
+                        overlayIdentifiers.DeleteSubKey(keyName.RegistrationName);
                 }
             }
         }

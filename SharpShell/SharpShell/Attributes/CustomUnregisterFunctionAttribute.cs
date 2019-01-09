@@ -12,19 +12,21 @@ namespace SharpShell.Attributes
     public class CustomUnregisterFunctionAttribute : Attribute
     {
         /// <summary>
-        /// Executes the CustomUnregisterFunction if it exists for a type.
+        /// Gets the name of CustomUnregisterFunction if it exists for a type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        public static void ExecuteIfExists(Type type, RegistrationType registrationType)
+        public static string GetMethodName(Type type)
         {
             //  Does the type have the attribute?
-            var methodWithAttribute = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
-                .FirstOrDefault(m => m.GetCustomAttributes(typeof (CustomUnregisterFunctionAttribute), false).Any());
-
-            //  Do we have a method? If so, invoke it.
-            if (methodWithAttribute != null)
-                methodWithAttribute.Invoke(null, new object[] { type, registrationType });
+            return type
+                .GetMethods(
+                    BindingFlags.Static |
+                    BindingFlags.NonPublic |
+                    BindingFlags.Public |
+                    BindingFlags.FlattenHierarchy
+                ).FirstOrDefault(m =>
+                    ServerSandBox.GetAttributesSafe(m, nameof(CustomUnregisterFunctionAttribute), false).Any()
+                )?.Name;
         }
     }
 }

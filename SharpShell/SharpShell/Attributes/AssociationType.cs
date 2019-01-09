@@ -15,7 +15,7 @@ namespace SharpShell.Attributes
         /// <summary>
         /// No server association.
         /// </summary>
-        None,
+        None = 0,
 
         /// <summary>
         /// Create an association to a specific file extension.
@@ -23,64 +23,64 @@ namespace SharpShell.Attributes
         /// but on the class of the extension.
         /// </summary>
         [Obsolete("FileExtension is deprecated. Use 'ClassOfExtension' instead.")]
-        FileExtension,
+        FileExtension = 1,
 
         /// <summary>
         /// Create an association to the class of a specific file extension.
         /// </summary>
-        ClassOfExtension,
+        ClassOfExtension = 2,
 
         /// <summary>
         /// Create an association to a class.
         /// </summary>
-        Class,
+        Class = 3,
 
         /// <summary>
         /// Create an association to the 'all files' class.
         /// </summary>
         [PredefinedShellObject(@"*")]
-        AllFiles,
+        AllFiles = 4,
 
         /// <summary>
         /// Create an association to the 'all files and folders' class.
         /// </summary>
         [PredefinedShellObject(@"AllFileSystemObjects")]
-        AllFilesAndFolders,
+        AllFilesAndFolders = 5,
 
         /// <summary>
         /// Create an association to the 'directory' class, i.e. file-system folders.
         /// </summary>
         [PredefinedShellObject(@"Directory")]
-        Directory,
+        Directory = 6,
 
         /// <summary>
         /// Create an association to the background of folders and the desktop
         /// </summary>
         [PredefinedShellObject(@"Directory\Background")]
-        DirectoryBackground,
+        DirectoryBackground = 7,
 
         /// <summary>
         /// Create an association to the background of the desktop (Windows 7 and higher)
         /// </summary>
         [PredefinedShellObject(@"DesktopBackground")]
-        DesktopBackground,
+        DesktopBackground = 8,
 
         /// <summary>
         /// Create an association to the drive class.
         /// </summary>
         [PredefinedShellObject(@"Drive")]
-        Drive,
+        Drive = 9,
 
         /// <summary>
         /// Create an association to the 'folder' class, i.e. all containers.
         /// </summary>
         [PredefinedShellObject(@"Folder")]
-        Folder,
+        Folder = 10,
 
         /// <summary>
         /// Create an association to the unknown files class.
         /// </summary>
         [PredefinedShellObject(@"Unknown")]
-        UnknownFiles
+        UnknownFiles = 11
     }
 }

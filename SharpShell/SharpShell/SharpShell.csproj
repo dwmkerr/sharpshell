@@ -58,13 +58,8 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
@@ -208,6 +203,11 @@
     <Compile Include="Registry\WindowsRegistryKey.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
     <Compile Include="ServerRegistration\FileExtensionClass.cs" />
+    <Compile Include="ServerRegistration\ManagedAssemblyInfo.cs" />
+    <Compile Include="ServerRegistration\SharpShellServerInfo.cs" />
+    <Compile Include="ServerRegistration\ServerSandBox.cs" />
+    <Compile Include="ServerRegistration\ServerInstallationInfo.cs" />
+    <Compile Include="ServerRegistration\ShellExtensionRegistrationInfo.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
     <Compile Include="ServiceRegistry\ServiceRegistry.cs" />
@@ -302,9 +302,9 @@
     <Compile Include="NativeBridge\NativeBridge.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interop\CLIPFORMAT.cs" />
-    <Compile Include="ServerRegistration\RegistrationType.cs" />
-    <Compile Include="ServerRegistration\ServerRegistationType.cs" />
-    <Compile Include="ServerRegistration\ShellExtensionRegistrationInfo.cs" />
+    <Compile Include="ServerRegistration\RegistrationScope.cs" />
+    <Compile Include="ServerRegistration\ServerInstallationType.cs" />
+    <Compile Include="ServerRegistration\ShellExtensionRegisteredAssociationInfo.cs" />
     <Compile Include="ServerRegistration\ServerRegistrationManager.cs" />
     <Compile Include="ServerType.cs" />
     <Compile Include="SharpContextMenu\SharpContextMenu.cs" />

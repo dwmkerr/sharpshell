@@ -34,9 +34,9 @@ namespace SharpShell
 
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
-            ServerRegistrationManager.RegisterServerType(
-                type,
-                Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit
+            ServerRegistrationManager.RegisterAndApproveServer(
+                new SharpShellServerInfo(type), 
+                Environment.Is64BitOperatingSystem ? RegistrationScope.OS64Bit : RegistrationScope.OS32Bit
             );
         }
 
@@ -49,13 +49,13 @@ namespace SharpShell
         [ComUnregisterFunction]
         internal static void Unregister(Type type)
         {
-            Logging.Log("Unregistering server for type " + type.Name);
+            Logging.Log("Un-registering server for type " + type.Name);
 
             //  Unregister the type, use the operating system architecture to determine
             //  what registration type to unregister.
-            ServerRegistrationManager.UnregisterServerType(
-                type,
-                Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit
+            ServerRegistrationManager.UnregisterAndUnApproveServer(
+                new SharpShellServerInfo(type),
+                Environment.Is64BitOperatingSystem ? RegistrationScope.OS64Bit : RegistrationScope.OS32Bit
             );
         }
         
@@ -88,7 +88,10 @@ namespace SharpShell
         /// <value>
         /// The name of the server.
         /// </value>
-        public string DisplayName => DisplayNameAttribute.GetDisplayNameOrTypeName(GetType());
+        public string DisplayName
+        {
+            get => DisplayNameAttribute.GetDisplayNameAttribute(GetType())?.DisplayName ?? GetType().Name;
+        }
 
         /// <summary>
         /// Gets the type of the server.
@@ -96,11 +99,17 @@ namespace SharpShell
         /// <value>
         /// The type of the server.
         /// </value>
-        public ServerType ServerType => ServerTypeAttribute.GetServerType(GetType());
+        public ServerType ServerType
+        {
+            get => ServerTypeAttribute.GetServerTypeAttribute(GetType())?.ServerType ?? ServerType.None;
+        }
 
         /// <summary>
-        /// Gets the server CLSID.
+        /// Gets the server class id.
         /// </summary>
-        public Guid ServerClsid => GetType().GUID;
+        public Guid ServerClassId
+        {
+            get => SharpShellServerInfo.GetServerClassId(GetType());
+        }
     }
 }

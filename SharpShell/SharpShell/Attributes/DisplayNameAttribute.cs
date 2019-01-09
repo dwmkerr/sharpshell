@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using SharpShell.ServerRegistration;
 
 namespace SharpShell.Attributes
 {
@@ -9,6 +8,7 @@ namespace SharpShell.Attributes
     /// The name attribute can be used to give a class display name.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
+    [Serializable]
     public class DisplayNameAttribute : Attribute
     {
         /// <summary>
@@ -28,9 +28,7 @@ namespace SharpShell.Attributes
         /// <returns>The display name of the type, if defined.</returns>
         public static string GetDisplayName(Type type)
         {
-            var attribute = type.GetCustomAttributes(typeof (DisplayNameAttribute), true)
-                .OfType<DisplayNameAttribute>().FirstOrDefault();
-            return attribute != null ? attribute.DisplayName : null;
+            return GetDisplayNameAttribute(type)?.DisplayName;
         }
 
         /// <summary>
@@ -43,12 +41,32 @@ namespace SharpShell.Attributes
         {
             //  Return the display name if it is set, otherwise the type name.
             var displayName = GetDisplayName(type);
+
             return string.IsNullOrEmpty(displayName) ? type.Name : displayName;
+        }
+
+        public static DisplayNameAttribute GetDisplayNameAttribute(Type type)
+        {
+            var attribute = ServerSandBox.GetAttributesSafe(type, nameof(DisplayNameAttribute), true).FirstOrDefault();
+
+            if (attribute == null)
+            {
+                return null;
+            }
+
+            var displayName = ServerSandBox.GetStringPropertySafe(attribute, nameof(DisplayName));
+
+            if (displayName != null)
+            {
+                return new DisplayNameAttribute(displayName);
+            }
+
+            return null;
         }
 
         /// <summary>
         /// Gets the display name.
         /// </summary>
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; }
     }
 }

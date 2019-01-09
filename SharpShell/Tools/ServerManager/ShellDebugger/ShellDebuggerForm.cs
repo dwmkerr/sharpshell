@@ -173,11 +173,11 @@ namespace ServerManager.ShellDebugger
             }
 
             // Check that we have a new pidl
-            if (Shell32.ILIsEqual(pidlTmp, currentAbsolutePidl))
-            {
-                Shell32.ILFree(pidlTmp);
-                return WinError.S_OK;
-            }
+            //if (Shell32.ILIsEqual(pidlTmp, currentAbsolutePidl))
+            //{
+            //    Shell32.ILFree(pidlTmp);
+            //    return WinError.S_OK;
+            //}
 
             currentFolder = folderTmp;
 
@@ -330,6 +330,18 @@ namespace ServerManager.ShellDebugger
         int ICommDlgBrowser.IncludeObject(IntPtr ppshv, IntPtr pidl)
         {
             return WinError.S_OK;
+        }
+
+        private void splitContainerTreeAndDetails_Panel2_Resize(object sender, EventArgs e)
+        {
+            var selectedNode = shellTreeView.SelectedNode;
+
+            if (selectedNode != null)
+            {
+                var shellItem = shellTreeView.GetShellItem(selectedNode);
+                //  Browse to the selected item if it is a folder.
+                ((IShellBrowser) this).BrowseObject(shellItem.PIDL, SBSP.SBSP_SAMEBROWSER | SBSP.SBSP_ABSOLUTE);
+            }
         }
     }
 }

@@ -49,14 +49,14 @@ namespace ShellExtensionManager.ShellExtensions
         /// <summary>
         /// The ClassRegistrations observable collection.
         /// </summary>
-        private readonly ObservableCollection<ClassRegistration> ClassRegistrationsProperty =
-          new ObservableCollection<ClassRegistration>();
+        private readonly ObservableCollection<ShellExtensionRegisteredAssociationInfo> ClassRegistrationsProperty =
+          new ObservableCollection<ShellExtensionRegisteredAssociationInfo>();
 
         /// <summary>
         /// Gets the ClassRegistrations observable collection.
         /// </summary>
         /// <value>The ClassRegistrations observable collection.</value>
-        public ObservableCollection<ClassRegistration> ClassRegistrations
+        public ObservableCollection<ShellExtensionRegisteredAssociationInfo> ClassRegistrations
         {
             get { return ClassRegistrationsProperty; }
         }

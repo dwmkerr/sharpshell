@@ -48,7 +48,7 @@ namespace ServerRegistrationManager
             }
 
             //  Get the architecture.
-            var registrationType = Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit;
+            var registrationType = Environment.Is64BitOperatingSystem ? RegistrationScope.OS64Bit : RegistrationScope.OS32Bit;
 
             //  Get the verb, target and parameters.
             var verb = args[0];
@@ -58,11 +58,11 @@ namespace ServerRegistrationManager
             //Allow user to override registrationType with -os32 or -os64
             if (parameters.Any(p => p.Equals(ParameterOS32, StringComparison.InvariantCultureIgnoreCase)))
             {
-                registrationType = RegistrationType.OS32Bit;
+                registrationType = RegistrationScope.OS32Bit;
             }
             else if (parameters.Any(p => p.Equals(ParameterOS64, StringComparison.InvariantCultureIgnoreCase)))
             {
-                registrationType = RegistrationType.OS64Bit;
+                registrationType = RegistrationScope.OS64Bit;
             }
 
             var viaRegAsm = parameters.Any(p => p.Equals(ParameterRegAsm, StringComparison.InvariantCultureIgnoreCase));
@@ -91,9 +91,9 @@ namespace ServerRegistrationManager
         /// Installs a SharpShell server at the specified path.
         /// </summary>
         /// <param name="path">The path to the SharpShell server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <param name="codeBase">if set to <c>true</c> install from codebase rather than GAC.</param>
-        private void InstallServer(string path, RegistrationType registrationType, bool codeBase)
+        private void InstallServer(string path, RegistrationScope registrationScope, bool codeBase)
         {
             //  Validate the path.
             if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
@@ -106,22 +106,20 @@ namespace ServerRegistrationManager
             try
             {
                 //  Load any servers from the assembly.
-                var servers = SharpShell.ServerRegistration.ServerRegistrationManager.EnumerateFromFile(path);
+                var servers = SharpShellServerInfo.FromExternalAssemblyFile(path);
 
                 foreach (var server in servers)
                 {
-                    var name = server.GetType().Name;
                     try
                     {
-                        name = server.DisplayName;
-                        SharpShell.ServerRegistration.ServerRegistrationManager.InstallServer(server, registrationType, codeBase);
-                        SharpShell.ServerRegistration.ServerRegistrationManager.RegisterServer(server, registrationType);
+                        SharpShell.ServerRegistration.ServerRegistrationManager.InstallServer(server, registrationScope, codeBase);
+                        SharpShell.ServerRegistration.ServerRegistrationManager.RegisterAndApproveServer(server, registrationScope);
                     }
                     catch (Exception e)
                     {
                         success = false;
                         outputService.WriteError(e.ToString());
-                        outputService.WriteError($"Failed to install and register a server. [{name}]", true);
+                        outputService.WriteError($"Failed to install and register a server. [{server.DisplayName}]", true);
                     }
                 }
             }
@@ -145,9 +143,9 @@ namespace ServerRegistrationManager
         /// Installs a SharpShell server at the specified path via RegAsm.
         /// </summary>
         /// <param name="path">The path to the SharpShell server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <param name="codeBase">if set to <c>true</c> install from codebase rather than GAC.</param>
-        private void InstallServerViaRegAsm(string path, RegistrationType registrationType, bool codeBase)
+        private void InstallServerViaRegAsm(string path, RegistrationScope registrationScope, bool codeBase)
         {
             //  Validate the path.
             if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
@@ -159,7 +157,7 @@ namespace ServerRegistrationManager
             var regAsm = new RegAsm();
 
             var success =
-                registrationType == RegistrationType.OS32Bit
+                registrationScope == RegistrationScope.OS32Bit
                     ? regAsm.Register32(path, codeBase)
                     : regAsm.Register64(path, codeBase);
             
@@ -179,8 +177,8 @@ namespace ServerRegistrationManager
         /// Uninstalls a SharpShell server located at 'path'.
         /// </summary>
         /// <param name="path">The path to the SharpShell server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        private void UninstallServer(string path, RegistrationType registrationType)
+        /// <param name="registrationScope">Type of the registration.</param>
+        private void UninstallServer(string path, RegistrationScope registrationScope)
         {
             //  Validate the path.
             if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
@@ -193,22 +191,20 @@ namespace ServerRegistrationManager
             try
             {
                 //  Load any servers from the assembly.
-                var servers = SharpShell.ServerRegistration.ServerRegistrationManager.EnumerateFromFile(path);
+                var servers = SharpShellServerInfo.FromExternalAssemblyFile(path);
 
                 foreach (var server in servers)
                 {
-                    var name = server.GetType().Name;
                     try
                     {
-                        name = server.DisplayName;
-                        SharpShell.ServerRegistration.ServerRegistrationManager.UninstallServer(server, registrationType);
-                        SharpShell.ServerRegistration.ServerRegistrationManager.UnregisterServer(server, registrationType);
+                        SharpShell.ServerRegistration.ServerRegistrationManager.UninstallServer(server, registrationScope);
+                        SharpShell.ServerRegistration.ServerRegistrationManager.UnregisterAndUnApproveServer(server, registrationScope);
                     }
                     catch (Exception e)
                     {
                         success = false;
                         outputService.WriteError(e.ToString());
-                        outputService.WriteError($"Failed to uninstall and unregister a server. [{name}]", true);
+                        outputService.WriteError($"Failed to uninstall and unregister a server. [{server.DisplayName}]", true);
                     }
                 }
             }
@@ -232,8 +228,8 @@ namespace ServerRegistrationManager
         /// Uninstalls a SharpShell server located at 'path' vis RegAsm.
         /// </summary>
         /// <param name="path">The path to the SharpShell server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        private void UninstallServerViaRegAsm(string path, RegistrationType registrationType)
+        /// <param name="registrationScope">Type of the registration.</param>
+        private void UninstallServerViaRegAsm(string path, RegistrationScope registrationScope)
         {
             //  Validate the path.
             if (string.IsNullOrWhiteSpace(path) || File.Exists(path) == false)
@@ -245,7 +241,7 @@ namespace ServerRegistrationManager
             var regAsm = new RegAsm();
 
             var success =
-                registrationType == RegistrationType.OS32Bit
+                registrationScope == RegistrationScope.OS32Bit
                     ? regAsm.Unregister32(path)
                     : regAsm.Unregister64(path);
             

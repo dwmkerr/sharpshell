@@ -19,16 +19,21 @@ namespace SharpShell.Attributes
         }
 
         /// <summary>
-        /// Gets the class name for a type with a <see cref="PredefinedShellObjectAttribute"/> set, or null if none is set.
+        /// Gets the attribute for a enum type field with a <see cref="PredefinedShellObjectAttribute"/> set, or null if none is set.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns></returns>
-        public static string GetClassName(Enum value)
+        public static PredefinedShellObjectAttribute GetPredefinedShellObjectAttribute(Enum value)
         {
             var enumType = value.GetType();
             var enumValueInfo = enumType.GetField(Enum.GetName(enumType, value));
-            var predefinedShellObject = enumValueInfo.GetCustomAttributes(false).OfType<PredefinedShellObjectAttribute>().FirstOrDefault();
-            return predefinedShellObject?.ClassName;
+
+            var predefinedShellObject = enumValueInfo
+                .GetCustomAttributes(false)
+                .OfType<PredefinedShellObjectAttribute>()
+                .FirstOrDefault();
+
+            return predefinedShellObject;
         }
 
         /// <summary>

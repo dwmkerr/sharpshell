@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.EnterpriseServices;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
@@ -397,7 +396,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// The custom registration function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         /// <exception cref="System.InvalidOperationException">
         /// Unable to register a SharpNamespaceExtension as it is missing it's junction point definition.
         /// or
@@ -410,7 +409,7 @@ namespace SharpShell.SharpNamespaceExtension
         /// An exception occured creating the ShellFolder key.
         /// </exception>
         [CustomRegisterFunction]
-        internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
+        internal static void CustomRegisterFunction(Type serverType, RegistrationScope registrationScope)
         {
             //  Get the junction point.
             var junctionPoint = NamespaceExtensionJunctionPointAttribute.GetJunctionPoint(serverType);
@@ -437,7 +436,7 @@ namespace SharpShell.SharpNamespaceExtension
             var hive = junctionPoint.Availablity == NamespaceExtensionAvailability.CurrentUser
                 ? RegistryHive.CurrentUser
                 : RegistryHive.LocalMachine;
-            var view = registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32;
+            var view = registrationScope == RegistrationScope.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32;
 
             //  Now open the base key.
             using (var baseKey = RegistryKey.OpenBaseKey(hive, view))
@@ -468,7 +467,7 @@ namespace SharpShell.SharpNamespaceExtension
             //  adapting it here.
 
             //  Open the classes root.
-            using (var classesBaseKey = registrationType == RegistrationType.OS64Bit
+            using (var classesBaseKey = registrationScope == RegistrationScope.OS64Bit
                 ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
                   RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32))
             {
@@ -524,9 +523,9 @@ namespace SharpShell.SharpNamespaceExtension
         /// Customs the unregister function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         [CustomUnregisterFunction]
-        internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
+        internal static void CustomUnregisterFunction(Type serverType, RegistrationScope registrationScope)
         {
             //  Get the junction point.
             var junctionPoint = NamespaceExtensionJunctionPointAttribute.GetJunctionPoint(serverType);
@@ -540,7 +539,7 @@ namespace SharpShell.SharpNamespaceExtension
             var hive = junctionPoint.Availablity == NamespaceExtensionAvailability.CurrentUser
                 ? RegistryHive.CurrentUser
                 : RegistryHive.LocalMachine;
-            var view = registrationType == RegistrationType.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32;
+            var view = registrationScope == RegistrationScope.OS64Bit ? RegistryView.Registry64 : RegistryView.Registry32;
 
             //  Now open the base key.
             using (var baseKey = RegistryKey.OpenBaseKey(hive, view))

@@ -28,9 +28,9 @@ namespace SharpShell.Diagnostics
             var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
 
             using (var localMachine = registry.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default))
-            using (var alwaysUnloadDLLKey = localMachine.OpenSubKey(KeyName_AlwaysUnloadDll))
+            using (var alwaysUnloadDllKey = localMachine.OpenSubKey(KeyName_AlwaysUnloadDll))
             {
-                return alwaysUnloadDLLKey != null;
+                return alwaysUnloadDllKey != null;
             }   
         }
 

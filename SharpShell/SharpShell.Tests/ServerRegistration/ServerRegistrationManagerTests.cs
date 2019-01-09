@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
 using Microsoft.Win32;
 using NUnit.Framework;
-using NUnit.Framework.Internal.Execution;
 using SharpShell.Attributes;
-using SharpShell.Extensions;
 using SharpShell.Registry;
 using SharpShell.ServerRegistration;
 
@@ -49,11 +44,18 @@ namespace SharpShell.Tests.ServerRegistration
 
             //  Register a context menu with an *.exe association.
             var clsid = new Guid("00000000-1111-2222-3333-444444444444");
-            var serverType = ServerType.ShellContextMenu;
+            var extensionType = ShellExtensionType.ShellContextMenu;
             var serverName = "TestContextMenu";
-            var associations = new[] { new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".exe") };
-            var registrationType = RegistrationType.OS64Bit;
-            ServerRegistrationManager.RegisterServerAssociations(clsid, serverType, serverName, associations, registrationType);
+            var registrationType = RegistrationScope.OS64Bit;
+            var associationClassNames =
+                new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".exe").GetAssociationClassNames(
+                    registrationType);
+
+            foreach (var associationClassName in associationClassNames)
+            {
+                ServerRegistrationManager.RegisterShellExtensionAssociation(clsid, extensionType, serverName, associationClassName, registrationType);
+            }
+
 
             //  Assert we have the new extention.
             var print = _registry.Print(RegistryView.Registry64);
@@ -83,11 +85,17 @@ namespace SharpShell.Tests.ServerRegistration
 
             //  Register a file association. Given that this registry is empty, it a new program id and then set an association.
             var clsid = new Guid("00000000-1111-2222-3333-444444444444");
-            var serverType = ServerType.ShellContextMenu;
+            var extensionType = ShellExtensionType.ShellContextMenu;
             var serverName = "TestContextMenu";
-            var associations = new[] { new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".myfile") };
-            var registrationType = RegistrationType.OS64Bit;
-            ServerRegistrationManager.RegisterServerAssociations(clsid, serverType, serverName, associations, registrationType);
+            var registrationType = RegistrationScope.OS64Bit;
+            var associationClassNames =
+                new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".myfile").GetAssociationClassNames(
+                    registrationType);
+
+            foreach (var associationClassName in associationClassNames)
+            {
+                ServerRegistrationManager.RegisterShellExtensionAssociation(clsid, extensionType, serverName, associationClassName, registrationType);
+            }
 
             //  Assert we have the new extention.
             var print = _registry.Print(RegistryView.Registry64);
@@ -127,11 +135,18 @@ namespace SharpShell.Tests.ServerRegistration
             {
                 //  Register a server.
                 var clsid = new Guid("00000000-1111-2222-3333-444444444444");
-                var serverType = ServerType.ShellContextMenu;
+                var extensionType = ShellExtensionType.ShellContextMenu;
                 var serverName = "TestContextMenu";
-                var associations = new[] { new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".myfile") };
-                var registrationType = RegistrationType.OS64Bit;
-                ServerRegistrationManager.RegisterServerAssociations(clsid, serverType, serverName, associations, registrationType);
+                var registrationType = RegistrationScope.OS64Bit;
+                var associationClassNames =
+                    new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".myfile").GetAssociationClassNames(
+                        registrationType);
+
+                foreach (var associationClassName in associationClassNames)
+                {
+                    ServerRegistrationManager.RegisterShellExtensionAssociation(clsid, extensionType, serverName, associationClassName, registrationType);
+                }
+
                 Assert.Fail(@"Server registration should fail");
             }
             catch (Exception exception)
@@ -150,11 +165,17 @@ namespace SharpShell.Tests.ServerRegistration
         {
             //  Register a file association. Given that this registry is empty, it a new program id and then set an association.
             var clsid = new Guid("00000000-1111-2222-3333-444444444444");
-            var serverType = ServerType.ShellContextMenu;
+            var extensionType = ShellExtensionType.ShellContextMenu;
             var serverName = "TestContextMenu";
-            var associations = new[] {new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".myfile")};
-            var registrationType = RegistrationType.OS64Bit;
-            ServerRegistrationManager.RegisterServerAssociations(clsid, serverType, serverName, associations, registrationType);
+            var registrationType = RegistrationScope.OS64Bit;
+            var associationClassNames =
+                new COMServerAssociationAttribute(AssociationType.ClassOfExtension, ".myfile").GetAssociationClassNames(
+                    registrationType);
+
+            foreach (var associationClassName in associationClassNames)
+            {
+                ServerRegistrationManager.RegisterShellExtensionAssociation(clsid, extensionType, serverName, associationClassName, registrationType);
+            }
 
             //  Assert we have the new extention.
             var print = _registry.Print(RegistryView.Registry64);
