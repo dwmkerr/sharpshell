@@ -241,6 +241,7 @@ Send me a message to add a project to this list:
  - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
  - [SharePoint Shell Extensions by Archon Gnosis](https://sse.technology/)
  - [.NET Assembly Info Shell Extension by ElektroStudios](https://github.com/ElektroStudios/.NET-Assembly-Info-ShellEx)
+ - [Modern UI BreadCrumbs WPF Control by Dirkster99](https://github.com/Dirkster99/bm)
 
 ## Thanks
 
