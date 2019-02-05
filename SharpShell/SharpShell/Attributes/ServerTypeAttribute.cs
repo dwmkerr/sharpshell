@@ -9,7 +9,7 @@ namespace SharpShell.Attributes
     /// classes derived from the decorated class will be able to use
     /// the COMServerAssociationAttribute without any extra configuration.
     /// </summary>
-    internal class ServerTypeAttribute : Attribute
+    public class ServerTypeAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerTypeAttribute"/> class.
