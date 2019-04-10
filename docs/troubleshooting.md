@@ -17,7 +17,7 @@ Shell thumbnail handlers have some specific things to be aware of:
 
 **Shell Icon Overlay Handlers**
 
-If you are not seeing your Shell Icon Overlay handlers after registering, double check which other icon handlers are registered, if you have more than a few then yours may not show up - the system only supports about fifteen.
+If you are not seeing your Shell Icon Overlay handlers after registering, double check which other icon handlers are registered, if you have more than a few then yours may not show up - the shell only supports about ten or so.
 
 Overlays are registered at:
 
