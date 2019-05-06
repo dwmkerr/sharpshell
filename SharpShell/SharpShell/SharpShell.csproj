@@ -69,6 +69,8 @@
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\AssociationType.cs" />
+    <Compile Include="Attributes\PredefinedShellObjectAttribute.cs" />
+    <Compile Include="Attributes\RegistrationNameAttribute.cs" />
     <Compile Include="Attributes\COMServerAssociationAttribute.cs" />
     <Compile Include="Attributes\CustomUnregisterFunctionAttribute.cs" />
     <Compile Include="Attributes\CustomRegisterFunctionAttribute.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Extensions\GuidExtensions.cs" />
     <Compile Include="Extensions\IDataObjectExtensions.cs" />
     <Compile Include="Helpers\ComStream.cs" />
+    <Compile Include="Helpers\RegAsm.cs" />
     <Compile Include="Helpers\Win32Helper.cs" />
     <Compile Include="InitializeWithStreamServer.cs" />
     <Compile Include="Interop\ASSOCCLASS.cs" />
@@ -100,6 +103,7 @@
     <Compile Include="Interop\DEFCONTEXTMENU.cs" />
     <Compile Include="Interop\DESKBANDINFO.cs" />
     <Compile Include="Interop\DRAWITEMSTRUCT.cs" />
+    <Compile Include="Interop\Gdi32.cs" />
     <Compile Include="Interop\GILInFlags.cs" />
     <Compile Include="Interop\ICatRegister.cs" />
     <Compile Include="Interop\ICommDlgBrowser.cs" />
@@ -194,9 +198,17 @@
     <Compile Include="Pidl\IdList.cs" />
     <Compile Include="Pidl\PidlManager.cs" />
     <Compile Include="Pidl\ShellId.cs" />
+    <Compile Include="Registry\InMemoryRegistry.cs" />
+    <Compile Include="Registry\InMemoryRegistryKey.cs" />
+    <Compile Include="Registry\IRegistry.cs" />
+    <Compile Include="Registry\IRegistryKey.cs" />
+    <Compile Include="Registry\WindowsRegistry.cs" />
+    <Compile Include="Registry\WindowsRegistryKey.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
+    <Compile Include="ServerRegistration\FileExtensionClass.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
+    <Compile Include="ServiceRegistry\ServiceRegistry.cs" />
     <Compile Include="SharpContextMenu\InvokeCommandInfo.cs" />
     <Compile Include="SharpContextMenu\PARGB32.cs" />
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
@@ -233,7 +245,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SharpPreviewHandler\PreviewHandlerHost.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Exceptions\ServerRegistrationException.cs" />
     <Compile Include="SharpPreviewHandler\PreviewHandlerRegistrar.cs" />
@@ -319,8 +331,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)SharpShell.*" "$(SolutionDir)..\Build\Core"
-copy "$(TargetPath)" "$(SolutionDir)..\Build\Samples"</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(SolutionDir)artifacts\build\SharpShell\" /F /R /Y /I</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>copy "$(SolutionDir)artifacts\build\SharpShellNativeBridge\*.*" "$(ProjectDir)NativeBridge</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

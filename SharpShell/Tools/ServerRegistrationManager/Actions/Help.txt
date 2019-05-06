@@ -5,6 +5,8 @@ To install a server:
     srm install <path to SharpShell server> <parameters>
 Parameters:
     -codebase: Optional. Installs a server from a file location, not the GAC.
+	-os32: Optional. Forces a 32 bit installation.
+	-os64: Optional. Forces a 64 bit installation.
 
 To uninstall a server:
     srm uninstall <path to SharpShell server>

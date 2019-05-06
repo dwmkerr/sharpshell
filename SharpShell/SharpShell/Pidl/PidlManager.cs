@@ -22,6 +22,11 @@ namespace SharpShell.Pidl
     /// </remarks>
     public static class PidlManager
     {
+        /// <summary>
+        /// Decodes the specified pidl.
+        /// </summary>
+        /// <param name="pidl">The pidl.</param>
+        /// <returns>A set of Shell IDs.</returns>
         public static List<ShellId> Decode(IntPtr pidl)
         {
             //  Pidl is a pointer to an idlist, an idlist is a set of shitemid
@@ -46,6 +51,10 @@ namespace SharpShell.Pidl
             return idList.Select(id => new ShellId(id)).ToList();
         }
 
+        /// <summary>
+        /// Gets the desktop idlist.
+        /// </summary>
+        /// <returns>The desktop idlist.</returns>
         public static IdList GetDesktop()
         {
             IntPtr pidl;
@@ -75,6 +84,12 @@ namespace SharpShell.Pidl
             return IdList.Create(ids);
         }
 
+        /// <summary>
+        /// Converts an array of PIDLs to an IdList array.
+        /// </summary>
+        /// <param name="apidl">The PIDL array.</param>
+        /// <param name="count">The count.</param>
+        /// <returns>An IdList array.</returns>
         public static IdList[] APidlToIdListArray(IntPtr apidl, int count)
         {
             var pidls = new IntPtr[count];
@@ -82,6 +97,11 @@ namespace SharpShell.Pidl
             return pidls.Select(PidlToIdlist).ToArray();
         }
 
+        /// <summary>
+        /// Converts an IdList to a PIDL.
+        /// </summary>
+        /// <param name="idList">The identifier list.</param>
+        /// <returns>A PIDL</returns>
         public static IntPtr IdListToPidl(IdList idList)
         {
             //  Turn the ID list into a set of raw bytes.
@@ -114,6 +134,12 @@ namespace SharpShell.Pidl
             return ptr;
         }
 
+        /// <summary>
+        /// Combines two IdLists.
+        /// </summary>
+        /// <param name="folderIdList">The folder identifier list.</param>
+        /// <param name="folderItemIdList">The folder item identifier list.</param>
+        /// <returns>A new, combined IdList.</returns>
         public static IdList Combine(IdList folderIdList, IdList folderItemIdList)
         {
             var combined = new List<ShellId>(folderIdList.Ids);
@@ -121,11 +147,20 @@ namespace SharpShell.Pidl
             return IdList.Create(combined);
         }
 
+        /// <summary>
+        /// Deletes the underlying PIDL.
+        /// </summary>
+        /// <param name="pidl">The PIDL.</param>
         public static void DeletePidl(IntPtr pidl)
         {
             Marshal.FreeCoTaskMem(pidl);
         }
 
+        /// <summary>
+        /// Takes a set of PIDLs and creates a PIDL array.
+        /// </summary>
+        /// <param name="pidls">The PIDLs.</param>
+        /// <returns>A PIDL array.</returns>
         public static IntPtr PidlsToAPidl(IntPtr[] pidls)
         {
             var buffer = Marshal.AllocCoTaskMem(pidls.Length*IntPtr.Size);
@@ -133,6 +168,11 @@ namespace SharpShell.Pidl
             return buffer;
         }
 
+        /// <summary>
+        /// Gets the display name of the PIDL.
+        /// </summary>
+        /// <param name="pidl">The PIDL.</param>
+        /// <returns>The display name of the PIDL.</returns>
         public static string GetPidlDisplayName(IntPtr pidl)
         {
             SHFILEINFO fileInfo = new SHFILEINFO();
@@ -141,9 +181,19 @@ namespace SharpShell.Pidl
         }
     }
 
+    /// <summary>
+    /// Defines the type of an IdList, which can be relative or absolute.
+    /// </summary>
     public enum IdListType
     {
+        /// <summary>
+        /// The IdList is absolute.
+        /// </summary>
         Absolute,
+
+        /// <summary>
+        /// The IdList is relative.
+        /// </summary>
         Relative
     }
 }

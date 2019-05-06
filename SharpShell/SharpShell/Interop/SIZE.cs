@@ -18,6 +18,11 @@ namespace SharpShell.Interop
         /// </summary>
         public int cy;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SIZE"/> struct.
+        /// </summary>
+        /// <param name="cx">The width.</param>
+        /// <param name="cy">The height.</param>
         public SIZE(int cx, int cy)
         {
             this.cx = cx;

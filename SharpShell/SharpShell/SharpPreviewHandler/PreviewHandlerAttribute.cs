@@ -5,9 +5,16 @@ using System.Text;
 
 namespace SharpShell.SharpPreviewHandler
 {
+    /// <summary>
+    /// Defines metadata for Sharp Preview Handlers.
+    /// </summary>
+    /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class PreviewHandlerAttribute : Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PreviewHandlerAttribute"/> class.
+        /// </summary>
         public PreviewHandlerAttribute()
         {
             //  Set up the defaults.

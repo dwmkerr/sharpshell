@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Exceptions;
 using SharpShell.Extensions;
+using SharpShell.Registry;
 using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpPreviewHandler
@@ -143,7 +144,11 @@ namespace SharpShell.SharpPreviewHandler
         /// <param name="appId">The application identifier.</param>
         private static void CreatePrevhostApp(string appId)
         {
-            using (var appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
+            //  Get the registry service.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
+            using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+            using (var appIdsKey = classesRoot.OpenSubKey("AppID", true))
             {
                 if (appIdsKey == null)
                     throw new InvalidOperationException("An exception occured trying to open the App IDs.");
@@ -163,7 +168,11 @@ namespace SharpShell.SharpPreviewHandler
         /// <param name="appId">The application identifier.</param>
         private static void DeletePrevhostApp(string appId)
         {
-            using (var appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
+            //  Get the registry service.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
+            using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+            using (var appIdsKey = classesRoot.OpenSubKey("AppID", true))
             {
                 if (appIdsKey == null)
                     throw new InvalidOperationException("An exception occured trying to open the App IDs.");

@@ -5,13 +5,25 @@ using SharpShell.Attributes;
 using SharpShell.Components;
 using SharpShell.Interop;
 using System.Windows.Forms;
+using SharpShell.Diagnostics;
 using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpDeskBand
 {
+    /// <summary>
+    /// The SharpDeskBand class is the base class for any DeskBand shell extension.
+    /// </summary>
+    /// <seealso cref="SharpShell.SharpShellServer" />
+    /// <seealso cref="SharpShell.Interop.IDeskBand2" />
+    /// <seealso cref="SharpShell.Interop.IPersistStream" />
+    /// <seealso cref="SharpShell.Interop.IObjectWithSite" />
+    /// <seealso cref="SharpShell.Interop.IInputObject" />
     [ServerType(ServerType.ShellDeskBand)]
     public abstract class SharpDeskBand : SharpShellServer, IDeskBand2, IPersistStream, IObjectWithSite, IInputObject
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SharpDeskBand"/> class.
+        /// </summary>
         protected SharpDeskBand()
         {
             //  Log key events.
@@ -41,6 +53,12 @@ namespace SharpShell.SharpDeskBand
             //  Log key events.
             Log("IObjectWithSite.GetSite called.");
 
+            if (inputObjectSite == null)
+            {
+                ppvSite = IntPtr.Zero;
+                return WinError.E_FAIL;
+            }
+
             //  Get the IUnknown, query for the interface and return the result.
             var pUnknown = Marshal.GetIUnknownForObject(inputObjectSite);
             var result = Marshal.QueryInterface(pUnknown, ref riid, out ppvSite);
@@ -62,6 +80,7 @@ namespace SharpShell.SharpDeskBand
             //  If we have not been provided a site, the band is being removed.
             if (pUnkSite == null)
             {
+                Log("IObjectWithSite.SetSite pUnkSite == null");
                 OnBandRemoved();
                 if (lazyDeskBand.IsValueCreated)
                 {
@@ -76,6 +95,7 @@ namespace SharpShell.SharpDeskBand
             //  We've been given a site, that means we can get the site window.
             try
             {
+                Log("IObjectWithSite.SetSite try");
                 //  Get the OLE window.
                 var oleWindow = (IOleWindow)pUnkSite;
 
@@ -91,6 +111,7 @@ namespace SharpShell.SharpDeskBand
 
                 //  Set the parent.
                 User32.SetParent(band.Handle, parentWindowHandle);
+                Log("IObjectWithSite.SetSite try end");
             }
             catch(Exception exception)
             {
@@ -191,11 +212,13 @@ namespace SharpShell.SharpDeskBand
         }
         int IDeskBand2.GetWindow(out IntPtr phwnd)
         {
+            Log("IDeskBand2.GetWindow called.");
             return ((IOleWindow) this).GetWindow(out phwnd);
         }
 
         int IDeskBand.GetWindow(out IntPtr phwnd)
         {
+            Log("IDeskBand.GetWindow called.");
             return ((IOleWindow)this).GetWindow(out phwnd);
         }
 
@@ -284,19 +307,23 @@ namespace SharpShell.SharpDeskBand
         }
         int IDeskBand2.GetBandInfo(uint dwBandID, DESKBANDINFO.DBIF dwViewMode, ref DESKBANDINFO pdbi)
         {
+            Log("IDeskBand2.GetBandInfo called.");
             return ((IDeskBand)this).GetBandInfo(dwBandID, dwViewMode, ref pdbi);
         }
 
         int IOleWindow.ContextSensitiveHelp(bool fEnterMode)
         {
+            Log("IOleWindow.ContextSensitiveHelp");
             return WinError.E_NOTIMPL;
         }
         int IDeskBand.ContextSensitiveHelp(bool fEnterMode)
         {
+            Log("IDeskBand.ContextSensitiveHelp");
             return ((IOleWindow) this).ContextSensitiveHelp(fEnterMode);
         }
         int IDeskBand2.ContextSensitiveHelp(bool fEnterMode)
         {
+            Log("IDeskBand2.ContextSensitiveHelp");
             return ((IOleWindow)this).ContextSensitiveHelp(fEnterMode);
         }
 
@@ -314,8 +341,18 @@ namespace SharpShell.SharpDeskBand
             //  Return success.
             return WinError.S_OK;
         }
-        int IDeskBand.ShowDW(bool bShow) { return ((IDockingWindow)this).ShowDW(bShow); }
-        int IDeskBand2.ShowDW(bool bShow) { return ((IDockingWindow)this).ShowDW(bShow); }
+
+        int IDeskBand.ShowDW(bool bShow)
+        {
+            Log("IDeskBand.ShowDW");
+            return ((IDockingWindow)this).ShowDW(bShow);
+        }
+
+        int IDeskBand2.ShowDW(bool bShow)
+        {
+            Log("IDeskBand2.ShowDW");
+            return ((IDockingWindow)this).ShowDW(bShow);
+        }
 
         int IDockingWindow.CloseDW(uint dwReserved)
         {
@@ -329,8 +366,17 @@ namespace SharpShell.SharpDeskBand
             return WinError.S_OK;
         }
 
-        int IDeskBand.CloseDW(uint dwReserved) { return ((IDockingWindow)this).CloseDW(dwReserved); }
-        int IDeskBand2.CloseDW(uint dwReserved) { return ((IDockingWindow)this).CloseDW(dwReserved); }
+        int IDeskBand.CloseDW(uint dwReserved)
+        {
+            Log("IDeskBand.CloseDW");
+            return ((IDockingWindow)this).CloseDW(dwReserved);
+        }
+
+        int IDeskBand2.CloseDW(uint dwReserved)
+        {
+            Log("IDeskBand2.CloseDW");
+            return ((IDockingWindow)this).CloseDW(dwReserved);
+        }
 
         int IDockingWindow.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved)
         {
@@ -341,13 +387,15 @@ namespace SharpShell.SharpDeskBand
             //  should always return E_NOTIMPL.
             return WinError.E_NOTIMPL;
         }
-        int IDeskBand.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved) 
+        int IDeskBand.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved)
         {
+            Log("IDeskBand.ResizeBorderDW");
             return ((IDockingWindow) this).ResizeBorderDW(rcBorder, punkToolbarSite, fReserved);
         }
 
         int IDeskBand2.ResizeBorderDW(RECT rcBorder, IntPtr punkToolbarSite, bool fReserved)
         {
+            Log("IDeskBand2.ResizeBorderDW");
             return ((IDockingWindow)this).ResizeBorderDW(rcBorder, punkToolbarSite, fReserved);
         }
 
@@ -357,6 +405,7 @@ namespace SharpShell.SharpDeskBand
 
             //  We don't support transluceny.
             pfCanRenderComposited = true;
+            Log("IDeskBand2.CanRenderComposited Set false.");
             return WinError.S_OK;
         }
 
@@ -387,6 +436,7 @@ namespace SharpShell.SharpDeskBand
         /// </returns>
         int IInputObject.UIActivateIO(bool fActivate, ref MSG msg)
         {
+            Log("IInputObject.UIActivateIO");
             //  Set the focus to the UI if requested.
             if (fActivate)
                 lazyDeskBand.Value.Focus();
@@ -403,6 +453,7 @@ namespace SharpShell.SharpDeskBand
         /// </returns>
         int IInputObject.HasFocusIO()
         {
+            Log("IInputObject.HasFocusIO");
             return lazyDeskBand.Value.ContainsFocus ? WinError.S_OK : WinError.S_FALSE;
         }
 
@@ -415,6 +466,7 @@ namespace SharpShell.SharpDeskBand
         /// </returns>
         int IInputObject.TranslateAcceleratorIO(ref MSG msg)
         {
+            Log("IInputObject.TranslateAcceleratorIO");
             return WinError.S_OK;
         }
 
@@ -441,8 +493,17 @@ namespace SharpShell.SharpDeskBand
         [CustomRegisterFunction]
         internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
-           //   Use the category manager to register this server as a Desk Band.
-           CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            Logging.Log($"DeskBand: Preparing to register {registrationType} COM categories for type {serverType.Name}");
+
+            //   Use the category manager to register this server as a Desk Band.
+            try
+            {
+                CategoryManager.RegisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            }
+            catch (Exception exception)
+            {
+                Logging.Error($"An exception occurred to registering {registrationType} COM categories for type {serverType.Name}", exception);
+            }
         }
 
         /// <summary>
@@ -453,8 +514,17 @@ namespace SharpShell.SharpDeskBand
         [CustomUnregisterFunction]
         internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
         {
-            //   Use the category manager to unregister this server as a Desk Band.
-            CategoryManager.UnregisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            Logging.Log($"DeskBand: Preparing to unregister {registrationType} COM categories for type {serverType.Name}");
+
+            //   Use the category manager to register this server as a Desk Band.
+            try
+            {
+                CategoryManager.UnregisterComCategory(serverType.GUID, CategoryManager.CATID_DeskBand);
+            }
+            catch (Exception exception)
+            {
+                Logging.Error($"An exception occurred to registering {registrationType} COM categories for type {serverType.Name}", exception);
+            }
         }
 
         #endregion
@@ -467,6 +537,7 @@ namespace SharpShell.SharpDeskBand
         /// <returns>The minimum size of the Band UI.</returns>
         protected virtual Size GetMinimumSize()
         {
+            Log("GetMinimumSize");
             //  Get the band.
             var band = lazyDeskBand.Value;
 
@@ -482,7 +553,8 @@ namespace SharpShell.SharpDeskBand
         /// </summary>
         /// <returns>The minimum size of the Band UI.</returns>
         protected virtual Size GetMaximumSize()
-        {   
+        {
+            Log("GetMaximumSize");
             //  Get the band.
             var band = lazyDeskBand.Value;
 
@@ -496,6 +568,7 @@ namespace SharpShell.SharpDeskBand
         /// </summary>
         protected virtual void OnBandRemoved()
         {
+            Log("OnBandRemoved");
         }
 
         /// <summary>

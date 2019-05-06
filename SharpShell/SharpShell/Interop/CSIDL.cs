@@ -1,10 +1,9 @@
+#pragma warning disable 1591
 namespace SharpShell.Interop
 {
-    // ReSharper disable InconsistentNaming
-
     /// <summary>
     /// CSIDL (constant special item ID list) values provide a unique system-independent way to identify special folders used frequently by applications, but which may not have the same name or location on any given system. For example, the system folder may be "C:\Windows" on one system and "C:\Winnt" on another. These constants are defined in Shlobj.h.
-    /// </summary>v
+    /// </summary>
     public enum CSIDL
     {
         CSIDL_ADMINTOOLS = 0x0030,
@@ -70,6 +69,4 @@ namespace SharpShell.Interop
         CSIDL_TEMPLATES = 0x0015,
         CSIDL_WINDOWS = 0x0024
     }
-
-    // ReSharper restore InconsistentNaming
 }

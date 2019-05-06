@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using SharpShell.Diagnostics;
 using SharpShell.Interop;
 
@@ -17,27 +14,50 @@ namespace SharpShell.NativeBridge
     /// </summary>
     public class NativeBridge
     {
+        #region Logging Helper Functions
+
+        /// <summary>
+        /// Logs the specified message. Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        protected void Log(string message)
+        {
+            Logging.Log($"NativeBridge: {message}");
+        }
+
+        /// <summary>
+        /// Logs the specified message as an error.  Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="exception">Optional exception details.</param>
+        protected void LogError(string message, Exception exception = null)
+        {
+            Logging.Error($"NativeBridge: {message}", exception);
+        }
+
+        #endregion
+
         /// <summary>
         /// Initialises the Native Bridge.
         /// </summary>
         /// <returns>True if the initialisation succeeded, otherwise false.</returns>
         public bool Initialise()
         {
-            //  Get the manifest resource name.
-            var resouceName = GetBridgeManifestResourceName();
-
-            //  We'll now try and get the bridge library path.
-            string bridgeLibraryPath = string.Empty;
+            //  Get the manifest resource name, build a temporary path.
+            var resourceName = GetBridgeManifestResourceName();
+            var bridgeLibraryPath = Path.GetTempPath() + Guid.NewGuid() + ".dll";
+            Log($"Preparing to load '{resourceName}' into '{bridgeLibraryPath}'...");
 
             try
             {
                 //  Get the manifest resource stream.
-                using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resouceName))
+                using (var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                 {
                     //  Set the temporary path..
-                    bridgeLibraryPath = Path.GetTempPath() + Guid.NewGuid().ToString() + ".dll";
                     using (var tempStream = File.Create(bridgeLibraryPath))
                     {
+                        if (resourceStream == null)
+                            throw new InvalidOperationException($"Failed to create new empty file at '{bridgeLibraryPath}'");
                         resourceStream.CopyTo(tempStream);
                     }
                 }
@@ -45,8 +65,7 @@ namespace SharpShell.NativeBridge
             catch (Exception exception)
             {
                 //  Log the exception.
-                Logging.Error("NativeBridge: Failed to extract the bridge library. The manifest path is '" +
-                              bridgeLibraryPath + "'", exception);
+                LogError("Failed to extract the manifest resource", exception);
                 return false;
             }
 
@@ -58,18 +77,18 @@ namespace SharpShell.NativeBridge
             catch (Exception exception)
             {
                 //  Log the exception.
-                Logging.Error("NativeBridge: Exception loading the bridge library.", exception);
+                LogError("Exception during loading of the bridge library", exception);
+                return false;
             }
 
             //  If the library hasn't been loaded, log the last windows error.
             if (libraryHandle == IntPtr.Zero)
             {
-                Logging.Error("NativeBridge: Failure to load the brige library.",
-                              new Win32Exception(Marshal.GetLastWin32Error()));
+                LogError("Failure to load the bridge library", new Win32Exception(Marshal.GetLastWin32Error()));
                 return false;
             }
 
-            Logging.Log("Bridge Initialised");
+            Log("Loaded bridge successfully");
 
             //  We've successfully loaded the bridge library.
             return true;
@@ -97,7 +116,7 @@ namespace SharpShell.NativeBridge
             catch (Exception exception)
             {
                 //  Log the exception and fail.
-                Logging.Error(
+                LogError(
                     "NativeBridge: Failed to either load the proc (address is '" + procAddress.ToString("x8") +
                     "'), marshal it or call it.", exception);
                 return 0;
@@ -123,7 +142,7 @@ namespace SharpShell.NativeBridge
             catch (Exception exception)
             {
                 //  Log the exception and fail.
-                Logging.Error(
+                LogError(
                     "NativeBridge: Failed to either load the proc (address is '" + procAddress.ToString("x8") +
                     "'), marshal it or call it.", exception);
                 return IntPtr.Zero;
@@ -147,9 +166,9 @@ namespace SharpShell.NativeBridge
         private static string GetBridgeManifestResourceName()
         {
             //  Create the name of the bridge manifest.
-            return string.Format("{0}.NativeBridge.SharpShellNativeBridge{1}.dll",
-                                 Assembly.GetExecutingAssembly().GetName().Name,
-                                 Environment.Is64BitProcess ? "64" : "32");
+            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+            var bitness = Environment.Is64BitProcess ? "64" : "32";
+            return $"{assemblyName}.NativeBridge.SharpShellNativeBridge{bitness}.dll";
         }
 
         /// <summary>
@@ -173,7 +192,8 @@ namespace SharpShell.NativeBridge
         private IntPtr libraryHandle;
 
         internal void CreatePropertySheet(ref PROPSHEETHEADER psh)
-        { //  Try and cast the proc, then call it.
+        { 
+            //  Try and cast the proc, then call it.
             var procAddress = Kernel32.GetProcAddress(libraryHandle, "CreatePropertySheet");
             try
             {
@@ -184,7 +204,7 @@ namespace SharpShell.NativeBridge
             catch (Exception exception)
             {
                 //  Log the exception and fail.
-                Logging.Error(
+                LogError(
                     "NativeBridge: Failed to either load the proc (address is '" + procAddress.ToString("x8") +
                     "'), marshal it or call it.", exception);
             }

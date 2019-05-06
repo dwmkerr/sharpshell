@@ -6,6 +6,8 @@ using System.Linq;
 using System.Windows.Forms;
 using SharpShell;
 using SharpShell.SharpPropertySheet;
+using System.Diagnostics;
+using SharpShell.Diagnostics;
 
 namespace ServerManager
 {
@@ -41,8 +43,9 @@ namespace ServerManager
                     {
                         server = serverType.Value;
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Trace.TraceError($"An exception occurred loading a server: ${exception.ToString()}");
                         servers.Add(new ServerEntry
                         {
                             ServerName = "Invalid",
@@ -67,9 +70,10 @@ namespace ServerManager
 
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 //  It's almost certainly not a COM server.
+                Logging.Error("ServerManager: Failed to load SharpShell server", exception);
                 MessageBox.Show("The file '" + Path.GetFileName(path) + "' is not a SharpShell Server.", "Warning");
             }
 

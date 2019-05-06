@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -20,7 +19,7 @@ namespace SharpShell.Interop
         /// <param name="cch">The size, in characters, of the lpszFile buffer.</param>
         /// <returns>A nonzero value indicates a successful call.</returns>
         [DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        public static extern uint DragQueryFile(IntPtr hDrop, uint iFile, [Out] StringBuilder lpszFile, uint cch);
+        public static extern uint DragQueryFile(IntPtr hDrop, uint iFile, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpszFile, uint cch);
 
         /// <summary>
         /// Performs an operation on a specified file.
@@ -86,7 +85,7 @@ namespace SharpShell.Interop
         public static extern int SHGetDesktopFolder(out IShellFolder ppshf);
 
         /// <summary>
-        /// Shes the get folder location.
+        /// Deprecated. Retrieves the path of a folder as an ITEMIDLIST structure
         /// </summary>
         /// <param name="hwndOwner">Reserved.</param>
         /// <param name="nFolder">A CSIDL value that identifies the folder to be located. The folders associated with the CSIDLs might not exist on a particular system.</param>
@@ -192,7 +191,7 @@ namespace SharpShell.Interop
         /// <returns>A combination of one or more file attribute flags (FILE_ATTRIBUTE_ values as defined in Winnt.h). If uFlags does not include the SHGFI_USEFILEATTRIBUTES flag, this parameter is ignored.</returns>
         [DllImport("shell32.dll")]
         public static extern IntPtr SHGetFileInfo(IntPtr pszPath, uint dwFileAttribs, out SHFILEINFO psfi, uint cbFileInfo, SHGFI uFlags);
-       
+
         /// <summary>
         /// Retrieves an image list.
         /// </summary>
@@ -203,6 +202,14 @@ namespace SharpShell.Interop
         [DllImport("shell32.dll", EntryPoint = "#727")]
         public extern static int SHGetImageList(int iImageList, ref Guid riid, ref IImageList ppv);
 
+        /// <summary>
+        /// Retrieves a pointer to the ITEMIDLIST structure of a special folder.
+        /// </summary>
+        /// <param name="hwndOwner">Reserved.</param>
+        /// <param name="nFolder">A CSIDL value that identifies the folder of interest.</param>
+        /// <param name="ppidl">A PIDL specifying the folder's location relative to the root of the namespace (the desktop). It is the responsibility of the calling application to free the returned IDList by using CoTaskMemFree.</param>
+        /// <returns>If this function succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [Obsolete("SHGetSpecialFolderLocation is not supported and may be altered or unavailable in the future. Instead, use SHGetFolderLocation")]
         [DllImport("shell32.dll")]
         public static extern Int32 SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, ref IntPtr ppidl);
 
@@ -244,13 +251,44 @@ namespace SharpShell.Interop
         /// </summary>
         public static Int32 SHCNE_ASSOCCHANGED = 0x08000000;
 
+        /// <summary>
+        /// Guid for IID_IQueryAssociations.
+        /// </summary>
         public static Guid IID_IQueryAssociations = new Guid("{c46ca590-3c3f-11d2-bee6-0000f805ca57}");
+
+        /// <summary>
+        /// Guid for IID_IShellFolder.
+        /// </summary>
         public static Guid IID_IShellFolder = new Guid("000214E6-0000-0000-C000-000000000046");
+
+        /// <summary>
+        /// Guid for IID_IImageList.
+        /// </summary>
         public static Guid IID_IImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+
+        /// <summary>
+        /// Guid for IID_ExtractIconW.
+        /// </summary>
         public static Guid IID_ExtractIconW = new Guid("{000214FA-0000-0000-C000-000000000046}");
+
+        /// <summary>
+        /// Guid for IID_IDataObject.
+        /// </summary>
         public static Guid IID_IDataObject = new Guid("{0000010E-0000-0000-C000-000000000046}");
+
+        /// <summary>
+        /// Guid for IID_IContextMenu.
+        /// </summary>
         public static Guid IID_IContextMenu = new Guid("000214e4-0000-0000-c000-000000000046");
+
+        /// <summary>
+        /// Guid for IID_IShellBrowser.
+        /// </summary>
         public static Guid IID_IShellBrowser = new Guid("000214E2-0000-0000-C000-000000000046");
+
+        /// <summary>
+        /// Guid for IID_IFolderView.
+        /// </summary>
         public static Guid IID_IFolderView = new Guid("cde725b0-ccc9-4519-917e-325d72fab4ce");
 
     }

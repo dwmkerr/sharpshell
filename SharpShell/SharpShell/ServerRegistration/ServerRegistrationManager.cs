@@ -5,6 +5,7 @@ using System.Security.AccessControl;
 using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Extensions;
+using SharpShell.Registry;
 
 
 namespace SharpShell.ServerRegistration
@@ -174,38 +175,38 @@ namespace SharpShell.ServerRegistration
                         if (handlerSubkey.AllowMultipleEntries)
                         {
                             //  Do we have the single subkey?
-                            var handlerKeyPath = string.Format("{0}\\shellex\\{1}", className, handlerSubkey.HandlerSubkey);
+                            var handlerKeyPath = $"{className}\\ShellEx\\{handlerSubkey.HandlerSubkey}";
                             using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
                             {
-                                if (handlerSubKey != null)
+                                //  Skip empty handlers.
+                                if (handlerSubKey == null) continue;
+
+                                //  Read entries.
+                                foreach (var entry in handlerSubKey.GetSubKeyNames())
                                 {
-                                    //  Read entries.
-                                    foreach (var entry in handlerSubKey.GetSubKeyNames())
+                                    using (var entryKey = handlerSubKey.OpenSubKey(entry, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.QueryValues | RegistryRights.ReadKey))
                                     {
-                                        using (var entryKey = handlerSubKey.OpenSubKey(entry, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.QueryValues | RegistryRights.ReadKey))
+                                        var guidVal = entryKey.GetValue(null, string.Empty).ToString();
+
+                                        Guid guid;
+                                        if (Guid.TryParse(guidVal, out guid) == false)
+                                            continue;
+                                        System.Diagnostics.Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
+                                            shellExtensionType.ToString(), guid, entry));
+
+                                        //  If we do not have a shell extension info for this extension, create one.
+                                        if (!shellExtensionsGuidMap.ContainsKey(guid))
                                         {
-                                            var guidVal = entryKey.GetValue(null, string.Empty).ToString();
-
-                                            Guid guid;
-                                            if (Guid.TryParse(guidVal, out guid) == false)
-                                                continue;
-                                            System.Diagnostics.Trace.WriteLine(string.Format("{0} has {3} {1} guid {2}", className,
-                                                shellExtensionType.ToString(), guid, entry));
-
-                                            //  If we do not have a shell extension info for this extension, create one.
-                                            if (!shellExtensionsGuidMap.ContainsKey(guid))
+                                            shellExtensionsGuidMap[guid] = new ShellExtensionRegistrationInfo
                                             {
-                                                shellExtensionsGuidMap[guid] = new ShellExtensionRegistrationInfo
-                                                    {
-                                                        DisplayName = entry,
-                                                        ShellExtensionType = shellExtensionType,
-                                                        ServerCLSID = guid,
-                                                    };
-                                            }
-
-                                            //  Add the class association.
-                                            shellExtensionsGuidMap[guid].classRegistrations.Add(new ClassRegistration(className));
+                                                DisplayName = entry,
+                                                ShellExtensionType = shellExtensionType,
+                                                ServerCLSID = guid,
+                                            };
                                         }
+
+                                        //  Add the class association.
+                                        shellExtensionsGuidMap[guid].classRegistrations.Add(new ClassRegistration(className));
                                     }
                                 }
                             }
@@ -213,7 +214,7 @@ namespace SharpShell.ServerRegistration
                         else
                         {
                             //  Do we have the single subkey?
-                            var handlerKeyPath = string.Format("{0}\\shellex\\{1}", className, handlerSubkey.HandlerSubkey);
+                            var handlerKeyPath = string.Format("{0}\\ShellEx\\{1}", className, handlerSubkey.HandlerSubkey);
                             using (var handlerSubKey = classes.OpenSubKey(handlerKeyPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey | RegistryRights.QueryValues))
                             {
                                 if (handlerSubKey != null)
@@ -360,27 +361,25 @@ namespace SharpShell.ServerRegistration
         }
 
         /// <summary>
-        /// Gets the class for an extension.
+        /// Sets the display name of the a COM server.
         /// </summary>
-        /// <param name="extension">The extension.</param>
-        /// <returns>The class for the extension.</returns>
-        public static string GetClassForExtension(string extension)
+        /// <param name="classId">The class identifier.</param>
+        /// <param name="displayName">The display name.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static void SetServerDisplayName(Guid classId, string displayName, RegistrationType registrationType)
         {
-            //  Make sure the extension starts with a dot.
-            if(extension.StartsWith(".") == false)
-                extension = "." + extension;
-
-            using (var classesKey = OpenClassesRoot(Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit))
+            //  Open the classes.
+            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
             {
-                //  Try and get the extension key.
-                using (var extensionKey = classesKey.OpenSubKey(extension))
+                //  Create the server key.
+                using (var serverKey = classesKey.OpenSubKey(classId.ToRegistryString(), RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue))
                 {
-                    //  If we don't have it, we have no server.
-                    if (extensionKey == null)
-                        return null;
+                    if (serverKey == null)
+                        throw new InvalidOperationException($"Cannot open class id key {classId}");
 
-                    //  Otherwise, we need the default value to get the class.
-                    return extensionKey.GetValue(null, string.Empty).ToString();
+                    //  Set the display name.
+                    serverKey.SetValue(null, displayName, RegistryValueKind.String);
                 }
             }
         }
@@ -399,7 +398,7 @@ namespace SharpShell.ServerRegistration
             //  Go through each association.
             foreach (var associationAttribute in associationAttributes)
             {
-                //  Get the assocation classes.
+                //  Get the association classes.
                 var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType, 
                     associationAttribute.Associations, registrationType);
 
@@ -430,7 +429,7 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="classesKey">The classes key.</param>
         /// <param name="className">Name of the class.</param>
-        private static void SetIconHandlerDefaultIcon(RegistryKey classesKey, string className)
+        private static void SetIconHandlerDefaultIcon(IRegistryKey classesKey, string className)
         {
             //  Open the class.
             using (var classKey = classesKey.OpenSubKey(className))
@@ -446,7 +445,7 @@ namespace SharpShell.ServerRegistration
                     if (defaultIconKey == null)
                     {
                         // if not, we create the key.
-                        RegistryKey tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        var tempDefaultIconKey = classesKey.CreateSubKey(className + @"\" + KeyName_DefaultIcon, RegistryKeyPermissionCheck.ReadWriteSubTree);
                         tempDefaultIconKey.SetValue(null, "%1");
                     } 
                     else 
@@ -467,7 +466,7 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="classesKey">The classes key.</param>
         /// <param name="className">Name of the class.</param>
-        private static void UnsetIconHandlerDefaultIcon(RegistryKey classesKey, string className)
+        private static void UnsetIconHandlerDefaultIcon(IRegistryKey classesKey, string className)
         {
             //  Open the class.
             using (var classKey = classesKey.OpenSubKey(className))
@@ -515,23 +514,17 @@ namespace SharpShell.ServerRegistration
                 var associationClassNames = CreateClassNamesForAssociations(associationAttribute.AssociationType,
                     associationAttribute.Associations, registrationType);
 
-                //  Open the classes key.
+                //  Open the classes key...
                 using (var classesKey = OpenClassesRoot(registrationType))
                 {
-                    //  For each one, create the server type key.
+                    //  ...then go through each association class.
                     foreach (var associationClassName in associationClassNames)
                     {
                         //  Get the key for the association.
                         var associationKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
 
-                        //  Does it exist?
-                        bool exists;
-                        using (var associationKey = classesKey.OpenSubKey(associationKeyPath))
-                            exists = associationKey != null;
-
-                        //  If it does, delete it.
-                        if (exists)
-                            Registry.ClassesRoot.DeleteSubKeyTree(associationKeyPath);
+                        //  Delete it if it exists.
+                        classesKey.DeleteSubKeyTree(associationKeyPath, false);
 
                         //  If we're a shell icon handler, we must also unset the defaulticon.
                         if (serverType == ServerType.ShellIconHandler)
@@ -556,47 +549,20 @@ namespace SharpShell.ServerRegistration
             //  Switch on the association type.
             switch (associationType)
             {
+                //  We are handling the obsolete file extension type for backwards compatiblity.
+#pragma warning disable 618
                 case AssociationType.FileExtension:
+#pragma warning restore 618
 
                     //  We're dealing with file extensions only, so we can return them directly.
                     return associations;
 
                 case AssociationType.ClassOfExtension:
-                    
-                    //  Open the classes sub key.
+
+                    //  Open the classes sub key and get or create each file extension classes.
                     using (var classesKey = OpenClassesRoot(registrationType))
                     {
-                        //  The file type classes.
-                        var fileTypeClasses = new List<string>();
-
-                        //  We've got extensions, but we need the classes for them.
-                        foreach (var fileExtension in associations)
-                        {
-                            //  Open the file type key.
-                            using (var fileTypeKey = classesKey.OpenSubKey(fileExtension))
-                            {
-                                //  If the file type key is null, create it. There's no class, so just associate
-                                //  with the extension.
-                                if (fileTypeKey == null)
-                                {
-                                    classesKey.CreateSubKey(fileExtension);
-                                    fileTypeClasses.Add(fileExtension);
-                                    continue;
-                                }
-
-                                //  Get the default value, this should be the file type class.
-                                var fileTypeClass = fileTypeKey.GetValue(null) as string;
-
-                                //  If we have a file type class, use that for the association. Otherwise,
-                                //  just use the file extension.
-                                fileTypeClasses.Add(string.IsNullOrEmpty(fileTypeClass)
-                                    ? fileExtension
-                                    : fileTypeClass);
-                            }
-                        }
-
-                        //  Return the file type classes.
-                        return fileTypeClasses;
+                        return associations.Select(extension => FileExtensionClass.Get(classesKey, extension, true)).ToArray();
                     }
 
                 case AssociationType.Class:
@@ -604,30 +570,14 @@ namespace SharpShell.ServerRegistration
                     //  We're dealing with classes only, so we can return them directly.
                     return associations;
 
-                case AssociationType.AllFiles:
-
-                    //  Return the all files class.
-                    return new [] { SpecialClass_AllFiles };
-
-                case AssociationType.Directory:
-
-                    //  Return the directory class.
-                    return new[] { SpecialClass_Directory };
-
-                case AssociationType.Drive:
-
-                    //  Return the directory class.
-                    return new[] { SpecialClass_Drive };
-
-                case AssociationType.UnknownFiles:
-
-                    //  Return the directory class.
-                    return new[] { SpecialClass_UnknownFiles };
-
                 default:
 
-                    //  Take a best guess, return the associations.
-                    return associations;
+                    //  If this is a predefined shell object, return the class for it.
+                    var className = PredefinedShellObjectAttribute.GetClassName(associationType);
+                    if (className != null) return new[] {className};
+                    
+                    //  It's not a type we know how to deal with, so bail.
+                    throw new InvalidOperationException($@"Unable to determine associations for AssociationType '{associationType}'");
             }
         }
 
@@ -646,48 +596,48 @@ namespace SharpShell.ServerRegistration
                 case ServerType.ShellContextMenu:
                     
                     //  Create the key name for a context menu.
-                    return string.Format(@"{0}\shellex\ContextMenuHandlers\{1}", className, serverName);
+                    return string.Format(@"{0}\ShellEx\ContextMenuHandlers\{1}", className, serverName);
 
                 case ServerType.ShellPropertySheet:
 
                     //  Create the key name for a property sheet.
-                    return string.Format(@"{0}\shellex\PropertySheetHandlers\{1}", className, serverName);
+                    return string.Format(@"{0}\ShellEx\PropertySheetHandlers\{1}", className, serverName);
 
                 case ServerType.ShellIconHandler:
 
                     //  Create the key name for an icon handler. This has no server name, 
                     //  as there cannot be multiple icon handlers.
-                    return string.Format(@"{0}\shellex\IconHandler", className);
+                    return string.Format(@"{0}\ShellEx\IconHandler", className);
 
                 case ServerType.ShellInfoTipHandler:
 
                     //  Create the key name for an info tip handler. This has no server name, 
                     //  as there cannot be multiple info tip handlers.
-                    return string.Format(@"{0}\shellex\{{00021500-0000-0000-C000-000000000046}}", className);
+                    return string.Format(@"{0}\ShellEx\{{00021500-0000-0000-C000-000000000046}}", className);
 
                 case ServerType.ShellDropHandler:
 
                     //  Create the key name for a drop handler. This has no server name, 
                     //  as there cannot be multiple drop handlers.
-                    return string.Format(@"{0}\shellex\DropHandler", className);
+                    return string.Format(@"{0}\ShellEx\DropHandler", className);
 
                 case ServerType.ShellPreviewHander:
                     
                     //  Create the key name for a preview handler. This has no server name, 
                     //  as there cannot be multiple preview handlers.
-                    return string.Format(@"{0}\shellex\{{8895b1c6-b41f-4c1c-a562-0d564250836f}}", className);
+                    return string.Format(@"{0}\ShellEx\{{8895b1c6-b41f-4c1c-a562-0d564250836f}}", className);
 
                 case ServerType.ShellDataHandler:
                     
                     //  Create the key name for a data handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
-                    return string.Format(@"{0}\shellex\DataHandler", className);
+                    return string.Format(@"{0}\ShellEx\DataHandler", className);
 
                 case ServerType.ShellThumbnailHandler:
 
                     //  Create the key name for a thumbnail handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
-                    return string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
+                    return string.Format(@"{0}\ShellEx\{{e357fccd-a995-4576-b01f-234630154e96}}", className);
 
                 case ServerType.ShellNamespaceExtension:
 
@@ -695,7 +645,7 @@ namespace SharpShell.ServerRegistration
                     return null;
                     
                 default:
-                    throw new ArgumentOutOfRangeException("serverType");
+                    throw new ArgumentOutOfRangeException(nameof(serverType));
             }
         }
 
@@ -705,7 +655,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="registrationType">Type of the registration.</param>
         /// <param name="permissions">The permissions.</param>
         /// <returns></returns>
-        private static RegistryKey OpenClassesKey(RegistrationType registrationType, RegistryKeyPermissionCheck permissions)
+        private static IRegistryKey OpenClassesKey(RegistrationType registrationType, RegistryKeyPermissionCheck permissions)
         {
             //  Get the classes base key.
             var classesBaseKey = OpenClassesRoot(registrationType);
@@ -723,12 +673,15 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         /// <param name="registrationType">Type of the registration.</param>
         /// <returns>The classes root key.</returns>
-        private static RegistryKey OpenClassesRoot(RegistrationType registrationType)
+        private static IRegistryKey OpenClassesRoot(RegistrationType registrationType)
         {
+            //  Get the registry.
+            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
+
             //  Get the classes base key.
             var classesBaseKey = registrationType == RegistrationType.OS64Bit
-                ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
-                  RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
+                ? registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64) :
+                registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32);
 
             //  Return the classes key.
             return classesBaseKey;
@@ -740,7 +693,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="key">The key.</param>
         /// <param name="valueName">Name of the value.</param>
         /// <returns></returns>
-        private static string GetValueOrEmpty(RegistryKey key, string valueName)
+        private static string GetValueOrEmpty(IRegistryKey key, string valueName)
         {
             object value = key.GetValue(valueName);
             if (value == null)
@@ -865,26 +818,5 @@ namespace SharpShell.ServerRegistration
         /// The default icon backup value name.
         /// </summary>
         private const string ValueName_DefaultIconBackup = @"SharpShell_Backup_DefaultIcon";
-
-        /// <summary>
-        /// The 'all files' special class.
-        /// </summary>
-        private const string SpecialClass_AllFiles = @"*";
-
-        /// <summary>
-        /// The 'drive' special class.
-        /// </summary>
-        private const string SpecialClass_Drive = @"Drive";
-
-        /// <summary>
-        /// The 'directory' special class.
-        /// </summary>
-        private const string SpecialClass_Directory = @"Directory";
-
-        /// <summary>
-        /// The 'unknown files' special class.
-        /// </summary>
-        private const string SpecialClass_UnknownFiles = @"Unknown";
-
     }
 }

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
 using SharpShell.Diagnostics;
-using SharpShell.Extensions;
+using SharpShell.Helpers;
 using SharpShell.Interop;
 
 namespace SharpShell.SharpPropertySheet
@@ -23,6 +19,33 @@ namespace SharpShell.SharpPropertySheet
         {
             
         }
+
+        #region Logging Helper Functions
+
+        /// <summary>
+        /// Logs the specified message. Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        protected void Log(string message)
+        {
+            var level1 = Parent != null ? Parent.DisplayName : "Unknown";
+            var level2 = Target != null ? Target.PageTitle : "Unknown";
+            Logging.Log($"{level1} (Proxy {HostWindowHandle.ToString("x8")} for '{level2}' Page): {message}");
+        }
+
+        /// <summary>
+        /// Logs the specified message as an error.  Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="exception">Optional exception details.</param>
+        protected void LogError(string message, Exception exception = null)
+        {
+            var level1 = Parent != null ? Parent.DisplayName : "Unknown";
+            var level2 = Target != null ? Target.PageTitle : "Unknown";
+            Logging.Error($"{level1} (Proxy {HostWindowHandle.ToString("x8")} for {level2}): {message}", exception);
+        }
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyPageProxy"/> class.
@@ -55,6 +78,46 @@ namespace SharpShell.SharpPropertySheet
         {
             switch (uMessage)
             {
+                //  Unless we explicitly handle the WM_ACTIVATE message, then when we lose and then regain focus
+                //  in a property page which contains a tab control, then the server will crash.
+                //  Detailed investigation has not helped us yes understand *why* this is the case, so at the moment
+                //  this is a required defensive measure. For more details, see:
+                //      https://github.com/dwmkerr/sharpshell/issues/233
+                case WindowsMessages.WM_ACTIVATE:
+                    return new IntPtr(-1);
+
+                //  The shell creates our property pages from a template, then adds them as a child of the sheet.
+                //  This means when it closes the sheet it will destroy the pages for us. This event handler
+                //  primarily exists for diagnostics, to allow us to see where in the lifecycle the actual destroy
+                //  event happens. Note that from this point onwards it would not be safe to use any part of the
+                //  form - it is destroyed.
+                case WindowsMessages.WM_DESTROY:
+
+                    Log("Proxy is being destroyed...");
+
+                    break;
+
+                //  WM_SIZE will normally be sent once, early in the lifecycle. This is great as it allows us
+                //  to explicitly set the size of the page. This means that the page can be of any size in the
+                //  designer. As long as controls are anchored properly it will then be laid out correctly.
+                case WindowsMessages.WM_SIZE:
+
+                    //  Grab the new client size.
+                    var width = Win32Helper.LoWord(lParam);
+                    var height = Win32Helper.HiWord(lParam);
+
+                    //  Pass the size onto the target window if we can.
+                    Target?.SetBounds(0, 0, width, height);
+
+                    break;
+
+                //  The proxy window is really just a container for the user control which holds the user defined
+                //  property sheet content. So make it transparent (otherwise we'll get a grey dialog background).
+                case WindowsMessages.WM_ERASEBKGND:
+                    
+                    //  Return true - i.e. we handled erasing the background (by doing nothing).
+                    return new IntPtr(1);
+
                 case WindowsMessages.WM_INITDIALOG:
                     
                     try
@@ -73,7 +136,7 @@ namespace SharpShell.SharpPropertySheet
                     }
                     catch (Exception exception)
                     {
-                        Logging.Error("Failed to set the parent to the host.", exception);
+                        LogError("Failed to initialise the property page.", exception);
                     }
 
                     break;
@@ -118,7 +181,6 @@ namespace SharpShell.SharpPropertySheet
                     }
 
                     break;
-
             }
 
             return IntPtr.Zero;
@@ -133,53 +195,80 @@ namespace SharpShell.SharpPropertySheet
         /// <returns></returns>
         private uint CallbackProc(IntPtr hWnd, PSPCB uMsg, ref PROPSHEETPAGE ppsp)
         {
+            //  Important: The docs at: https://docs.microsoft.com/en-us/windows/desktop/shell/how-to-register-and-implement-a-property-sheet-handler-for-a-file-type
+            //  Imply we *must* set PSP_USEPARENTREF and give access to the parent reference count, to avoid the server being
+            //  unloaded while the property sheet is still visible. It is damn near impossible to do this as
+            //  the IUnknown of the IShellPropSheetExt is managed by the runtime. Instead, when the internal
+            //  reference count increases, we will manually increment the COM server ref count, then release
+            //  it when our property sheet tells us we are done. This *appears* to have resolved the lifetime
+            //  issues. The theory is that we are using the lifecycle hooks below to manage our IShellPropSheetExt
+            //  server ref count and ensure that the shell will not unload it while the property sheet is in use.
+
             switch (uMsg)
             {
                 case PSPCB.PSPCB_ADDREF:
-
-                    //  Increment the reference count.
+                {
+                    //  Increment the internal reference count.
+                    Log($"Add Internal Ref {referenceCount} -> {referenceCount + 1}");
                     referenceCount++;
 
+                    //  At this point, increment the IPropSheetShellExt interface reference count, so that the
+                    //  shell doesn't try and release the server before we are done.
+                    var pUnk = Marshal.GetIUnknownForObject(Parent); // i.e. IShellPropSheetExt
+                    var newCount = Marshal.AddRef(pUnk);
+                    Log($"IShellPropSheetExt: Add Ref {newCount - 1} -> {newCount}");
+
                     break;
+                }
 
                 case PSPCB.PSPCB_RELEASE:
+                {
+                    Log($"Release Internal Ref {referenceCount} -> {referenceCount - 1}");
 
-                    //  Decrement the reference count.
+                    //  Decrement the internal reference count.
                     referenceCount--;
-
+                    
                     //  If we're down to zero references, cleanup.
                     if (referenceCount == 0)
-                        Cleanup();
+                    {
+                        //  The Target is a child of the host window handle, and that is child of the sheet.
+                        //  So these windows will be destroyed as part of the normal lifecycle. It's important
+                        //  we *don't* destroy them here or they could be destroyed twice. This is the place
+                        //  however to free up other resources which might be used by the page.
+                        try
+                        {
+                            Target?.OnRelease();
+                        }
+                        catch (Exception exception)
+                        {
+                            LogError("An exception occured releasing the property page", exception);
+                        }
+                    }
+
+                    //  Balance out the AddRef all from PSPCB_ADDREF by releasing now.
+                    var pUnk = Marshal.GetIUnknownForObject(Parent); // i.e. IShellPropSheetExt
+                    var newCount = Marshal.Release(pUnk);
+                    Log($"IShellPropSheetExt: Release {newCount + 1} -> {newCount}");
 
                     break;
+                }
 
                 case PSPCB.PSPCB_CREATE:
+
+                    Log($"Create Callback");
 
                     //  Allow the sheet to be created.
                     return 1;
             }
             return 0;
         }
-
-        private void Cleanup()
-        {
-            //  Destory the target.
-            Target.Dispose();
-
-            //  Destroy the host.
-            User32.DestroyWindow(HostWindowHandle);
-
-            //  Clear the lot.
-            Target = null;
-            HostWindowHandle = IntPtr.Zero;
-        }
-
+        
         /// <summary>
         /// Creates the property page handle.
         /// </summary>
         public void CreatePropertyPageHandle(NativeBridge.NativeBridge nativeBridge)
         {
-            Logging.Log("Creating property page handle via bridge.");
+            Log("Creating property page handle via bridge.");
 
             //  Create a prop sheet page structure.
             var psp = new PROPSHEETPAGE();
@@ -212,8 +301,6 @@ namespace SharpShell.SharpPropertySheet
 
             //  Create a the property sheet page.
             HostWindowHandle = Comctl32.CreatePropertySheetPage(ref psp);
-
-
         }
 
         /// <summary>

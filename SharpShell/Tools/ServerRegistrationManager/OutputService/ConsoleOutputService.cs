@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpShell.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,21 +25,29 @@ namespace ServerRegistrationManager.OutputService
             
             //  Write the message.
             Console.WriteLine(message);
+
+            //  If required, write to the SharpShell log.
+            if (log)
+                Logging.Log(message);
         }
 
         /// <summary>
         /// Writes the success.
         /// </summary>
-        /// <param name="error">The error.</param>
+        /// <param name="messabe">The message.</param>
         /// <param name="log">if set to <c>true</c> [log].</param>
-        public void WriteSuccess(string error, bool log = false)
+        public void WriteSuccess(string message, bool log = false)
         {
             //  Set the colour.
             Console.ForegroundColor = ConsoleColor.Green;
 
             //  Write the message.
-            Console.WriteLine(error);
+            Console.WriteLine(message);
             Console.ForegroundColor = ConsoleColor.Gray;
+
+            //  If required, write to the SharpShell log.
+            if (log)
+                Logging.Log(message);
         }
 
         /// <summary>
@@ -54,6 +63,10 @@ namespace ServerRegistrationManager.OutputService
             //  Write the message.
             Console.WriteLine(error);
             Console.ForegroundColor = ConsoleColor.Gray;
+
+            //  If required, write to the SharpShell log.
+            if (log)
+                Logging.Error(error);
         }
     }
 }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ServerRegistrationManager.OutputService;
 
 namespace ServerRegistrationManager
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
@@ -41,6 +37,12 @@ namespace ServerRegistrationManager
                 //  Load the resource.
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                 {
+                    //  If we cannot load the resource, the best we can do at this stage is to throw as informative exception as possible.
+                    if (stream == null)
+                    {
+                        throw new InvalidOperationException($"Unable to load embedded assembly '{assemblyName}' from '{resourceName}'");
+                    }
+
                     var assemblyData = new byte[stream.Length];
                     stream.Read(assemblyData, 0, assemblyData.Length);
                     return Assembly.Load(assemblyData);

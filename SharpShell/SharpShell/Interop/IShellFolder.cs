@@ -37,8 +37,8 @@ namespace SharpShell.Interop
         int EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList);
 
         /// <summary>
-        ///Retrieves an IShellFolder object for a subfolder.
-        // Return value: error code, if any
+        /// Retrieves an IShellFolder object for a subfolder.
+        /// Return value: error code, if any
         /// </summary>
         /// <param name="pidl">Address of an ITEMIDLIST structure (PIDL) that identifies the subfolder.</param>
         /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be used during this operation.</param>

@@ -73,6 +73,8 @@ namespace SharpShell.SharpPropertySheet
                 Log("Created Page Proxy, handle is " + propertyPageHandle.ToString("x8"));
 
                 //  Now that we have the page handle, add the page via the callback.
+                //  Note that if the call fails, we *don't* have to destroy the property
+                //  page handle, the bridge actually takes care of that for us.
                 bridge.CallAddPropSheetPage(pfnAddPage, propertyPageHandle, lParam);
             }
 

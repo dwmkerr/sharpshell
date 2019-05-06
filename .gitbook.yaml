@@ -1,0 +1,6 @@
+# Our docs are rooted in the docs folder.
+root: ./docs/
+
+# Ensure that we use the README.md file from the project root.
+structure:
+  readme: ../README.md

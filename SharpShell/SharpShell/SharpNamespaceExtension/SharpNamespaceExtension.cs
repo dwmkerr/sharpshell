@@ -86,7 +86,7 @@ namespace SharpShell.SharpNamespaceExtension
 
         /// <summary>
         /// Retrieves an IShellFolder object for a subfolder.
-        //  Return value: error code, if any
+        /// Return value: error code, if any
         /// </summary>
         /// <param name="pidl">Address of an ITEMIDLIST structure (PIDL) that identifies the subfolder.</param>
         /// <param name="pbc">Optional address of an IBindCtx interface on a bind context object to be used during this operation.</param>
@@ -239,7 +239,6 @@ namespace SharpShell.SharpNamespaceExtension
         int IShellFolder2.EnumObjects(IntPtr hwnd, SHCONTF grfFlags, out IEnumIDList ppenumIDList)
         {
             return ((IShellFolder2)shellFolderImpl).EnumObjects(hwnd, grfFlags, out ppenumIDList);
-
         }
 
         int IShellFolder2.BindToObject(IntPtr pidl, IntPtr pbc, ref Guid riid, out IntPtr ppv)

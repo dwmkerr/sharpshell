@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using SharpShell.Diagnostics;
 
 namespace SharpShell.SharpPropertySheet
 {
@@ -13,6 +14,33 @@ namespace SharpShell.SharpPropertySheet
     /// </summary>
     public class SharpPropertyPage : UserControl
     {
+        #region Logging Helper Functions
+
+        /// <summary>
+        /// Logs the specified message. Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        protected void Log(string message)
+        {
+            var parent = PropertyPageProxy?.Parent;
+            var level1 = parent != null ? parent.DisplayName : "Unknown";
+            Logging.Log($"{level1} ('{PageTitle}' Page): {message}");
+        }
+
+        /// <summary>
+        /// Logs the specified message as an error.  Will include the Shell Extension name and page name if available.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="exception">Optional exception details.</param>
+        protected void LogError(string message, Exception exception = null)
+        {
+            var parent = PropertyPageProxy?.Parent;
+            var level1 = parent != null ? parent.DisplayName : "Unknown";
+            Logging.Error($"{level1} ('{PageTitle}' Page): {message}", exception);
+        }
+
+        #endregion
+
         /// <summary>
         /// Gets or sets the page title.
         /// </summary>
@@ -32,7 +60,7 @@ namespace SharpShell.SharpPropertySheet
         /// <param name="parent">The parent property sheet.</param>
         protected internal virtual void OnPropertyPageInitialised(SharpPropertySheet parent)
         {
-            
+            Log("Page initialised");
         }
 
         /// <summary>
@@ -40,7 +68,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected internal virtual void OnPropertyPageSetActive()
         {
-
+            Log("Page activated");
         }
 
         /// <summary>
@@ -48,7 +76,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected internal virtual void OnPropertyPageKillActive()
         {
-
+            Log("Page deactivated");
         }
 
         /// <summary>
@@ -57,7 +85,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected internal virtual void OnPropertySheetApply()
         {
-            
+            Log("Page apply");
         }
 
         /// <summary>
@@ -65,7 +93,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected internal virtual void OnPropertySheetOK()
         {
-            
+            Log("Page OK");
         }
 
         /// <summary>
@@ -73,7 +101,7 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected internal virtual void OnPropertySheetCancel()
         {
-            
+            Log("Page cancel");
         }
 
         /// <summary>
@@ -81,7 +109,16 @@ namespace SharpShell.SharpPropertySheet
         /// </summary>
         protected internal virtual void OnPropertySheetClose()
         {
+            Log("Page close");
+        }
 
+        /// <summary>
+        /// Called when the property page is being released. Use this to clean up managed and unmanaged resources.
+        /// Do *not* use it to close window handles - the window will be closed automatically as the sheet closes.
+        /// </summary>
+        protected internal virtual void OnRelease()
+        {
+            Log("Page Release");
         }
 
         /// <summary>

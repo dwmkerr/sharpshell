@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ServerRegistrationManager.Actions;
 using ServerRegistrationManager.OutputService;
-using SharpShell;
 using SharpShell.Diagnostics;
+using SharpShell.Helpers;
 using SharpShell.ServerRegistration;
 
 namespace ServerRegistrationManager
@@ -55,8 +51,18 @@ namespace ServerRegistrationManager
 
             //  Get the verb, target and parameters.
             var verb = args[0];
-            var target = args.Length > 1 ? args[1] : (string)null; // TODO tidy this up.
-            var parameters = args.Skip(1);
+            var target = args.Length > 1 ? args[1] : null; // TODO tidy this up.
+            var parameters = args.Skip(1).ToArray();
+
+            //Allow user to override registrationType with -os32 or -os64
+            if (parameters.Any(p => p.Equals(ParameterOS32, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                registrationType = RegistrationType.OS32Bit;
+            }
+            else if (parameters.Any(p => p.Equals(ParameterOS64, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                registrationType = RegistrationType.OS64Bit;
+            }
 
             //  Based on the verb, perform the action.
             if (verb == VerbInstall)
@@ -85,42 +91,19 @@ namespace ServerRegistrationManager
                 outputService.WriteError("File '" + path + "' does not exist.", true);
                 return;
             }
-            
-            //  Try and load the server types.
-            IEnumerable<ISharpShellServer> serverTypes = null;
-            try
+
+            var regasm = new RegAsm();
+            var success = registrationType == RegistrationType.OS32Bit ? regasm.Register32(path, codeBase) : regasm.Register64(path, codeBase);
+
+            if (success)
             {
-                serverTypes = LoadServerTypes(path);
+                outputService.WriteSuccess($"    {path} installed and registered.", true);
+                outputService.WriteMessage(regasm.StandardOutput);
             }
-            catch (Exception e)
+            else
             {
-                outputService.WriteError("An unhandled exception occured when loading the SharpShell");
-                outputService.WriteError("Server Types from the specified assembly. Is it a SharpShell");
-                outputService.WriteError("Server Assembly?");
-                System.Diagnostics.Trace.Write(e);
-                Logging.Error("An unhandled exception occured when loading a SharpShell server.", e);
-            }
-
-            //  Install each server type.
-            foreach (var serverType in serverTypes)
-            {
-                //  Inform the user we're going to install the server.
-                outputService.WriteMessage("Preparing to install (" + registrationType + "): " + serverType.DisplayName, true);
-
-                //  Install the server.
-                try
-                {
-                    SharpShell.ServerRegistration.ServerRegistrationManager.InstallServer(serverType, registrationType, codeBase);
-                    SharpShell.ServerRegistration.ServerRegistrationManager.RegisterServer(serverType, registrationType);
-                }
-                catch (Exception e)
-                {
-                    outputService.WriteError("Failed to install and register the server.");
-                    Logging.Error("An unhandled exception occured installing and registering the server " + serverType.DisplayName, e);
-                    continue;
-                }
-
-                outputService.WriteSuccess("    " + serverType.DisplayName + " installed and registered.", true);
+                outputService.WriteError($"    {path} failed to register.", true);
+                outputService.WriteError(regasm.StandardError);
             }
         }
 
@@ -131,42 +114,18 @@ namespace ServerRegistrationManager
         /// <param name="registrationType">Type of the registration.</param>
         private void UninstallServer(string path, RegistrationType registrationType)
         {
-            //  Try and load the server types.
-            IEnumerable<ISharpShellServer> serverTypes = null;
-            try
+            var regasm = new RegAsm();
+            var success = registrationType == RegistrationType.OS32Bit ? regasm.Unregister32(path) : regasm.Unregister64(path);
+
+            if (success)
             {
-                serverTypes = LoadServerTypes(path);
+                outputService.WriteSuccess($"    {path} uninstalled.", true);
+                outputService.WriteMessage(regasm.StandardOutput);
             }
-            catch (Exception e)
+            else
             {
-                outputService.WriteError("An unhandled exception occured when loading the SharpShell");
-                outputService.WriteError("Server Types from the specified assembly. Is it a SharpShell");
-                outputService.WriteError("Server Assembly?");
-                System.Diagnostics.Trace.Write(e);
-                Logging.Error("An unhandled exception occured when loading a SharpShell server.", e);
-            }
-
-            //  Install each server type.
-            foreach (var serverType in serverTypes)
-            {
-                //  Inform the user we're going to install the server.
-                Console.WriteLine("Preparing to uninstall (" + registrationType + "): " + serverType.DisplayName, true);
-
-                //  Install the server.
-                try
-                {
-
-                    SharpShell.ServerRegistration.ServerRegistrationManager.UnregisterServer(serverType, registrationType);
-                    SharpShell.ServerRegistration.ServerRegistrationManager.UninstallServer(serverType, registrationType);
-                }
-                catch (Exception e)
-                {
-                    outputService.WriteError("Failed to unregister and uninstall the server.");
-                    Logging.Error("An unhandled exception occured un registering and uninstalling the server " + serverType.DisplayName, e);
-                    continue;
-                }
-
-                outputService.WriteSuccess("    " + serverType.DisplayName + " unregistered and uninstalled.", true);
+                outputService.WriteError($"    {path} failed to uninstall.", true);
+                outputService.WriteError(regasm.StandardError);
             }
         }
 
@@ -181,22 +140,7 @@ namespace ServerRegistrationManager
             outputService.WriteMessage("========================================");
             outputService.WriteMessage("");
         }
-
-        /// <summary>
-        /// Loads the server types from an assembly.
-        /// </summary>
-        /// <param name="assemblyPath">The assembly path.</param>
-        /// <returns>The SharpShell Server types from the assembly.</returns>
-        private static IEnumerable<ISharpShellServer> LoadServerTypes(string assemblyPath)
-        {
-            //  Create an assembly catalog for the assembly and a container from it.
-            var catalog = new AssemblyCatalog(Path.GetFullPath(assemblyPath));
-            var container = new CompositionContainer(catalog);
-
-            //  Get all exports of type ISharpShellServer.
-            return container.GetExports<ISharpShellServer>().Select(st => st.Value);
-        }
-
+        
         private const string VerbHelp = @"help";
         private const string VerbInstall = @"install";
         private const string VerbUninstall = @"uninstall";
@@ -204,5 +148,8 @@ namespace ServerRegistrationManager
         private const string VerbEnableEventLog = @"enableeventlog";
 
         private const string ParameterCodebase = @"-codebase";
+
+        private const string ParameterOS32 = @"-os32";
+        private const string ParameterOS64 = @"-os64";
     }
 }

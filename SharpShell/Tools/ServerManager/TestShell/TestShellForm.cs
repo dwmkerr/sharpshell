@@ -10,10 +10,13 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 using Apex.WinForms.Interop;
 using Apex.WinForms.Shell;
+using Microsoft.Win32;
 using SharpShell;
 using SharpShell.Attributes;
 using SharpShell.Interop;
+using SharpShell.Registry;
 using SharpShell.ServerRegistration;
+using SharpShell.ServiceRegistry;
 using SharpShell.SharpContextMenu;
 using SharpShell.SharpDropHandler;
 using SharpShell.SharpIconHandler;
@@ -95,21 +98,16 @@ namespace ServerManager.TestShell
         {
             if (e.Button == MouseButtons.Right)
             {
-                //  Get the hit test info.
-                var hitTestInfo = shellTreeView.HitTest(new Point(e.X, e.Y));
-
-                //  If we're not hit a node, bail.
-                if (hitTestInfo.Node == null)
-                    return;
-
+                if (shellTreeView.SelectedNode == null) return;
+                
                 //  Get the point in screen coords.
                 var screenPoint = shellTreeView.PointToScreen(new Point(e.X, e.Y));
 
                 //  Get the shell item.
-                var shellItem = shellTreeView.GetShellItem(hitTestInfo.Node);
+                var shellItem = shellTreeView.GetShellItem(shellTreeView.SelectedNode);
 
                 //  Test it.
-                DoTestMenu(shellItem, screenPoint.X, screenPoint.Y);
+                DoTestMenu(new [] {shellItem}, screenPoint.X, screenPoint.Y);
             }
         }
 
@@ -117,31 +115,24 @@ namespace ServerManager.TestShell
         {
             if (e.Button == MouseButtons.Right)
             {
-                //  Get the hit test info.
-                var hitTestInfo = shellListView.HitTest(new Point(e.X, e.Y));
-
-                //  If we're not hit a node, bail.
-                if (hitTestInfo.Item == null)
-                    return;
+                //  Get the highlighted items.
+                var items = shellListView.SelectedItems.OfType<ListViewItem>().Select(lvi => shellListView.GetShellItem(lvi)).ToArray();
 
                 //  Get the point in screen coords.
                 var screenPoint = shellListView.PointToScreen(new Point(e.X, e.Y));
 
-                //  Get the shell item.
-                var shellItem = shellListView.GetShellItem(hitTestInfo.Item);
-
                 //  Test it.
-                DoTestMenu(shellItem, screenPoint.X, screenPoint.Y);
+                DoTestMenu(items, screenPoint.X, screenPoint.Y);
             }
         }
 
         /// <summary>
         /// Tests the context menu.
         /// </summary>
-        /// <param name="item">The item.</param>
+        /// <param name="items">The items.</param>
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
-        private void DoTestMenu(ShellItem item, int x, int y)
+        private void DoTestMenu(ShellItem[] items, int x, int y)
         {
             //  If we don't have a context menu, we can bail now.
             if (TestContextMenu == null)
@@ -155,7 +146,8 @@ namespace ServerManager.TestShell
             try
             {
                 //  Create the file paths.
-                var filePaths = new StringCollection {item.Path};
+                var filePaths = new StringCollection();
+                filePaths.AddRange(items.Select(i => i.Path).ToArray());
 
                 //  Create the data object from the file paths.
                 var dataObject = new DataObject();
@@ -166,7 +158,11 @@ namespace ServerManager.TestShell
 
                 //  Pass the data to the shell extension, attempt to initialise it.
                 //  We must provide the data object as well as the parent folder PIDL.
-                shellExtInitInterface.Initialize(item.ParentItem.PIDL, dataObjectInterfacePointer, IntPtr.Zero);
+                if (items.Any())
+                {
+                    var folderPIDL = items.First().ParentItem.PIDL;
+                    shellExtInitInterface.Initialize(folderPIDL, dataObjectInterfacePointer, IntPtr.Zero);
+                }
             }
             catch (Exception)
             {
@@ -402,7 +398,10 @@ namespace ServerManager.TestShell
             //  Based on the assocation type, we can check the shell item.
             switch (associationType)
             {
+                //  This is checked for backwards compatibility.
+#pragma warning disable 618
                 case AssociationType.FileExtension:
+#pragma warning restore 618
 
                     //  File extensions are easy to check.
                     if (shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
@@ -422,10 +421,16 @@ namespace ServerManager.TestShell
                     if (shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
                     {
                         //  Get our class.
-                        var fileClass = ServerRegistrationManager.GetClassForExtension(Path.GetExtension(shellItem.DisplayName));
+                        var registry = ServiceRegistry.GetService<IRegistry>();
+                        using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+                        {
+                            var fileClass = FileExtensionClass.Get(classesRoot, Path.GetExtension(shellItem.DisplayName), false);
 
-                        //  Do we match it?
-                        return associations.Any(a => string.Compare(fileClass, ServerRegistrationManager.GetClassForExtension(a), StringComparison.InvariantCultureIgnoreCase) == 0);
+                            //  Do we match it?
+                            return associations.Any(a => string.Compare(fileClass, FileExtensionClass.Get(classesRoot, a, false), StringComparison.InvariantCultureIgnoreCase) == 0);
+                        }
+
+                        
                     }
 
                     break;
