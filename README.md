@@ -33,9 +33,10 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 
 ## Official NuGet Packages
 
-| Component | Package |
-|-----------|---------|
-| `SharpShell` | [![SharpShell Nuget Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell) |
+| Component                   | Package                                                                                                                                                              |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SharpShell`                | [![SharpShell Nuget Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell)                                              |
+| `SharpShellTools`           | [![SharpShellTools Nuget Package](https://img.shields.io/nuget/v/SharpShellTools.svg)](https://www.nuget.org/packages/SharpShellTools)                                         |
 | `ServerRegistrationManager` | [![ServerRegistrationManager Nuget Package](https://img.shields.io/nuget/v/ServerRegistrationManager.svg)](https://www.nuget.org/packages/ServerRegistrationManager) |
 
 ## Documentation
