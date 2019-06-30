@@ -1,6 +1,6 @@
 # SharpShell
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/)
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/) [![GuardRails badge](https://badges.production.guardrails.io/dwmkerr/sharpshell.svg)](https://www.guardrails.io)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
