@@ -6,9 +6,8 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 
 <!-- vim-markdown-toc GFM -->
 
-* [Official NuGet Packages](#official-nuget-packages)
-* [Documentation](#documentation)
-* [Deploying SharpShell Servers](#deploying-sharpshell-servers)
+* [Installation](#installation)
+* [User Guide](#user-guide)
 * [Supported Shell Extensions](#supported-shell-extensions)
     * [Shell Context Menus](#shell-context-menus)
     * [Icon Handlers](#icon-handlers)
@@ -20,10 +19,11 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Property Sheet Extensions](#property-sheet-extensions)
     * [Desk Band Extensions](#desk-band-extensions)
 * [Developer Guide](#developer-guide)
-* [Building & Testing](#building--testing)
+    * [Building & Testing](#building--testing)
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
+* [Contributor Guide](#contributor-guide)
 * [Testimonials](#testimonials)
 * [Projects that use SharpShell](#projects-that-use-sharpshell)
 * [Thanks](#thanks)
@@ -31,26 +31,29 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 
 <!-- vim-markdown-toc -->
 
-## Official NuGet Packages
+## Installation
 
-| Component | Package |
-|-----------|---------|
-| `SharpShell` | [![SharpShell Nuget Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell) |
-| `ServerRegistrationManager` | [![ServerRegistrationManager Nuget Package](https://img.shields.io/nuget/v/ServerRegistrationManager.svg)](https://www.nuget.org/packages/ServerRegistrationManager) |
+Install SharpShell by searching for 'SharpShell' in the NuGet package manager, or using the Package Manager Console:
 
-## Documentation
+```
+PM > Install-Package SharpShell
+```
 
-Documentation is in the process of being moved to:
+The latest official packages are listed below:
 
-[`./docs`](./docs)
+| Component                   | Package                                                                                                                                                              |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SharpShell`                | [![SharpShell NuGet Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell)                                              |
+| `ServerRegistrationManager` | [![ServerRegistrationManager NuGet Package](https://img.shields.io/nuget/v/ServerRegistrationManager.svg)](https://www.nuget.org/packages/ServerRegistrationManager) |
 
-Please open an issue if there is missing documentation and I will try to prioritise it!
+## User Guide
 
-## Deploying SharpShell Servers
+All documentation is being moved to [`docs`](./docs).
 
-A guide on deploying SharpShell servers is available at:
+Some of the most useful guides are:
 
-[Deploying SharpShell Servers](./docs/installing/installing.md)
+- [Deploying SharpShell Servers](./docs/installing/installing.md)
+- [Troubleshooting](./docs/troubleshooting.md)
 
 ## Supported Shell Extensions
 
@@ -140,9 +143,7 @@ In order to maximize compatibility, we do not use the latest version of each SDK
 - Windows Universal C Runtime
 - Microsoft Visual Studio 2017 Installer Projects
 
-Note: Not tested on VS2017 for Mac.
-
-## Building & Testing
+### Building & Testing
 
 As long as the correct components have be installed for Visual Studio, you should be able to just open the main `./SharpShell/SharpShell.sln` solution to build, test and run any of the code or samples.
 
@@ -194,15 +195,9 @@ CI/CD is currently handled by AppVeyor. AppVeyor will:
 
 1. Build the project
 2. Run the tests
-3. Create the core SharpShell Nuget Package
-4. Publish the package to nuget.org if a version tag is pushed
+3. Create the core SharpShell NuGet Package
+4. Publish the package to [nuget.org](https://nuget.org) if a version tag is pushed
 5. Create a GitHub release with the package if a version tag is pushed
-
-Some work is still needed on the CI/CD side:
-
-- [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
-- [ ] Look into automatic notifications for package publication.
-- [ ] Deploy SRM as a NuGet package.
 
 ### Creating a Release
 
@@ -213,6 +208,17 @@ To create a release:
 3. Create a new version tag, then push
 
 AppVeyor will build and publish a new NuGet package and as long as a new semver tag is pushed.
+
+## Contributor Guide
+
+The project is maintained by the following group:
+
+| User                                        | Role                         |
+|---------------------------------------------|------------------------------|
+| [`dwmkerr`](https://github.com/dwmkerr      | Project creator, maintainer. |
+| [`Countryen`](https://github.com/Countryen) | Project maintainer.          |
+
+We have a [Code of Conduct](.github/CODE_OF_CONDUCT.md) aimed at keeping the community welcoming and inclusive.
 
 ## Testimonials
 
