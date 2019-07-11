@@ -215,7 +215,7 @@ The project is maintained by the following group:
 
 | User                                        | Role                         |
 |---------------------------------------------|------------------------------|
-| [`dwmkerr`](https://github.com/dwmkerr      | Project creator, maintainer. |
+| [`dwmkerr`](https://github.com/dwmkerr)     | Project creator, maintainer. |
 | [`Countryen`](https://github.com/Countryen) | Project maintainer.          |
 
 We have a [Code of Conduct](.github/CODE_OF_CONDUCT.md) aimed at keeping the community welcoming and inclusive.
