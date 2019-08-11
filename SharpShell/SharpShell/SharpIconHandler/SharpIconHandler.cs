@@ -73,13 +73,13 @@ namespace SharpShell.SharpIconHandler
         /// </returns>
         int IExtractIconA.Extract(string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
         {
-            return Extract(out phiconLarge, out phiconSmall, nIconSize);
+            return Extract(pszFile, out phiconLarge, out phiconSmall, nIconSize);
         }
         int IExtractIconW.Extract(string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
         {
-            return Extract(out phiconLarge, out phiconSmall, nIconSize);
+            return Extract(pszFile, out phiconLarge, out phiconSmall, nIconSize);
         }
-        private int Extract(out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
+        private int Extract(string pszFile, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize)
         {
             //  DebugLog this key event.
             Log(string.Format("Extracting icon for {0}", SelectedItemPath));
@@ -95,8 +95,8 @@ namespace SharpShell.SharpIconHandler
             try
             {
                 //  Set the large and small icons.
-                phiconLarge = GetIcon(false, iconSizeLarge).Handle;
-                phiconSmall = GetIcon(true, iconSizeSmall).Handle;
+                phiconLarge = GetIcon(pszFile, false, iconSizeLarge).Handle;
+                phiconSmall = GetIcon(pszFile, true, iconSizeSmall).Handle;
             }
             catch (Exception exception)
             {
@@ -129,7 +129,13 @@ namespace SharpShell.SharpIconHandler
                 return new Icon(memoryStream, size);
             }
         }
-        
+
+        protected virtual Icon GetIcon(string pszFile, bool smallIcon, uint iconSize)
+        {
+            return GetIcon(smallIcon, iconSize);
+        }
+
+
         /// <summary>
         /// Gets the icon.
         /// </summary>
