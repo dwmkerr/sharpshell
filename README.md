@@ -121,7 +121,7 @@ These are extensions that add extra pages to the property sheets shown for shell
 
 ![Shell Thumbnail Handler Screenshot](./docs/extensions/propertysheetextension/propertysheetextensions-screenshot.png)
 
-[Documentation](./docs/extensions/propertysheetextension/propertysheetextensions.md).
+[Documentation](./docs/extensions/propertysheetextension/propertysheetextension.md).
 
 ### Desk Band Extensions
 
