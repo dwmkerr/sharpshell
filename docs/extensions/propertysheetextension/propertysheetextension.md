@@ -71,7 +71,7 @@ This function returns a bool. If the result is true, then the property sheet pag
 
 This function returns a set of SharpPropertyPage objects - these are the actual property pages we're going to add to the shell property sheet.
 
-We also use the `COMServerAssociation` class to associate with a specific shell object. You can find out more in the [`COMServerAssociation` documentation](./docs/com-server-associations.md).
+We also use the `COMServerAssociation` class to associate with a specific shell object. You can find out more in the [`COMServerAssociation` documentation](/docs/com-server-associations.md).
 
 The server class itself needs to be visible as COM server, so we use the `ComVisible` attribute.
 
@@ -127,7 +127,7 @@ public partial class FileTimesPropertyPage : SharpPropertyPage
 }
 ```
 
-The full implementation is in the [`Samples`](./SharpShell/Samples) folder. Note that there are set of virtual functions available to allow you to handle property sheet specific events, such as 'Apply', 'Cancel', etc.
+The full implementation is in the [`Samples`](/SharpShell/Samples) folder. Note that there are set of virtual functions available to allow you to handle property sheet specific events, such as 'Apply', 'Cancel', etc.
 
 | Function | Usage |
 |----------|-------|
@@ -142,7 +142,7 @@ The full implementation is in the [`Samples`](./SharpShell/Samples) folder. Note
 
 ## Install the Server
 
-Follow the [Installing](./docs/installing/installing.md) documentation to install the server.
+Follow the [Installing](/docs/installing/installing.md) documentation to install the server.
 
 Now restart the `explorer.exe` process. If you right click on a file, you'll have the new property sheet available in the file properties.
 
