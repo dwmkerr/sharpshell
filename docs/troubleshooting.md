@@ -43,6 +43,10 @@ For property sheet extensions to work, make sure that the destination machine ha
 
 It seems that under some circumstances, Tab Controls in property sheet extensions can lead to unpredictable behaviour and crashes - currently I recommend against using them until the route cause of this issue is identified. More detail on this issue and the one above can be found here: [https://sharpshell.codeplex.com/discussions/470807](https://sharpshell.codeplex.com/discussions/470807)
 
+>...2) The second issue I found with the PropertyPageHandler is in combination with a TabControl. It doesn't matter if the TabPages are created dynamically or in static way. 
+When I switched (on my developer machine) between the PropertyPage and any other application (sometimes 2 times focus switch, sometimes after 10 times focus switches between the applications) the PropertyPage freezes and then the Windows Explorer crashes with an AppHangB1. Fast workaround is of course the usage of any other controls. I have this tested this only on one machine (my developer machine), so maybe this is only a very specific issue. 
+Thread #470807 | Message #1127814 | 2013-11-22
+
 **Context Menu Extensions**
 
 It seems that sometimes creating the [ComServerAssociation] is not enough. <span style="font-size:10pt">When you add the registry key for the given extension, the context menu may be got from a different part of the registry for the users preference. For example, for 'png', u</span><span style="font-size:10pt">ou can determine this by checking the user choice:</span>
