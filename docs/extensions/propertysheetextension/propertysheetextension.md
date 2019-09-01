@@ -7,9 +7,9 @@ Property Sheet Extensions are Shell Extensions which add additional property she
 <!-- vim-markdown-toc GFM -->
 
 * [Creating the Project](#creating-the-project)
-* [Create the DeskBand Interface](#create-the-deskband-interface)
-* [Create the DeskBand Server](#create-the-deskband-server)
-* [Install the DeskBand Server](#install-the-deskband-server)
+* [Create the Property Sheet Server](#create-the-property-sheet-server)
+* [Create the Property Page](#create-the-property-page)
+* [Install the Server](#install-the-server)
 * [See Also](#see-also)
 
 <!-- vim-markdown-toc -->
