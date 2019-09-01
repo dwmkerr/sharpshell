@@ -4,7 +4,7 @@ Creating Shell Extension Servers can be extremely difficult, as diagnosing issue
 
 **My Server Doesn't Show Up in Windows Explorer**
 
-First, check the troubleshooting guide in the [Installing](../installing/installing.md) documentation.
+First, check the troubleshooting guide in the [Installing](./installing/installing.md) documentation.
 
 **Important:** For most SharpShell servers to work on anything other than a development machine, they MUST be built in Release Mode against the Release Mode SharpShell binary. This binary uses an unmanaged C++ component that has a dependency to MSVCRTD100.dll in debug mode - this will NOT be present on none-development machines.
 
