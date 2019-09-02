@@ -4,7 +4,7 @@ Creating Shell Extension Servers can be extremely difficult, as diagnosing issue
 
 **My Server Doesn't Show Up in Windows Explorer**
 
-First, check the troubleshooting guide in the [Installing](../installing/installing.md) documentation.
+First, check the troubleshooting guide in the [Installing](./installing/installing.md) documentation.
 
 **Important:** For most SharpShell servers to work on anything other than a development machine, they MUST be built in Release Mode against the Release Mode SharpShell binary. This binary uses an unmanaged C++ component that has a dependency to MSVCRTD100.dll in debug mode - this will NOT be present on none-development machines.
 
@@ -42,6 +42,10 @@ If you see a cross icon instead of your icon, make sure the build action for the
 For property sheet extensions to work, make sure that the destination machine has the Visual C++ 2012 Redistributables installed (vcredist_x86 or vcredist_x64).
 
 It seems that under some circumstances, Tab Controls in property sheet extensions can lead to unpredictable behaviour and crashes - currently I recommend against using them until the route cause of this issue is identified. More detail on this issue and the one above can be found here: [https://sharpshell.codeplex.com/discussions/470807](https://sharpshell.codeplex.com/discussions/470807)
+
+>...2) The second issue I found with the PropertyPageHandler is in combination with a TabControl. It doesn't matter if the TabPages are created dynamically or in static way. 
+When I switched (on my developer machine) between the PropertyPage and any other application (sometimes 2 times focus switch, sometimes after 10 times focus switches between the applications) the PropertyPage freezes and then the Windows Explorer crashes with an AppHangB1. Fast workaround is of course the usage of any other controls. I have this tested this only on one machine (my developer machine), so maybe this is only a very specific issue. 
+Thread #470807 | Message #1127814 | 2013-11-22
 
 **Context Menu Extensions**
 
