@@ -44,6 +44,7 @@ The latest official packages are listed below:
 | Component                   | Package                                                                                                                                                              |
 |-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `SharpShell`                | [![SharpShell NuGet Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell)                                              |
+| `SharpShellTools`           | [![SharpShellTools Nuget Package](https://img.shields.io/nuget/v/SharpShellTools.svg)](https://www.nuget.org/packages/SharpShellTools)                                         |
 | `ServerRegistrationManager` | [![ServerRegistrationManager NuGet Package](https://img.shields.io/nuget/v/ServerRegistrationManager.svg)](https://www.nuget.org/packages/ServerRegistrationManager) |
 
 ## User Guide
