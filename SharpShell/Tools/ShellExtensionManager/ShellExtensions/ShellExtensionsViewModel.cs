@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using Apex.MVVM;
 using SharpShell.ServerRegistration;
 
@@ -26,7 +22,7 @@ namespace ShellExtensionManager.ShellExtensions
         private void DoRefreshExtensionsCommand(object parameter)
         {
             //  Get all servers.
-            var servers = ServerRegistrationManager.EnumerateExtensions(RegistrationType.OS64Bit, ShellExtensionType.IconHandler);
+            var servers = ServerRegistrationManager.EnumerateExtensions(RegistrationType.OS64Bit);
             foreach (var server in servers)
             {
                 var extensionViewModel = new ExtensionViewModel();
