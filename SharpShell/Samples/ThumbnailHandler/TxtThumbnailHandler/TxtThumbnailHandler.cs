@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using SharpShell.Attributes;
 using SharpShell.SharpThumbnailHandler;
+using TxtThumbnailHandler.Renderer;
 
 namespace TxtThumbnailHandler
 {
@@ -17,16 +18,14 @@ namespace TxtThumbnailHandler
     /// </summary>
     [ComVisible(true)]
     [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
-    public class TxtThumbnailHandler : SharpThumbnailHandler
+    public class TxtThumbnailHandler : SharpThumbnailHandler, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TxtThumbnailHandler"/> class.
         /// </summary>
         public TxtThumbnailHandler()
         {
-            //  Create our lazy objects.
-            lazyThumbnailFont = new Lazy<Font>(() => new Font("Courier New", 12f));
-            lazyThumbnailTextBrush = new Lazy<Brush>(() => new SolidBrush(Color.Black));
+            _renderer = new TextThumbnailRenderer();
         }
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace TxtThumbnailHandler
                     }
 
                     //  Now return a preview of the lines.
-                    return CreateThumbnailForText(previewLines, width);
+                    return _renderer.CreateThumbnailForText(previewLines, width);
                 }
             }
             catch (Exception exception)
@@ -67,59 +66,13 @@ namespace TxtThumbnailHandler
             }
         }
 
-        /// <summary>
-        /// Creates the thumbnail for text, using the provided preview lines.
-        /// </summary>
-        /// <param name="previewLines">The preview lines.</param>
-        /// <param name="width">The width.</param>
-        /// <returns>
-        /// A thumbnail for the text.
-        /// </returns>
-        private Bitmap CreateThumbnailForText(IEnumerable<string> previewLines, uint width)
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
         {
-            //  Create the bitmap dimensions.
-            var thumbnailSize = new Size((int) width, (int) width);
-
-            //  Create the bitmap.
-            var bitmap = new Bitmap(thumbnailSize.Width, thumbnailSize.Height, PixelFormat.Format32bppArgb);
-
-            //  Create a graphics object to render to the bitmap.
-            using (var graphics = Graphics.FromImage(bitmap))
-            {
-                //  Set the rendering up for anti-aliasing.
-                graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-
-                //  Draw the page background.
-                graphics.DrawImage(Properties.Resources.Page, 0, 0, thumbnailSize.Width, thumbnailSize.Height);
-                
-                //  Create offsets for the text.
-                var xOffset = width * 0.2f;
-                var yOffset = width * 0.3f ;
-                var yLimit = width - yOffset;
-
-                graphics.Clip = new Region(new RectangleF(xOffset, yOffset, thumbnailSize.Width - (xOffset * 2), thumbnailSize.Height - width*.1f));
-
-                //  Render each line of text.
-                foreach (var line in previewLines)
-                {
-                    graphics.DrawString(line, lazyThumbnailFont.Value, lazyThumbnailTextBrush.Value, xOffset, yOffset);
-                    yOffset += 14f;
-                    if (yOffset + 14f > yLimit)
-                        break;
-                }
-            }
-
-            //  Return the bitmap.
-            return bitmap;
+            _renderer?.Dispose();
         }
 
-        /// <summary>
-        /// The lazy thumbnail font.
-        /// </summary>
-        private readonly Lazy<Font> lazyThumbnailFont;
-        /// <summary>
-        /// The lazy thumbnail text brush.
-        /// </summary>
-        private readonly Lazy<Brush> lazyThumbnailTextBrush;
+        /// <summary>The renderer used to create the text.</summary>
+        private readonly TextThumbnailRenderer _renderer;
     }
 }

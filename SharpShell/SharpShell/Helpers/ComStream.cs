@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using SharpShell.Interop;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 
