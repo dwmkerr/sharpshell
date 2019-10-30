@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using SharpShell.Attributes;
+using SharpShell.Interop;
 using SharpShell.SharpThumbnailHandler;
 using TxtThumbnailHandler.Renderer;
 
@@ -20,8 +21,8 @@ namespace TxtThumbnailHandler
     /// which uses streams for its implementation, but may be required if you need the full file path.
     /// </summary>
     [ComVisible(true)]
-    [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
-    public class HtmlFileThumbnailHandler : SharpFileThumbnailHandler, IDisposable
+    [COMServerAssociation(AssociationType.ClassOfExtension, ".html")]
+    public class HtmlFileThumbnailHandler : SharpItemThumbnailHandler, IDisposable
     {
         public HtmlFileThumbnailHandler()
         {
@@ -37,14 +38,19 @@ namespace TxtThumbnailHandler
         /// </returns>
         protected override Bitmap GetThumbnailImage(uint width)
         {
-            Log($"Creating thumbnail for '{Path.GetFileName(SelectedItemPath)}'");
+            //  Get the file system path.
+            if (SelectedShellItem.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out string path) != WinError.S_OK)
+            {
+                Log("Not returning thumbnail - this shell item has no file path.");
+                return null;
+            }
 
-            //  Grab up to three lines of HTML.
-
+            Log($"Creating thumbnail for item with path '{path}'");
+            
             //  Attempt to open the stream with a reader.
             try
             {
-                using(var reader = new StreamReader(SelectedItemPath))
+                using(var reader = new StreamReader(path))
                 {
                     //  Read up to ten lines of text.
                     var previewLines = new List<string>();

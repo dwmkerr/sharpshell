@@ -4,9 +4,12 @@ namespace SharpShell
 {
     /// <summary>
     /// InitializeWithFileServer provides a base for SharpShell Servers that must implement
-    /// IInitializeWithFile (thumbnail handlers which need a file path for initialisation etc).
+    /// IInitializeWithItem (thumbnail handlers which need a file path for initialisation etc).
     /// Note that if possible, <see cref="InitializeWithStreamServer"/> should be used, as it is far more
     /// performant.
+    /// Note that in Windows Vista onwards, implementations of this interface may not behave as expected as
+    /// it has been essentially deprecated for security reasons. For example, a Shell Thumbnail Handler which
+    /// implements this interface will *not* be called.
     /// </summary>
     public abstract class InitializeWithFileServer : SharpShellServer, IInitializeWithFile
     {

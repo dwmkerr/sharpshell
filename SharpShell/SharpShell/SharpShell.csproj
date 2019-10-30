@@ -94,6 +94,10 @@
     <Compile Include="Helpers\ComStream.cs" />
     <Compile Include="Helpers\RegAsm.cs" />
     <Compile Include="InitializeWithFileServer.cs" />
+    <Compile Include="InitializeWithItemServer.cs" />
+    <Compile Include="Interop\IInitializeWithItem.cs" />
+    <Compile Include="Interop\IShellItem.cs" />
+    <Compile Include="Interop\SIGDN.cs" />
     <Compile Include="Interop\STATFLAG.cs" />
     <Compile Include="Helpers\Win32Helper.cs" />
     <Compile Include="InitializeWithStreamServer.cs" />
@@ -257,7 +261,7 @@
     </Compile>
     <Compile Include="Helpers\BitmapHelper.cs" />
     <Compile Include="Interop\DIB.cs" />
-    <Compile Include="SharpThumbnailHandler\SharpFileThumbnailHandler.cs" />
+    <Compile Include="SharpThumbnailHandler\SharpItemThumbnailHandler.cs" />
     <Compile Include="SharpThumbnailHandler\SharpThumbnailHandler.cs" />
     <Compile Include="ShellExtInitServer.cs" />
     <Compile Include="SharpDropHandler\SharpDropHandler.cs" />

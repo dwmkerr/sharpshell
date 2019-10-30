@@ -10,11 +10,12 @@ using SharpShell.Interop;
 namespace SharpShell.SharpThumbnailHandler
 {
     /// <summary>
-    /// The SharpIconHandler is the base class for SharpShell servers that provide
-    /// custom Thumbnail Image Handlers.
+    /// The SharpItemThumbnailHandler is the base class for SharpShell servers that provide
+    /// custom Thumbnail Image Handlers. <see cref="SharpThumbnailHandler"/>, which initialises with a stream
+    /// should be preferred for performance reasons.
     /// </summary>
-    [ServerType(ServerType.ShellFileThumbnailHandler)]
-    public abstract class SharpFileThumbnailHandler : InitializeWithFileServer, IThumbnailProvider
+    [ServerType(ServerType.ShellItemThumbnailHandler)]
+    public abstract class SharpItemThumbnailHandler : InitializeWithItemServer, IThumbnailProvider
     {
         /// <summary>
         /// Gets a thumbnail image and alpha type.
@@ -29,7 +30,7 @@ namespace SharpShell.SharpThumbnailHandler
         int IThumbnailProvider.GetThumbnail(uint cx, out IntPtr phbmp, out WTS_ALPHATYPE pdwAlpha)
         {
             //  DebugLog this key event.
-            Log($"GetThumbnail for file '{SelectedItemPath}', width {cx}.");
+            Log($"GetThumbnail for shell item, width {cx}.");
 
             //  Set the out variables to default values.
             phbmp = IntPtr.Zero;

@@ -655,7 +655,7 @@ namespace SharpShell.ServerRegistration
                     return string.Format(@"{0}\ShellEx\DataHandler", className);
 
                 case ServerType.ShellThumbnailHandler:
-                case ServerType.ShellFileThumbnailHandler:
+                case ServerType.ShellItemThumbnailHandler:
 
                     //  Create the key name for a thumbnail handler. This has no server name, 
                     //  as there cannot be multiple data handlers.

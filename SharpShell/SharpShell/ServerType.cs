@@ -68,10 +68,10 @@ namespace SharpShell
         ShellThumbnailHandler,
         
         /// <summary>
-        /// A Shell File Thumbnail Handler (as opposed to the standard stream handler).
+        /// A Shell Item Thumbnail Handler (as opposed to the standard stream handler).
         /// </summary>
-        [Description("Shell File Thumbnail Handler")]
-        ShellFileThumbnailHandler,
+        [Description("Shell Item Thumbnail Handler")]
+        ShellItemThumbnailHandler,
 
         /// <summary>
         /// A Shell Namespace Extension
