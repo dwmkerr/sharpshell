@@ -19,6 +19,10 @@ You cannot create a Shell Thumbnail Handler which is based in `IInitializeWithIt
 
 https://social.msdn.microsoft.com/Forums/en-US/80617ead-f9c4-422a-a405-06fd3837f7be/problem-about-iinitializewithfile-amp-ithumbnailprovider?forum=windowssearch
 
+See also the Stack Overflow question here:
+
+https://stackoverflow.com/questions/57168578/can-i-initialize-a-ithumbnailprovider-object-with-a-file/58625519#58625519
+
 **Shell Icon Overlay Handlers**
 
 If you are not seeing your Shell Icon Overlay handlers after registering, double check which other icon handlers are registered, if you have more than a few then yours may not show up - the shell only supports about ten or so.
