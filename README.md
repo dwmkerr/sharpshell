@@ -1,6 +1,6 @@
 # SharpShell
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/) [![GuardRails badge](https://badges.production.guardrails.io/dwmkerr/sharpshell.svg)](https://www.guardrails.io)
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/sharpshell.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/sharpshell)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
@@ -30,6 +30,8 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 * [License](#license)
 
 <!-- vim-markdown-toc -->
+
+If you find this project useful, please consider [Sponsoring](https://github.com/sponsors/dwmkerr)!
 
 ## Installation
 
