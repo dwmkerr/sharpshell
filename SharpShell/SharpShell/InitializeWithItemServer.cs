@@ -1,4 +1,5 @@
-﻿using SharpShell.Interop;
+﻿using System;
+using SharpShell.Interop;
 
 namespace SharpShell
 {

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using SharpShell.Attributes;
 using SharpShell.Interop;
 
@@ -14,6 +10,7 @@ namespace SharpShell.SharpThumbnailHandler
     /// custom Thumbnail Image Handlers. <see cref="SharpThumbnailHandler"/>, which initialises with a stream
     /// should be preferred for performance reasons.
     /// </summary>
+    [Obsolete("SharpItemThumbnailHandler will not work as expected from Windows Vista onwards, use SharpThumbnailHandler")]
     [ServerType(ServerType.ShellItemThumbnailHandler)]
     public abstract class SharpItemThumbnailHandler : InitializeWithItemServer, IThumbnailProvider
     {

@@ -367,7 +367,6 @@ namespace ServerManager
                         SelectedServerEntry.Server is SharpDropHandler ||
                         SelectedServerEntry.Server is SharpPreviewHandler ||
                         SelectedServerEntry.Server is SharpThumbnailHandler ||
-                        SelectedServerEntry.Server is SharpItemThumbnailHandler ||
                         SelectedServerEntry.Server is SharpIconOverlayHandler
                     )
                 );
