@@ -38,6 +38,8 @@ namespace TxtThumbnailHandler
         /// </returns>
         protected override Bitmap GetThumbnailImage(uint width)
         {
+            Log($"Creating thumbnail for '{SelectedItemStream.Name}'");
+
             //  Attempt to open the stream with a reader.
             try
             {
