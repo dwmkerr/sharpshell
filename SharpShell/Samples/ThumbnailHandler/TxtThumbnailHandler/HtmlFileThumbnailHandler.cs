@@ -14,16 +14,16 @@ using TxtThumbnailHandler.Renderer;
 namespace TxtThumbnailHandler
 {
     /// <summary>
-    /// The TxtThumbnailHandler is a ThumbnailHandler for text files.
+    /// The HtmlFileThumbnailHandler is a SharpFileThumbnailHandler for text files.
+    ///
+    /// Note that the SharpFileThumbnailHandler is less performant than the <see cref="SharpThumbnailHandler"/>,
+    /// which uses streams for its implementation, but may be required if you need the full file path.
     /// </summary>
     [ComVisible(true)]
     [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
-    public class TxtThumbnailHandler : SharpThumbnailHandler, IDisposable
+    public class HtmlFileThumbnailHandler : SharpFileThumbnailHandler, IDisposable
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TxtThumbnailHandler"/> class.
-        /// </summary>
-        public TxtThumbnailHandler()
+        public HtmlFileThumbnailHandler()
         {
             _renderer = new TextThumbnailRenderer();
         }
@@ -37,12 +37,14 @@ namespace TxtThumbnailHandler
         /// </returns>
         protected override Bitmap GetThumbnailImage(uint width)
         {
-            Log($"Creating thumbnail for '{SelectedItemStream.Name}'");
+            Log($"Creating thumbnail for '{Path.GetFileName(SelectedItemPath)}'");
+
+            //  Grab up to three lines of HTML.
 
             //  Attempt to open the stream with a reader.
             try
             {
-                using(var reader = new StreamReader(SelectedItemStream))
+                using(var reader = new StreamReader(SelectedItemPath))
                 {
                     //  Read up to ten lines of text.
                     var previewLines = new List<string>();

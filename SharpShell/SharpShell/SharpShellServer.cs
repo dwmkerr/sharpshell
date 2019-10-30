@@ -86,6 +86,15 @@ namespace SharpShell
             if (!string.IsNullOrEmpty(displayName))
                 ServerRegistrationManager.SetServerDisplayName(type.GUID, displayName, registrationType);
 
+            //  If we are a *file* thumbnail handler, we must disable process isolation.
+            //  See: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/cc144118(v%3Dvs.85)#thumbnail-processes
+            if (serverType == ServerType.ShellFileThumbnailHandler || serverType == ServerType.ShellThumbnailHandler)
+            {
+                Logging.Log($"Disabling process isolation for SharpFileThumbnailHandler named '{type.Name}'.");
+                ServerRegistrationManager.SetDisableProcessIsolationValue(type.GUID, registrationType, 1 /* i.e. disabled */);
+
+            }
+
             //  Execute the custom register function, if there is one.
             CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
 

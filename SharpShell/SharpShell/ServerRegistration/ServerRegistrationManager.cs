@@ -366,21 +366,39 @@ namespace SharpShell.ServerRegistration
         /// <param name="classId">The class identifier.</param>
         /// <param name="displayName">The display name.</param>
         /// <param name="registrationType">Type of the registration.</param>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidOperationException">Thrown if the class key does not exist for the COM server.</exception>
         public static void SetServerDisplayName(Guid classId, string displayName, RegistrationType registrationType)
         {
-            //  Open the classes.
+            //  Open the class key for the server.
             using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
+            using (var serverKey = classesKey.OpenSubKey(classId.ToRegistryString(), RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue))
             {
-                //  Create the server key.
-                using (var serverKey = classesKey.OpenSubKey(classId.ToRegistryString(), RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue))
-                {
-                    if (serverKey == null)
-                        throw new InvalidOperationException($"Cannot open class id key {classId}");
+                if (serverKey == null)
+                    throw new InvalidOperationException($"Cannot open class id key for '{classId}'");
 
-                    //  Set the display name.
-                    serverKey.SetValue(null, displayName, RegistryValueKind.String);
-                }
+                //  Set the display name.
+                serverKey.SetValue(null, displayName, RegistryValueKind.String);
+            }
+        }
+
+        /// <summary>
+        /// Sets the 'DisableProcessIsolation' value of the a COM server.
+        /// </summary>
+        /// <seealso cref="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/cc144118"/>
+        /// <param name="classId">The class identifier.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="disableProcessIsolationValue">The DisableProcessIsolation value, generally 1 or 0.</param>
+        /// <exception cref="InvalidOperationException">Thrown if the class key does not exist for the COM server.</exception>
+        public static void SetDisableProcessIsolationValue(Guid classId, RegistrationType registrationType, int disableProcessIsolationValue)
+        {
+            //  Open the class key for the server.
+            using (var classesKey = OpenClassesKey(registrationType, RegistryKeyPermissionCheck.ReadWriteSubTree))
+            using (var serverKey = classesKey.OpenSubKey(classId.ToRegistryString(), RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.SetValue))
+            {
+                if (serverKey == null)
+                    throw new InvalidOperationException($"Cannot open class id key for '{classId}'");
+
+                serverKey.SetValue("DisableProcessIsolation", disableProcessIsolationValue);
             }
         }
 
@@ -409,11 +427,14 @@ namespace SharpShell.ServerRegistration
                     foreach (var associationClassName in associationClassNames)
                     {
                         //  Create the server key.
-                        using (var serverKey = classesKey.CreateSubKey(GetKeyForServerType(associationClassName, serverType, serverName)))
+                        var serverKeyPath = GetKeyForServerType(associationClassName, serverType, serverName);
+                        using (var serverKey = classesKey.CreateSubKey(serverKeyPath))
                         {
-                            //  Set the server class id.
-                            if (serverKey != null)
-                                serverKey.SetValue(null, serverClsid.ToRegistryString());
+                            //  If we failed to craete the server key, that's a big problem.
+                            if (serverKey == null) throw new InvalidOperationException($"Failed to create server key at '{serverKeyPath}'.");
+
+                            //  Set the server CLSID.
+                            serverKey.SetValue(null, serverClsid.ToRegistryString());
                         }
 
                         //  If we're a shell icon handler, we must also set the defaulticon.
@@ -634,6 +655,7 @@ namespace SharpShell.ServerRegistration
                     return string.Format(@"{0}\ShellEx\DataHandler", className);
 
                 case ServerType.ShellThumbnailHandler:
+                case ServerType.ShellFileThumbnailHandler:
 
                     //  Create the key name for a thumbnail handler. This has no server name, 
                     //  as there cannot be multiple data handlers.
