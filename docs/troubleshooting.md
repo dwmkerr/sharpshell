@@ -15,6 +15,10 @@ Shell thumbnail handlers have some specific things to be aware of:
 1.  Do NOT use 'ClassOfExtension' COM server associations - you must register to a file extension.
 2.  The Server Manager tool doesn't seem to respect alpha channels, but the system does.
 
+You cannot create a Shell Thumbnail Handler which is based in `IInitializeWithItem`, this exposed security issues and was disabled in Windows 10, see the thread here:
+
+https://social.msdn.microsoft.com/Forums/en-US/80617ead-f9c4-422a-a405-06fd3837f7be/problem-about-iinitializewithfile-amp-ithumbnailprovider?forum=windowssearch
+
 **Shell Icon Overlay Handlers**
 
 If you are not seeing your Shell Icon Overlay handlers after registering, double check which other icon handlers are registered, if you have more than a few then yours may not show up - the shell only supports about ten or so.
