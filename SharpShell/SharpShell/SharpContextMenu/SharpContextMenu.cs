@@ -402,31 +402,6 @@ namespace SharpShell.SharpContextMenu
         /// <returns>The context menu for the shell context menu.</returns>
         protected abstract ContextMenuStrip CreateMenu();
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MENUITEMINFOW
-        {
-            public uint cbSize;
-            public uint fMask;
-            public uint fType;
-            public uint fState;
-            public uint wID;
-            public IntPtr hSubMenu;
-            public IntPtr hbmpChecked;
-            public IntPtr hbmpUnchecked;
-            public uint dwItemData;
-            public IntPtr dwTypeData;
-            public uint cch;
-            public IntPtr hbmpItem;
-        }
-
-        [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetMenuItemInfo(
-            IntPtr hMenu, uint item, [MarshalAs(UnmanagedType.Bool)] bool fByPosition, ref MENUITEMINFOW lpmii);
-
-        [DllImport("User32.dll", SetLastError = true)]
-        private static extern int GetMenuItemCount(IntPtr hMenu);
-
         /// <summary>
         ///     Offers an opportunity to this instance to position itself in the context menu to be displayed by the system.
         /// </summary>
@@ -481,5 +456,38 @@ namespace SharpShell.SharpContextMenu
         /// The current invoke command information.
         /// </summary>
         private InvokeCommandInfo currentInvokeCommandInfo;
+
+        #region Interop
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MenuItemInfoW
+        {
+            // ReSharper disable MemberCanBePrivate.Local
+            // ReSharper disable FieldCanBeMadeReadOnly.Local
+            public uint cbSize;
+            public uint fMask;
+            public uint fType;
+            public uint fState;
+            public uint wID;
+            public IntPtr hSubMenu;
+            public IntPtr hbmpChecked;
+            public IntPtr hbmpUnchecked;
+            public uint dwItemData;
+            public IntPtr dwTypeData;
+            public uint cch;
+            public IntPtr hbmpItem;
+            // ReSharper restore MemberCanBePrivate.Local
+            // ReSharper restore FieldCanBeMadeReadOnly.Local
+        }
+
+        [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetMenuItemInfo(
+            IntPtr hMenu, uint item, [MarshalAs(UnmanagedType.Bool)] bool fByPosition, ref MenuItemInfoW lpmii);
+
+        [DllImport("User32.dll", SetLastError = true)]
+        private static extern int GetMenuItemCount(IntPtr hMenu);
+
+        #endregion
     }
 }
