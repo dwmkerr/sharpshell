@@ -74,11 +74,43 @@ namespace SharpShell.SharpContextMenu
             }
             else
             {
+                // by index
                 var userMenuIndex = GetMenuIndex(menuItemCount);
                 if (userMenuIndex != null)
                 {
                     var value = Math.Min(Math.Max(userMenuIndex.Value, 0), menuItemCount);
                     indexMenu = Convert.ToUInt32(value);
+                }
+                else // by captions
+                {
+                    var captions = new string[menuItemCount];
+
+                    for (var i = 0u; i < menuItemCount; i++)
+                    {
+                        var info = new MENUITEMINFOW();
+                        info.cbSize = (uint) Marshal.SizeOf(info);
+                        info.fMask = (uint) MIIM.MIIM_STRING;
+
+                        if (!GetMenuItemInfo(hMenu, i, true, ref info))
+                            continue;
+
+                        var mem = Marshal.AllocCoTaskMem(((int) info.cch + 1) * sizeof(char));
+
+                        info.dwTypeData = mem;
+                        info.cch++;
+
+                        if (GetMenuItemInfo(hMenu, i, true, ref info))
+                            captions[i] = Marshal.PtrToStringAuto(mem);
+
+                        Marshal.FreeCoTaskMem(mem);
+                    }
+
+                    var menuIndex = GetMenuIndex(captions);
+                    if (menuIndex != null)
+                    {
+                        var value = Math.Min(Math.Max(menuIndex.Value, 0), menuItemCount);
+                        indexMenu = Convert.ToUInt32(value);
+                    }
                 }
             }
 
@@ -370,6 +402,28 @@ namespace SharpShell.SharpContextMenu
         /// <returns>The context menu for the shell context menu.</returns>
         protected abstract ContextMenuStrip CreateMenu();
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MENUITEMINFOW
+        {
+            public uint cbSize;
+            public uint fMask;
+            public uint fType;
+            public uint fState;
+            public uint wID;
+            public IntPtr hSubMenu;
+            public IntPtr hbmpChecked;
+            public IntPtr hbmpUnchecked;
+            public uint dwItemData;
+            public IntPtr dwTypeData;
+            public uint cch;
+            public IntPtr hbmpItem;
+        }
+
+        [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetMenuItemInfo(
+            IntPtr hMenu, uint item, [MarshalAs(UnmanagedType.Bool)] bool fByPosition, ref MENUITEMINFOW lpmii);
+
         [DllImport("User32.dll", SetLastError = true)]
         private static extern int GetMenuItemCount(IntPtr hMenu);
 
@@ -383,6 +437,22 @@ namespace SharpShell.SharpContextMenu
         ///     The default implementation returns <c>null</c>.
         /// </returns>
         protected virtual int? GetMenuIndex(int count)
+        {
+            return null;
+        }
+
+        /// <summary>
+        ///     Offers an opportunity to this instance to position itself in the context menu to be displayed by the system.
+        /// </summary>
+        /// <param name="captions">
+        ///     Captions of context menu entries to be displayed by the system.
+        /// </param>
+        /// <returns>
+        ///     A value between zero and less than <paramref name="captions" /> <see cref="string.Length" /> to choose a position,
+        ///     <c>null</c> to let the system position this instance.
+        ///     The default implementation returns <c>null</c>.
+        /// </returns>
+        protected virtual int? GetMenuIndex(string[] captions)
         {
             return null;
         }
