@@ -66,53 +66,10 @@ namespace SharpShell.SharpContextMenu
                 return WinError.E_FAIL;
             }
 
-            // Give context menu a chance to position itself.
-            var menuItemCount = GetMenuItemCount(hMenu);
-            if (menuItemCount == -1)
-            {
-                LogError("Couldn't get menu item count.", new Win32Exception()); // this constructor pulls human-friendly message
-            }
-            else
-            {
-                // by index
-                var userMenuIndex = GetMenuIndex(menuItemCount);
-                if (userMenuIndex != null)
-                {
-                    var value = Math.Min(Math.Max(userMenuIndex.Value, 0), menuItemCount);
-                    indexMenu = Convert.ToUInt32(value);
-                }
-                else // by captions
-                {
-                    var captions = new string[menuItemCount];
-
-                    for (var i = 0u; i < menuItemCount; i++)
-                    {
-                        var info = new MENUITEMINFOW();
-                        info.cbSize = (uint) Marshal.SizeOf(info);
-                        info.fMask = (uint) MIIM.MIIM_STRING;
-
-                        if (!GetMenuItemInfo(hMenu, i, true, ref info))
-                            continue;
-
-                        var mem = Marshal.AllocCoTaskMem(((int) info.cch + 1) * sizeof(char));
-
-                        info.dwTypeData = mem;
-                        info.cch++;
-
-                        if (GetMenuItemInfo(hMenu, i, true, ref info))
-                            captions[i] = Marshal.PtrToStringAuto(mem);
-
-                        Marshal.FreeCoTaskMem(mem);
-                    }
-
-                    var menuIndex = GetMenuIndex(captions);
-                    if (menuIndex != null)
-                    {
-                        var value = Math.Min(Math.Max(menuIndex.Value, 0), menuItemCount);
-                        indexMenu = Convert.ToUInt32(value);
-                    }
-                }
-            }
+            // Give user a chance to position menu manually.
+            var userIndex = TryGetUserIndexMenu(hMenu);
+            if (userIndex != -1)
+                indexMenu = Convert.ToUInt32(userIndex);
 
             //  Set the first item id.
             var firstItemId = (uint)idCmdFirst;
@@ -405,20 +362,6 @@ namespace SharpShell.SharpContextMenu
         /// <summary>
         ///     Offers an opportunity to this instance to position itself in the context menu to be displayed by the system.
         /// </summary>
-        /// <param name="count">Number of items in the context menu to be displayed by the system.</param>
-        /// <returns>
-        ///     A value between zero and less than <paramref name="count" /> to choose a position,
-        ///     <c>null</c> to let the system position this instance.
-        ///     The default implementation returns <c>null</c>.
-        /// </returns>
-        protected virtual int? GetMenuIndex(int count)
-        {
-            return null;
-        }
-
-        /// <summary>
-        ///     Offers an opportunity to this instance to position itself in the context menu to be displayed by the system.
-        /// </summary>
         /// <param name="captions">
         ///     Captions of context menu entries to be displayed by the system.
         /// </param>
@@ -487,6 +430,43 @@ namespace SharpShell.SharpContextMenu
 
         [DllImport("User32.dll", SetLastError = true)]
         private static extern int GetMenuItemCount(IntPtr hMenu);
+
+        private int TryGetUserIndexMenu(IntPtr hMenu)
+        {
+            var count = GetMenuItemCount(hMenu);
+            if (count == -1)
+                return -1;
+
+            var captions = new string[count];
+
+            for (var i = 0u; i < count; i++)
+            {
+                var info = new MenuItemInfoW();
+                info.cbSize = (uint) Marshal.SizeOf(info);
+                info.fMask = (uint) MIIM.MIIM_STRING;
+
+                if (!GetMenuItemInfo(hMenu, i, true, ref info))
+                    continue; // not a string, e.g. separator, etc
+
+                var mem = Marshal.AllocCoTaskMem(((int) info.cch + 1) * sizeof(char));
+
+                info.dwTypeData = mem;
+                info.cch++;
+
+                if (GetMenuItemInfo(hMenu, i, true, ref info))
+                    captions[i] = Marshal.PtrToStringAuto(mem);
+
+                Marshal.FreeCoTaskMem(mem);
+            }
+
+            var index = GetMenuIndex(captions);
+            if (index == null)
+                return -1;
+
+            var value = Math.Min(Math.Max(index.Value, 0), count);
+
+            return value;
+        }
 
         #endregion
     }
