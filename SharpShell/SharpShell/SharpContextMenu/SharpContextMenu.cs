@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
@@ -63,6 +64,22 @@ namespace SharpShell.SharpContextMenu
 
                 //  Return the failure.
                 return WinError.E_FAIL;
+            }
+
+            // Give context menu a chance to position itself.
+            var menuItemCount = GetMenuItemCount(hMenu);
+            if (menuItemCount == -1)
+            {
+                LogError("Couldn't get menu item count.", new Win32Exception()); // this constructor pulls human-friendly message
+            }
+            else
+            {
+                var userMenuIndex = GetMenuIndex(menuItemCount);
+                if (userMenuIndex != null)
+                {
+                    var value = Math.Min(Math.Max(userMenuIndex.Value, 0), menuItemCount);
+                    indexMenu = Convert.ToUInt32(value);
+                }
             }
 
             //  Set the first item id.
@@ -352,6 +369,23 @@ namespace SharpShell.SharpContextMenu
         /// </summary>
         /// <returns>The context menu for the shell context menu.</returns>
         protected abstract ContextMenuStrip CreateMenu();
+
+        [DllImport("User32.dll", SetLastError = true)]
+        private static extern int GetMenuItemCount(IntPtr hMenu);
+
+        /// <summary>
+        ///     Offers an opportunity to this instance to position itself in the context menu to be displayed by the system.
+        /// </summary>
+        /// <param name="count">Number of items in the context menu to be displayed by the system.</param>
+        /// <returns>
+        ///     A value between zero and less than <paramref name="count" /> to choose a position,
+        ///     <c>null</c> to let the system position this instance.
+        ///     The default implementation returns <c>null</c>.
+        /// </returns>
+        protected virtual int? GetMenuIndex(int count)
+        {
+            return null;
+        }
 
         /// <summary>
         /// Called when the context menu is about to be displayed.
