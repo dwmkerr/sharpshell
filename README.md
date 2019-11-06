@@ -145,6 +145,7 @@ In order to maximize compatibility, we do not use the latest version of each SDK
 - .NET Core runtime
 - Windows Universal C Runtime
 - Microsoft Visual Studio 2017 Installer Projects
+-  [Chocolatey](https://chocolatey.org/) (choco)
 
 ### Building & Testing
 
