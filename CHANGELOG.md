@@ -1,3 +1,7 @@
+## Version 2.7.2.0
+
+- Context Menus: Shell context menu extension items are inserted in the correct system defined location, fixes [#313](https://github.com/dwmkerr/sharpshell/issues/313)
+
 ## Version 2.7.1
 
 - Property Pages: Fix potential crash when using Tab Controls in property pages.
