@@ -27,14 +27,20 @@ namespace SharpShell.SharpContextMenu
         /// Builds a native context menu, on to the provided HMENU.
         /// </summary>
         /// <param name="hMenu">The handle to the menu.</param>
+        /// <param name="itemIndex">The zero-based position at which to insert the first new menu item.</param>
         /// <param name="firstItemId">The first item id.</param>
         /// <param name="toolStripItems">The tool strip menu items.</param>
+        /// <param name="reserved">Reserved, do not use.</param>
         /// <returns>The index of the last item created.</returns>
-        public uint BuildNativeContextMenu(IntPtr hMenu, uint firstItemId, ToolStripItemCollection toolStripItems)
+        public uint BuildNativeContextMenu(IntPtr hMenu, uint itemIndex, uint firstItemId, ToolStripItemCollection toolStripItems, int reserved = 1)
         {
             //  Create an ID counter and position counter.
             var idCounter = firstItemId;
             uint positionCounter = 0;
+
+            // We'll insert only outer elements.
+            var insert = Convert.ToBoolean(reserved);
+            if (insert) positionCounter = itemIndex;
 
             //  Go through every tool strip item.
             foreach (ToolStripItem item in toolStripItems)
@@ -68,7 +74,7 @@ namespace SharpShell.SharpContextMenu
                 if (toolStripMenuItem != null && toolStripMenuItem.HasDropDownItems)
                 {
                     //  Create each drop down item.
-                    idCounter = BuildNativeContextMenu(menuItemInfo.hSubMenu, idCounter, toolStripMenuItem.DropDownItems);
+                    idCounter = BuildNativeContextMenu(menuItemInfo.hSubMenu, itemIndex, idCounter, toolStripMenuItem.DropDownItems, 0);
                 }
             }
 
