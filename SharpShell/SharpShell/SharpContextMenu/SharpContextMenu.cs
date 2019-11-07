@@ -44,7 +44,11 @@ namespace SharpShell.SharpContextMenu
         {
             //  Log this key event.
             Log(string.Format("Query Context Menu for items: {0}{1}", Environment.NewLine, string.Join(Environment.NewLine, SelectedItemPaths)));
-            
+
+
+            //  Call the virtual function allowing derived classes to customise the menu.
+            OnQueryContextMenu(uFlags);
+
             //  If we've got the defaultonly flag, we're done.
             if (uFlags.HasFlag(CMF.CMF_DEFAULTONLY))
                 return WinError.MAKE_HRESULT(WinError.SEVERITY_SUCCESS, 0, 0);
@@ -73,7 +77,7 @@ namespace SharpShell.SharpContextMenu
             try
             {
                 nativeContextMenuWrapper.ResetNativeContextMenu();
-                lastItemId = nativeContextMenuWrapper.BuildNativeContextMenu(hMenu, firstItemId, contextMenuStrip.Value.Items);
+                lastItemId = nativeContextMenuWrapper.BuildNativeContextMenu(hMenu, indexMenu, firstItemId, contextMenuStrip.Value.Items);
             }
             catch (Exception exception)
             {
@@ -88,6 +92,7 @@ namespace SharpShell.SharpContextMenu
             //  MSDN documentation is flakey here - to be explicit we need to return the count of the items added plus one.
             return WinError.MAKE_HRESULT(WinError.SEVERITY_SUCCESS, 0, (lastItemId - firstItemId) + 1);
         }
+
         int IContextMenu2.QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags)
         {
             return ((IContextMenu) this).QueryContextMenu(hMenu, indexMenu, idCmdFirst, idCmdLast, uFlags);
@@ -198,7 +203,7 @@ namespace SharpShell.SharpContextMenu
             if (isUnicode)
             {
                 //  Create command info from the Unicode structure.
-                currentInvokeCommandInfo = new InvokeCommandInfo
+                CurrentInvokeCommandInfo = new InvokeCommandInfo
                 {
                     WindowHandle = iciex.hwnd,
                     ShowCommand = iciex.nShow
@@ -207,7 +212,7 @@ namespace SharpShell.SharpContextMenu
             else
             {
                 //  Create command info from the ANSI structure.
-                currentInvokeCommandInfo = new InvokeCommandInfo
+                CurrentInvokeCommandInfo = new InvokeCommandInfo
                 {
                     WindowHandle = ici.hwnd,
                     ShowCommand = ici.nShow
@@ -286,7 +291,7 @@ namespace SharpShell.SharpContextMenu
         int IContextMenu2.HandleMenuMsg(uint uMsg, IntPtr wParam, IntPtr lParam)
         {
             //  Always delegate to the IContextMenu3 version.
-            return ((IContextMenu3) this).HandleMenuMsg2(uMsg, wParam, lParam, IntPtr.Zero);
+            return ((IContextMenu3)this).HandleMenuMsg2(uMsg, wParam, lParam, IntPtr.Zero);
         }
         int IContextMenu3.HandleMenuMsg(uint uMsg, IntPtr wParam, IntPtr lParam)
         {
@@ -331,13 +336,14 @@ namespace SharpShell.SharpContextMenu
 
         #endregion
 
-        private Dictionary<uint, SIZE[]> idsToPopupSizes = new Dictionary<uint, SIZE[]>();
-        
+        //not used
+        //private Dictionary<uint, SIZE[]> idsToPopupSizes = new Dictionary<uint, SIZE[]>();
+
         /// <summary>
         /// Gets the current invoke command information. This will only be set when a command
         /// is invoked, and will be replaced when the next command is invoked.
         /// </summary>
-        protected InvokeCommandInfo CurrentInvokeCommandInfo { get { return currentInvokeCommandInfo; }}
+        protected InvokeCommandInfo CurrentInvokeCommandInfo { get; private set; }
 
         /// <summary>
         /// Determines whether this instance can a shell context show menu, given the specified selected file list.
@@ -364,6 +370,14 @@ namespace SharpShell.SharpContextMenu
         }
 
         /// <summary>
+        /// Called when menu is queried.
+        /// </summary>
+        /// <param name="uFlags">The context menu flags.</param>
+        protected virtual void OnQueryContextMenu(CMF uFlags)
+        {
+        }
+
+        /// <summary>
         /// The lazy context menu strip, only created when we actually need it.
         /// </summary>
         private readonly Lazy<ContextMenuStrip> contextMenuStrip;
@@ -372,10 +386,5 @@ namespace SharpShell.SharpContextMenu
         /// The native context menu wrapper.
         /// </summary>
         private readonly NativeContextMenuWrapper nativeContextMenuWrapper = new NativeContextMenuWrapper();
-
-        /// <summary>
-        /// The current invoke command information.
-        /// </summary>
-        private InvokeCommandInfo currentInvokeCommandInfo;
     }
 }
