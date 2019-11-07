@@ -73,7 +73,7 @@ namespace SharpShell.SharpContextMenu
             try
             {
                 nativeContextMenuWrapper.ResetNativeContextMenu();
-                lastItemId = nativeContextMenuWrapper.BuildNativeContextMenu(hMenu, firstItemId, contextMenuStrip.Value.Items);
+                lastItemId = nativeContextMenuWrapper.BuildNativeContextMenu(hMenu, indexMenu, firstItemId, contextMenuStrip.Value.Items);
             }
             catch (Exception exception)
             {
