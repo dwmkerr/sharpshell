@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.splitContainerTreeAndDetails = new System.Windows.Forms.SplitContainer();
+            this.shellTreeView = new ServerManager.ShellDebugger.ShellTreeView();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStripViewMode = new System.Windows.Forms.ToolStrip();
-            this.shellTreeView = new ServerManager.ShellDebugger.ShellTreeView();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTreeAndDetails)).BeginInit();
             this.splitContainerTreeAndDetails.Panel1.SuspendLayout();
             this.splitContainerTreeAndDetails.SuspendLayout();
@@ -49,13 +49,19 @@
             // splitContainerTreeAndDetails.Panel1
             // 
             this.splitContainerTreeAndDetails.Panel1.Controls.Add(this.shellTreeView);
-            // 
-            // splitContainerTreeAndDetails.Panel2
-            // 
-            this.splitContainerTreeAndDetails.Panel2.Resize += new System.EventHandler(this.splitContainerTreeAndDetails_Panel2_Resize);
             this.splitContainerTreeAndDetails.Size = new System.Drawing.Size(584, 416);
-            this.splitContainerTreeAndDetails.SplitterDistance = 140;
+            this.splitContainerTreeAndDetails.SplitterDistance = 194;
             this.splitContainerTreeAndDetails.TabIndex = 2;
+            // 
+            // shellTreeView
+            // 
+            this.shellTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.shellTreeView.Location = new System.Drawing.Point(0, 0);
+            this.shellTreeView.Name = "shellTreeView";
+            this.shellTreeView.ShowFiles = false;
+            this.shellTreeView.ShowHiddenFilesAndFolders = false;
+            this.shellTreeView.Size = new System.Drawing.Size(194, 416);
+            this.shellTreeView.TabIndex = 0;
             // 
             // toolStripContainer1
             // 
@@ -80,18 +86,8 @@
             this.toolStripViewMode.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStripViewMode.Location = new System.Drawing.Point(3, 0);
             this.toolStripViewMode.Name = "toolStripViewMode";
-            this.toolStripViewMode.Size = new System.Drawing.Size(111, 25);
+            this.toolStripViewMode.Size = new System.Drawing.Size(43, 25);
             this.toolStripViewMode.TabIndex = 0;
-            // 
-            // shellTreeView
-            // 
-            this.shellTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.shellTreeView.Location = new System.Drawing.Point(0, 0);
-            this.shellTreeView.Name = "shellTreeView";
-            this.shellTreeView.ShowFiles = false;
-            this.shellTreeView.ShowHiddenFilesAndFolders = false;
-            this.shellTreeView.Size = new System.Drawing.Size(140, 416);
-            this.shellTreeView.TabIndex = 0;
             // 
             // ShellDebuggerForm
             // 

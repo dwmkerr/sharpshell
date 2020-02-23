@@ -135,7 +135,7 @@ namespace SharpShell.SharpDeskBand
             Log("IPersistStream.GetClassID called.");
 
             //  Return the server class id.
-            pClassID = ServerClassId;
+            pClassID = ServerClsid;
 
             //  Return success.
             return WinError.S_OK;
@@ -189,7 +189,7 @@ namespace SharpShell.SharpDeskBand
             //  The class ID is just a unique identifier for the class, meaning
             //  that we can use the class GUID as it will be provided for
             //  all SharpShell servers.
-            pClassID = ServerClassId;
+            pClassID = ServerClsid;
 
             //  Return success.
             return WinError.S_OK;
@@ -478,7 +478,7 @@ namespace SharpShell.SharpDeskBand
         /// The custom registration function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="registrationType">Type of the registration.</param>
         /// <exception cref="System.InvalidOperationException">
         /// Unable to register a SharpNamespaceExtension as it is missing it's junction point definition.
         /// or
@@ -491,9 +491,9 @@ namespace SharpShell.SharpDeskBand
         /// An exception occured creating the ShellFolder key.
         /// </exception>
         [CustomRegisterFunction]
-        internal static void CustomRegisterFunction(Type serverType, RegistrationScope registrationScope)
+        internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
         {
-            Logging.Log($"DeskBand: Preparing to register {registrationScope} COM categories for type {serverType.Name}");
+            Logging.Log($"DeskBand: Preparing to register {registrationType} COM categories for type {serverType.Name}");
 
             //   Use the category manager to register this server as a Desk Band.
             try
@@ -502,7 +502,7 @@ namespace SharpShell.SharpDeskBand
             }
             catch (Exception exception)
             {
-                Logging.Error($"An exception occurred to registering {registrationScope} COM categories for type {serverType.Name}", exception);
+                Logging.Error($"An exception occurred to registering {registrationType} COM categories for type {serverType.Name}", exception);
             }
         }
 
@@ -510,11 +510,11 @@ namespace SharpShell.SharpDeskBand
         /// Customs the unregister function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationScope">Type of the registration.</param>
+        /// <param name="registrationType">Type of the registration.</param>
         [CustomUnregisterFunction]
-        internal static void CustomUnregisterFunction(Type serverType, RegistrationScope registrationScope)
+        internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
         {
-            Logging.Log($"DeskBand: Preparing to unregister {registrationScope} COM categories for type {serverType.Name}");
+            Logging.Log($"DeskBand: Preparing to unregister {registrationType} COM categories for type {serverType.Name}");
 
             //   Use the category manager to register this server as a Desk Band.
             try
@@ -523,7 +523,7 @@ namespace SharpShell.SharpDeskBand
             }
             catch (Exception exception)
             {
-                Logging.Error($"An exception occurred to registering {registrationScope} COM categories for type {serverType.Name}", exception);
+                Logging.Error($"An exception occurred to registering {registrationType} COM categories for type {serverType.Name}", exception);
             }
         }
 

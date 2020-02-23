@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Runtime.InteropServices;
 using SharpShell.Attributes;
 using SharpShell.Diagnostics;
 using SharpShell.ServerRegistration;
+using SharpShell.Interop;
 
 namespace SharpShell
 {
@@ -34,10 +36,7 @@ namespace SharpShell
 
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
-            ServerRegistrationManager.RegisterAndApproveServer(
-                new SharpShellServerInfo(type), 
-                Environment.Is64BitOperatingSystem ? RegistrationScope.OS64Bit : RegistrationScope.OS32Bit
-            );
+            DoRegister(type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit);
         }
 
         /// <summary>
@@ -49,16 +48,86 @@ namespace SharpShell
         [ComUnregisterFunction]
         internal static void Unregister(Type type)
         {
-            Logging.Log("Un-registering server for type " + type.Name);
+            Logging.Log("Unregistering server for type " + type.Name);
 
             //  Unregister the type, use the operating system architecture to determine
             //  what registration type to unregister.
-            ServerRegistrationManager.UnregisterAndUnApproveServer(
-                new SharpShellServerInfo(type),
-                Environment.Is64BitOperatingSystem ? RegistrationScope.OS64Bit : RegistrationScope.OS32Bit
-            );
+            DoUnregister(type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit);
         }
-        
+
+        /// <summary>
+        /// Actually performs registration. The ComRegisterFunction decorated method will call this function
+        /// internally with the flag appropriate for the operating system processor architecture.
+        /// However, this function can also be called manually if needed.
+        /// </summary>
+        /// <param name="type">The type of object to register, this must be a SharpShellServer derived class.</param>
+        /// <param name="registrationType">Type of the registration.</param>
+        internal static void DoRegister(Type type, RegistrationType registrationType)
+        {
+            Logging.Log($"Preparing to register SharpShell Server {type.Name} as {registrationType}");
+
+            //  Get the association data.
+            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
+                .OfType<COMServerAssociationAttribute>().ToList();
+
+            //  Get the server type and the registration name.
+            var serverType = ServerTypeAttribute.GetServerType(type);
+            var registrationName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
+
+            //  Register the server associations, if there are any.
+            if (associationAttributes.Any())
+            {
+                ServerRegistrationManager.RegisterServerAssociations(
+                    type.GUID, serverType, registrationName, associationAttributes, registrationType);
+            }
+
+            //  If a DisplayName attribute has been set, then set the display name of the COM server.
+            var displayName = DisplayNameAttribute.GetDisplayName(type);
+            if (!string.IsNullOrEmpty(displayName))
+                ServerRegistrationManager.SetServerDisplayName(type.GUID, displayName, registrationType);
+
+            //  Execute the custom register function, if there is one.
+            CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+
+            //  Notify the shell we've updated associations.
+            Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
+            Logging.Log($"Registration of {type.Name} completed");
+        }
+
+        /// <summary>
+        /// Actually performs unregistration. The ComUnregisterFunction decorated method will call this function
+        /// internally with the flag appropriate for the operating system processor architecture.
+        /// However, this function can also be called manually if needed.
+        /// </summary>
+        /// <param name="type">The type of object to unregister, this must be a SharpShellServer derived class.</param>
+        /// <param name="registrationType">Type of the registration to unregister.</param>
+        internal static void DoUnregister(Type type, RegistrationType registrationType)
+        {
+            Logging.Log($"Preparing to unregister SharpShell Server {type.Name} as {registrationType}");
+
+            //  Get the association data.
+            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
+                .OfType<COMServerAssociationAttribute>().ToList();
+
+            //  Get the server type and the registration name.
+            var serverType = ServerTypeAttribute.GetServerType(type);
+            var registrationName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
+
+            //  Unregister the server associations, if there are any.
+            if (associationAttributes.Any())
+            {
+                ServerRegistrationManager.UnregisterServerAssociations(
+                    type.GUID, serverType, registrationName, associationAttributes, registrationType);
+            }
+
+            //  Execute the custom unregister function, if there is one.
+            CustomUnregisterFunctionAttribute.ExecuteIfExists(type, registrationType);
+
+            //  Notify the shell we've updated associations.
+            Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
+            Logging.Log($"Unregistration of {type.Name} completed");
+        }
+
         /// <summary>
         /// Logs the specified message to the SharpShell log, with the name of the type.
         /// </summary>
@@ -88,10 +157,7 @@ namespace SharpShell
         /// <value>
         /// The name of the server.
         /// </value>
-        public string DisplayName
-        {
-            get => DisplayNameAttribute.GetDisplayNameAttribute(GetType())?.DisplayName ?? GetType().Name;
-        }
+        public string DisplayName => DisplayNameAttribute.GetDisplayNameOrTypeName(GetType());
 
         /// <summary>
         /// Gets the type of the server.
@@ -99,17 +165,11 @@ namespace SharpShell
         /// <value>
         /// The type of the server.
         /// </value>
-        public ServerType ServerType
-        {
-            get => ServerTypeAttribute.GetServerTypeAttribute(GetType())?.ServerType ?? ServerType.None;
-        }
+        public ServerType ServerType => ServerTypeAttribute.GetServerType(GetType());
 
         /// <summary>
-        /// Gets the server class id.
+        /// Gets the server CLSID.
         /// </summary>
-        public Guid ServerClassId
-        {
-            get => SharpShellServerInfo.GetServerClassId(GetType());
-        }
+        public Guid ServerClsid => GetType().GUID;
     }
 }

@@ -18,7 +18,7 @@ namespace SharpShell
         /// <summary>
         /// Gets the server CLSID.
         /// </summary>
-        Guid ServerClassId { get; }
+        Guid ServerClsid { get; }
 
         /// <summary>
         /// Gets the display name.

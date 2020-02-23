@@ -34,7 +34,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>
     </DocumentationFile>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,7 +44,6 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\SharpShell.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -58,15 +56,19 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Attributes\AssociationType.cs" />
-    <Compile Include="Attributes\PredefinedShellObjectAttribute.cs" />
     <Compile Include="Attributes\RegistrationNameAttribute.cs" />
     <Compile Include="Attributes\COMServerAssociationAttribute.cs" />
     <Compile Include="Attributes\CustomUnregisterFunctionAttribute.cs" />
@@ -195,22 +197,9 @@
     <Compile Include="Pidl\IdList.cs" />
     <Compile Include="Pidl\PidlManager.cs" />
     <Compile Include="Pidl\ShellId.cs" />
-    <Compile Include="Registry\InMemoryRegistry.cs" />
-    <Compile Include="Registry\InMemoryRegistryKey.cs" />
-    <Compile Include="Registry\IRegistry.cs" />
-    <Compile Include="Registry\IRegistryKey.cs" />
-    <Compile Include="Registry\WindowsRegistry.cs" />
-    <Compile Include="Registry\WindowsRegistryKey.cs" />
     <Compile Include="ServerRegistration\ClassRegistration.cs" />
-    <Compile Include="ServerRegistration\FileExtensionClass.cs" />
-    <Compile Include="ServerRegistration\ManagedAssemblyInfo.cs" />
-    <Compile Include="ServerRegistration\SharpShellServerInfo.cs" />
-    <Compile Include="ServerRegistration\ServerSandBox.cs" />
-    <Compile Include="ServerRegistration\ServerInstallationInfo.cs" />
-    <Compile Include="ServerRegistration\ShellExtensionRegistrationInfo.cs" />
     <Compile Include="ServerRegistration\ShellExtensionType.cs" />
     <Compile Include="ServerRegistration\SpecialRegistryClass.cs" />
-    <Compile Include="ServiceRegistry\ServiceRegistry.cs" />
     <Compile Include="SharpContextMenu\InvokeCommandInfo.cs" />
     <Compile Include="SharpContextMenu\PARGB32.cs" />
     <Compile Include="SharpDataHandler\SharpDataHandler.cs" />
@@ -302,9 +291,9 @@
     <Compile Include="NativeBridge\NativeBridge.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interop\CLIPFORMAT.cs" />
-    <Compile Include="ServerRegistration\RegistrationScope.cs" />
-    <Compile Include="ServerRegistration\ServerInstallationType.cs" />
-    <Compile Include="ServerRegistration\ShellExtensionRegisteredAssociationInfo.cs" />
+    <Compile Include="ServerRegistration\RegistrationType.cs" />
+    <Compile Include="ServerRegistration\ServerRegistationType.cs" />
+    <Compile Include="ServerRegistration\ShellExtensionRegistrationInfo.cs" />
     <Compile Include="ServerRegistration\ServerRegistrationManager.cs" />
     <Compile Include="ServerType.cs" />
     <Compile Include="SharpContextMenu\SharpContextMenu.cs" />
