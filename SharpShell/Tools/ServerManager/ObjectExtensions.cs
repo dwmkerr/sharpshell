@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
-using System.Text;
 
 namespace ServerManager
 {
@@ -10,10 +7,10 @@ namespace ServerManager
     {
         public static string GetDescription(this object @this)
         {
-            var attributes = @this.GetType().GetCustomAttributes(typeof (DescriptionAttribute), true);
-            if (!attributes.Any())
-                return null;
-            return attributes.OfType<DescriptionAttribute>().First().Description;
+            return @this.GetType()
+                .GetCustomAttributes(typeof(DescriptionAttribute), true)
+                .OfType<DescriptionAttribute>()
+                .FirstOrDefault()?.Description;
         }
     }
 }

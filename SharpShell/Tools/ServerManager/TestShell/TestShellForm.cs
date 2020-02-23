@@ -4,16 +4,17 @@ using System.Collections.Specialized;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-using Apex.WinForms.Interop;
 using Apex.WinForms.Shell;
+using Microsoft.Win32;
 using SharpShell;
 using SharpShell.Attributes;
 using SharpShell.Interop;
+using SharpShell.Registry;
 using SharpShell.ServerRegistration;
+using SharpShell.ServiceRegistry;
 using SharpShell.SharpContextMenu;
 using SharpShell.SharpDropHandler;
 using SharpShell.SharpIconHandler;
@@ -38,19 +39,19 @@ namespace ServerManager.TestShell
         {
             InitializeComponent();
 
-            lazyBoldFont = new Lazy<Font>(() => new Font(Font, FontStyle.Bold));
+            _lazyBoldFont = new Lazy<Font>(() => new Font(Font, FontStyle.Bold));
 
-            shellTreeView.OnShellItemAdded += new TreeViewEventHandler(shellTreeView_OnShellItemAdded);
-            shellListView.OnShellItemAdded += new Apex.WinForms.Controls.ListViewItemEventHandler(shellListView_OnShellItemAdded);
+            shellTreeView.OnShellItemAdded += shellTreeView_OnShellItemAdded;
+            shellListView.OnShellItemAdded += shellListView_OnShellItemAdded;
 
             //  Create the ordered view menu items.
-            orderedViewMenuItems.Add(largeIconsToolStripMenuItem);
-            orderedViewMenuItems.Add(toolStripMenuItemSmallIcons);
-            orderedViewMenuItems.Add(listToolStripMenuItem);
-            orderedViewMenuItems.Add(detailsToolStripMenuItem);
-            orderedViewMenuItems.Add(tileToolStripMenuItem);
+            _orderedViewMenuItems.Add(largeIconsToolStripMenuItem);
+            _orderedViewMenuItems.Add(toolStripMenuItemSmallIcons);
+            _orderedViewMenuItems.Add(listToolStripMenuItem);
+            _orderedViewMenuItems.Add(detailsToolStripMenuItem);
+            _orderedViewMenuItems.Add(tileToolStripMenuItem);
 
-            shellListView.Columns.Add(new ColumnHeader {Text = "Name"});
+            shellListView.Columns.Add(new ColumnHeader {Text = @"Name"});
         }
 
         void shellTreeView_OnShellItemAdded(object sender, TreeViewEventArgs e)
@@ -68,27 +69,39 @@ namespace ServerManager.TestShell
 
             //  If the icon handler is associated with the the item, test it.
             if (IsServerAssociatedWithShellItem(TestIconHandler, shellItem))
+            {
                 DoTestIconHandler(args.Item);
+            }
 
             //  If the info tip handler is associated with the item, test it.
             if (IsServerAssociatedWithShellItem(TestInfoTipHandler, shellItem))
+            {
                 DoTestInfoTipHandler(args.Item);
+            }
 
             //  If the drop handler is associated with the item, test it.
             if (IsServerAssociatedWithShellItem(TestDropHandler, shellItem))
+            {
                 DoTestDropHandler(args.Item);
+            }
 
             //  If the preview handler is associated with the item, test it.
             if (IsServerAssociatedWithShellItem(TestPreviewHandler, shellItem))
+            {
                 DoTestPreviewHandler(args.Item);
+            }
 
             //  If a thumbnail handleris associated with the item, highlight it.
-            if(IsServerAssociatedWithShellItem(TestThumbnailHandler, shellItem))
+            if (IsServerAssociatedWithShellItem(TestThumbnailHandler, shellItem))
+            {
                 HighlightItem(args.Item);
+            }
 
             //  If an icon overlay handler is associated with the item, highlight it.
-            if(IsServerAssociatedWithShellItem(TestIconOverlayHandler, shellItem))
+            if (IsServerAssociatedWithShellItem(TestIconOverlayHandler, shellItem))
+            {
                 HighlightItem(args.Item);
+            }
         }
 
         private void shellTreeView1_MouseUp(object sender, MouseEventArgs e)
@@ -97,7 +110,7 @@ namespace ServerManager.TestShell
             {
                 if (shellTreeView.SelectedNode == null) return;
                 
-                //  Get the point in screen coords.
+                //  Get the point in screen coordination.
                 var screenPoint = shellTreeView.PointToScreen(new Point(e.X, e.Y));
 
                 //  Get the shell item.
@@ -115,7 +128,7 @@ namespace ServerManager.TestShell
                 //  Get the highlighted items.
                 var items = shellListView.SelectedItems.OfType<ListViewItem>().Select(lvi => shellListView.GetShellItem(lvi)).ToArray();
 
-                //  Get the point in screen coords.
+                //  Get the point in screen coordination.
                 var screenPoint = shellListView.PointToScreen(new Point(e.X, e.Y));
 
                 //  Test it.
@@ -133,7 +146,9 @@ namespace ServerManager.TestShell
         {
             //  If we don't have a context menu, we can bail now.
             if (TestContextMenu == null)
+            {
                 return;
+            }
 
             //  Get the interfaces we need to test with.
             var shellExtInitInterface = (IShellExtInit) TestContextMenu;
@@ -153,7 +168,7 @@ namespace ServerManager.TestShell
                 //  Get the IUnknown COM interface address. Jesus .NET makes this easy.
                 var dataObjectInterfacePointer = Marshal.GetIUnknownForObject(dataObject);
 
-                //  Pass the data to the shell extension, attempt to initialise it.
+                //  Pass the data to the shell extension, attempt to initialize it.
                 //  We must provide the data object as well as the parent folder PIDL.
                 if (items.Any())
                 {
@@ -186,19 +201,19 @@ namespace ServerManager.TestShell
         {
             base.WndProc(ref m);
 
-            //  Do we have a comamnd and a shell context menu we're testing?
+            //  Do we have a command and a shell context menu we're testing?
             if (m.Msg == WM_COMMAND && TestContextMenu != null)
             {
-                var loword = LowWord(m.WParam.ToInt32());
-                var hiword = HighWord(m.WParam.ToInt32());
+                var lowWord = LowWord(m.WParam.ToInt32());
+                var highWord = HighWord(m.WParam.ToInt32());
 
-                //  If the hiword is 0 it's a menu command.
-                if (hiword == 0)
+                //  If the high is 0 it's a menu command.
+                if (highWord == 0)
                 {
                     //  Create command info.
                     var commandInfo = new CMINVOKECOMMANDINFO();
                     commandInfo.cbSize = (uint) Marshal.SizeOf(commandInfo);
-                    commandInfo.verb = new IntPtr(loword);
+                    commandInfo.verb = new IntPtr(lowWord);
 
                     //  Get a pointer to the structure.
                     var commandInfoPointer = Marshal.AllocHGlobal(Marshal.SizeOf(commandInfo));
@@ -211,8 +226,7 @@ namespace ServerManager.TestShell
 
         public static int HighWord(int number)
         {
-            return ((number & 0x80000000) == 0x80000000) ?
-                                                             (number >> 16) : ((number >> 16) & 0xffff);
+            return (number & 0x80000000) == 0x80000000 ? number >> 16 : (number >> 16) & 0xffff;
         }
 
         public static int LowWord(int number)
@@ -225,13 +239,20 @@ namespace ServerManager.TestShell
             var shellItem = shellListView.SelectedItems.Count > 0 ? shellListView.GetShellItem(shellListView.SelectedItems[0]) : null;
 
             if (shellItem != null)
-                toolStripStatusLabelAttributes.Text = "Attributes: " + shellItem.Attributes.ToString();
+            {
+                toolStripStatusLabelAttributes.Text = @"Attributes: " + shellItem.Attributes;
+            }
 
             propertyGridSelectedObject.SelectedObject = shellItem;
-            
+
+            if (shellItem?.Path == null)
+            {
+                return;
+            }
+
             if (IsServerAssociatedWithShellItem(TestPreviewHandler, shellItem))
             {
-                shellPreviewHost1.SetPreviewHandler(TestPreviewHandler.ServerClsid);
+                shellPreviewHost1.SetPreviewHandler(TestPreviewHandler.ServerClassId);
                 shellPreviewHost1.SetPreviewItem(shellItem.Path);
             }
 
@@ -270,11 +291,10 @@ namespace ServerManager.TestShell
             {
                 var shellItem = shellListView.GetShellItem(item);
 
-                IntPtr iconSmall, iconLarge;
-                GetIconHandlerIcons(TestIconHandler, shellItem.Path, out iconSmall, out iconLarge);
+                GetIconHandlerIcons(TestIconHandler, shellItem.Path, out var iconSmall, out var iconLarge);
 
                 //  We're testing the item, so make it bold.
-                item.Font = lazyBoldFont.Value;
+                item.Font = _lazyBoldFont.Value;
 
                 //  Add the icons.
                 var largeIcon = Icon.FromHandle(iconLarge);
@@ -288,6 +308,7 @@ namespace ServerManager.TestShell
             }
             catch (Exception)
             {
+                // ignored
             }
         }
         
@@ -306,28 +327,30 @@ namespace ServerManager.TestShell
         private void DoTestInfoTipHandler(ListViewItem item)
         {
             if (TestInfoTipHandler == null)
+            {
                 return;
+            }
 
             //  Get the shell item.
             try
             {
                 var shellItem = shellListView.GetShellItem(item);
 
-                //  Initialise the icon handler.
+                //  Initialize the icon handler.
                 var persistFileInterface = (IPersistFile)TestInfoTipHandler;
                 persistFileInterface.Load(shellItem.Path, 0);
 
                 //  Get the info tip.
                 var queryInfoInterface = (IQueryInfo)TestInfoTipHandler;
-                string infoTip;
-                queryInfoInterface.GetInfoTip(QITIPF.QITIPF_DEFAULT, out infoTip);
+                queryInfoInterface.GetInfoTip(QITIPF.QITIPF_DEFAULT, out var infoTip);
 
                 //  Set the tooltip.
-                item.Font = lazyBoldFont.Value;
+                item.Font = _lazyBoldFont.Value;
                 item.ToolTipText = infoTip;
             }
             catch (Exception)
             {
+                // ignored
             }
         }
 
@@ -336,13 +359,15 @@ namespace ServerManager.TestShell
         private void DoTestDropHandler(ListViewItem item)
         {
             if (TestDropHandler == null)
+            {
                 return;
+            }
 
-                //  Add the item to the set of test drop items.
-                testDropItems.Add(item);
+            //  Add the item to the set of test drop items.
+            _testDropItems.Add(item);
 
-                //  Highlight the item.
-                HighlightItem(item);
+            //  Highlight the item.
+            HighlightItem(item);
         }
 
         private void DoTestPreviewHandler(ListViewItem item)
@@ -361,10 +386,10 @@ namespace ServerManager.TestShell
         private void HighlightItem(ListViewItem listViewItem)
         {
             //  Set the font to bold.
-            listViewItem.Font = lazyBoldFont.Value;
+            listViewItem.Font = _lazyBoldFont.Value;
         }
 
-        private readonly List<ListViewItem> testDropItems = new List<ListViewItem>(); 
+        private readonly List<ListViewItem> _testDropItems = new List<ListViewItem>(); 
 
         /// <summary>
         /// Determines whether a server is associated with a shell item.
@@ -381,30 +406,42 @@ namespace ServerManager.TestShell
                 return false;
 
             //  Get the associations.
-            var associationType = COMServerAssociationAttribute.GetAssociationType(server.GetType());
+            var associationType = COMServerAssociationAttribute.GetAssociationTypes(server.GetType()).FirstOrDefault();
             var associations = COMServerAssociationAttribute.GetAssociations(server.GetType());
 
             //  TODO: This is potentially a very useful check - maybe it should be moved into the
             //  COMServerAssociationAttribute class so that it can be reused.
 
             //  We have a special case for icon overlays.
-            if (server is SharpIconOverlayHandler && TestIconOverlayHandler != null && shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
-                if (((IShellIconOverlayIdentifier)TestIconOverlayHandler).IsMemberOf(shellItem.Path, FILE_ATTRIBUTE.FILE_ATTRIBUTE_NORMAL) == 0)
+            if (server is SharpIconOverlayHandler &&
+                TestIconOverlayHandler != null &&
+                shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
+            {
+                if (((IShellIconOverlayIdentifier) TestIconOverlayHandler).IsMemberOf(shellItem.Path,
+                        FILE_ATTRIBUTE.FILE_ATTRIBUTE_NORMAL) ==
+                    0)
+                {
                     return true;
+                }
+            }
 
-            //  Based on the assocation type, we can check the shell item.
+            //  Based on the association type, we can check the shell item.
             switch (associationType)
             {
+                //  This is checked for backwards compatibility.
+#pragma warning disable 618
                 case AssociationType.FileExtension:
+#pragma warning restore 618
 
                     //  File extensions are easy to check.
                     if (shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
                     {
                         return
-                            associations.Any(
-                                a =>
-                                string.Compare(Path.GetExtension(shellItem.DisplayName), a,
-                                               StringComparison.OrdinalIgnoreCase) == 0);
+                            associations.Any(a => string.Equals(
+                                Path.GetExtension(shellItem.DisplayName),
+                                a,
+                                StringComparison.OrdinalIgnoreCase
+                            ));
                     }
 
                     break;
@@ -415,10 +452,14 @@ namespace ServerManager.TestShell
                     if (shellItem.Attributes.HasFlag(SFGAO.SFGAO_FILESYSTEM))
                     {
                         //  Get our class.
-                        var fileClass = ServerRegistrationManager.GetClassForExtension(Path.GetExtension(shellItem.DisplayName));
+                        var registry = ServiceRegistry.GetService<IRegistry>();
+                        using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
+                        {
+                            var fileClass = FileExtensionClass.Get(classesRoot, Path.GetExtension(shellItem.DisplayName), false);
 
-                        //  Do we match it?
-                        return associations.Any(a => string.Compare(fileClass, ServerRegistrationManager.GetClassForExtension(a), StringComparison.InvariantCultureIgnoreCase) == 0);
+                            //  Do we match it?
+                            return associations.Any(a => string.Compare(fileClass, FileExtensionClass.Get(classesRoot, a, false), StringComparison.InvariantCultureIgnoreCase) == 0);
+                        }
                     }
 
                     break;
@@ -483,9 +524,9 @@ namespace ServerManager.TestShell
         /// <summary>
         /// The view menu items, in order.
         /// </summary>
-        private List<ToolStripMenuItem> orderedViewMenuItems = new List<ToolStripMenuItem>();
+        private readonly List<ToolStripMenuItem> _orderedViewMenuItems = new List<ToolStripMenuItem>();
 
-        private readonly Lazy<Font> lazyBoldFont;
+        private readonly Lazy<Font> _lazyBoldFont;
 
         private const uint WM_CONTEXTMENU = 0x007B;
         private const uint WM_COMMAND = 0x0111;
@@ -518,7 +559,7 @@ namespace ServerManager.TestShell
         /// <value>
         /// The test context menu.
         /// </value>
-        public SharpContextMenu TestContextMenu { get { return TestServer as SharpContextMenu; } }
+        public SharpContextMenu TestContextMenu { get => TestServer as SharpContextMenu; }
 
         /// <summary>
         /// Gets or sets the test icon handler.
@@ -526,7 +567,7 @@ namespace ServerManager.TestShell
         /// <value>
         /// The test icon handler.
         /// </value>
-        public SharpIconHandler TestIconHandler { get { return TestServer as SharpIconHandler; } }
+        public SharpIconHandler TestIconHandler { get => TestServer as SharpIconHandler; }
 
         /// <summary>
         /// Gets the test thumbnail handler.
@@ -534,7 +575,7 @@ namespace ServerManager.TestShell
         /// <value>
         /// The test thumbnail handler.
         /// </value>
-        public SharpThumbnailHandler TestThumbnailHandler { get { return TestServer as SharpThumbnailHandler; } }
+        public SharpThumbnailHandler TestThumbnailHandler { get => TestServer as SharpThumbnailHandler; }
 
         /// <summary>
         /// Gets or sets the test info tip handler.
@@ -542,12 +583,12 @@ namespace ServerManager.TestShell
         /// <value>
         /// The test info tip handler.
         /// </value>
-        public SharpInfoTipHandler TestInfoTipHandler { get { return TestServer as SharpInfoTipHandler; } }
+        public SharpInfoTipHandler TestInfoTipHandler { get => TestServer as SharpInfoTipHandler; }
 
         /// <summary>
         /// Gets the test drop handler.
         /// </summary>
-        public SharpDropHandler TestDropHandler { get { return TestServer as SharpDropHandler; } }
+        public SharpDropHandler TestDropHandler { get => TestServer as SharpDropHandler; }
 
         /// <summary>
         /// Gets the test preview handler.
@@ -555,36 +596,39 @@ namespace ServerManager.TestShell
         /// <value>
         /// The test preview handler.
         /// </value>
-        public SharpPreviewHandler TestPreviewHandler { get { return TestServer as SharpPreviewHandler; } }
+        public SharpPreviewHandler TestPreviewHandler { get => TestServer as SharpPreviewHandler; }
 
         /// <summary>
         /// Gets the test icon overlay handler.
         /// </summary>
-        public SharpIconOverlayHandler TestIconOverlayHandler { get { return TestServer as SharpIconOverlayHandler; } }
+        public SharpIconOverlayHandler TestIconOverlayHandler { get => TestServer as SharpIconOverlayHandler; }
 
         private void toolStripSplitButtonChangeYourView_ButtonClick(object sender, EventArgs e)
         {
            //  Update it.
-            currentViewIndex++;
-            if (currentViewIndex >= orderedViewMenuItems.Count)
-                currentViewIndex = 0;
+            _currentViewIndex++;
 
-            SetViewIndex(currentViewIndex);
-            orderedViewMenuItems[currentViewIndex].PerformClick();
+            if (_currentViewIndex >= _orderedViewMenuItems.Count)
+            {
+                _currentViewIndex = 0;
+            }
+
+            SetViewIndex(_currentViewIndex);
+            _orderedViewMenuItems[_currentViewIndex].PerformClick();
         }
 
         private void SetViewIndex(int index)
         {
-            currentViewIndex = index;
+            _currentViewIndex = index;
 
             //  Get the menu item to change to.
-            var newItem = orderedViewMenuItems[currentViewIndex];
+            var newItem = _orderedViewMenuItems[_currentViewIndex];
 
             //  Set the icon.
             toolStripSplitButtonChangeYourView.Image = newItem.Image;
         }
 
-        private int currentViewIndex = 0;
+        private int _currentViewIndex;
 
         private void shellListView_ItemDrag(object sender, ItemDragEventArgs e)
         {
@@ -594,7 +638,7 @@ namespace ServerManager.TestShell
             //shellListView.DoDragDrop(e.Item, DragDropEffects.All);
         }
 
-        private List<ShellItem> dragItems = new List<ShellItem>(); 
+        private List<ShellItem> _dragItems = new List<ShellItem>(); 
 
         private void shellListView_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
         {
@@ -635,7 +679,7 @@ namespace ServerManager.TestShell
 
             const int SW_SHOW = 5;
 
-            var shell_ex = new SHELLEXECUTEINFO
+            var shellExecuteInfo = new SHELLEXECUTEINFO
             {
                 cbSize = Marshal.SizeOf(new SHELLEXECUTEINFO()),
                 lpFile = path,
@@ -644,7 +688,7 @@ namespace ServerManager.TestShell
                 lpVerb = "Properties"
             };
 
-            Shell32.ShellExecuteEx(ref shell_ex);        
+            Shell32.ShellExecuteEx(ref shellExecuteInfo);        
         }
 
         private void toolStripButtonShellOpenDialog_Click(object sender, EventArgs e)

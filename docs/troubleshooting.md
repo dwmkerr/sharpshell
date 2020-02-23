@@ -53,6 +53,10 @@ This will give you the progid gives you the keyname to associate with the server
 
 I did this manually and hey presto it works.
 
+**The DirectoryBackground ComServerAssociation**
+
+Note that if you have a `DirectoryBackground` COM Server Association, then the directory you are in will *not* be in the `SelectedItemPaths` (as it is not actually selected). To get this directory, simply use the `FolderPath` property. (See [#68](https://github.com/dwmkerr/sharpshell/issues/68#issuecomment-442073262) for more details).
+
 **Preview Handlers**
 
 If you find your preview handler for Directories is not working on a client machine, trying installing and registering it both **both **x86 and x64\. Thanks [Umut Ozel](https://github.com/umutozel)!

@@ -67,7 +67,7 @@ regasm /u ExampleContextMenuExtension.dll
 
 The Server Registration Manager (`srm.exe`) is a command line tool that allows you to perform various installation and diagnostic activities for SharpShell servers. You can use `srm` to install or uninstall servers, check diagnostic settings and change the SharpShell settings.
 
-See also: [../srm/srm.md](The Server Registration Manager Tool)
+See also: [The Server Registration Manager Tool](../srm/srm.md)
 
 ### Install (using the GAC)
 

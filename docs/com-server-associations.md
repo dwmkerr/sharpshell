@@ -11,25 +11,20 @@ In this example, the `DllIconHandler` COM server is associated with the class of
 
 Each different association type is described below.
 
-## File Extensions
+<!-- vim-markdown-toc GFM -->
 
-You can associate a COM server with a specific file extension or set of file extensions only. Examples:
+* [Classes of Files](#classes-of-files)
+* [Specific Classes](#specific-classes)
+* [File Extensions (Deprecated)](#file-extensions-deprecated)
+    * [Predefined Shell Objects](#predefined-shell-objects)
+    * [All Files](#all-files)
+    * [Directories](#directories)
+    * [Directory Background](#directory-background)
+    * [Desktop Background](#desktop-background)
+    * [Drives](#drives)
+    * [Unknown Files](#unknown-files)
 
-```csharp
-// Associate the CustomIconHandler server with batch files.
-[COMServerAssociation(AssociationType.FileExtension, ".bat")]
-public class CustomIconHanlder : SharpIconHandler
-```
-
-and:
-
-```csharp
-// Associate the CustomIconHandler server with jpeg files.
-[COMServerAssociation(AssociationType.FileExtension, ".jpg". ".jpeg")]
-public class CustomIconHanlder : SharpIconHandler
-```
-
-**Important** Testing on Windows 7 and Windows 8 shows that the system does not normally respect such associations - they must be made on the _class_ of an extension, rather than the extension itself.
+<!-- vim-markdown-toc -->
 
 ## Classes of Files
 
@@ -51,6 +46,8 @@ and:
 public class CustomIconHanlder : SharpIconHandler
 ```
 
+If the file extension is not defined in the registry, SharpShell will create it.
+
 ## Specific Classes
 
 If you know the class you want to associate with it, you can use the 'Class' association, as in the example below.
@@ -60,7 +57,31 @@ If you know the class you want to associate with it, you can use the 'Class' ass
 public class CustomIconHanlder : SharpIconHandler
 ```
 
-## All Files
+## File Extensions (Deprecated)
+
+You can associate a COM server with a specific file extension or set of file extensions only. Examples:
+
+```csharp
+// Associate the CustomIconHandler server with batch files.
+[COMServerAssociation(AssociationType.FileExtension, ".bat")]
+public class CustomIconHanlder : SharpIconHandler
+```
+
+and:
+
+```csharp
+// Associate the CustomIconHandler server with jpeg files.
+[COMServerAssociation(AssociationType.FileExtension, ".jpg". ".jpeg")]
+public class CustomIconHanlder : SharpIconHandler
+```
+
+**Important** Testing on Windows 7 and Windows 8 shows that the system does not normally respect such associations - they must be made on the _class_ of an extension, rather than the extension itself.
+
+### Predefined Shell Objects
+
+There are a number of [predefined shell objects](https://docs.microsoft.com/en-us/windows/desktop/shell/reg-shell-exts#predefined-shell-objects) which you can register. These are documented below. If you need to use a predefined object and it is not available in SharpShell, just use the `Class` association type and manually specify the class. The types below are for convenience.
+
+### All Files
 
 To associate a server with all files in the system, use the `AllFiles` association:
 
@@ -69,7 +90,7 @@ To associate a server with all files in the system, use the `AllFiles` associati
 public class CustomIconHanlder : SharpIconHandler
 ```
 
-## Directories
+### Directories
 
 To associate a server with all folders in the system, use the `Directory` association:
 
@@ -78,7 +99,7 @@ To associate a server with all folders in the system, use the `Directory` associ
 public class CustomIconHanlder : SharpIconHandler
 ```
 
-## Directory Background
+### Directory Background
 
 To associate a server with the background of a folder, use the `DirectoryBackground` association:
 
@@ -87,7 +108,7 @@ To associate a server with the background of a folder, use the `DirectoryBackgro
 public class CustomIconHanlder : SharpIconHandler
 ```
 
-## Desktop Background
+### Desktop Background
 
 To associate a server with the background of the desktop, use the `DesktopBackground` association:
 
@@ -96,7 +117,7 @@ To associate a server with the background of the desktop, use the `DesktopBackgr
 public class CustomIconHanlder : SharpIconHandler
 ```
 
-## Drives
+### Drives
 
 To associate a server with all drives in the system, use the `Drive` association:
 
@@ -105,7 +126,7 @@ To associate a server with all drives in the system, use the `Drive` association
 public class CustomIconHanlder : SharpIconHandler
 ```
 
-## Unknown Files
+### Unknown Files
 
 To associate a server with all unknown file types, use the `UnknownFiles` association:
 

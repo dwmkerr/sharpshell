@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using SharpShell.ServerRegistration;
 
 namespace SharpShell.Attributes
 {
@@ -8,6 +9,7 @@ namespace SharpShell.Attributes
     /// Attribute to associate a SharpShell server with a file extension.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [Serializable]
     public class COMServerAssociationAttribute : Attribute
     {
         /// <summary>
@@ -17,23 +19,21 @@ namespace SharpShell.Attributes
         /// <param name="associations">The associations.</param>
         public COMServerAssociationAttribute(AssociationType associationType, params string[] associations)
         {
-            //  Set the assocation type.
-            this.associationType = associationType;
+            //  Set the association type.
+            AssociationType = associationType;
 
             //  Set the associations.
-            this.associations = associations;
+            Associations = associations;
         }
 
         /// <summary>
         /// Gets the file extension associations for a specified type.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>The set of file extension assocations.</returns>
+        /// <returns>The set of file extension associations.</returns>
         public static IEnumerable<string> GetAssociations(Type type)
         {
-            var attribute = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
-                .OfType<COMServerAssociationAttribute>().FirstOrDefault();
-            return attribute != null ? attribute.Associations : new string[] {};
+            return GetAssociationAttributes(type).SelectMany(attribute => attribute.Associations ?? new string[0]);
         }
 
         /// <summary>
@@ -41,22 +41,50 @@ namespace SharpShell.Attributes
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        public static AssociationType GetAssociationType(Type type)
+        public static IEnumerable<AssociationType> GetAssociationTypes(Type type)
         {
-            var attribute = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
-                .OfType<COMServerAssociationAttribute>().FirstOrDefault();
-            return attribute != null ? attribute.AssociationType : AssociationType.None;
+            return GetAssociationAttributes(type)?
+                .Select(attribute => attribute?.AssociationType ?? AssociationType.None)
+                .Where(associationType => associationType != AssociationType.None);
         }
 
         /// <summary>
-        /// The association type.
+        /// Gets all COMServerAssociationAttribute attributes of this class
         /// </summary>
-        private readonly AssociationType associationType;
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public static IEnumerable<COMServerAssociationAttribute> GetAssociationAttributes(Type type)
+        {
+            var attributes = ServerSandBox.GetAttributesSafe(type, nameof(COMServerAssociationAttribute), true);
 
-        /// <summary>
-        /// The extensions.
-        /// </summary>
-        private readonly string[] associations;
+            if (attributes == null)
+            {
+                yield break;
+            }
+
+            foreach (var attribute in attributes)
+            {
+                var associationType = ServerSandBox.GetByValPropertySafe<AssociationType>(
+                    attribute,
+                    nameof(AssociationType)
+                );
+
+                var associations = ServerSandBox.GetByRefPropertySafe<IEnumerable<string>>(
+                    attribute,
+                    nameof(Associations)
+                );
+
+                if (associationType != null && associations != null)
+                {
+                    yield return new COMServerAssociationAttribute(associationType.Value, associations.ToArray());
+                }
+            }
+        }
+
+        public IEnumerable<string> GetAssociationClassNames(RegistrationScope registrationScope)
+        {
+            return ServerRegistrationManager.GetAssociationClassNames(AssociationType, Associations, registrationScope);
+        }
 
         /// <summary>
         /// Gets the type of the association.
@@ -64,11 +92,11 @@ namespace SharpShell.Attributes
         /// <value>
         /// The type of the association.
         /// </value>
-        public AssociationType AssociationType { get { return associationType; } }
+        public AssociationType AssociationType { get; }
 
         /// <summary>
         /// Gets the associations.
         /// </summary>
-        public IEnumerable<string> Associations { get { return associations; } }
+        public IEnumerable<string> Associations { get; }
     }
 }

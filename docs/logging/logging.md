@@ -4,6 +4,8 @@ By default, SharpShell servers will *not* log any information. This is by design
 
 However, SharpShell *does* support a rich set of logging feature. This guide describes the logging options enabled.
 
+Note: You can use the [SharpShell-Easy-Log](https://github.com/ElektroStudios/SharpShell-Easy-Log) tool to quickly enable/disable logging options and view the logs realtime.
+
 ## Configuring Logging
 
 All logging options are controlled by the registry key below:

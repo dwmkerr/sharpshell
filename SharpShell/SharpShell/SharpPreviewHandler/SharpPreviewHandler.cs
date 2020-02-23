@@ -25,7 +25,7 @@ namespace SharpShell.SharpPreviewHandler
     /// The SharpPreviewHandler is the base class for Shell Preview Handlers
     /// implemented with SharpShell.
     /// </summary>
-    [ServerType(ServerType.ShellPreviewHander)]
+    [ServerType(ServerType.ShellPreviewHandler)]
     public abstract class SharpPreviewHandler : SharpShellServer,
                                                 IInitializeWithFile,
                                                 /*IInitializeWithStream,*/
@@ -540,24 +540,24 @@ namespace SharpShell.SharpPreviewHandler
         /// The custom registration function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         [CustomRegisterFunction]
-        internal static void CustomRegisterFunction(Type serverType, RegistrationType registrationType)
+        internal static void CustomRegisterFunction(Type serverType, RegistrationScope registrationScope)
         {
             //  Register preview handlers via the registrar.
-            PreviewHandlerRegistrar.Register(serverType, registrationType);
+            PreviewHandlerRegistrar.Register(serverType, registrationScope);
         }
 
         /// <summary>
         /// Customs the unregister function.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationType">Type of the registration.</param>
+        /// <param name="registrationScope">Type of the registration.</param>
         [CustomUnregisterFunction]
-        internal static void CustomUnregisterFunction(Type serverType, RegistrationType registrationType)
+        internal static void CustomUnregisterFunction(Type serverType, RegistrationScope registrationScope)
         {
             //  Open the local machine.
-            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
+            using (var localMachineBaseKey = registrationScope == RegistrationScope.OS64Bit
                 ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
                   RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             {
