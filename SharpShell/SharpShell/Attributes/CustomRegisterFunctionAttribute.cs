@@ -12,21 +12,19 @@ namespace SharpShell.Attributes
     public class CustomRegisterFunctionAttribute : Attribute
     {
         /// <summary>
-        /// Gets the name of CustomRegisterFunction if it exists for a type.
+        /// Executes the CustomRegisterFunction if it exists for a type.
         /// </summary>
         /// <param name="type">The type.</param>
-        public static string GetMethodName(Type type)
+        /// <param name="registrationType">Type of the registration.</param>
+        public static void ExecuteIfExists(Type type, RegistrationType registrationType)
         {
             //  Does the type have the attribute?
-            return type
-                .GetMethods(
-                    BindingFlags.Static |
-                    BindingFlags.NonPublic |
-                    BindingFlags.Public |
-                    BindingFlags.FlattenHierarchy
-                ).FirstOrDefault(m =>
-                    ServerSandBox.GetAttributesSafe(m, nameof(CustomRegisterFunctionAttribute), false).Any()
-                )?.Name;
+            var methodWithAttribute = type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                .FirstOrDefault(m => m.GetCustomAttributes(typeof(CustomRegisterFunctionAttribute), false).Any());
+
+            //  Do we have a method? If so, invoke it.
+            if (methodWithAttribute != null)
+                methodWithAttribute.Invoke(null, new object[] {type, registrationType});
         }
     }
 }

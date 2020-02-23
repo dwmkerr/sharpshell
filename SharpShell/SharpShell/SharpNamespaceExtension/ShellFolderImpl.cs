@@ -763,7 +763,7 @@ IQueryInfo	The cidl parameter can only be one.
         int IPersist.GetClassID(out Guid pClassID)
         {
             //  Set the class ID to the server id.
-            pClassID = namespaceExtension.ServerClassId;
+            pClassID = namespaceExtension.ServerClsid;
             return WinError.S_OK;
         }
         int IPersistFolder.GetClassID(out Guid pClassID) { return ((IPersist)this).GetClassID(out pClassID); }

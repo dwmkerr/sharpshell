@@ -5,7 +5,6 @@ using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Exceptions;
 using SharpShell.Extensions;
-using SharpShell.Registry;
 using SharpShell.ServerRegistration;
 
 namespace SharpShell.SharpPreviewHandler
@@ -17,7 +16,7 @@ namespace SharpShell.SharpPreviewHandler
     {
         private const string PreviewHandlersKey = @"Software\Microsoft\Windows\CurrentVersion\PreviewHandlers";
 
-        public static void Register(Type serverType, RegistrationScope registrationScope)
+        public static void Register(Type serverType, RegistrationType registrationType)
         {
             //  Get the preview handler attribute. If it is missing, throw a registration exception.
             var previewHandlerAttribute = PreviewHandlerAttribute.GetPreviewHandlerAttribute(serverType);
@@ -27,10 +26,10 @@ namespace SharpShell.SharpPreviewHandler
             }
 
             //  We will use the display name a few times.
-            var displayName = DisplayNameAttribute.GetDisplayNameAttribute(serverType)?.DisplayName ?? serverType.Name;
+            var displayName = DisplayNameAttribute.GetDisplayNameOrTypeName(serverType);
 
             //  Open the local machine.
-            using (var localMachineBaseKey = registrationScope == RegistrationScope.OS64Bit
+            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
                                                  ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
                                                                            RegistryView.Registry64)
                                                  : RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -52,7 +51,7 @@ namespace SharpShell.SharpPreviewHandler
             }
 
             //  Open the classes root.
-            using (var classesBaseKey = registrationScope == RegistrationScope.OS64Bit
+            using (var classesBaseKey = registrationType == RegistrationType.OS64Bit
                                             ? RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry64)
                                             : RegistryKey.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Registry32))
             {
@@ -109,11 +108,11 @@ namespace SharpShell.SharpPreviewHandler
         /// Unregisters the SharpShell Preview Handler with the given type.
         /// </summary>
         /// <param name="serverType">Type of the server.</param>
-        /// <param name="registrationScope">Type of the registration.</param>
-        public static void Unregister(Type serverType, RegistrationScope registrationScope)
+        /// <param name="registrationType">Type of the registration.</param>
+        public static void Unregister(Type serverType, RegistrationType registrationType)
         {
             //  Open the local machine.
-            using (var localMachineBaseKey = registrationScope == RegistrationScope.OS64Bit
+            using (var localMachineBaseKey = registrationType == RegistrationType.OS64Bit
                 ? RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64) :
                   RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             {
@@ -144,11 +143,7 @@ namespace SharpShell.SharpPreviewHandler
         /// <param name="appId">The application identifier.</param>
         private static void CreatePrevhostApp(string appId)
         {
-            //  Get the registry service.
-            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
-
-            using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
-            using (var appIdsKey = classesRoot.OpenSubKey("AppID", true))
+            using (var appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
             {
                 if (appIdsKey == null)
                     throw new InvalidOperationException("An exception occured trying to open the App IDs.");
@@ -168,11 +163,7 @@ namespace SharpShell.SharpPreviewHandler
         /// <param name="appId">The application identifier.</param>
         private static void DeletePrevhostApp(string appId)
         {
-            //  Get the registry service.
-            var registry = ServiceRegistry.ServiceRegistry.GetService<IRegistry>();
-
-            using (var classesRoot = registry.OpenBaseKey(RegistryHive.ClassesRoot, RegistryView.Default))
-            using (var appIdsKey = classesRoot.OpenSubKey("AppID", true))
+            using (var appIdsKey = Registry.ClassesRoot.OpenSubKey("AppID", true))
             {
                 if (appIdsKey == null)
                     throw new InvalidOperationException("An exception occured trying to open the App IDs.");

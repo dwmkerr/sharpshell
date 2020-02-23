@@ -36,8 +36,7 @@ namespace SharpShell.Tests
                 out pidl);
             var displayName = PidlManager.GetPidlDisplayName(pidl);
             Shell32.ILFree(pidl);
-            string expectedName = GetTestKnownFolderDisplayNameForMyCulture();
-            Assert.AreEqual(expectedName, displayName);
+            Assert.AreEqual(displayName, "Documents");
         }
 
         [Test]
@@ -51,8 +50,7 @@ namespace SharpShell.Tests
             pidl = PidlManager.IdListToPidl(idList);
             var pszPath = new StringBuilder();
             var displayName = PidlManager.GetPidlDisplayName(pidl);
-            string expectedName = GetTestKnownFolderDisplayNameForMyCulture();
-            Assert.AreEqual(expectedName, displayName);
+            Assert.AreEqual(displayName, "Documents");
         }
 
         [Test]
@@ -77,32 +75,5 @@ namespace SharpShell.Tests
             
             Assert.IsTrue(idList.Matches(idList2));
         }
-
-        #region Private Helper Methods 
-            
-        /// <summary>
-        /// Name of installed UI Culture, ISO 639-2T.
-        /// </summary>
-        private readonly string InstalledUICultureISOName = System.Globalization.CultureInfo.InstalledUICulture.TwoLetterISOLanguageName;
-
-        /// <summary>
-        /// Returns the expected DisplayName of the common test Known-Folder.
-        /// Supports different installed UI Cultures.
-        /// </summary>
-        /// <returns>Expected DisplayName of the common test Known-Folder.</returns>
-        private string GetTestKnownFolderDisplayNameForMyCulture()
-        {
-            switch (InstalledUICultureISOName)
-            {
-                case "de":
-                    return "Dokumente";
-                case "en":
-                    return "Documents";
-                default:
-                    throw new Exception($"Unknwon ISO UI Culture, new case needed for '{InstalledUICultureISOName}'.");
-            }
-        }
-
-        #endregion
     }
 }

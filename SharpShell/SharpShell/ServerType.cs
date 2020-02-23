@@ -11,72 +11,72 @@ namespace SharpShell
         /// No Server Type.
         /// </summary>
         [Description("Not a SharpShell Server")]
-        None = 0,
+        None,
 
         /// <summary>
         /// A Shell Context Menu.
         /// </summary>
-        [Description(@"Shell Context Menu")]
-        ShellContextMenu = 1,
+        [Description("Shell Context Menu")]
+        ShellContextMenu,
 
         /// <summary>
         /// A Shell Property Sheet.
         /// </summary>
-        [Description(@"Shell Property Sheet")]
-        ShellPropertySheet = 2,
+        [Description("Shell Property Sheet")]
+        ShellPropertySheet,
 
         /// <summary>
         /// A Shell Icon Handler.
         /// </summary>
-        [Description(@"Shell Icon Handler")]
-        ShellIconHandler = 3,
+        [Description("Shell Icon Handler")]
+        ShellIconHandler,
 
         /// <summary>
         /// A Shell Info Tip Handler.
         /// </summary>
-        [Description(@"Shell Info Tip Handler")]
-        ShellInfoTipHandler = 4,
+        [Description("Shell Info Tip Handler")]
+        ShellInfoTipHandler,
 
         /// <summary>
         /// A Shell Drop Handler
         /// </summary>
-        [Description(@"Shell Drop Handler")]
-        ShellDropHandler = 5,
+        [Description("Shell Drop Handler")]
+        ShellDropHandler,
 
         /// <summary>
         /// A Shell Icon Overlay Handler.
         /// </summary>
-        [Description(@"Shell Icon Overlay Handler")]
-        ShellIconOverlayHandler = 6,
+        [Description("Shell Icon Overlay Handler")]
+        ShellIconOverlayHandler,
 
         /// <summary>
         /// A Shell Preview Handler
         /// </summary>
-        [Description(@"Shell Preview Handler")]
-        ShellPreviewHandler = 7,
+        [Description("Shell Preview Handler")]
+        ShellPreviewHander,
 
         /// <summary>
         /// A Shell Data Handler
         /// </summary>
-        [Description(@"Shell Data Handler")]
-        ShellDataHandler = 8,
+        [Description("Shell Data Handler")]
+        ShellDataHandler,
 
         /// <summary>
         /// A Shell Thumbnail Handler
         /// </summary>
-        [Description(@"Shell Thumbnail Handler")]
-        ShellThumbnailHandler = 9,
+        [Description("Shell Thumbnail Handler")]
+        ShellThumbnailHandler,
 
         /// <summary>
         /// A Shell Namespace Extension
         /// </summary>
-        [Description(@"Shell Namespace Extension")]
-        ShellNamespaceExtension = 10,
+        [Description("Shell Namespace Extension")]
+        ShellNamespaceExtension,
 
         /// <summary>
         /// A Shell Desk Band Extension
         /// </summary>
-        [Description(@"Shell Desk Band Extension")]
-        ShellDeskBand = 11
+        [Description("Shell Desk Band Extension")]
+        ShellDeskBand
     }
 }

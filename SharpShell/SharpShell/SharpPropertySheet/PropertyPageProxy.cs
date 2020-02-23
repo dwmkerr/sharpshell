@@ -78,14 +78,6 @@ namespace SharpShell.SharpPropertySheet
         {
             switch (uMessage)
             {
-                //  Unless we explicitly handle the WM_ACTIVATE message, then when we lose and then regain focus
-                //  in a property page which contains a tab control, then the server will crash.
-                //  Detailed investigation has not helped us yes understand *why* this is the case, so at the moment
-                //  this is a required defensive measure. For more details, see:
-                //      https://github.com/dwmkerr/sharpshell/issues/233
-                case WindowsMessages.WM_ACTIVATE:
-                    return new IntPtr(-1);
-
                 //  The shell creates our property pages from a template, then adds them as a child of the sheet.
                 //  This means when it closes the sheet it will destroy the pages for us. This event handler
                 //  primarily exists for diagnostics, to allow us to see where in the lifecycle the actual destroy

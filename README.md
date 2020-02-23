@@ -48,9 +48,10 @@ Please open an issue if there is missing documentation and I will try to priorit
 
 ## Deploying SharpShell Servers
 
-A guide on deploying SharpShell servers is available at:
+There is an article on the CodeProject that describes in detail how you can use the Server Registration Manager tool
+to deploy SharpShell servers:
 
-[Deploying SharpShell Servers](./docs/installing/installing.md)
+[Deploying SharpShell Servers](http://www.codeproject.com/Articles/653780/NET-Shell-Extensions-Deploying-SharpShell-Servers)
 
 ## Supported Shell Extensions
 
@@ -148,12 +149,12 @@ As long as the correct components have be installed for Visual Studio, you shoul
 
 You can also use the following scripts to run the processes:
 
-| Script         | Notes                                                                                                                                |
-|----------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `config.ps1`   | Ensure your machine can run builds by installing necessary components such as `nunit`. Should only need to be run once.              |
-| `build.ps1`    | Build all solutions. Ensures that we build both 32/64 bit versions of native components.                                             |
-| `test.ps1`     | Run all tests, including those in samples.                                                                                           |
-| `coverage.ps1` | Create a coverage report for the main `SharpShell` project (samples are not included). Reports are written to `./artifacts/coverage` |
+| Script         | Notes                                                                                                                   |
+|----------------|-------------------------------------------------------------------------------------------------------------------------|
+| `config.ps1`   | Ensure your machine can run builds by installing necessary components such as `nunit`. Should only need to be run once. |
+| `build.ps1`    | Build all solutions. Ensures that we build both 32/64 bit versions of native components.                                |
+| `test.ps1`     | Run all tests, including those in samples.                                                                              |
+| `coverage.ps1` | Create a coverage report for the main `SharpShell` project (samples are not included).                                  |
 
 These scripts will generate various artifacts which may be useful to review:
 
@@ -182,12 +183,6 @@ A detailed guide explaining how to configure and use logging for SharpShell is a
 
 [./docs/logging/logging.md](./docs/logging/logging.md)
 
-You can also use the [SharpShell-Easy-Log](https://github.com/ElektroStudios/SharpShell-Easy-Log) tool to quickly enable/disable logging options and view the logs realtime:
-
-[![SharpShell Easy Log](./docs/logging/sharpshell-easy-log.png)](https://github.com/ElektroStudios/SharpShell-Easy-Log)
-
-The tool is available at: [github.com/ElektroStudios/SharpShell-Easy-Log](https://github.com/ElektroStudios/SharpShell-Easy-Log)
-
 ### CI/CD
 
 CI/CD is currently handled by AppVeyor. AppVeyor will:
@@ -200,9 +195,12 @@ CI/CD is currently handled by AppVeyor. AppVeyor will:
 
 Some work is still needed on the CI/CD side:
 
+- [ ] AppVeyor config should be in the yaml file, not the web UI.
 - [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
 - [ ] Look into automatic notifications for package publication.
 - [ ] Deploy SRM as a NuGet package.
+- [ ] There is stale release code in the [`Release`](/Release) folder.
+- [ ] The embedded NativeBridge in SharpShell must be updated during the release, both for 32 and 64 bit. And it should not be checked in.
 
 ### Creating a Release
 
@@ -212,7 +210,7 @@ To create a release:
 2. Update the [`CHANGELOG.md`](./CHANGELOG.md)
 3. Create a new version tag, then push
 
-AppVeyor will build and publish a new NuGet package and as long as a new semver tag is pushed.
+The AppVeyor build will build a new NuGet package and as long as a new semver tag is pushed.
 
 ## Testimonials
 
@@ -240,7 +238,6 @@ Send me a message to add a project to this list:
  - [Windows Explorer Thumbnails for MagicaVoxel .vox files](https://github.com/Arlorean/Voxels)
  - [Markdown Preview](https://github.com/Atrejoe/MarkdownPreview)
  - [SharePoint Shell Extensions by Archon Gnosis](https://sse.technology/)
- - [.NET Assembly Info Shell Extension by ElektroStudios](https://github.com/ElektroStudios/.NET-Assembly-Info-ShellEx)
 
 ## Thanks
 

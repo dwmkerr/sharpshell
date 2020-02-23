@@ -1,4 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
 using Apex.MVVM;
 using SharpShell.ServerRegistration;
 
@@ -22,23 +26,15 @@ namespace ShellExtensionManager.ShellExtensions
         private void DoRefreshExtensionsCommand(object parameter)
         {
             //  Get all servers.
-            var servers = ServerRegistrationManager.EnumerateRegisteredExtensions(RegistrationScope.OS64Bit);
+            var servers = ServerRegistrationManager.EnumerateExtensions(RegistrationType.OS64Bit, ShellExtensionType.IconHandler);
             foreach (var server in servers)
             {
-                var installation =
-                    ServerRegistrationManager.GetExtensionInstallationInfo(server.ServerClassId,
-                        RegistrationScope.OS64Bit);
-                var sharpServer = installation?.GetSharpShellServerInformation();
-
-                if (sharpServer != null)
-                {
-                    var extensionViewModel = new ExtensionViewModel();
-                    extensionViewModel.DisplayName = sharpServer.DisplayName;
-                    extensionViewModel.ShellExtensionType = sharpServer.ShellExtensionType;
-                    foreach (var classReg in server.Associations)
-                        extensionViewModel.ClassRegistrations.Add(classReg);
-                    RefreshExtensionsCommand.ReportProgress(() => Extensions.Add(extensionViewModel));
-                }
+                var extensionViewModel = new ExtensionViewModel();
+                extensionViewModel.DisplayName = server.DisplayName;
+                extensionViewModel.ShellExtensionType = server.ShellExtensionType;
+                foreach (var classReg in server.ClassRegistrations)
+                    extensionViewModel.ClassRegistrations.Add(classReg);
+                RefreshExtensionsCommand.ReportProgress(() => Extensions.Add(extensionViewModel));
             }
         }
 
