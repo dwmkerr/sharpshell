@@ -255,9 +255,9 @@ Send me a message to add a project to this list:
 
 ## Thanks
 
-Many thanks to [JetBrains](https://www.jetbrains.com/) for providing an Open Source License for their products!
+Many thanks to [JetBrains](https://www.jetbrains.com/?from=sharpshell) for providing an Open Source License for their products!
 
-![JetBrains](./docs/thanks/jetbrains.png)
+[![JetBrains](./docs/thanks/jetbrains.png)](https://www.jetbrains.com/?from=sharpshell)
 
 ## License
 
