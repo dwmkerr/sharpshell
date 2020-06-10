@@ -23,6 +23,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
+* [Documentation](#documentation)
 * [Contributor Guide](#contributor-guide)
 * [Testimonials](#testimonials)
 * [Projects that use SharpShell](#projects-that-use-sharpshell)
@@ -212,6 +213,16 @@ To create a release:
 3. Create a new version tag, then push
 
 AppVeyor will build and publish a new NuGet package and as long as a new semver tag is pushed.
+
+## Documentation
+
+Documentation is still work in progress, and any contributions would be most welcome!
+
+- [COM Server Associations](./docs/com-server-associations.md)
+- [Context Menus](./docs/context-menu.md)
+- [Managed Shell Extensions](./docs/managed-shell-extensions.md)
+- [Logging](./docs/logging/logging.md)
+- [Troubleshooting](./docs/troubleshooting.md)
 
 ## Contributor Guide
 
