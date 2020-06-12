@@ -103,6 +103,8 @@ The details of the logic to see what is a valid shortcut key or not are at:
 
 https://referencesource.microsoft.com/#System.Windows.Forms/winforms/Managed/System/WinForms/ToolStripManager.cs,54f03ea0326af803,references
 
+There are more details on this issue at: https://github.com/dwmkerr/sharpshell/issues/328
+
 ## Troubleshooting
 
 **I cannot see the context menu extension, or it does not activate properly, when the user has selected more than 15 items**
