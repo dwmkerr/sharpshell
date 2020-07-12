@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.AccessControl;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -169,6 +171,39 @@ namespace SharpShell.Tests.ServerRegistration
                 @"            TestContextMenu",
                 @"               (Default) = {00000000-1111-2222-3333-444444444444}")
             ));
+        }
+
+        [Test]
+        public void CheckFileShellExtensions_Can_Identify_A_Native_Dll()
+        {
+            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "ServerRegistration", "TestFiles", "NativeDll.dll");
+            var fileShellExtensions = ServerRegistrationManager.CheckFileShellExtensions(path);
+            Assert.That(fileShellExtensions.FileType, Is.EqualTo(FileType.NativeDll));
+            Assert.That(fileShellExtensions.Version, Is.Null);
+            Assert.That(fileShellExtensions.ProcessorArchitecture, Is.EqualTo(ProcessorArchitecture.None));
+            Assert.That(fileShellExtensions.FrameworkName, Is.Null);
+        }
+
+        [Test]
+        public void CheckFileShellExtensions_Can_Identify_A_Dot_Net_Framework_Assembly()
+        {
+            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "ServerRegistration", "TestFiles", "CopyDirectoryLocationHandler.dll");
+            var fileShellExtensions = ServerRegistrationManager.CheckFileShellExtensions(path);
+            Assert.That(fileShellExtensions.FileType, Is.EqualTo(FileType.DotNetFrameworkAssembly));
+            Assert.That(fileShellExtensions.Version, Is.EqualTo(new Version(1, 0,0, 0)));
+            Assert.That(fileShellExtensions.ProcessorArchitecture, Is.EqualTo(ProcessorArchitecture.MSIL));
+            Assert.That(fileShellExtensions.FrameworkName, Is.EqualTo(".NETFramework,Version=v4.5"));
+        }
+
+        [Test]
+        public void CheckFileShellExtensions_Can_Identify_A_Dot_Net_Core_Assembly()
+        {
+            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "ServerRegistration", "TestFiles", "CountLinesExtension.dll");
+            var fileShellExtensions = ServerRegistrationManager.CheckFileShellExtensions(path);
+            Assert.That(fileShellExtensions.FileType, Is.EqualTo(FileType.DotNetCoreAssembly));
+            Assert.That(fileShellExtensions.Version, Is.EqualTo(new Version(1, 0, 0, 0)));
+            Assert.That(fileShellExtensions.ProcessorArchitecture, Is.EqualTo(ProcessorArchitecture.MSIL));
+            Assert.That(fileShellExtensions.FrameworkName, Is.EqualTo(".NETCoreApp,Version=v3.1"));
         }
     }
 }

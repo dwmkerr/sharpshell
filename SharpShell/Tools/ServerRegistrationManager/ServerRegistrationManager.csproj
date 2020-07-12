@@ -1,43 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{80B7B105-FDEE-44D7-B2A3-5DD61A80C93B}</ProjectGuid>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServerRegistrationManager</RootNamespace>
-    <AssemblyName>ServerRegistrationManager</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <!-- Assembly metadata. -->
+    <Copyright>Copyright (c) Dave Kerr 2020</Copyright>
+    <PackageProjectUrl>https://github.com/dwmkerr/sharpshell</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dwmkerr/sharpshell</RepositoryUrl>
+    <Version>3.0.0.0-alpha1</Version>
+    <Authors>Dave Kerr</Authors>
+    <Company>Dave Kerr</Company>
+    <Description>The ServerRegistrationManager tool can be used to install, register and uninstall SharpShell servers.</Description>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -52,39 +24,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Actions\ConfigAction.cs" />
-    <Compile Include="Actions\EnableEventLogAction.cs" />
-    <Compile Include="Actions\ShowHelpAction.cs" />
-    <Compile Include="Application.cs" />
-    <Compile Include="OutputService\IOutputService.cs" />
-    <Compile Include="OutputService\ConsoleOutputService.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="app.manifest">
+    <None Update="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpShell\SharpShell.csproj">
-      <Project>{b5d5f670-bfba-4d09-91c6-74bb12b7edd4}</Project>
-      <Name>SharpShell</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\SharpShell\SharpShell.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Actions\Help.txt" />
@@ -92,19 +37,11 @@
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedReferences\SharpShell.dll" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(SolutionDir)artifacts\build\SharpShell\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\" /F /R /Y /I</PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
