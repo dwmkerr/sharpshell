@@ -50,6 +50,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SharpShell.Registration\SharpShell.Registration.csproj" />
     <ProjectReference Include="..\..\SharpShell\SharpShell.csproj" />
   </ItemGroup>
   <ItemGroup>

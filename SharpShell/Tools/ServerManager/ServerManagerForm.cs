@@ -27,13 +27,15 @@ using SharpShell.SharpThumbnailHandler;
 namespace ServerManager
 {
     /// <summary>
-    /// The main class 
+    /// The main class
     /// </summary>
     public partial class ServerManagerForm : Form
     {
         public ServerManagerForm()
         {
             InitializeComponent();
+            serverDetailsView1 = new ServerDetails.ServerDetailsView();
+            splitContainer1.Panel2.Controls.Add( serverDetailsView1 );
 
             if (Properties.Settings.Default.RecentlyUsedFiles == null)
                 Properties.Settings.Default.RecentlyUsedFiles = new StringCollection();
@@ -162,7 +164,7 @@ namespace ServerManager
             ServerRegistrationManager.InstallServer(SelectedServerEntry.Server, RegistrationType.OS32Bit, true);
             serverDetailsView1.Initialise(SelectedServerEntry);
         }
-        
+
         private void uninstallServerx86ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SelectedServerEntry == null)
@@ -199,7 +201,7 @@ namespace ServerManager
 
         private void listViewServers_DragDrop(object sender, DragEventArgs e)
         {
-            
+
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 var files = e.Data.GetData(DataFormats.FileDrop) as string[];
@@ -343,7 +345,7 @@ namespace ServerManager
         {
             ExplorerManager.RestartExplorer();
         }
-        
+
         private void UpdateUserInterfaceCommands()
         {
             //  Install/Uninstall etc etc only available if we have a selection.
@@ -420,7 +422,7 @@ namespace ServerManager
         {
             (new AboutForm()).ShowDialog(this);
         }
-        
+
         private void toolStripButtonOpenTestShell_Click(object sender, EventArgs e)
         {
             (new TestShellForm()).ShowDialog(this);
@@ -454,7 +456,7 @@ namespace ServerManager
             //  Create a regasm instance and register the server.
             var regasm = new RegAsm();
             var success = Environment.Is64BitOperatingSystem ? regasm.Register64(SelectedServerEntry.ServerPath, true) : regasm.Register32(SelectedServerEntry.ServerPath, true);
-            
+
             //  Inform the user of the result.
             if (success)
             {

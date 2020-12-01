@@ -7,7 +7,7 @@ namespace SharpShell.Attributes
     /// Provides metadata for a predefined shell object.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    internal class PredefinedShellObjectAttribute : Attribute
+    public class PredefinedShellObjectAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PredefinedShellObjectAttribute"/> class.

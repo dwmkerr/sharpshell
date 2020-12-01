@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Samples", "3. Samples", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ContextMenu", "ContextMenu", "{1485D689-7B58-4926-A9A8-7192F47E417B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "Tools\ServerManager\ServerManager.csproj", "{07601D35-F06E-4EF1-8B77-D7E47EAF48E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerManager", "Tools\ServerManager\ServerManager.csproj", "{07601D35-F06E-4EF1-8B77-D7E47EAF48E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Tools", "2. Tools", "{2B76CB23-07D4-4139-9872-3FF41FEA6F24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CountLinesExtension", "Samples\ContextMenu\CountLinesExtension\CountLinesExtension.csproj", "{E48D396E-04AC-40C8-9046-66A896EF3568}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CountLinesExtension", "Samples\ContextMenu\CountLinesExtension\CountLinesExtension.csproj", "{E48D396E-04AC-40C8-9046-66A896EF3568}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertySheet", "PropertySheet", "{8D0115C0-3631-46D2-B4BC-5DFB9D6DC614}"
 EndProject
@@ -40,7 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IconOverlayHandler", "IconO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadOnlyFileIconOverlayHandler", "Samples\IconOverlayHandler\ReadOnlyFileIconOverlayHandler\ReadOnlyFileIconOverlayHandler.csproj", "{31EFBD02-1FCC-4EC6-A7F3-5A04BE4AE806}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShellExtensionManager", "Tools\ShellExtensionManager\ShellExtensionManager.csproj", "{FB40D56E-C056-4CFE-9863-A36D432B7EAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShellExtensionManager", "Tools\ShellExtensionManager\ShellExtensionManager.csproj", "{FB40D56E-C056-4CFE-9863-A36D432B7EAA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PreviewHandler", "PreviewHandler", "{AADBCF91-B536-41B2-8054-5286699F91DC}"
 EndProject
@@ -68,7 +68,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Tests", "4. Tests", "{B2
 		..\Tests\Uninstall Servers.bat = ..\Tests\Uninstall Servers.bat
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerRegistrationManager", "Tools\ServerRegistrationManager\ServerRegistrationManager.csproj", "{80B7B105-FDEE-44D7-B2A3-5DD61A80C93B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerRegistrationManager", "Tools\ServerRegistrationManager\ServerRegistrationManager.csproj", "{80B7B105-FDEE-44D7-B2A3-5DD61A80C93B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedContextMenuExtension", "Samples\ContextMenu\AdvancedContextMenuExtension\AdvancedContextMenuExtension.csproj", "{35EB7DB4-325E-4E05-BD63-8717314944EE}"
 EndProject
@@ -93,6 +93,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourcesPropertySheet", "Samples\PropertySheet\ResourcesPropertySheet\ResourcesPropertySheet.csproj", "{D94D7E7A-4A71-4750-B5C6-2E797F5C4D0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourcesPropertySheet.Tests", "Samples\PropertySheet\ResourcesPropertySheet.Tests\ResourcesPropertySheet.Tests.csproj", "{B1418BD9-CF03-45C8-B8D0-84CEEB4E4978}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpShell.Registration", "SharpShell.Registration\SharpShell.Registration.csproj", "{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -544,6 +546,26 @@ Global
 		{B1418BD9-CF03-45C8-B8D0-84CEEB4E4978}.Release|x64.Build.0 = Release|Any CPU
 		{B1418BD9-CF03-45C8-B8D0-84CEEB4E4978}.Release|x86.ActiveCfg = Release|Any CPU
 		{B1418BD9-CF03-45C8-B8D0-84CEEB4E4978}.Release|x86.Build.0 = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|Win32.Build.0 = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|Win32.ActiveCfg = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|Win32.Build.0 = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|x64.Build.0 = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -559,7 +581,7 @@ Global
 		{C63D9362-0FDF-485B-83A9-A4761051B513} = {3E9D66D8-0AE5-489C-B7E9-3EABD9091525}
 		{E0328F1E-3ED6-4E1D-A831-EEE6DFA7DDB5} = {FD310B0C-D0C2-4496-ABC6-F045868E9C30}
 		{97E2A8D5-C05B-4ADF-BC4D-8B7A0B450865} = {E0328F1E-3ED6-4E1D-A831-EEE6DFA7DDB5}
-		{C19D362D-5C21-4C26-ADE9-86E36F703439} = {FD310B0C-D0C2-4496-ABC6-F045868E9C30}
+		{C19D362D-5C21-4C26-ADE9-86E36F703439} = {41A9255D-0C93-4049-BB57-11F5925C0741}
 		{66DA973A-6B67-49E6-AC52-88A8477352AC} = {C19D362D-5C21-4C26-ADE9-86E36F703439}
 		{8A96C112-F6F3-4DBA-AF5A-4170AEBE9932} = {FD310B0C-D0C2-4496-ABC6-F045868E9C30}
 		{31EFBD02-1FCC-4EC6-A7F3-5A04BE4AE806} = {8A96C112-F6F3-4DBA-AF5A-4170AEBE9932}
@@ -586,6 +608,7 @@ Global
 		{ED79CEAB-CA8A-47C1-8989-430E3A68F2C3} = {1485D689-7B58-4926-A9A8-7192F47E417B}
 		{D94D7E7A-4A71-4750-B5C6-2E797F5C4D0C} = {8D0115C0-3631-46D2-B4BC-5DFB9D6DC614}
 		{B1418BD9-CF03-45C8-B8D0-84CEEB4E4978} = {8D0115C0-3631-46D2-B4BC-5DFB9D6DC614}
+		{9A3FC0E7-0A8A-4070-A238-7C62B9FAF2F7} = {BE3250BC-C25E-4BFD-8E50-E7A8113EF17B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2187190F-D346-4601-AC5D-3D30CC326C54}

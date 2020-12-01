@@ -38,8 +38,6 @@
     <Compile Update="SharpPropertySheet\SharpPropertyPage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge32.dll" />
-    <EmbeddedResource Include="NativeBridge\SharpShellNativeBridge64.dll" />
     <EmbeddedResource Update="SharpPreviewHandler\PreviewHandlerHost.resx">
       <DependentUpon>PreviewHandlerHost.cs</DependentUpon>
     </EmbeddedResource>
@@ -69,7 +67,6 @@
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" Condition="'$(TargetFramework)' == 'netcoreapp3.1'" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" Condition="'$(TargetFramework)' == 'net45'" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" Condition="'$(TargetFramework)' == 'net472'" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" Condition="'$(TargetFramework)' == 'net472'" />
   </ItemGroup>
   <PropertyGroup>
       <PreBuildEvent>xcopy "$(SolutionDir)artifacts\build\SharpShellNativeBridge\*.*" "$(MSBuildProjectDirectory)NativeBridge" /Y</PreBuildEvent>

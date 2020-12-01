@@ -6,6 +6,7 @@ using SharpShell.Attributes;
 using SharpShell.Diagnostics;
 using SharpShell.ServerRegistration;
 using SharpShell.Interop;
+using System.Reflection;
 
 namespace SharpShell
 {
@@ -34,9 +35,13 @@ namespace SharpShell
         {
             Logging.Log("Registering server for type " + type.Name);
 
+            AssemblyName assemblyName = AssemblyName.GetAssemblyName("SharpShell.Registration.dll");
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type serverRegistrationManager = assembly.GetType( "ServerRegistrationManager" );
+            MethodInfo method = serverRegistrationManager.GetMethod("DoRegister",BindingFlags.Static);
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
-            DoRegister(type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit);
+            method.Invoke(null, new object[] { type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit} );
         }
 
         /// <summary>
@@ -50,91 +55,14 @@ namespace SharpShell
         {
             Logging.Log("Unregistering server for type " + type.Name);
 
-            //  Unregister the type, use the operating system architecture to determine
-            //  what registration type to unregister.
-            DoUnregister(type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit);
-        }
 
-        /// <summary>
-        /// Actually performs registration. The ComRegisterFunction decorated method will call this function
-        /// internally with the flag appropriate for the operating system processor architecture.
-        /// However, this function can also be called manually if needed.
-        /// </summary>
-        /// <param name="type">The type of object to register, this must be a SharpShellServer derived class.</param>
-        /// <param name="registrationType">Type of the registration.</param>
-        internal static void DoRegister(Type type, RegistrationType registrationType)
-        {
-            Logging.Log($"Preparing to register SharpShell Server {type.Name} as {registrationType}");
-
-            //  Get the association data.
-            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
-                .OfType<COMServerAssociationAttribute>().ToList();
-
-            //  Get the server type and the registration name.
-            var serverType = ServerTypeAttribute.GetServerType(type);
-            var registrationName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
-
-            //  Register the server associations, if there are any.
-            if (associationAttributes.Any())
-            {
-                ServerRegistrationManager.RegisterServerAssociations(
-                    type.GUID, serverType, registrationName, associationAttributes, registrationType);
-            }
-
-            //  If a DisplayName attribute has been set, then set the display name of the COM server.
-            var displayName = DisplayNameAttribute.GetDisplayName(type);
-            if (!string.IsNullOrEmpty(displayName))
-                ServerRegistrationManager.SetServerDisplayName(type.GUID, displayName, registrationType);
-
-            //  If we are a *file* thumbnail handler, we must disable process isolation.
-            //  See: https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/cc144118(v%3Dvs.85)#thumbnail-processes
-            if (serverType == ServerType.ShellItemThumbnailHandler)
-            {
-                Logging.Log($"Disabling process isolation for SharpFileThumbnailHandler named '{type.Name}'.");
-                ServerRegistrationManager.SetDisableProcessIsolationValue(type.GUID, registrationType, 1 /* i.e. disabled */);
-
-            }
-
-            //  Execute the custom register function, if there is one.
-            CustomRegisterFunctionAttribute.ExecuteIfExists(type, registrationType);
-
-            //  Notify the shell we've updated associations.
-            Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
-            Logging.Log($"Registration of {type.Name} completed");
-        }
-
-        /// <summary>
-        /// Actually performs unregistration. The ComUnregisterFunction decorated method will call this function
-        /// internally with the flag appropriate for the operating system processor architecture.
-        /// However, this function can also be called manually if needed.
-        /// </summary>
-        /// <param name="type">The type of object to unregister, this must be a SharpShellServer derived class.</param>
-        /// <param name="registrationType">Type of the registration to unregister.</param>
-        internal static void DoUnregister(Type type, RegistrationType registrationType)
-        {
-            Logging.Log($"Preparing to unregister SharpShell Server {type.Name} as {registrationType}");
-
-            //  Get the association data.
-            var associationAttributes = type.GetCustomAttributes(typeof(COMServerAssociationAttribute), true)
-                .OfType<COMServerAssociationAttribute>().ToList();
-
-            //  Get the server type and the registration name.
-            var serverType = ServerTypeAttribute.GetServerType(type);
-            var registrationName = RegistrationNameAttribute.GetRegistrationNameOrTypeName(type);
-
-            //  Unregister the server associations, if there are any.
-            if (associationAttributes.Any())
-            {
-                ServerRegistrationManager.UnregisterServerAssociations(
-                    type.GUID, serverType, registrationName, associationAttributes, registrationType);
-            }
-
-            //  Execute the custom unregister function, if there is one.
-            CustomUnregisterFunctionAttribute.ExecuteIfExists(type, registrationType);
-
-            //  Notify the shell we've updated associations.
-            Shell32.SHChangeNotify(Shell32.SHCNE_ASSOCCHANGED, 0, IntPtr.Zero, IntPtr.Zero);
-            Logging.Log($"Unregistration of {type.Name} completed");
+            AssemblyName assemblyName = AssemblyName.GetAssemblyName("SharpShell.Registration.dll");
+            Assembly assembly = Assembly.Load(assemblyName);
+            Type serverRegistrationManager = assembly.GetType( "ServerRegistrationManager" );
+            MethodInfo method = serverRegistrationManager.GetMethod("DoUnegister",BindingFlags.Static);
+            //  Register the type, use the operating system architecture to determine
+            //  what registration type to perform.
+            method.Invoke( null, new object[] { type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit } );
         }
 
         /// <summary>

@@ -8,9 +8,9 @@ namespace SharpShell.ServerRegistration
     /// </summary>
     public class ShellExtensionRegistrationInfo
     {
-        internal ShellExtensionRegistrationInfo()
+        public ShellExtensionRegistrationInfo()
         {
-            
+
         }
 
         /// <summary>
@@ -27,12 +27,12 @@ namespace SharpShell.ServerRegistration
         /// <summary>
         /// The class registrations.
         /// </summary>
-        internal readonly List<ClassRegistration> classRegistrations = new List<ClassRegistration>();
+        public readonly List<ClassRegistration> classRegistrations = new List<ClassRegistration>();
 
         /// <summary>
         /// Gets the server CLSID.
         /// </summary>
-        public Guid ServerCLSID { get; internal set; }
+        public Guid ServerCLSID { get; set; }
 
         /// <summary>
         /// Gets the type of the shell extension.
@@ -40,7 +40,7 @@ namespace SharpShell.ServerRegistration
         /// <value>
         /// The type of the shell extension.
         /// </value>
-        public ShellExtensionType ShellExtensionType { get; internal set; }
+        public ShellExtensionType ShellExtensionType { get; set; }
 
         /// <summary>
         /// Gets the display name.
@@ -48,42 +48,42 @@ namespace SharpShell.ServerRegistration
         /// <value>
         /// The display name.
         /// </value>
-        public string DisplayName { get; internal set; }
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// Gets the server path.
         /// </summary>
-        public string ServerPath { get; internal set; }
+        public string ServerPath { get; set; }
 
         /// <summary>
         /// Gets the threading model.
         /// </summary>
-        public string ThreadingModel { get; internal set; }
+        public string ThreadingModel { get; set; }
 
         /// <summary>
         /// Gets the assembly version.
         /// </summary>
-        public string AssemblyVersion { get; internal set; }
+        public string AssemblyVersion { get; set; }
 
         /// <summary>
         /// Gets the assembly.
         /// </summary>
-        public string Assembly { get; internal set; }
+        public string Assembly { get; set; }
 
         /// <summary>
         /// Gets the class.
         /// </summary>
-        public string Class { get; internal set; }
+        public string Class { get; set; }
 
         /// <summary>
         /// Gets the runtime version.
         /// </summary>
-        public string RuntimeVersion { get; internal set; }
+        public string RuntimeVersion { get; set; }
 
         /// <summary>
         /// Gets the codebase path.
         /// </summary>
-        public string CodeBase { get; internal set; }
+        public string CodeBase { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this extension is on the approved list.
@@ -91,7 +91,7 @@ namespace SharpShell.ServerRegistration
         /// <value>
         /// 	<c>true</c> if this instance is approved; otherwise, <c>false</c>.
         /// </value>
-        public bool IsApproved { get; internal set; }
+        public bool IsApproved { get; set; }
 
         /// <summary>
         /// Gets the type of the server registation.
@@ -99,7 +99,7 @@ namespace SharpShell.ServerRegistration
         /// <value>
         /// The type of the server registation.
         /// </value>
-        public ServerRegistationType ServerRegistationType { get; internal set; }
+        public ServerRegistationType ServerRegistationType { get; set; }
 
         /// <summary>
         /// Gets the class registrations.
@@ -107,6 +107,6 @@ namespace SharpShell.ServerRegistration
         /// <value>
         /// The class registrations.
         /// </value>
-        public IEnumerable<ClassRegistration> ClassRegistrations { get { return classRegistrations; } } 
+        public IEnumerable<ClassRegistration> ClassRegistrations { get { return classRegistrations; } }
     }
 }

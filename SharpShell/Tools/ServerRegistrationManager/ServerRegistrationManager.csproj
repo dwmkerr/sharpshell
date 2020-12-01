@@ -42,6 +42,6 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>xcopy "$(SolutionDir)artifacts\build\SharpShell\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\" /F /R /Y /I</PreBuildEvent>
+    <PreBuildEvent>xcopy "$(SolutionDir)SharpShell\bin\$(Configuration)\$(TargetFramework)\SharpShell.dll" "$(ProjectDir)EmbeddedReferences\" /F /R /Y /I</PreBuildEvent>
   </PropertyGroup>
 </Project>
