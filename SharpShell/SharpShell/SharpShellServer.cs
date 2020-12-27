@@ -24,6 +24,12 @@ namespace SharpShell
     [InheritedExport(typeof(ISharpShellServer))]
     public abstract class SharpShellServer : ISharpShellServer
     {
+
+        private const string RegistrationAssemblyFileName     = "SharpShell.Registration.dll";
+        private const string RegistrationTypeName             = "SharpShell.ServerRegistration.ServerRegistrationManager";
+        private const string RegistrationRegisterMethodName   = "DoRegister";
+        private const string RegistrationUnRegisterMethodName = "DoUnregister";
+
         /// <summary>
         /// The COM Register function. Called by regasm to register a COM server
         /// in the system. This function will register the server associations defined
@@ -35,10 +41,13 @@ namespace SharpShell
         {
             Logging.Log("Registering server for type " + type.Name);
 
-            AssemblyName assemblyName = AssemblyName.GetAssemblyName("SharpShell.Registration.dll");
+            // Dynamically load registration assembly and invoke the DoUnregister method.
+            // This avoids any static reference to the registration assembly.
+
+            AssemblyName assemblyName = AssemblyName.GetAssemblyName(RegistrationAssemblyFileName);
             Assembly assembly = Assembly.Load(assemblyName);
-            Type serverRegistrationManager = assembly.GetType( "ServerRegistrationManager" );
-            MethodInfo method = serverRegistrationManager.GetMethod("DoRegister",BindingFlags.Static);
+            Type serverRegistrationManager = assembly.GetType( RegistrationTypeName );
+            MethodInfo method = serverRegistrationManager.GetMethod(RegistrationRegisterMethodName,(BindingFlags.Static | BindingFlags.Public),null, new Type[] {typeof(Type),typeof(RegistrationType) } , null);
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
             method.Invoke(null, new object[] { type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit} );
@@ -55,11 +64,14 @@ namespace SharpShell
         {
             Logging.Log("Unregistering server for type " + type.Name);
 
+            // Dynamically load registration assembly and invoke the DoUnregister method.
+            // This avoids any static reference to the registration assembly.
 
-            AssemblyName assemblyName = AssemblyName.GetAssemblyName("SharpShell.Registration.dll");
+            AssemblyName assemblyName = AssemblyName.GetAssemblyName(RegistrationAssemblyFileName);
             Assembly assembly = Assembly.Load(assemblyName);
-            Type serverRegistrationManager = assembly.GetType( "ServerRegistrationManager" );
-            MethodInfo method = serverRegistrationManager.GetMethod("DoUnegister",BindingFlags.Static);
+            Type serverRegistrationManager = assembly.GetType( RegistrationTypeName );
+            MethodInfo method = serverRegistrationManager.GetMethod(RegistrationUnRegisterMethodName,(BindingFlags.Static | BindingFlags.Public),null, new Type[] {typeof(Type),typeof(RegistrationType) } , null);
+
             //  Register the type, use the operating system architecture to determine
             //  what registration type to perform.
             method.Invoke( null, new object[] { type, Environment.Is64BitOperatingSystem ? RegistrationType.OS64Bit : RegistrationType.OS32Bit } );
