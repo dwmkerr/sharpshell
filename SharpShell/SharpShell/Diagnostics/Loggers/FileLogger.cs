@@ -8,7 +8,7 @@ namespace SharpShell.Diagnostics.Loggers
     /// <summary>
     /// SharpShell logger to write to a log file. Safe across processes.
     /// </summary>
-    internal class FileLogger : ILogger
+    public class FileLogger : ILogger
     {
         /// <summary>
         /// Mutex to allow multiple processes to write to the file.

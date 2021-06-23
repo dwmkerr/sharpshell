@@ -1,8 +1,16 @@
 version: 1.0.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 environment:
   CODECOV_TOKEN: 875a7530-b25b-49e9-a2ba-fe8b7a80cc6b
+
+# Cache chocolatey packages and Nuget packages. Nuget package cache is invalidated
+# on any change to a project file, the choco cache on any change to the config
+# nuget file.
+cache:
+- SharpShell/packages -> **/*.csproj
+- C:/ProgramData/chocolatey/bin -> ./SharpShell/config.ps1
+- C:/ProgramData/chocolatey/lib -> ./SharpShell/config.ps1
 
 # Before building, restore Nuget packages and install dependencies.
 before_build:
@@ -10,10 +18,15 @@ before_build:
     nuget restore SharpShell\SharpShell.sln
     .\SharpShell\config.ps1
 
-build:
-  project: SharpShell\SharpShell.sln
-  publish_nuget: true
-  verbosity: minimal
+# Use our own build script.
+build_script:
+- ps: |
+    ./SharpShell/build.ps1
+    ./SharpShell/pack.ps1
+
+# After the build as completed, analyse coverage and upload.
+on_success:
+- ps: ./SharpShell/coverage.ps1
 
 # Before packaging, zip up the tools.
 before_package:
@@ -29,6 +42,7 @@ artifacts:
   name: ServerRegistrationManager
 - path: SharpShell\artifacts
   name: artifacts
+- path: './source/**/*.nupkg'
 
 # Deploy to Nuget and GitHub Releases.
 deploy:
@@ -40,10 +54,5 @@ deploy:
 - provider: GitHub
   auth_token:
     secure: KTWUORrnJKPKLSf/3ROLY50T9UfgTMnKHf3OjBOv8tlY/DAxtlglRU3eM+j45fMt
-  artifact: SharpShell.*.nupkg, ServerRegistrationManager.*.nupkg, ServerManager.zip, ServerRegistrationManager.zip
   on:
     APPVEYOR_REPO_TAG: true
-
-# After the build as completed, analyse coverage and upload.
-on_success:
-- ps: ./SharpShell/coverage.ps1

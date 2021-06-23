@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.EnterpriseServices;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Microsoft.Win32;
 using SharpShell.Attributes;
 using SharpShell.Extensions;

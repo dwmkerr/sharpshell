@@ -14,6 +14,7 @@ namespace CountLinesExtension
     /// </summary>
     [ComVisible(true)]
     [COMServerAssociation(AssociationType.ClassOfExtension, ".txt")]
+    [Guid("93DEE2FF-1446-4119-A78D-60858BD38E9D")]
     public class CountLinesExtension : SharpContextMenu
     {
         /// <summary>

@@ -265,7 +265,7 @@ namespace ServerManager.ShellDebugger
             {
                 IContextMenu contextMenu = (IContextMenu)Marshal.GetObjectForIUnknown(ppv);
 
-                var popupMenu = new ContextMenu();
+                var popupMenu = new ContextMenuStrip();
                 contextMenu.QueryContextMenu(popupMenu.Handle, 0, 0, 65525, CMF.CMF_EXPLORE);
                 popupMenu.Show(this, new Point(x, y));
             }

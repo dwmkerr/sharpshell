@@ -1,6 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+#if NETCOREAPP
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
+#endif
+using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using Microsoft.Win32;
 using SharpShell.Attributes;
@@ -410,7 +417,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="serverName">Name of the server.</param>
         /// <param name="associationAttributes">The association attributes.</param>
         /// <param name="registrationType">Type of the registration.</param>
-        internal static void RegisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName, 
+        public static void RegisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName, 
             IEnumerable<COMServerAssociationAttribute> associationAttributes, RegistrationType registrationType)
         {
             //  Go through each association.
@@ -525,7 +532,7 @@ namespace SharpShell.ServerRegistration
         /// <param name="serverName">Name of the server.</param>
         /// <param name="associationAttributes">The association attributes.</param>
         /// <param name="registrationType">Type of the registration.</param>
-        internal static void UnregisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName,
+        public static void UnregisterServerAssociations(Guid serverClsid, ServerType serverType, string serverName,
             IEnumerable<COMServerAssociationAttribute> associationAttributes, RegistrationType registrationType)
         {
             //  Go through each association attribute.
@@ -792,6 +799,74 @@ namespace SharpShell.ServerRegistration
         }
 
         /// <summary>
+        /// Important: This API, along with many others, will likely be extracted into a completely separate COM/Shell Extension Management
+        /// library. For now, this API aims to provide the bare mininum requirements to identify if an file (most likely a DLL) contains valid
+        /// SharpShell extensions and whether the assembly is targeting the .NET Framework or .NET Core (which is important as they have to be
+        /// registered differently).
+        /// </summary>
+        /// <param name="path"></param>
+        public static FileShellExtensions CheckFileShellExtensions(string path)
+        {
+#if NET40
+throw new PlatformNotSupportedException("The CheckFileShellExtensions API is not available on the .NET Framework 4");
+#else
+            //  Get the assembly info.
+            try
+            {
+                //  Get the assembly name - this is the first way to check whether it's actually a valid assembly, and also get the version number.
+                var assemblyName = AssemblyName.GetAssemblyName(path);
+
+                //  Loading metadata is a platform specific thing, feel like I'm back in C land :)
+#if NETFRAMEWORK
+                //  Now we need to actually load the assembly to get more metadata with reflection only loading.
+                var assembly = Assembly.ReflectionOnlyLoadFrom(path);
+                var customAttributes = assembly.GetCustomAttributesData();
+                var framework = customAttributes
+                    .Single(ca => ca.AttributeType.Name == "TargetFrameworkAttribute")
+                    .ConstructorArguments[0]
+                    .Value
+                    .ToString();
+#elif NETCOREAPP
+
+                //  Load the metadata with the charming MetadataReader.
+                //  Thanks so much https://gist.github.com/jbe2277/f91ef12df682f3bfb6293aabcb47be2a otherwise I would be lost.
+                //  This is kludgy, but we have a big open issue to pull all of this into a dedicated library anyway.
+                using var stream = File.OpenRead(path);
+                using var reader = new PEReader(stream);
+                var metadata = reader.GetMetadataReader();
+                var assembly = metadata.GetAssemblyDefinition();
+                string framework = null;
+                foreach (var attribute in assembly.GetCustomAttributes().Select(metadata.GetCustomAttribute))
+                {
+                    var ctor = metadata.GetMemberReference((MemberReferenceHandle) attribute.Constructor);
+                    var attrType = metadata.GetTypeReference((TypeReferenceHandle) ctor.Parent);
+                    var attrName = metadata.GetString(attrType.Name);
+                    if (attrName != "TargetFrameworkAttribute") continue;
+                    var attrValue = attribute.DecodeValue(new StringAttributeTypeProvider());
+                    framework = attrValue.FixedArguments[0].Value.ToString();
+                    break;
+                }
+#else
+throw new PlatformNotSupportedException("Unable to load assembly metadata as the framework type is not known");
+#endif
+                //  This is risky and brittle to my mind, but at the moment I'm not sure if we have a better way of knowing
+                //  whether we are .NET Core or not.
+                var fileType = framework != null && framework.StartsWith(".NETCore") // e.g. .NETCoreApp, Version 3.1
+                    ? FileType.DotNetCoreAssembly
+                    : FileType.DotNetFrameworkAssembly;
+
+                return new FileShellExtensions(fileType, assemblyName.Version,
+                    assemblyName.ProcessorArchitecture, framework);
+            }
+            catch (System.BadImageFormatException)
+            {
+                //  This exception is thrown if the file is a Win32 native dll.
+                return new FileShellExtensions(FileType.NativeDll, null, ProcessorArchitecture.None, null);
+            }
+#endif
+        }
+
+        /// <summary>
         /// The classes key name.
         /// </summary>
         private const string KeyName_Classes = @"CLSID";
@@ -841,4 +916,50 @@ namespace SharpShell.ServerRegistration
         /// </summary>
         private const string ValueName_DefaultIconBackup = @"SharpShell_Backup_DefaultIcon";
     }
+
+#if NETCOREAPP
+    internal class StringAttributeTypeProvider : ICustomAttributeTypeProvider<string>
+    {
+        public string GetPrimitiveType(PrimitiveTypeCode typeCode)
+        {
+            if (typeCode == PrimitiveTypeCode.String) return typeof(string).FullName;
+            throw new InvalidOperationException($"Unable to decode type '{typeCode}'");
+        }
+
+        public string GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSZArrayType(string elementType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSystemType()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetTypeFromSerializedName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PrimitiveTypeCode GetUnderlyingEnumType(string type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSystemType(string type)
+        {
+            throw new NotImplementedException();
+        }
+    }
+#endif
 }
