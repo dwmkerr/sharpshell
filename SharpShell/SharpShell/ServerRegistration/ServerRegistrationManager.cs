@@ -442,6 +442,26 @@ namespace SharpShell.ServerRegistration
                             SetIconHandlerDefaultIcon(classesKey, associationClassName);
                     }
                 }
+                // On Win10 build 190042 ff it seems not to be enough to have an ShellEx\{8895b1c6-b41f-4c1c-a562-0d564250836f}
+                // below the associationClassName, you also need it below the assiociation key itself
+                if ( serverType == ServerType.ShellPreviewHander )
+                {
+                    using ( var classesKey = OpenClassesRoot(registrationType) )
+                    {
+                        //  For each one, create the server type key.
+                        foreach ( var serverKeyPath in associationAttribute.Associations.
+                                     Select(association => GetKeyForServerType(association, serverType, serverName)) )
+                        {
+                            using ( var serverKey = classesKey.CreateSubKey(serverKeyPath) )
+                            {
+                                //  If we failed to craete the server key, that's a big problem.
+                                if ( serverKey == null ) throw new InvalidOperationException($"Failed to create server key at '{serverKeyPath}'.");
+                                //  Set the server CLSID.
+                                serverKey.SetValue(null, serverClsid.ToRegistryString());
+                            }
+                        }
+                    }
+                }
             }
         }
 
