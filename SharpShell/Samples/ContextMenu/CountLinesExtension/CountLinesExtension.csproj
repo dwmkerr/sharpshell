@@ -6,6 +6,7 @@
     <SignAssembly>true</SignAssembly>
     <!-- SharpShell servers are COM servers, so we need to enable COM hosting. -->
     <EnableComHosting>true</EnableComHosting>
+    <EnableRegFreeCom>true</EnableRegFreeCom>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>

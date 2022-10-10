@@ -71,48 +71,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="About\AboutForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="About\AboutForm.cs" />
     <Compile Update="About\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="ServerDetails\ServerDetailsView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="ServerDetails\ServerDetailsView.cs" />
     <Compile Update="ServerDetails\ServerDetailsView.Designer.cs">
       <DependentUpon>ServerDetailsView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ServerManagerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ServerManagerForm.cs" />
     <Compile Update="ServerManagerForm.Designer.cs">
       <DependentUpon>ServerManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="ShellDebugger\ShellDebuggerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="ShellDebugger\ShellDebuggerForm.cs" />
     <Compile Update="ShellDebugger\ShellDebuggerForm.Designer.cs">
       <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="ShellDebugger\ShellTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="TestShell\ShellThumbnailHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="ShellDebugger\ShellTreeView.cs" />
+    <Compile Update="TestShell\ShellThumbnailHost.cs" />
     <Compile Update="TestShell\ShellThumbnailHost.Designer.cs">
       <DependentUpon>ShellThumbnailHost.cs</DependentUpon>
     </Compile>
-    <Compile Update="TestShell\ShellPreviewHost.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="TestShell\ShellPreviewHost.cs" />
     <Compile Update="TestShell\ShellPreviewHost.Designer.cs">
       <DependentUpon>ShellPreviewHost.cs</DependentUpon>
     </Compile>
-    <Compile Update="TestShell\TestShellForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="TestShell\TestShellForm.cs" />
     <Compile Update="TestShell\TestShellForm.Designer.cs">
       <DependentUpon>TestShellForm.cs</DependentUpon>
     </Compile>

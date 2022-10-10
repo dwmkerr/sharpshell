@@ -51,6 +51,7 @@ namespace ServerManager
             this.serverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.installToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uninstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.installServerx86ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.registerServerx86ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,6 +136,7 @@ namespace ServerManager
             // 
             // 
             // 
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStripMain);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStripMain);
             this.toolStripContainer1.TopToolStripPanel.Location = new System.Drawing.Point(0, 0);
@@ -193,6 +195,7 @@ namespace ServerManager
             this.splitContainer1.SplitterDistance = 1336;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 1;
+            this.splitContainer1.Panel2.Controls.Add(this.serverDetailsView1);
             // 
             // listViewServers
             // 

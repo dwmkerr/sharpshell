@@ -29,12 +29,8 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="SharpPreviewHandler\PreviewHandlerControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="SharpPreviewHandler\PreviewHandlerHost.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="SharpPreviewHandler\PreviewHandlerControl.cs" />
+    <Compile Update="SharpPreviewHandler\PreviewHandlerHost.cs" />
     <Compile Update="SharpPropertySheet\SharpPropertyPage.cs" />
   </ItemGroup>
   <ItemGroup>
