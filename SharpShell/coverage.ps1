@@ -2,17 +2,15 @@
 $coverageDir = "$PSScriptRoot\artifacts\coverage" 
 $coverageReport = "$coverageDir\coverage.xml"
 
-# Quote arguments for the commandline.
-$testAssemblyArgs = "`"$PSScriptRoot\SharpShell.Tests\bin\Release\SharpShell.Tests.dll`""
-$workArgs = "`"$PSScriptRoot\artifacts\tests`""
+# Get the set of test assemblies and the work folder.
+$testAssemblies = Get-ChildItem -Include *.Tests.dll -Recurse | Where-Object {$_.FullName -like "*bin\Release*"}
+$workArgs = "$PSScriptRoot\artifacts\tests"
 
-# Create an artifacts directory and build the report.
+# Create an artifacts directory create the command to build the report.
 New-Item -ItemType Directory -Force -Path "$PSScriptRoot\artifacts\coverage"
-OpenCover.Console.exe "-target:nunit3-console.exe" `
-    -targetargs:"$testAssemblyArgs --work=$workArgs" `
-    "-filter:+[SharpShell*]* -[SharpShell.Tests*]*" `
-    "-register:user" `
-    "-output:$coverageReport"
+$command = "OpenCover.Console.exe -target:nunit3-console.exe -targetargs:`"$testAssemblies --work=$workArgs`" -filter:`"+[SharpGL.SceneGraph*]* -[SharpGL.SceneGraph.Tests*]*`" -register:user -output:$coverageReport"
+Write-Host "Running: `"$command`""
+Invoke-Expression $command
 
 # Create a local report.
 reportgenerator "-reports:$coverageReport" "-targetdir:$coverageDir\html"

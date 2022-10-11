@@ -19,7 +19,7 @@ namespace SharpShell.ServiceRegistry
         /// <summary>
         /// Resets all providers. Typically used only for testing.
         /// </summary>
-        internal static void Reset()
+        public static void Reset()
         {
             ServiceProviders.Clear();
 

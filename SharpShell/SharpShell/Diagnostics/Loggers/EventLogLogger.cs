@@ -6,7 +6,7 @@ namespace SharpShell.Diagnostics.Loggers
     /// <summary>
     /// A logger which logs to the Windows Event Log.
     /// </summary>
-    internal class EventLogLogger : ILogger
+    public class EventLogLogger : ILogger
     {
         /// <summary>
         /// The source created flag. If true, we have a source.

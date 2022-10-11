@@ -1,25 +1,58 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{07601D35-F06E-4EF1-8B77-D7E47EAF48E5}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ServerManager</RootNamespace>
+    <AssemblyName>ServerManager</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <UseWindowsForms>true</UseWindowsForms>
-    <!-- Assembly metadata. -->
-    <Copyright>Copyright (c) Dave Kerr 2020</Copyright>
-    <PackageProjectUrl>https://github.com/dwmkerr/sharpshell</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dwmkerr/sharpshell</RepositoryUrl>
-    <Version>3.0.0.0-alpha1</Version>
-    <Authors>Dave Kerr</Authors>
-    <Company>Dave Kerr</Company>
-    <Description>The ServerManager tool can be used to manage SharpShell servers.</Description>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\ServerManager.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
@@ -28,9 +61,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisLogFile>bin\Release\ServerManager.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
@@ -39,9 +77,15 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\ServerManager.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
@@ -50,9 +94,15 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Release\ServerManager.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
@@ -69,94 +119,149 @@
     <Reference Include="Apex.WinForms">
       <HintPath>..\..\Dependencies\Apex\Apex.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="About\AboutForm.cs" />
-    <Compile Update="About\AboutForm.Designer.cs">
+    <Compile Include="About\AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="ServerDetails\ServerDetailsView.cs" />
-    <Compile Update="ServerDetails\ServerDetailsView.Designer.cs">
+    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="ServerDetails\ServerDetailsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ServerDetails\ServerDetailsView.Designer.cs">
       <DependentUpon>ServerDetailsView.cs</DependentUpon>
     </Compile>
-    <Compile Update="ServerManagerForm.cs" />
-    <Compile Update="ServerManagerForm.Designer.cs">
+    <Compile Include="ServerEntry.cs" />
+    <Compile Include="ServerManagerApi.cs" />
+    <Compile Include="ServerManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServerManagerForm.Designer.cs">
       <DependentUpon>ServerManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="ShellDebugger\ShellDebuggerForm.cs" />
-    <Compile Update="ShellDebugger\ShellDebuggerForm.Designer.cs">
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShellDebugger\ShellDebuggerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShellDebugger\ShellDebuggerForm.Designer.cs">
       <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
     </Compile>
-    <Compile Update="ShellDebugger\ShellTreeView.cs" />
-    <Compile Update="TestShell\ShellThumbnailHost.cs" />
-    <Compile Update="TestShell\ShellThumbnailHost.Designer.cs">
+    <Compile Include="ShellDebugger\ShellTreeEventArgs.cs" />
+    <Compile Include="ShellDebugger\ShellTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TestShell\ShellThumbnailHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TestShell\ShellThumbnailHost.Designer.cs">
       <DependentUpon>ShellThumbnailHost.cs</DependentUpon>
     </Compile>
-    <Compile Update="TestShell\ShellPreviewHost.cs" />
-    <Compile Update="TestShell\ShellPreviewHost.Designer.cs">
+    <Compile Include="TestShell\ShellPreviewHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TestShell\ShellPreviewHost.Designer.cs">
       <DependentUpon>ShellPreviewHost.cs</DependentUpon>
     </Compile>
-    <Compile Update="TestShell\TestShellForm.cs" />
-    <Compile Update="TestShell\TestShellForm.Designer.cs">
+    <Compile Include="TestShell\TestShellForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestShell\TestShellForm.Designer.cs">
       <DependentUpon>TestShellForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="About\AboutForm.resx">
+    <EmbeddedResource Include="About\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Resources.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Update="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Update="ServerDetails\ServerDetailsView.resx">
+    <EmbeddedResource Include="ServerDetails\ServerDetailsView.resx">
       <DependentUpon>ServerDetailsView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="ServerManagerForm.resx">
+    <EmbeddedResource Include="ServerManagerForm.resx">
       <DependentUpon>ServerManagerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="ShellDebugger\ShellDebuggerForm.resx">
+    <EmbeddedResource Include="ShellDebugger\ShellDebuggerForm.resx">
       <DependentUpon>ShellDebuggerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="ShellDebugger\ShellTreeView.resx">
+    <EmbeddedResource Include="ShellDebugger\ShellTreeView.resx">
       <DependentUpon>ShellTreeView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="TestShell\ShellThumbnailHost.resx">
+    <EmbeddedResource Include="TestShell\ShellThumbnailHost.resx">
       <DependentUpon>ShellThumbnailHost.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="TestShell\ShellPreviewHost.resx">
+    <EmbeddedResource Include="TestShell\ShellPreviewHost.resx">
       <DependentUpon>ShellPreviewHost.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="TestShell\TestShellForm.resx">
+    <EmbeddedResource Include="TestShell\TestShellForm.resx">
       <DependentUpon>TestShellForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Update="Properties\Settings.settings">
+    <None Include="app.manifest" />
+    <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Update="Properties\Settings.Designer.cs">
+    <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpShell\SharpShell.csproj" />
+    <ProjectReference Include="..\..\SharpShell\SharpShell.csproj">
+      <Project>{B5D5F670-BFBA-4D09-91C6-74BB12B7EDD4}</Project>
+      <Name>SharpShell</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ChangeYourView.png" />
     <Content Include="Resources\ContextMenu.png" />
     <Content Include="Resources\Debug.png" />
     <Content Include="Resources\Icon.png" />
+    <None Include="Resources\PlayHS.png" />
+    <None Include="Resources\openHS.png" />
+    <None Include="Resources\process_16xLG.png" />
     <Content Include="Resources\PropertySheet.png" />
+    <None Include="Resources\View_SmallIcons.png" />
+    <None Include="Resources\View_LargeIcons.png" />
+    <None Include="Resources\View_Details.png" />
+    <None Include="Resources\View_Tiles.png" />
+    <None Include="Resources\View_List.png" />
+    <None Include="Resources\View_ExtraLargeIcons.png" />
     <Content Include="SharpShell.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>
