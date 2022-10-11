@@ -50,3 +50,4 @@ SharpShell/Tools/ServerRegistrationManager/EmbeddedReferences/SharpShell.dll
 
 # Test project user specific files.
 DllWithResources.vcxproj.filters
+.vscode/

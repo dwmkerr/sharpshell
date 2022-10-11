@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpShell.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,6 +15,9 @@ namespace ServerManager
         [STAThread]
         static void Main()
         {
+            //  Write to the SharpShell log, can be useful to verify it is running.
+            Logging.Log("Sharting SharpShell ServerManager..");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);       
             Application.Run(new ServerManagerForm());

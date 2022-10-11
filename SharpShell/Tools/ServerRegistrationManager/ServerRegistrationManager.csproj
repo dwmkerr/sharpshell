@@ -24,7 +24,36 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< Updated upstream
     <None Update="app.manifest">
+=======
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Actions\ConfigAction.cs" />
+    <Compile Include="Actions\EnableEventLogAction.cs" />
+    <Compile Include="Actions\ShowHelpAction.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="OutputService\IOutputService.cs" />
+    <Compile Include="OutputService\ConsoleOutputService.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="app.manifest">
+>>>>>>> Stashed changes
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

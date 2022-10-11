@@ -84,6 +84,10 @@ namespace ServerManager
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonAttachDebugger = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonShellDebugger = new System.Windows.Forms.ToolStripButton();
+            this.installToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uninstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.serverDetailsView1 = new ServerManager.ServerDetails.ServerDetailsView();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -111,7 +115,11 @@ namespace ServerManager
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
             this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(6);
+<<<<<<< Updated upstream
             this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1744, 981);
+=======
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1744, 859);
+>>>>>>> Stashed changes
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             // 
             // 
@@ -123,6 +131,7 @@ namespace ServerManager
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(6);
             this.toolStripContainer1.Name = "toolStripContainer1";
+<<<<<<< Updated upstream
             // 
             // 
             // 
@@ -130,11 +139,14 @@ namespace ServerManager
             this.toolStripContainer1.RightToolStripPanel.Name = "";
             this.toolStripContainer1.RightToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.toolStripContainer1.RightToolStripPanel.RowMargin = new System.Windows.Forms.Padding(6, 0, 0, 0);
+=======
+>>>>>>> Stashed changes
             this.toolStripContainer1.Size = new System.Drawing.Size(1744, 981);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
             // 
+<<<<<<< Updated upstream
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStripMain);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
@@ -144,6 +156,10 @@ namespace ServerManager
             this.toolStripContainer1.TopToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.toolStripContainer1.TopToolStripPanel.RowMargin = new System.Windows.Forms.Padding(6, 0, 0, 0);
             this.toolStripContainer1.TopToolStripPanel.Size = new System.Drawing.Size(1744, 82);
+=======
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStripMain);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
+>>>>>>> Stashed changes
             // 
             // statusStrip1
             // 
@@ -155,13 +171,21 @@ namespace ServerManager
             this.toolStripStatusLabelProcessProcessor});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
+<<<<<<< Updated upstream
             this.statusStrip1.Size = new System.Drawing.Size(1744, 46);
+=======
+            this.statusStrip1.Size = new System.Drawing.Size(1744, 41);
+>>>>>>> Stashed changes
             this.statusStrip1.TabIndex = 0;
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+<<<<<<< Updated upstream
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(631, 36);
+=======
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(632, 36);
+>>>>>>> Stashed changes
             this.toolStripStatusLabel1.Text = "Drop SharpShell Server DLLs onto the list to analyse them";
             // 
             // toolStripStatusLabelOSProcessor
@@ -169,7 +193,11 @@ namespace ServerManager
             this.toolStripStatusLabelOSProcessor.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.toolStripStatusLabelOSProcessor.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.toolStripStatusLabelOSProcessor.Name = "toolStripStatusLabelOSProcessor";
+<<<<<<< Updated upstream
             this.toolStripStatusLabelOSProcessor.Size = new System.Drawing.Size(164, 36);
+=======
+            this.toolStripStatusLabelOSProcessor.Size = new System.Drawing.Size(165, 36);
+>>>>>>> Stashed changes
             this.toolStripStatusLabelOSProcessor.Text = "Windows: x64";
             // 
             // toolStripStatusLabelProcessProcessor
@@ -177,7 +205,11 @@ namespace ServerManager
             this.toolStripStatusLabelProcessProcessor.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.toolStripStatusLabelProcessProcessor.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.toolStripStatusLabelProcessProcessor.Name = "toolStripStatusLabelProcessProcessor";
+<<<<<<< Updated upstream
             this.toolStripStatusLabelProcessProcessor.Size = new System.Drawing.Size(146, 36);
+=======
+            this.toolStripStatusLabelProcessProcessor.Size = new System.Drawing.Size(147, 36);
+>>>>>>> Stashed changes
             this.toolStripStatusLabelProcessProcessor.Text = "Process: x86";
             // 
             // splitContainer1
@@ -191,8 +223,17 @@ namespace ServerManager
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.listViewServers);
+<<<<<<< Updated upstream
             this.splitContainer1.Size = new System.Drawing.Size(1744, 981);
             this.splitContainer1.SplitterDistance = 1336;
+=======
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.serverDetailsView1);
+            this.splitContainer1.Size = new System.Drawing.Size(1744, 859);
+            this.splitContainer1.SplitterDistance = 1356;
+>>>>>>> Stashed changes
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 1;
             this.splitContainer1.Panel2.Controls.Add(this.serverDetailsView1);
@@ -210,7 +251,11 @@ namespace ServerManager
             this.listViewServers.Location = new System.Drawing.Point(0, 0);
             this.listViewServers.Margin = new System.Windows.Forms.Padding(6);
             this.listViewServers.Name = "listViewServers";
+<<<<<<< Updated upstream
             this.listViewServers.Size = new System.Drawing.Size(1336, 981);
+=======
+            this.listViewServers.Size = new System.Drawing.Size(1356, 859);
+>>>>>>> Stashed changes
             this.listViewServers.SmallImageList = this.imageList1;
             this.listViewServers.TabIndex = 0;
             this.listViewServers.UseCompatibleStateImageBehavior = false;
@@ -258,7 +303,11 @@ namespace ServerManager
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+<<<<<<< Updated upstream
             this.menuStrip1.Size = new System.Drawing.Size(1744, 40);
+=======
+            this.menuStrip1.Size = new System.Drawing.Size(1744, 42);
+>>>>>>> Stashed changes
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -269,25 +318,41 @@ namespace ServerManager
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+<<<<<<< Updated upstream
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 36);
+=======
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(64, 38);
+>>>>>>> Stashed changes
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // loadServerToolStripMenuItem
             // 
             this.loadServerToolStripMenuItem.Name = "loadServerToolStripMenuItem";
+<<<<<<< Updated upstream
             this.loadServerToolStripMenuItem.Size = new System.Drawing.Size(287, 44);
+=======
+            this.loadServerToolStripMenuItem.Size = new System.Drawing.Size(254, 38);
+>>>>>>> Stashed changes
             this.loadServerToolStripMenuItem.Text = "&Load Server...";
             this.loadServerToolStripMenuItem.Click += new System.EventHandler(this.loadServerToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
+<<<<<<< Updated upstream
             this.toolStripSeparator2.Size = new System.Drawing.Size(284, 6);
+=======
+            this.toolStripSeparator2.Size = new System.Drawing.Size(251, 6);
+>>>>>>> Stashed changes
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+<<<<<<< Updated upstream
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(287, 44);
+=======
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(254, 38);
+>>>>>>> Stashed changes
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -309,7 +374,11 @@ namespace ServerManager
             this.toolStripSeparator1,
             this.testServerToolStripMenuItem});
             this.serverToolStripMenuItem.Name = "serverToolStripMenuItem";
+<<<<<<< Updated upstream
             this.serverToolStripMenuItem.Size = new System.Drawing.Size(101, 36);
+=======
+            this.serverToolStripMenuItem.Size = new System.Drawing.Size(94, 38);
+>>>>>>> Stashed changes
             this.serverToolStripMenuItem.Text = "&Server";
             // 
             // installToolStripMenuItem
@@ -334,73 +403,117 @@ namespace ServerManager
             // installServerx86ToolStripMenuItem
             // 
             this.installServerx86ToolStripMenuItem.Name = "installServerx86ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.installServerx86ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.installServerx86ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.installServerx86ToolStripMenuItem.Text = "Install Server (x86)";
             this.installServerx86ToolStripMenuItem.Click += new System.EventHandler(this.installServerx86ToolStripMenuItem_Click);
             // 
             // registerServerx86ToolStripMenuItem
             // 
             this.registerServerx86ToolStripMenuItem.Name = "registerServerx86ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.registerServerx86ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.registerServerx86ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.registerServerx86ToolStripMenuItem.Text = "Register Server (x86)";
             this.registerServerx86ToolStripMenuItem.Click += new System.EventHandler(this.registerServerx86ToolStripMenuItem_Click);
             // 
             // unregisterServerx86ToolStripMenuItem
             // 
             this.unregisterServerx86ToolStripMenuItem.Name = "unregisterServerx86ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.unregisterServerx86ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.unregisterServerx86ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.unregisterServerx86ToolStripMenuItem.Text = "Unregister Server (x86)";
             this.unregisterServerx86ToolStripMenuItem.Click += new System.EventHandler(this.unregisterServerx86ToolStripMenuItem_Click);
             // 
             // uninstallServerx86ToolStripMenuItem
             // 
             this.uninstallServerx86ToolStripMenuItem.Name = "uninstallServerx86ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.uninstallServerx86ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.uninstallServerx86ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.uninstallServerx86ToolStripMenuItem.Text = "Uninstall Server (x86)";
             this.uninstallServerx86ToolStripMenuItem.Click += new System.EventHandler(this.uninstallServerx86ToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
+<<<<<<< Updated upstream
             this.toolStripSeparator3.Size = new System.Drawing.Size(386, 6);
+=======
+            this.toolStripSeparator3.Size = new System.Drawing.Size(353, 6);
+>>>>>>> Stashed changes
             // 
             // installServerx64ToolStripMenuItem
             // 
             this.installServerx64ToolStripMenuItem.Name = "installServerx64ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.installServerx64ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.installServerx64ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.installServerx64ToolStripMenuItem.Text = "Install Server (x64)";
             this.installServerx64ToolStripMenuItem.Click += new System.EventHandler(this.installServerx64ToolStripMenuItem_Click);
             // 
             // registerServerx64ToolStripMenuItem
             // 
             this.registerServerx64ToolStripMenuItem.Name = "registerServerx64ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.registerServerx64ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.registerServerx64ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.registerServerx64ToolStripMenuItem.Text = "Register Server (x64)";
             this.registerServerx64ToolStripMenuItem.Click += new System.EventHandler(this.registerServerx64ToolStripMenuItem_Click);
             // 
             // unregisterServerx64ToolStripMenuItem
             // 
             this.unregisterServerx64ToolStripMenuItem.Name = "unregisterServerx64ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.unregisterServerx64ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.unregisterServerx64ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.unregisterServerx64ToolStripMenuItem.Text = "Unregister Server (x64)";
             this.unregisterServerx64ToolStripMenuItem.Click += new System.EventHandler(this.unregisterServerx64ToolStripMenuItem_Click);
             // 
             // uninstallServerx64ToolStripMenuItem
             // 
             this.uninstallServerx64ToolStripMenuItem.Name = "uninstallServerx64ToolStripMenuItem";
+<<<<<<< Updated upstream
             this.uninstallServerx64ToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.uninstallServerx64ToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.uninstallServerx64ToolStripMenuItem.Text = "Unin&stall Server (x64)";
             this.uninstallServerx64ToolStripMenuItem.Click += new System.EventHandler(this.uninstallServerx64ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
+<<<<<<< Updated upstream
             this.toolStripSeparator1.Size = new System.Drawing.Size(386, 6);
+=======
+            this.toolStripSeparator1.Size = new System.Drawing.Size(353, 6);
+>>>>>>> Stashed changes
             // 
             // testServerToolStripMenuItem
             // 
             this.testServerToolStripMenuItem.Name = "testServerToolStripMenuItem";
+<<<<<<< Updated upstream
             this.testServerToolStripMenuItem.Size = new System.Drawing.Size(389, 44);
+=======
+            this.testServerToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+>>>>>>> Stashed changes
             this.testServerToolStripMenuItem.Text = "&Test Server...";
             this.testServerToolStripMenuItem.Click += new System.EventHandler(this.testServerToolStripMenuItem_Click);
             // 
@@ -411,14 +524,22 @@ namespace ServerManager
             this.desktopProcessToolStripMenuItem,
             this.restartExplorerToolStripMenuItem});
             this.explorerToolStripMenuItem.Name = "explorerToolStripMenuItem";
+<<<<<<< Updated upstream
             this.explorerToolStripMenuItem.Size = new System.Drawing.Size(120, 36);
+=======
+            this.explorerToolStripMenuItem.Size = new System.Drawing.Size(113, 38);
+>>>>>>> Stashed changes
             this.explorerToolStripMenuItem.Text = "&Explorer";
             // 
             // alwaysUnloadDLLToolStripMenuItem
             // 
             this.alwaysUnloadDLLToolStripMenuItem.CheckOnClick = true;
             this.alwaysUnloadDLLToolStripMenuItem.Name = "alwaysUnloadDLLToolStripMenuItem";
+<<<<<<< Updated upstream
             this.alwaysUnloadDLLToolStripMenuItem.Size = new System.Drawing.Size(348, 44);
+=======
+            this.alwaysUnloadDLLToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+>>>>>>> Stashed changes
             this.alwaysUnloadDLLToolStripMenuItem.Text = "&Always Unload DLL";
             this.alwaysUnloadDLLToolStripMenuItem.Click += new System.EventHandler(this.alwaysUnloadDLLToolStripMenuItem_Click);
             // 
@@ -426,14 +547,22 @@ namespace ServerManager
             // 
             this.desktopProcessToolStripMenuItem.CheckOnClick = true;
             this.desktopProcessToolStripMenuItem.Name = "desktopProcessToolStripMenuItem";
+<<<<<<< Updated upstream
             this.desktopProcessToolStripMenuItem.Size = new System.Drawing.Size(348, 44);
+=======
+            this.desktopProcessToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+>>>>>>> Stashed changes
             this.desktopProcessToolStripMenuItem.Text = "&Desktop Process";
             this.desktopProcessToolStripMenuItem.Click += new System.EventHandler(this.desktopProcessToolStripMenuItem_Click);
             // 
             // restartExplorerToolStripMenuItem
             // 
             this.restartExplorerToolStripMenuItem.Name = "restartExplorerToolStripMenuItem";
+<<<<<<< Updated upstream
             this.restartExplorerToolStripMenuItem.Size = new System.Drawing.Size(348, 44);
+=======
+            this.restartExplorerToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+>>>>>>> Stashed changes
             this.restartExplorerToolStripMenuItem.Text = "&Restart Explorer";
             this.restartExplorerToolStripMenuItem.Click += new System.EventHandler(this.restartExplorerToolStripMenuItem_Click);
             // 
@@ -442,13 +571,21 @@ namespace ServerManager
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearMostRecentlyUsedServersToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+<<<<<<< Updated upstream
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(89, 36);
+=======
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(82, 38);
+>>>>>>> Stashed changes
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // clearMostRecentlyUsedServersToolStripMenuItem
             // 
             this.clearMostRecentlyUsedServersToolStripMenuItem.Name = "clearMostRecentlyUsedServersToolStripMenuItem";
+<<<<<<< Updated upstream
             this.clearMostRecentlyUsedServersToolStripMenuItem.Size = new System.Drawing.Size(492, 44);
+=======
+            this.clearMostRecentlyUsedServersToolStripMenuItem.Size = new System.Drawing.Size(459, 38);
+>>>>>>> Stashed changes
             this.clearMostRecentlyUsedServersToolStripMenuItem.Text = "&Clear most recently used servers";
             this.clearMostRecentlyUsedServersToolStripMenuItem.Click += new System.EventHandler(this.clearMostRecentlyUsedServersToolStripMenuItem_Click);
             // 
@@ -462,44 +599,72 @@ namespace ServerManager
             this.toolStripSeparator5,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+<<<<<<< Updated upstream
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(84, 36);
+=======
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(77, 38);
+>>>>>>> Stashed changes
             this.helpToolStripMenuItem.Text = "&Help";
             // 
             // sharpShellProjectHomePageToolStripMenuItem
             // 
             this.sharpShellProjectHomePageToolStripMenuItem.Name = "sharpShellProjectHomePageToolStripMenuItem";
+<<<<<<< Updated upstream
             this.sharpShellProjectHomePageToolStripMenuItem.Size = new System.Drawing.Size(470, 44);
+=======
+            this.sharpShellProjectHomePageToolStripMenuItem.Size = new System.Drawing.Size(437, 38);
+>>>>>>> Stashed changes
             this.sharpShellProjectHomePageToolStripMenuItem.Text = "&SharpShell Project Home Page";
             this.sharpShellProjectHomePageToolStripMenuItem.Click += new System.EventHandler(this.sharpShellProjectHomePageToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
+<<<<<<< Updated upstream
             this.toolStripSeparator4.Size = new System.Drawing.Size(467, 6);
+=======
+            this.toolStripSeparator4.Size = new System.Drawing.Size(434, 6);
+>>>>>>> Stashed changes
             // 
             // reportABugToolStripMenuItem
             // 
             this.reportABugToolStripMenuItem.Name = "reportABugToolStripMenuItem";
+<<<<<<< Updated upstream
             this.reportABugToolStripMenuItem.Size = new System.Drawing.Size(470, 44);
+=======
+            this.reportABugToolStripMenuItem.Size = new System.Drawing.Size(437, 38);
+>>>>>>> Stashed changes
             this.reportABugToolStripMenuItem.Text = "&Report a Bug";
             this.reportABugToolStripMenuItem.Click += new System.EventHandler(this.reportABugToolStripMenuItem_Click);
             // 
             // requestAFeatureToolStripMenuItem
             // 
             this.requestAFeatureToolStripMenuItem.Name = "requestAFeatureToolStripMenuItem";
+<<<<<<< Updated upstream
             this.requestAFeatureToolStripMenuItem.Size = new System.Drawing.Size(470, 44);
+=======
+            this.requestAFeatureToolStripMenuItem.Size = new System.Drawing.Size(437, 38);
+>>>>>>> Stashed changes
             this.requestAFeatureToolStripMenuItem.Text = "Request a &Feature";
             this.requestAFeatureToolStripMenuItem.Click += new System.EventHandler(this.requestAFeatureToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
+<<<<<<< Updated upstream
             this.toolStripSeparator5.Size = new System.Drawing.Size(467, 6);
+=======
+            this.toolStripSeparator5.Size = new System.Drawing.Size(434, 6);
+>>>>>>> Stashed changes
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+<<<<<<< Updated upstream
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(470, 44);
+=======
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(437, 38);
+>>>>>>> Stashed changes
             this.aboutToolStripMenuItem.Text = "&About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -514,16 +679,26 @@ namespace ServerManager
             this.toolStripSeparator6,
             this.toolStripButtonAttachDebugger,
             this.toolStripButtonShellDebugger});
+<<<<<<< Updated upstream
             this.toolStripMain.Location = new System.Drawing.Point(6, 40);
             this.toolStripMain.Name = "toolStripMain";
             this.toolStripMain.Size = new System.Drawing.Size(1083, 42);
+=======
+            this.toolStripMain.Location = new System.Drawing.Point(3, 42);
+            this.toolStripMain.Name = "toolStripMain";
+            this.toolStripMain.Size = new System.Drawing.Size(1099, 39);
+>>>>>>> Stashed changes
             this.toolStripMain.TabIndex = 3;
             // 
             // toolStripButtonOpenTestShell
             // 
             this.toolStripButtonOpenTestShell.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonOpenTestShell.Name = "toolStripButtonOpenTestShell";
+<<<<<<< Updated upstream
             this.toolStripButtonOpenTestShell.Size = new System.Drawing.Size(185, 36);
+=======
+            this.toolStripButtonOpenTestShell.Size = new System.Drawing.Size(186, 36);
+>>>>>>> Stashed changes
             this.toolStripButtonOpenTestShell.Text = "Open Test Shell";
             this.toolStripButtonOpenTestShell.Click += new System.EventHandler(this.toolStripButtonOpenTestShell_Click);
             // 
@@ -531,7 +706,11 @@ namespace ServerManager
             // 
             this.toolStripButtonTestServer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonTestServer.Name = "toolStripButtonTestServer";
+<<<<<<< Updated upstream
             this.toolStripButtonTestServer.Size = new System.Drawing.Size(269, 36);
+=======
+            this.toolStripButtonTestServer.Size = new System.Drawing.Size(270, 36);
+>>>>>>> Stashed changes
             this.toolStripButtonTestServer.Text = "Test Server in Test Shell";
             this.toolStripButtonTestServer.Click += new System.EventHandler(this.toolStripButtonTestServer_Click);
             // 
@@ -541,21 +720,33 @@ namespace ServerManager
             this.toolStripButtonOpenShellDialog.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenShellDialog.Image")));
             this.toolStripButtonOpenShellDialog.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonOpenShellDialog.Name = "toolStripButtonOpenShellDialog";
+<<<<<<< Updated upstream
             this.toolStripButtonOpenShellDialog.Size = new System.Drawing.Size(212, 36);
+=======
+            this.toolStripButtonOpenShellDialog.Size = new System.Drawing.Size(213, 36);
+>>>>>>> Stashed changes
             this.toolStripButtonOpenShellDialog.Text = "Open Shell Dialog";
             this.toolStripButtonOpenShellDialog.Click += new System.EventHandler(this.toolStripButtonOpenShellDialog_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
+<<<<<<< Updated upstream
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 42);
+=======
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 39);
+>>>>>>> Stashed changes
             // 
             // toolStripButtonAttachDebugger
             // 
             this.toolStripButtonAttachDebugger.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButtonAttachDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonAttachDebugger.Name = "toolStripButtonAttachDebugger";
+<<<<<<< Updated upstream
             this.toolStripButtonAttachDebugger.Size = new System.Drawing.Size(46, 36);
+=======
+            this.toolStripButtonAttachDebugger.Size = new System.Drawing.Size(36, 36);
+>>>>>>> Stashed changes
             this.toolStripButtonAttachDebugger.Text = "Attach Debugger";
             this.toolStripButtonAttachDebugger.Click += new System.EventHandler(this.toolStripButtonAttachDebugger_Click);
             // 
@@ -563,9 +754,41 @@ namespace ServerManager
             // 
             this.toolStripButtonShellDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonShellDebugger.Name = "toolStripButtonShellDebugger";
+<<<<<<< Updated upstream
             this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(343, 36);
+=======
+            this.toolStripButtonShellDebugger.Size = new System.Drawing.Size(376, 36);
+>>>>>>> Stashed changes
             this.toolStripButtonShellDebugger.Text = "Shell Debugger (Experimental)";
             this.toolStripButtonShellDebugger.Click += new System.EventHandler(this.toolStripButtonShellDebugger_Click);
+            // 
+            // installToolStripMenuItem
+            // 
+            this.installToolStripMenuItem.Name = "installToolStripMenuItem";
+            this.installToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+            this.installToolStripMenuItem.Text = "&Install";
+            this.installToolStripMenuItem.Click += new System.EventHandler(this.installToolStripMenuItem_Click);
+            // 
+            // uninstallToolStripMenuItem
+            // 
+            this.uninstallToolStripMenuItem.Name = "uninstallToolStripMenuItem";
+            this.uninstallToolStripMenuItem.Size = new System.Drawing.Size(356, 38);
+            this.uninstallToolStripMenuItem.Text = "&Uninstall";
+            this.uninstallToolStripMenuItem.Click += new System.EventHandler(this.uninstallToolStripMenuItem_Click);
+            // 
+            // serverDetailsView1
+            // 
+            this.serverDetailsView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.serverDetailsView1.Location = new System.Drawing.Point(0, 0);
+            this.serverDetailsView1.Margin = new System.Windows.Forms.Padding(12);
+            this.serverDetailsView1.Name = "serverDetailsView1";
+            this.serverDetailsView1.Size = new System.Drawing.Size(380, 859);
+            this.serverDetailsView1.TabIndex = 1;
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(353, 6);
             // 
             // ServerManagerForm
             // 
@@ -651,6 +874,12 @@ namespace ServerManager
         private System.Windows.Forms.ToolStripMenuItem installToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uninstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+<<<<<<< Updated upstream
     }
 }
 
+=======
+    }
+}
+
+>>>>>>> Stashed changes

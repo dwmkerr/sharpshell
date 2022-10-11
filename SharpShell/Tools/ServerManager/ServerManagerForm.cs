@@ -451,6 +451,7 @@ namespace ServerManager
             if (SelectedServerEntry == null)
                 return;
 
+<<<<<<< Updated upstream
             //  Create a regasm instance and register the server.
             var regasm = new RegAsm();
             var success = Environment.Is64BitOperatingSystem ? regasm.Register64(SelectedServerEntry.ServerPath, true) : regasm.Register32(SelectedServerEntry.ServerPath, true);
@@ -466,6 +467,13 @@ namespace ServerManager
                 MessageBox.Show(@"Failed to install, check the SharpShell log for details.", @"Install Server", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+=======
+            var regasm = new RegAsm();
+            if (Environment.Is64BitOperatingSystem)
+                regasm.Register64(SelectedServerEntry.ServerPath, true);
+            else
+                regasm.Register32(SelectedServerEntry.ServerPath, true);
+>>>>>>> Stashed changes
         }
 
         private void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
@@ -474,6 +482,7 @@ namespace ServerManager
             if (SelectedServerEntry == null)
                 return;
 
+<<<<<<< Updated upstream
             //  Create a regasm instance and register the server.
             var regasm = new RegAsm();
             var success = Environment.Is64BitOperatingSystem ? regasm.Unregister64(SelectedServerEntry.ServerPath) : regasm.Unregister32(SelectedServerEntry.ServerPath);
@@ -489,6 +498,13 @@ namespace ServerManager
                 MessageBox.Show(@"Failed to uninstall, check the SharpShell log for details.", @"Uninstall Server", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+=======
+            var regasm = new RegAsm();
+            if (Environment.Is64BitOperatingSystem)
+                regasm.Unregister64(SelectedServerEntry.ServerPath);
+            else
+                regasm.Unregister32(SelectedServerEntry.ServerPath);
+>>>>>>> Stashed changes
         }
     }
 }
