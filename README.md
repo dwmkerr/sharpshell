@@ -137,6 +137,18 @@ These are extensions which add custom functionality to the Windows Desktop or Ta
 
 ## Developer Guide
 
+The repository made up the following components:
+
+| Component                                                   | Description                                            |
+|-------------------------------------------------------------|--------------------------------------------------------|
+| [`docs/`](./docs)                                           | Project Documentation                                  |
+| [`SharpShell/`](./SharpShell)                               | The core SharpShell assemblies.                        |
+| [`SharpShellInstallerSample/`](./SharpShellInstallerSample) | An example of an installer for a SharpShell extension. |
+| [`SharpShellNativeBridge/`](./SharpShellNativeBridge)      | Interface to Win32 code needed for property sheets.    |
+| [`Tests/`](./Tests)                                         | Regression test scripts and data.                      |
+
+Most developers will only need to work with the code in the SharpShell folder.
+
 SharpShell is currently developed in Visual Studio 2017, and can be built using the [Community Edition](https://visualstudio.microsoft.com/vs/community/).
 
 In order to maximize compatibility, we do not use the latest version of each SDK. The following components are needed:
@@ -152,7 +164,14 @@ In order to maximize compatibility, we do not use the latest version of each SDK
 
 As long as the correct components have be installed for Visual Studio, you should be able to just open the main `./SharpShell/SharpShell.sln` solution to build, test and run any of the code or samples.
 
-You can also use the following scripts to run the processes:
+To build using Powershell (which is what is done in the CI/CD process), first allow Powershell to execute scripts and then install Chololatey:
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+Now the following scripts to run the processes:
 
 | Script         | Notes                                                                                                                                |
 |----------------|--------------------------------------------------------------------------------------------------------------------------------------|

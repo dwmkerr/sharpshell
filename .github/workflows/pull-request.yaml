@@ -1,0 +1,44 @@
+name: Validate Pull Request
+
+on:
+  push:
+    branches:
+      - main
+      - 'build/**'
+  pull_request:
+
+jobs:
+  validate-pull-request:
+    # We deliberately are on a less recent version of windows (rather than 2022).
+    # We should probably run on both.
+    runs-on: windows-2019 # visual studio 2019 installed
+    # runs-on: windows-2022 # visual studio 2022 installed
+
+    # We will likely setup a build matrix for vs-version.
+    # strategy:
+    #   matrix:
+    #     node-version:
+    #       - 14.x
+    #       - 16.x
+    #       - 18.x
+
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x64
+
+    - name: Build
+      run: ./SharpShellNativeBridge/build.ps1
+
+    # Upload the artifacts folder.
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: |
+          ./SharpShellNativeBridge/artifacts/
