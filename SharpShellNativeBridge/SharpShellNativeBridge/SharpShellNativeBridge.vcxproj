@@ -30,6 +30,7 @@
     </SccLocalPath>
     <SccProvider>
     </SccProvider>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -130,7 +131,7 @@ xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" 
 xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" /F /R /Y /I
 
 echo "Running x86 build..."
-msbuild "$(ProjectPath)" /p:PlatformTarget=Win32 /p:Configuration=$(ConfigurationName)</Command>
+msbuild "$(ProjectPath)" /p:PlatformTarget=x86 /p:Configuration=$(ConfigurationName)</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Writing project to NativeBridge Manifest Location</Message>
@@ -180,7 +181,7 @@ xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" 
 xcopy "$(TargetPath)" "$(ProjectDir)..\artifacts\build\SharpShellNativeBridge\" /F /R /Y /I
 
 echo "Running x86 build..."
-msbuild "$(ProjectPath)" /p:PlatformTarget=Win32 /p:Configuration=$(ConfigurationName)</Command>
+msbuild "$(ProjectPath)" /p:PlatformTarget=x86 /p:Configuration=$(ConfigurationName)</Command>
       <Message>Writing project to NativeBridge Manifest Location</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>

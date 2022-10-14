@@ -23,6 +23,7 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
+* [Compatibility](#compatibility)
 * [Documentation](#documentation)
 * [Contributor Guide](#contributor-guide)
 * [Testimonials](#testimonials)
@@ -137,14 +138,23 @@ These are extensions which add custom functionality to the Windows Desktop or Ta
 
 ## Developer Guide
 
+The repository made up the following components:
+
+| Component                                                   | Description                                            |
+|-------------------------------------------------------------|--------------------------------------------------------|
+| [`docs/`](./docs)                                           | Project Documentation                                  |
+| [`SharpShell/`](./SharpShell)                               | The core SharpShell assemblies.                        |
+| [`SharpShellInstallerSample/`](./SharpShellInstallerSample) | An example of an installer for a SharpShell extension. |
+| [`SharpShellNativeBridge/`](./SharpShellNativeBridge)      | Interface to Win32 code needed for property sheets.    |
+| [`Tests/`](./Tests)                                         | Regression test scripts and data.                      |
+
+Most developers will only need to work with the code in the SharpShell folder.
+
 SharpShell is currently developed in Visual Studio 2017, and can be built using the [Community Edition](https://visualstudio.microsoft.com/vs/community/).
 
 In order to maximize compatibility, we do not use the latest version of each SDK. The following components are needed:
 
-- Windows Universal CRT SDK
-- Windows 8.1 SDK
 - .NET Core runtime
-- Windows Universal C Runtime
 - Microsoft Visual Studio 2017 Installer Projects
 -  [Chocolatey](https://chocolatey.org/) (choco)
 
@@ -152,7 +162,14 @@ In order to maximize compatibility, we do not use the latest version of each SDK
 
 As long as the correct components have be installed for Visual Studio, you should be able to just open the main `./SharpShell/SharpShell.sln` solution to build, test and run any of the code or samples.
 
-You can also use the following scripts to run the processes:
+To build using Powershell (which is what is done in the CI/CD process), first allow Powershell to execute scripts and then install Chololatey:
+
+```ps1
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+Now the following scripts to run the processes:
 
 | Script         | Notes                                                                                                                                |
 |----------------|--------------------------------------------------------------------------------------------------------------------------------------|
@@ -166,7 +183,6 @@ These scripts will generate various artifacts which may be useful to review:
 ```
 artifacts\
   \build
-    \SharpNativeBridge    # 32/64 bit native binaries for the bridge.
     \SharpShell           # The SharpShell assembly.
   \tests                  # NUnit Test Reportsd
   \coverage               # Coverage Reports
@@ -174,9 +190,7 @@ artifacts\
 
 Only assemblies and binaries which need to be copied into other projects are added to the `artifacts/build` folder. This makes chaining more complex dependencies manageable. The solution is fairly standard, but be aware that:
 
-1. `SharpShell` depends on `SharpNativeBridge`
-2. `SharpNativeBridge` should be built in `x64` mode. When successful, the `x64` build will trigger a `x32` build, and both 32/64 bit binaries are copied to the `artifacts/build/SharpNativeBridge` folder.
-3. `SharpShell` copies the latest native bridge binaries to its own `NativeBridge` folder - these are then embedded in the `SharpShell` assembly.
+1. `SharpShell` contains the `SharpShellNativeBridge` binaries. To update them, build the `SharpShellNativeBridge` solution from source and embed the new binaries.
 4. The `SharpShell` assembly is copied to `artifacts/build/SharpShell` folder after a successful build.
 5. The `SharpShell` assembly is embedded in the `ServerRegistrationManager` binary. The assembly is copied from `artifacts/build/SharpShell` prior to the server registration manager build.
 
@@ -213,6 +227,23 @@ To create a release:
 3. Create a new version tag, then push
 
 AppVeyor will build and publish a new NuGet package and as long as a new semver tag is pushed.
+
+## Compatibility
+
+The goal is to maximize compatibility for platforms which are supported. For platforms which are no longer in support SharpShell _may_ work, but is not tested.
+
+Note: At the moment compatibility across platforms is being verified, this section of the documentation will be updated soon.
+
+🟢 - Fully Supported; tested and verified as part of the build process
+🟠 - Partly Supported; potentially will work, but no longer formally supported or tested
+🔴 - Not Supported; confirmed that this will not work, unless the code is modified
+
+| Component          | Compatibility       |
+|--------------------|---------------------|
+| **Visual Studio**  |                     |
+| Visual Studio 2022 | 🟢 Fully Supported  |
+| Visual Studio 2019 | 🟢 Fully Supported  |
+| Visual Studio 2017 | 🟠 Partly Supported |
 
 ## Documentation
 

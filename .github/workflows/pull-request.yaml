@@ -1,0 +1,51 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+
+jobs:
+  validate-pull-request:
+    # We deliberately are on a less recent version of windows (rather than 2022).
+    # We should probably run on both.
+    # Windows 2019 Runner components:
+    #   https://github.com/actions/runner-images/blob/main/images/win/Windows2019-Readme.md
+    # runs-on: windows-2019 # visual studio 2019 installed
+    # runs-on: windows-2022 # visual studio 2022 installed
+
+    strategy:
+      matrix:
+        windows-version:
+          - windows-2019
+          - windows-2022
+        visual-studio-version:
+          - 16.11
+          - 17.3
+        # The GitHub Actions Windows images do not contain multiple versions of
+        # msbuild, so we need to exclude certain combinations.
+        exclude:
+        - windows-version: windows-2019
+          visual-studio-version: 17.3
+        - windows-version: windows-2022
+          visual-studio-version: 16.11
+    runs-on: ${{ matrix.windows-version }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-version: ${{ matrix.visual-studio-version }}
+        msbuild-architecture: x64
+
+    - name: Build
+      run: ./SharpShellNativeBridge/build.ps1
+
+    # Upload the artifacts folder.
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: |
+          ./SharpShellNativeBridge/artifacts/
