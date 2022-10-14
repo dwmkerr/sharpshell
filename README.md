@@ -240,10 +240,21 @@ Note: At the moment compatibility across platforms is being verified, this secti
 
 | Component          | Compatibility       |
 |--------------------|---------------------|
+| **Windows**        |                     |
+| Windows 11         | 🟢 Fully Supported  |
+| Windows 10         | 🟢 Fully Supported  |
+| Windows 8.1        | 🟠 Partly Supported |
+| Windows 8          | 🟠 Partly Supported |
+| Windows 7          | 🟠 Partly Supported |
 | **Visual Studio**  |                     |
 | Visual Studio 2022 | 🟢 Fully Supported  |
 | Visual Studio 2019 | 🟢 Fully Supported  |
 | Visual Studio 2017 | 🟠 Partly Supported |
+| Visual Studio 2015 | 🟠 Partly Supported |
+| **msbuild**        |                     |
+| msbuild 17.3       | 🟢 Fully Supported  |
+| msbuild 16.11      | 🟢 Fully Supported  |
+| msbuild 15.9       | 🟠 Partly Supported |
 
 ## Documentation
 
