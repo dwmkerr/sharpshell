@@ -1,27 +1,23 @@
 name: Validate Pull Request
 
 on:
-  push:
-    branches:
-      - main
-      - 'build/**'
   pull_request:
 
 jobs:
   validate-pull-request:
     # We deliberately are on a less recent version of windows (rather than 2022).
     # We should probably run on both.
-    runs-on: windows-2019 # visual studio 2019 installed
+    # Windows 2019 Runner components:
+    #   https://github.com/actions/runner-images/blob/main/images/win/Windows2019-Readme.md
+    # runs-on: windows-2019 # visual studio 2019 installed
     # runs-on: windows-2022 # visual studio 2022 installed
 
-    # We will likely setup a build matrix for vs-version.
-    # strategy:
-    #   matrix:
-    #     node-version:
-    #       - 14.x
-    #       - 16.x
-    #       - 18.x
-
+    strategy:
+      matrix:
+        windows-version:
+          - windows-2019
+          - windows-2022
+    runs-on: ${{ matrix.windows-version }}
 
     steps:
     - name: Checkout
@@ -30,6 +26,8 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
       with:
+        vs-version: '17.3'
+        vs-version: '16.11'
         msbuild-architecture: x64
 
     - name: Build
