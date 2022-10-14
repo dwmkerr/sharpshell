@@ -5,13 +5,6 @@ on:
 
 jobs:
   validate-pull-request:
-    # We deliberately are on a less recent version of windows (rather than 2022).
-    # We should probably run on both.
-    # Windows 2019 Runner components:
-    #   https://github.com/actions/runner-images/blob/main/images/win/Windows2019-Readme.md
-    # runs-on: windows-2019 # visual studio 2019 installed
-    # runs-on: windows-2022 # visual studio 2022 installed
-
     strategy:
       matrix:
         windows-version:
