@@ -20,13 +20,13 @@ jobs:
         visual-studio-version:
           - 16.11
           - 17.3
-      # The GitHub Actions Windows images do not contain multiple versions of
-      # msbuild, so we need to exclude certain combinations.
-      # exclude:
-      # - windows-version: windows-2019
-      #   visual-studio-version: 17.3
-      # - windows-version: windows-2022
-      #   visual-studio-version: 16.11
+        # The GitHub Actions Windows images do not contain multiple versions of
+        # msbuild, so we need to exclude certain combinations.
+        exclude:
+        - windows-version: windows-2019
+          visual-studio-version: 17.3
+        - windows-version: windows-2022
+          visual-studio-version: 16.11
     runs-on: ${{ matrix.windows-version }}
 
     steps:
