@@ -17,6 +17,16 @@ jobs:
         windows-version:
           - windows-2019
           - windows-2022
+        visual-studio-version:
+          - 16.11
+          - 17.3
+      # The GitHub Actions Windows images do not contain multiple versions of
+      # msbuild, so we need to exclude certain combinations.
+      # exclude:
+      # - windows-version: windows-2019
+      #   visual-studio-version: 17.3
+      # - windows-version: windows-2022
+      #   visual-studio-version: 16.11
     runs-on: ${{ matrix.windows-version }}
 
     steps:
@@ -26,8 +36,7 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.1
       with:
-        vs-version: '17.3'
-        vs-version: '16.11'
+        vs-version: ${{ matrix.visual-studio-version }}
         msbuild-architecture: x64
 
     - name: Build
