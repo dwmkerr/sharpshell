@@ -27,17 +27,17 @@ namespace SharpShell.SharpContextMenu
         /// Builds a native context menu, on to the provided HMENU.
         /// </summary>
         /// <param name="hMenu">The handle to the menu.</param>
-        /// <param name="itemIndex">The zero-based position at which to insert the first new menu item.</param>
+        /// <param name="firstItemPosition">The first item index.</param>
         /// <param name="firstItemId">The first item id.</param>
         /// <param name="toolStripItems">The tool strip menu items.</param>
         /// <returns>The index of the last item created.</returns>
-        public uint BuildNativeContextMenu(IntPtr hMenu, uint itemIndex, uint firstItemId, ToolStripItemCollection toolStripItems)
+        public uint BuildNativeContextMenu(IntPtr hMenu, uint firstItemPosition, uint firstItemId, ToolStripItemCollection toolStripItems)
         {
             //  Create an ID counter and position counter. The position is provided by the caller. If this is a top level menu item (i.e.
             //  top level in the shell context menu) then 'position' will be provided by the Shell via an earlier call to IContextMenu::QueryContextMenu.
             //  When we create submenus, we simply start at position '0'.
             var idCounter = firstItemId;
-            var positionCounter = itemIndex;
+            var positionCounter = firstItemPosition;
 
             //  Go through every tool strip item.
             foreach (ToolStripItem item in toolStripItems)
