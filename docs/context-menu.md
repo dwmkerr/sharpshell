@@ -4,6 +4,16 @@ Shell Context Menus are Shell Extensions that add to the context menu opened whe
 
 Shell Context Menus are fully supported in SharpShell. This section describes how to implement them.
 
+
+<!-- vim-markdown-toc GFM -->
+
+* [Creating Shell Context Menus](#creating-shell-context-menus)
+* [Icons](#icons)
+* [Shortcut Keys](#shortcut-keys)
+* [Troubleshooting](#troubleshooting)
+
+<!-- vim-markdown-toc -->
+
 ## Creating Shell Context Menus
 
 Create a C# class library project. Ensure the class library is signed with a strong name. Add a reference to 'SharpShell' (the SharpShell core library is available from the Downloads page, or can be found on Nuget with a search for 'SharpShell'). If the library has been referenced manually, also add references to:
@@ -73,6 +83,27 @@ protected override ContextMenuStrip CreateMenu()
 As a note, if the source of a context menu item's icon is a file format that supports transparency, such as `*.png`, then the icon itself will render correctly with transparency, as the screenshot below shows (left side with the mouse out, right side with the mouse over):
 
 ![Context Menu Screenshot](./context-menu-screenshot.png)
+
+## Shortcut Keys
+
+You can set the menu item's `ShortcutKeys` value, but be aware, it must be a _valid_ shortcut key, which typically means that there is a modifier included. As an example:
+
+```cs
+new ToolStripMenuItem
+{
+    Text = "Count Lines...",
+    Image = Properties.Resources.CountLines,
+    ShortcutKeys = Keys.C
+};
+```
+
+Will fail with the exception "System.ComponentModel.InvalidEnumArgumentException: Attribute 'value' (88) of Enum type 'Keys' is not valid". If the `ShortcutKeys` is set to something like `Keys.Alt | Keys.C` then the call will succeed. This _not_ in the .NET documentation as far as I am aware.
+
+The details of the logic to see what is a valid shortcut key or not are at:
+
+https://referencesource.microsoft.com/#System.Windows.Forms/winforms/Managed/System/WinForms/ToolStripManager.cs,54f03ea0326af803,references
+
+There are more details on this issue at: https://github.com/dwmkerr/sharpshell/issues/328
 
 ## Troubleshooting
 

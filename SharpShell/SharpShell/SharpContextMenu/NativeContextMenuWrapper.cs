@@ -33,7 +33,9 @@ namespace SharpShell.SharpContextMenu
         /// <returns>The index of the last item created.</returns>
         public uint BuildNativeContextMenu(IntPtr hMenu, uint firstItemPosition, uint firstItemId, ToolStripItemCollection toolStripItems)
         {
-            //  Create an ID counter and position counter.
+            //  Create an ID counter and position counter. The position is provided by the caller. If this is a top level menu item (i.e.
+            //  top level in the shell context menu) then 'position' will be provided by the Shell via an earlier call to IContextMenu::QueryContextMenu.
+            //  When we create submenus, we simply start at position '0'.
             var idCounter = firstItemId;
             var positionCounter = firstItemPosition;
 
@@ -59,16 +61,15 @@ namespace SharpShell.SharpContextMenu
                     continue;
                 }
 
-                //  We successfully created the menu item, so increment the counters.
+                //  We successfully created the menu item, so increment the position and ID counters.
                 indexedCommands.Add(item);
                 idCounter++;
                 positionCounter++;
 
                 //  Have we just built a menu item? If so, does it have child items?
-                var toolStripMenuItem = item as ToolStripMenuItem;
-                if (toolStripMenuItem != null && toolStripMenuItem.HasDropDownItems)
+                if (item is ToolStripMenuItem toolStripMenuItem && toolStripMenuItem.HasDropDownItems)
                 {
-                    //  Create each drop down item.
+                    //  Create the drop down menu. As this is a submenu, we start at position zero and go from there.
                     idCounter = BuildNativeContextMenu(menuItemInfo.hSubMenu, 0, idCounter, toolStripMenuItem.DropDownItems);
                 }
             }

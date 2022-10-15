@@ -1,14 +1,13 @@
 # SharpShell
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/)
+[![Build status](https://ci.appveyor.com/api/projects/status/ebvrjdsjm8ne7sdw/branch/master?svg=true)](https://ci.appveyor.com/project/dwmkerr/sharpshell/branch/master) [![codecov](https://codecov.io/gh/dwmkerr/sharpshell/branch/master/graph/badge.svg)](https://codecov.io/gh/dwmkerr/sharpshell) [![NuGet](https://img.shields.io/nuget/dt/SharpShell.svg)](https://www.nuget.org/packages/SharpShell/) [![GuardRails badge](https://badges.guardrails.io/dwmkerr/sharpshell.svg?token=569f2cc38a148f785f3a38ef0bcf5f5964995d7ca625abfad9956b14bd06ad96&provider=github)](https://dashboard.guardrails.io/default/gh/dwmkerr/sharpshell)
 
 SharpShell makes it easy to create Windows Shell Extensions using the .NET Framework.
 
 <!-- vim-markdown-toc GFM -->
 
-* [Official NuGet Packages](#official-nuget-packages)
-* [Documentation](#documentation)
-* [Deploying SharpShell Servers](#deploying-sharpshell-servers)
+* [Installation](#installation)
+* [User Guide](#user-guide)
 * [Supported Shell Extensions](#supported-shell-extensions)
     * [Shell Context Menus](#shell-context-menus)
     * [Icon Handlers](#icon-handlers)
@@ -20,10 +19,13 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
     * [Property Sheet Extensions](#property-sheet-extensions)
     * [Desk Band Extensions](#desk-band-extensions)
 * [Developer Guide](#developer-guide)
-* [Building & Testing](#building--testing)
+    * [Building & Testing](#building--testing)
     * [Enabling Logging](#enabling-logging)
     * [CI/CD](#cicd)
     * [Creating a Release](#creating-a-release)
+* [Compatibility](#compatibility)
+* [Documentation](#documentation)
+* [Contributor Guide](#contributor-guide)
 * [Testimonials](#testimonials)
 * [Projects that use SharpShell](#projects-that-use-sharpshell)
 * [Thanks](#thanks)
@@ -31,26 +33,32 @@ SharpShell makes it easy to create Windows Shell Extensions using the .NET Frame
 
 <!-- vim-markdown-toc -->
 
-## Official NuGet Packages
+If you find this project useful, please consider [Sponsoring](https://github.com/sponsors/dwmkerr)!
 
-| Component | Package |
-|-----------|---------|
-| `SharpShell` | [![SharpShell Nuget Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell) |
-| `ServerRegistrationManager` | [![ServerRegistrationManager Nuget Package](https://img.shields.io/nuget/v/ServerRegistrationManager.svg)](https://www.nuget.org/packages/ServerRegistrationManager) |
+## Installation
 
-## Documentation
+Install SharpShell by searching for 'SharpShell' in the NuGet package manager, or using the Package Manager Console:
 
-Documentation is in the process of being moved to:
+```
+PM > Install-Package SharpShell
+```
 
-[`./docs`](./docs)
+The latest official packages are listed below:
 
-Please open an issue if there is missing documentation and I will try to prioritise it!
+| Component                   | Package                                                                                                                                                              |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SharpShell`                | [![SharpShell NuGet Package](https://img.shields.io/nuget/v/SharpShell.svg)](https://www.nuget.org/packages/SharpShell)                                              |
+| `SharpShellTools`           | [![SharpShellTools Nuget Package](https://img.shields.io/nuget/v/SharpShellTools.svg)](https://www.nuget.org/packages/SharpShellTools)                                         |
+| `ServerRegistrationManager` | [![ServerRegistrationManager NuGet Package](https://img.shields.io/nuget/v/ServerRegistrationManager.svg)](https://www.nuget.org/packages/ServerRegistrationManager) |
 
-## Deploying SharpShell Servers
+## User Guide
 
-A guide on deploying SharpShell servers is available at:
+All documentation is being moved to [`docs`](./docs).
 
-[Deploying SharpShell Servers](./docs/installing/installing.md)
+Some of the most useful guides are:
+
+- [Deploying SharpShell Servers](./docs/installing/installing.md)
+- [Troubleshooting](./docs/troubleshooting.md)
 
 ## Supported Shell Extensions
 
@@ -118,7 +126,7 @@ These are extensions that add extra pages to the property sheets shown for shell
 
 ![Shell Thumbnail Handler Screenshot](./docs/extensions/propertysheetextension/propertysheetextensions-screenshot.png)
 
-[Documentation](./docs/extensions/propertysheetextension/propertysheetextensions.md).
+[Documentation](./docs/extensions/propertysheetextension/propertysheetextension.md).
 
 ### Desk Band Extensions
 
@@ -130,23 +138,38 @@ These are extensions which add custom functionality to the Windows Desktop or Ta
 
 ## Developer Guide
 
+The repository made up the following components:
+
+| Component                                                   | Description                                            |
+|-------------------------------------------------------------|--------------------------------------------------------|
+| [`docs/`](./docs)                                           | Project Documentation                                  |
+| [`SharpShell/`](./SharpShell)                               | The core SharpShell assemblies.                        |
+| [`SharpShellInstallerSample/`](./SharpShellInstallerSample) | An example of an installer for a SharpShell extension. |
+| [`SharpShellNativeBridge/`](./SharpShellNativeBridge)      | Interface to Win32 code needed for property sheets.    |
+| [`Tests/`](./Tests)                                         | Regression test scripts and data.                      |
+
+Most developers will only need to work with the code in the SharpShell folder.
+
 SharpShell is currently developed in Visual Studio 2017, and can be built using the [Community Edition](https://visualstudio.microsoft.com/vs/community/).
 
 In order to maximize compatibility, we do not use the latest version of each SDK. The following components are needed:
 
-- Windows Universal CRT SDK
-- Windows 8.1 SDK
 - .NET Core runtime
-- Windows Universal C Runtime
 - Microsoft Visual Studio 2017 Installer Projects
+-  [Chocolatey](https://chocolatey.org/) (choco)
 
-Note: Not tested on VS2017 for Mac.
-
-## Building & Testing
+### Building & Testing
 
 As long as the correct components have be installed for Visual Studio, you should be able to just open the main `./SharpShell/SharpShell.sln` solution to build, test and run any of the code or samples.
 
-You can also use the following scripts to run the processes:
+To build using Powershell (which is what is done in the CI/CD process), first allow Powershell to execute scripts and then install Chololatey:
+
+```ps1
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+Now the following scripts to run the processes:
 
 | Script         | Notes                                                                                                                                |
 |----------------|--------------------------------------------------------------------------------------------------------------------------------------|
@@ -160,7 +183,6 @@ These scripts will generate various artifacts which may be useful to review:
 ```
 artifacts\
   \build
-    \SharpNativeBridge    # 32/64 bit native binaries for the bridge.
     \SharpShell           # The SharpShell assembly.
   \tests                  # NUnit Test Reportsd
   \coverage               # Coverage Reports
@@ -168,9 +190,7 @@ artifacts\
 
 Only assemblies and binaries which need to be copied into other projects are added to the `artifacts/build` folder. This makes chaining more complex dependencies manageable. The solution is fairly standard, but be aware that:
 
-1. `SharpShell` depends on `SharpNativeBridge`
-2. `SharpNativeBridge` should be built in `x64` mode. When successful, the `x64` build will trigger a `x32` build, and both 32/64 bit binaries are copied to the `artifacts/build/SharpNativeBridge` folder.
-3. `SharpShell` copies the latest native bridge binaries to its own `NativeBridge` folder - these are then embedded in the `SharpShell` assembly.
+1. `SharpShell` contains the `SharpShellNativeBridge` binaries. To update them, build the `SharpShellNativeBridge` solution from source and embed the new binaries.
 4. The `SharpShell` assembly is copied to `artifacts/build/SharpShell` folder after a successful build.
 5. The `SharpShell` assembly is embedded in the `ServerRegistrationManager` binary. The assembly is copied from `artifacts/build/SharpShell` prior to the server registration manager build.
 
@@ -194,15 +214,9 @@ CI/CD is currently handled by AppVeyor. AppVeyor will:
 
 1. Build the project
 2. Run the tests
-3. Create the core SharpShell Nuget Package
-4. Publish the package to nuget.org if a version tag is pushed
+3. Create the core SharpShell NuGet Package
+4. Publish the package to [nuget.org](https://nuget.org) if a version tag is pushed
 5. Create a GitHub release with the package if a version tag is pushed
-
-Some work is still needed on the CI/CD side:
-
-- [ ] Look at handing the changelog more effectively, with somelike like the node release tool used in my other projects.
-- [ ] Look into automatic notifications for package publication.
-- [ ] Deploy SRM as a NuGet package.
 
 ### Creating a Release
 
@@ -213,6 +227,55 @@ To create a release:
 3. Create a new version tag, then push
 
 AppVeyor will build and publish a new NuGet package and as long as a new semver tag is pushed.
+
+## Compatibility
+
+The goal is to maximize compatibility for platforms which are supported. For platforms which are no longer in support SharpShell _may_ work, but is not tested.
+
+Note: At the moment compatibility across platforms is being verified, this section of the documentation will be updated soon.
+
+🟢 - Fully Supported; tested and verified as part of the build process
+🟠 - Partly Supported; potentially will work, but no longer formally supported or tested
+🔴 - Not Supported; confirmed that this will not work, unless the code is modified
+
+| Component          | Compatibility       |
+|--------------------|---------------------|
+| **Windows**        |                     |
+| Windows 11         | 🟢 Fully Supported  |
+| Windows 10         | 🟢 Fully Supported  |
+| Windows 8.1        | 🟠 Partly Supported |
+| Windows 8          | 🟠 Partly Supported |
+| Windows 7          | 🟠 Partly Supported |
+| **Visual Studio**  |                     |
+| Visual Studio 2022 | 🟢 Fully Supported  |
+| Visual Studio 2019 | 🟢 Fully Supported  |
+| Visual Studio 2017 | 🟠 Partly Supported |
+| Visual Studio 2015 | 🟠 Partly Supported |
+| **msbuild**        |                     |
+| msbuild 17.3       | 🟢 Fully Supported  |
+| msbuild 16.11      | 🟢 Fully Supported  |
+| msbuild 15.9       | 🟠 Partly Supported |
+
+## Documentation
+
+Documentation is still work in progress, and any contributions would be most welcome!
+
+- [COM Server Associations](./docs/com-server-associations.md)
+- [Context Menus](./docs/context-menu.md)
+- [Managed Shell Extensions](./docs/managed-shell-extensions.md)
+- [Logging](./docs/logging/logging.md)
+- [Troubleshooting](./docs/troubleshooting.md)
+
+## Contributor Guide
+
+The project is maintained by the following group:
+
+| User                                        | Role                         |
+|---------------------------------------------|------------------------------|
+| [`dwmkerr`](https://github.com/dwmkerr)     | Project creator, maintainer. |
+| [`Countryen`](https://github.com/Countryen) | Project maintainer.          |
+
+We have a [Code of Conduct](.github/CODE_OF_CONDUCT.md) aimed at keeping the community welcoming and inclusive.
 
 ## Testimonials
 
@@ -245,9 +308,9 @@ Send me a message to add a project to this list:
 
 ## Thanks
 
-Many thanks to [JetBrains](https://www.jetbrains.com/) for providing an Open Source License for their products!
+Many thanks to [JetBrains](https://www.jetbrains.com/?from=sharpshell) for providing an Open Source License for their products!
 
-![JetBrains](./docs/thanks/jetbrains.png)
+[![JetBrains](./docs/thanks/jetbrains.png)](https://www.jetbrains.com/?from=sharpshell)
 
 ## License
 

@@ -1,0 +1,6 @@
+# SharpShellNativeBridge intermediates.
+artifacts/
+Release
+x64
+SharpShellNativeBridge/Release
+SharpShellNativeBridge/x64

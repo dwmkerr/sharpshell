@@ -89,7 +89,9 @@ The server class itself needs to be visible as COM server, so we use the `ComVis
 
 ## Install the DeskBand Server
 
-Follow the [Installing](../../../docs/installing/installing.md) documentation to install the server.
+Build the project and record the name of the generated dll file.
+
+Now follow the [Installing](../../../docs/installing/installing.md) documentation to install the server.
 
 Now restart the `explorer.exe` process. You should see the new desk band listed as a toolbar available to show in the Explorer Task Bar:
 

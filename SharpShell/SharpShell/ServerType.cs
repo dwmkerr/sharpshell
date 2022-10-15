@@ -66,6 +66,12 @@ namespace SharpShell
         /// </summary>
         [Description("Shell Thumbnail Handler")]
         ShellThumbnailHandler,
+        
+        /// <summary>
+        /// A Shell Item Thumbnail Handler (as opposed to the standard stream handler).
+        /// </summary>
+        [Description("Shell Item Thumbnail Handler")]
+        ShellItemThumbnailHandler,
 
         /// <summary>
         /// A Shell Namespace Extension
@@ -77,6 +83,6 @@ namespace SharpShell
         /// A Shell Desk Band Extension
         /// </summary>
         [Description("Shell Desk Band Extension")]
-        ShellDeskBand
+        ShellDeskBand,
     }
 }

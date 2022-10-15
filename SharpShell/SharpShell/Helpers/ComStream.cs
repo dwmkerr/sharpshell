@@ -2,7 +2,9 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using SharpShell.Interop;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
+
 
 namespace SharpShell.Helpers
 {
@@ -171,21 +173,6 @@ namespace SharpShell.Helpers
         }
 
         /// <summary>
-        /// When overridden in a derived class, gets the length in bytes of the stream.
-        /// </summary>
-        /// <returns>A long value representing the length of the stream in bytes.</returns>
-        public override long Length
-        {
-            get
-            {
-                //  Get the statistics of the COM stream, return the size.
-                STATSTG stat;
-                comStream.Stat(out stat, 1);
-                return stat.cbSize;
-            }
-        }
-
-        /// <summary>
         /// When overridden in a derived class, gets or sets the position within the current stream.
         /// </summary>
         /// <returns>The current position within the stream.</returns>
@@ -195,6 +182,34 @@ namespace SharpShell.Helpers
         {
             get { return position; }
             set { Seek(value, SeekOrigin.Begin); }
+        }
+
+        /// <summary>
+        /// Get the length of the stream - if possible.
+        /// </summary>
+        /// <returns>A long value representing the length of the stream in bytes.</returns>
+        public override long Length
+        {
+            get
+            {
+                //  Get the statistics of the COM stream, return the size. No need for the name.
+                comStream.Stat(out var stat, (int)STATFLAG.STATFLAG_NONAME);
+                return stat.cbSize;
+            }
+        }
+
+        /// <summary>
+        /// Get the name of the item associated with the stream, if one exists.
+        /// </summary>
+        /// <returns>A long value representing the length of the stream in bytes.</returns>
+        public string Name
+        {
+            get
+            {
+                //  Get the statistics of the COM stream, including the name.
+                comStream.Stat(out var stat, (int)STATFLAG.STATFLAG_DEFAULT);
+                return stat.pwcsName;
+            }
         }
     }
 }
