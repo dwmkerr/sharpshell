@@ -35,4 +35,4 @@ The CI/CD processes also use the `./build.ps1` script to build the project.
 Be aware of the following nuances of the build process.
 
 - `SharpNativeBridge` should be built in `x64` mode. When successful, the `x64` build will trigger a `x32` build, and both 32/64 bit binaries are copied to the `artifacts/build/SharpNativeBridge` folder.
-- The core `SharpShell` assembly no longer takes the latest build of the native bridge automatically - you must build the project and embed the files in [../SharpShell/SharpShell/NativeBridge](../SharpShell/NativeBridge) to update the native bridge
+- The core `SharpShell` assembly no longer takes the latest build of the native bridge automatically - you must build the project and embed the files in [../SharpShell/SharpShell/NativeBridge](../SharpShell/SharpShell/NativeBridge) to update the native bridge
