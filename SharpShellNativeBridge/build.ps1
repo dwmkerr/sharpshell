@@ -11,7 +11,7 @@ $msbuildPath = If (Get-Command $msbuild -ErrorAction SilentlyContinue) {
     # Find MSBuild.exe using 'vswhere'...
     & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 }
-$arguments = @("/t:Clean,Restore,Build", "/p:Configuration=Release", "$PSScriptRoot\$solutionFile")
+$arguments = @("/t:Clean,Restore,Build", "/p:Configuration=Release,Platform=x64", "$PSScriptRoot\$solutionFile")
 
 # Run the command.
 Write-Host "Running: $msbuild $arguments"
