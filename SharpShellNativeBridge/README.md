@@ -12,7 +12,7 @@ If you find this project useful, please consider [Sponsoring](https://github.com
 
 This project uses the Windows 10 SDK. Windows 8.1 is no longer supported. However, if you install legacy SDKs you can re-target this project and manually build the bridge if needed.
 
-SharpShell is currently developed in Visual Studio 2017, and can be built using the [Community Edition](https://visualstudio.microsoft.com/vs/community/).
+SharpShell is currently developed in Visual Studio 2019, and can be built using the [Community Edition](https://visualstudio.microsoft.com/vs/community/).
 
 In order to maximize compatibility, we do not use the latest version of each SDK. The following components are needed:
 
