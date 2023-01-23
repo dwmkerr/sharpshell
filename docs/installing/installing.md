@@ -108,7 +108,7 @@ Use `srm` to enable logging, then attempt to run the installation again, then ch
 srm config LoggingMode File
 srm config LogPath '%TEMP%\SharpShell.log'
 srm install <path.dll>
-srm config LoggingMode Disable
+srm config LoggingMode Disabled
 ```
 
 See also: [Logging](../logging/logging.md)
