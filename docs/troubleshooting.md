@@ -76,7 +76,7 @@ Thread #470807 | Message #1127814 | 2013-11-22
 
 It seems that sometimes creating the [ComServerAssociation] is not enough. <span style="font-size:10pt">When you add the registry key for the given extension, the context menu may be got from a different part of the registry for the users preference. For example, for 'png', u</span><span style="font-size:10pt">ou can determine this by checking the user choice:</span>
 
-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts.png\UserChoice   
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.png\UserChoice   
 
 This will give you the progid gives you the keyname to associate with the server. In this case, it might be WindowsLive.PhotoGallery.png.16.4.  
 
